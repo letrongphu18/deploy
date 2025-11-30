@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AIHUBOS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a827b64443857233e38534839079122d17bfc97")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ce0c1475034bcbd1340898b80c98f2ae61fc4492")]
 [assembly: System.Reflection.AssemblyProductAttribute("AIHUBOS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AIHUBOS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

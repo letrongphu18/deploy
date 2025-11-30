@@ -2,23 +2,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
 WORKDIR /src
 
-# Copy .csproj trước
-COPY AIHUBOS.csproj .
+# Copy csproj
+COPY AIHUBOS.csproj ./
+RUN dotnet restore
 
-RUN dotnet restore "AIHUBOS.csproj"
-
-# Copy toàn bộ source code
+# Copy full source
 COPY . .
-
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish -c Release -o /app/published
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview
 WORKDIR /app
-
-COPY --from=build /app/publish .
-
-ENV ASPNETCORE_URLS=http://+:8080
+COPY --from=build /app/published .
 EXPOSE 8080
-
 ENTRYPOINT ["dotnet", "AIHUBOS.dll"]
