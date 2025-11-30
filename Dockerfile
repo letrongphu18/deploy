@@ -4,7 +4,7 @@ WORKDIR /src
 
 # Copy csproj
 COPY deploy/TMD/TMD/AIHUBOS.csproj ./TMD/
-RUN dotnet restore "./TMD/AIHUBOS.csproj"
+RUN dotnet restore "./TMD/TMD.csproj"
 
 # Copy toàn bộ source code
 COPY deploy/TMD/TMD/. ./TMD/
@@ -21,4 +21,4 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "AIHUBOS.dll"]
+ENTRYPOINT ["dotnet", "TMD.dll"]
