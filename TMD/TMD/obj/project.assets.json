@@ -6054,9 +6054,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\AIHUBOS.csproj",
-      "projectName": "AIHUBOS",
-      "projectPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\AIHUBOS.csproj",
+      "projectUniqueName": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\TMD.csproj",
+      "projectName": "TMD",
+      "projectPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\TMD.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
       "outputPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\",
       "projectStyle": "PackageReference",
@@ -6170,7 +6170,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "AIHUBOS depends on EPPlus (>= 7.0.11) but EPPlus 7.0.11 was not found. EPPlus 7.1.0 was resolved instead.",
+      "message": "TMD depends on EPPlus (>= 7.0.11) but EPPlus 7.0.11 was not found. EPPlus 7.1.0 was resolved instead.",
       "libraryId": "EPPlus",
       "targetGraphs": [
         "net9.0"
