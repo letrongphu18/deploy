@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
 WORKDIR /src
 
-# Copy csproj từ đúng vị trí
+# Copy csproj
 COPY deploy/TMD/TMD/AIHUBOS.csproj ./TMD/
 RUN dotnet restore "./TMD/AIHUBOS.csproj"
 
