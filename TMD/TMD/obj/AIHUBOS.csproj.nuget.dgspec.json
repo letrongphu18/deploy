@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\AIHUBOS.csproj": {}
+    "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\AIHUBOS.csproj": {}
   },
   "projects": {
-    "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\AIHUBOS.csproj": {
+    "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\AIHUBOS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\AIHUBOS.csproj",
+        "projectUniqueName": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\AIHUBOS.csproj",
         "projectName": "AIHUBOS",
-        "projectPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\AIHUBOS.csproj",
+        "projectPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\AIHUBOS.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\obj\\",
+        "outputPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
