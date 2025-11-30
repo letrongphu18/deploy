@@ -11,6 +11,7 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\css\attendance-modal.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\notification-hub.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery\dist\jquery.min.map
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery\dist\jquery.min.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
@@ -141,6 +142,7 @@ wwwroot\css\verify-otp.css
 wwwroot\favicon.ico
 wwwroot\js\admin-request.js
 wwwroot\js\attendance-history.js
+wwwroot\js\notification-hub.js
 wwwroot\js\resetpass.js
 wwwroot\js\site.js
 wwwroot\js\verify-otp.js
@@ -221,7 +223,11 @@ wwwroot\uploads\attendance\3_20251127_235420_checkout.jpg
 wwwroot\uploads\attendance\3_20251128_095116_checkin.jpg
 wwwroot\uploads\attendance\3_20251128_200553_checkout.jpg
 wwwroot\uploads\attendance\3_20251130_013119_checkin.jpg
+wwwroot\uploads\attendance\3_20251201_022235_checkin.jpg
 wwwroot\uploads\attendance\6_20251129_134923_checkin.jpg
+wwwroot\uploads\attendance\6_20251130_205543_checkout.jpg
+wwwroot\uploads\attendance\6_20251201_022842_checkin.jpg
+wwwroot\uploads\attendance\7_20251201_023123_checkin.jpg
 wwwroot\uploads\attendance\9_20251116_015000_checkin.jpg
 wwwroot\uploads\attendance\9_20251116_015018_checkout.jpg
 wwwroot\uploads\attendance\9_20251117_133031_checkin.jpg
@@ -243,4 +249,5 @@ wwwroot\uploads\attendance\9_20251124_014027_checkin.jpg
 wwwroot\uploads\avatars\11_20251124124412.png
 wwwroot\uploads\avatars\2_20251127135614.png
 wwwroot\uploads\avatars\3_20251130153135.png
+wwwroot\uploads\avatars\3_20251130204647.png
 wwwroot\uploads\avatars\9_20251124141835.png

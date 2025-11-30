@@ -698,7 +698,6 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\1laweh9izx-m0a7q
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\bl54lh6tiu-dh6t4o768x.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\zrmewc5g2y-bnmwhpcy07.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\ftih95wpd5-x8xanwgyl4.gz
-E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\decznbjriz-ltkcnwcgra.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\7vw9o18mkw-ou09s9idjt.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\s2fe39zqm5-dukyqpg6zs.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\rqw5t5dsxs-h8bvkwjgwc.gz
@@ -712,7 +711,6 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\eqi6vk13ih-t2zf1
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\8ton2c62gx-l8f5qyqpld.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\epboweyl2u-gjfbrpqbxm.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\8xeyt8gnb6-vj05kwz942.gz
-E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\l8sgagmh8j-qh24l88lrr.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\xb0uwao5cp-b9sayid5wm.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\igz64hli4r-skc1aoirrn.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\tq5amn2i0m-3n81swhw94.gz
@@ -807,3 +805,6 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\refint\TMD.dll
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\TMD.pdb
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\TMD.genruntimeconfig.cache
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\ref\TMD.dll
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\decznbjriz-2uucuqg7h4.gz
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\4i6yhbnbfo-7e8yapsbrr.gz
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\l8sgagmh8j-asvtjdiu91.gz

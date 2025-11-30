@@ -4,30 +4,29 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/css/setting.css" rel="stylesheet" />
+
 <div class="settings-page">
     <div class="container-fluid px-4">
-        <!-- Page Header -->
         <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <h2 class="mb-2">
-                        <i class="fas fa-cog text-primary"></i> 
+                        <i class="fas fa-cog text-white"></i>
                         Quản Lý Cấu Hình Hệ Thống
                     </h2>
-                    <p class="text-muted mb-0">
+                    <p class="text-white-50 mb-0">
                         Tùy chỉnh cấu hình lương, chấm công và các thiết lập khác
                     </p>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                    <button class="btn btn-custom btn-save-all" id="btnSaveAll">
-                        <i class="fas fa-save"></i> Lưu Tất Cả
+                    <button class="btn btn-custom btn-save-all disabled" id="btnSaveAll" disabled>
+                        <i class="fas fa-save"></i> Lưu Thay Đổi
                         <span class="badge bg-white text-success ms-2" id="modifiedCount">0</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon" style="color: var(--primary);">
@@ -62,13 +61,11 @@
             </div>
         </div>
 
-        <!-- Save Indicator -->
-        <div class="save-indicator" id="saveIndicator">
+        <div class="save-indicator" id="saveIndicator" style="display: none;">
             <i class="fas fa-exclamation-triangle"></i>
             <strong>Bạn có thay đổi chưa lưu!</strong>
         </div>
 
-        <!-- Tabs Container -->
         <div class="tabs-container">
             <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
                 <li class="nav-item">
@@ -92,7 +89,6 @@
             </ul>
 
             <div class="tab-content tab-content-custom">
-                <!-- SALARY TAB -->
                 <div class="tab-pane fade show active" id="salary-tab">
                     <div class="settings-toolbar">
                         <div>
@@ -105,8 +101,8 @@
                             </button>
                         </div>
                         <div>
-                            <input type="text" class="form-control-custom" id="searchSalary" 
-                                   placeholder="🔍 Tìm kiếm cấu hình..." 
+                            <input type="text" class="form-control-custom" id="searchSalary"
+                                   placeholder="🔍 Tìm kiếm cấu hình..."
                                    style="width: 300px;">
                         </div>
                     </div>
@@ -126,8 +122,7 @@
                         {
                             @foreach (var setting in Model.Where(s => s.Category == "Salary").OrderBy(s => s.SettingKey))
                             {
-                                <div class="setting-card @(setting.IsEnabled ? "" : "disabled")" 
-                                     id="setting-card-@setting.SettingId"
+                                <div class="setting-card @(setting.IsEnabled ? "" : "disabled")"
                                      data-key="@setting.SettingKey">
                                     <div class="setting-header">
                                         <div>
@@ -175,27 +170,14 @@
                                     </div>
 
                                     <div class="input-group-custom">
-                                        @if (setting.DataType == "Number" || setting.DataType == "Decimal")
-                                        {
-                                            <input type="number" class="input-custom setting-input"
-                                                   data-key="@setting.SettingKey"
-                                                   data-id="@setting.SettingId"
-                                                   data-original="@setting.SettingValue"
-                                                   value="@setting.SettingValue"
-                                                   step="@(setting.DataType == "Decimal" ? "0.01" : "1")"
-                                                   @(setting.IsEnabled ? "" : "disabled")
-                                                   placeholder="Nhập giá trị..." />
-                                        }
-                                        else
-                                        {
-                                            <input type="text" class="input-custom setting-input"
-                                                   data-key="@setting.SettingKey"
-                                                   data-id="@setting.SettingId"
-                                                   data-original="@setting.SettingValue"
-                                                   value="@setting.SettingValue"
-                                                   @(setting.IsEnabled ? "" : "disabled")
-                                                   placeholder="Nhập giá trị..." />
-                                        }
+                                        <input type="@(setting.DataType == "Number" || setting.DataType == "Decimal" ? "number" : "text")"
+                                               class="input-custom setting-input"
+                                               data-key="@setting.SettingKey"
+                                               data-id="@setting.SettingId"
+                                               value="@setting.SettingValue"
+                                               step="@(setting.DataType == "Decimal" ? "0.01" : "1")"
+                                        @(setting.IsEnabled ? "" : "disabled")
+                                               placeholder="Nhập giá trị..." />
                                     </div>
 
                                     <div class="btn-group-actions">
@@ -204,11 +186,11 @@
                                             <i class="fas @(setting.IsEnabled ? "fa-toggle-on" : "fa-toggle-off")"></i>
                                             @(setting.IsEnabled ? "Đang Bật" : "Đang Tắt")
                                         </button>
-                                        <button class="btn-custom btn-edit" 
+                                        <button class="btn-custom btn-edit"
                                                 onclick='openEditModal(@setting.SettingId, "@setting.SettingKey", "@setting.SettingValue", "@setting.Description", "@setting.DataType", "@setting.Category", "@setting.ApplyMethod")'>
                                             <i class="fas fa-edit"></i> Sửa
                                         </button>
-                                        <button class="btn-custom btn-delete" 
+                                        <button class="btn-custom btn-delete"
                                                 onclick="moveToTrash(@setting.SettingId)">
                                             <i class="fas fa-trash"></i> Xóa
                                         </button>
@@ -219,7 +201,6 @@
                     </div>
                 </div>
 
-                <!-- ATTENDANCE TAB -->
                 <div class="tab-pane fade" id="attendance-tab">
                     <div class="settings-toolbar">
                         <div>
@@ -228,8 +209,8 @@
                             </button>
                         </div>
                         <div>
-                            <input type="text" class="form-control-custom" id="searchAttendance" 
-                                   placeholder="🔍 Tìm kiếm cấu hình..." 
+                            <input type="text" class="form-control-custom" id="searchAttendance"
+                                   placeholder="🔍 Tìm kiếm cấu hình..."
                                    style="width: 300px;">
                         </div>
                     </div>
@@ -249,8 +230,7 @@
                         {
                             @foreach (var setting in Model.Where(s => s.Category == "Attendance").OrderBy(s => s.SettingKey))
                             {
-                                <div class="setting-card @(setting.IsEnabled ? "" : "disabled")" 
-                                     id="setting-card-@setting.SettingId"
+                                <div class="setting-card @(setting.IsEnabled ? "" : "disabled")"
                                      data-key="@setting.SettingKey">
                                     <div class="setting-header">
                                         <div>
@@ -283,35 +263,22 @@
                                     </div>
 
                                     <div class="input-group-custom">
-                                        @if (setting.DataType == "Number" || setting.DataType == "Decimal")
-                                        {
-                                            <input type="number" class="input-custom setting-input"
-                                                   data-key="@setting.SettingKey"
-                                                   data-id="@setting.SettingId"
-                                                   data-original="@setting.SettingValue"
-                                                   value="@setting.SettingValue"
-                                                   step="@(setting.DataType == "Decimal" ? "0.01" : "1")"
-                                                   @(setting.IsEnabled ? "" : "disabled")
-                                                   placeholder="Nhập giá trị..." />
-                                        }
-                                        else if (setting.SettingKey.Contains("TIME"))
+                                        @if (setting.SettingKey.Contains("TIME"))
                                         {
                                             <input type="time" class="input-custom setting-input"
                                                    data-key="@setting.SettingKey"
                                                    data-id="@setting.SettingId"
-                                                   data-original="@setting.SettingValue"
                                                    value="@setting.SettingValue"
-                                                   @(setting.IsEnabled ? "" : "disabled")
-                                                   placeholder="Nhập giá trị..." />
+                                            @(setting.IsEnabled ? "" : "disabled") />
                                         }
                                         else
                                         {
-                                            <input type="text" class="input-custom setting-input"
+                                            <input type="@(setting.DataType == "Number" ? "number" : "text")"
+                                                   class="input-custom setting-input"
                                                    data-key="@setting.SettingKey"
                                                    data-id="@setting.SettingId"
-                                                   data-original="@setting.SettingValue"
                                                    value="@setting.SettingValue"
-                                                   @(setting.IsEnabled ? "" : "disabled")
+                                            @(setting.IsEnabled ? "" : "disabled")
                                                    placeholder="Nhập giá trị..." />
                                         }
                                     </div>
@@ -322,11 +289,11 @@
                                             <i class="fas @(setting.IsEnabled ? "fa-toggle-on" : "fa-toggle-off")"></i>
                                             @(setting.IsEnabled ? "Đang Bật" : "Đang Tắt")
                                         </button>
-                                        <button class="btn-custom btn-edit" 
+                                        <button class="btn-custom btn-edit"
                                                 onclick='openEditModal(@setting.SettingId, "@setting.SettingKey", "@setting.SettingValue", "@setting.Description", "@setting.DataType", "@setting.Category", "")'>
                                             <i class="fas fa-edit"></i> Sửa
                                         </button>
-                                        <button class="btn-custom btn-delete" 
+                                        <button class="btn-custom btn-delete"
                                                 onclick="moveToTrash(@setting.SettingId)">
                                             <i class="fas fa-trash"></i> Xóa
                                         </button>
@@ -337,7 +304,6 @@
                     </div>
                 </div>
 
-                <!-- LAYOUT EDITOR TAB -->
                 <div class="tab-pane fade" id="layout-tab">
                     <div class="settings-toolbar">
                         <div>
@@ -405,7 +371,6 @@
     }
 }
 
-<!-- CREATE MODAL -->
 <div class="modal fade modal-custom" id="createModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -423,7 +388,7 @@
                         <div class="col-md-8">
                             <div class="form-group-custom">
                                 <label class="form-label-custom">
-                                    <i class="fas fa-file-signature"></i> 
+                                    <i class="fas fa-file-signature"></i>
                                     Tên Cấu Hình <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control-custom" id="createDescription"
@@ -466,7 +431,7 @@
                         <div class="col-md-6">
                             <div class="form-group-custom">
                                 <label class="form-label-custom">
-                                    <i class="fas fa-money-bill"></i> 
+                                    <i class="fas fa-money-bill"></i>
                                     Giá Trị <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control-custom" id="createValue"
@@ -492,7 +457,7 @@
                         <label class="form-label-custom">
                             <i class="fas fa-cogs"></i> Cách Áp Dụng (Cho Lương)
                         </label>
-                        
+
                         <div class="apply-method-selector">
                             <label class="method-option">
                                 <input type="radio" name="applyMethod" value="FIXED_MONTHLY">
@@ -563,7 +528,6 @@
     </div>
 </div>
 
-<!-- EDIT MODAL -->
 <div class="modal fade modal-custom" id="editModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -576,7 +540,7 @@
             <div class="modal-body">
                 <form id="editForm">
                     <input type="hidden" id="editId">
-                    
+
                     <div class="form-group-custom">
                         <label class="form-label-custom">
                             <i class="fas fa-key"></i> Setting Key <span class="text-danger">*</span>
@@ -653,7 +617,6 @@
     </div>
 </div>
 
-<!-- TRASH MODAL -->
 <div class="modal fade modal-custom" id="trashModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -681,30 +644,30 @@
             </div>
         </div>
     </div>
-    <!-- BACKUP FILES MODAL -->
-    <div class="modal fade modal-custom" id="backupModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header" style="background: var(--info);">
-                    <h5 class="modal-title">
-                        <i class="fas fa-history"></i> Backup Files
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead style="background: #f9fafb;">
-                                <tr>
-                                    <th>File Name</th>
-                                    <th>Size</th>
-                                    <th>Created</th>
-                                    <th width="200">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="backupTableBody"></tbody>
-                        </table>
-                    </div>
+</div>
+
+<div class="modal fade modal-custom" id="backupModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--info);">
+                <h5 class="modal-title">
+                    <i class="fas fa-history"></i> Backup Files
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead style="background: #f9fafb;">
+                            <tr>
+                                <th>File Name</th>
+                                <th>Size</th>
+                                <th>Created</th>
+                                <th width="200">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="backupTableBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -713,737 +676,495 @@
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        let modifiedSettings = new Set();
-        let originalValues = {};
-        let currentLayoutType = '';
+        // ========== GLOBAL VARIABLES ==========
+        let stream = null;
+        let capturedBlob = null;
+        let uploadedFile = null;
+        let latitude = null;
+        let longitude = null;
+        let currentAddress = '';
+        let isGettingLocation = false;
+        let isLocationLocked = false; // Fix lỗi GPS biến mất
 
-        $(document).ready(function() {
-            initializeInputs();
-            loadTrashCount();
-            initializeSearch();
-            initializeApplyMethodToggle();
+        // Lấy giờ chuẩn từ Server (ViewBag)
+        const STANDARD_START_TIME = "@ViewBag.StandardStartTime"; // Ví dụ: "08:00"
+        const STANDARD_END_TIME = "@ViewBag.StandardEndTime";     // Ví dụ: "17:00"
+
+        // ========== TIME UPDATE ==========
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('vi-VN', options);
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('vi-VN');
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ========== PHOTO MODE SWITCH ==========
+        document.querySelectorAll('input[name="photoMode"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'camera') {
+                    document.getElementById('cameraMode').style.display = 'block';
+                    document.getElementById('uploadMode').style.display = 'none';
+                    uploadedFile = null;
+                    initCamera();
+                } else {
+                    document.getElementById('cameraMode').style.display = 'none';
+                    document.getElementById('uploadMode').style.display = 'block';
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                        stream = null;
+                    }
+                }
+                updateButtonsState();
+            });
         });
 
-        // ============================================
-        // 📝 LAYOUT EDITOR - ĐÃ SỬA
-        // ============================================
-        function loadLayout(type) {
-            fetch(`/Settings/GetLayoutContent?layoutType=${type}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        $('#layoutEditor').val(data.content);
-                        currentLayoutType = type;
-
-                        $('#currentLayoutName').html(`
-                            <i class="fas fa-file-code text-success"></i>
-                            ${data.fileName}
-                        `);
-
-                        $('#layoutInfo').html(`
-                            <i class="fas fa-info-circle"></i>
-                            <strong>File:</strong> <span id="fileName">${data.fileName}</span> |
-                            <strong>Sửa lần cuối:</strong> <span id="lastModified">${data.lastModified}</span>
-                        `).show();
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Đã load!',
-                            text: data.fileName,
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                    } else {
-                        Swal.fire('Lỗi', data.message, 'error');
-                    }
-                })
-                .catch(err => {
-                    Swal.fire('Lỗi', 'Không thể load layout: ' + err.message, 'error');
+        // ========== CAMERA INIT & CAPTURE (FIX MOBILE IMAGE) ==========
+        async function initCamera() {
+            try {
+                // Ưu tiên camera trước (user) trên điện thoại
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
                 });
+                document.getElementById('video').srcObject = stream;
+            } catch (err) {
+                console.error('Camera error:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi Camera',
+                    text: 'Không thể truy cập camera. Vui lòng kiểm tra quyền truy cập hoặc chuyển sang chế độ tải ảnh.',
+                    confirmButtonText: 'Chuyển sang tải ảnh'
+                }).then(() => {
+                    document.getElementById('modeUpload').checked = true;
+                    document.getElementById('modeUpload').dispatchEvent(new Event('change'));
+                });
+            }
         }
 
-        function saveLayout() {
-            if (!currentLayoutType) {
-                Swal.fire('Lỗi', 'Vui lòng load layout trước!', 'error');
+        function capturePhoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const capturedImage = document.getElementById('capturedImage');
+
+            // FIX ẢNH ĐIỆN THOẠI: Resize ảnh về kích thước hợp lý (Max width 1024px)
+            // Giúp giảm dung lượng file upload và hiển thị nhanh hơn
+            const MAX_WIDTH = 1024;
+            let width = video.videoWidth;
+            let height = video.videoHeight;
+
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, width, height);
+
+            // Chuyển sang Blob (JPEG quality 0.8)
+            canvas.toBlob(blob => {
+                capturedBlob = blob;
+                capturedImage.src = URL.createObjectURL(blob);
+                capturedImage.style.display = 'block';
+                video.style.display = 'none';
+                document.getElementById('btnCapture').style.display = 'none';
+                document.getElementById('btnRetake').style.display = 'inline-block';
+                updateButtonsState();
+            }, 'image/jpeg', 0.8);
+        }
+
+        function retakePhoto() {
+            document.getElementById('video').style.display = 'block';
+            document.getElementById('capturedImage').style.display = 'none';
+            document.getElementById('btnCapture').style.display = 'inline-block';
+            document.getElementById('btnRetake').style.display = 'none';
+            capturedBlob = null;
+            updateButtonsState();
+        }
+
+        // ========== LOCATION (FIX GPS BIẾN MẤT) ==========
+        async function getLocation(isRetry = false) {
+            // Nếu đã có vị trí và không phải là retry/refresh, không làm gì cả để tránh nhấp nháy
+            if (isLocationLocked && !isRetry) return;
+            if (isGettingLocation) return;
+
+            if (!navigator.geolocation) {
+                showLocationError('Trình duyệt không hỗ trợ GPS');
                 return;
             }
 
-            const content = $('#layoutEditor').val();
+            isGettingLocation = true;
 
-            Swal.fire({
-                title: 'Xác nhận lưu?',
-                html: `Lưu <strong>${currentLayoutType === 'admin' ? '_Layout.cshtml' : '_LayoutStaff.cshtml'}</strong>?<br><small class="text-warning">⚠️ Backup sẽ được tạo tự động</small>`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-save"></i> Lưu',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: 'var(--success)'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Đang lưu...',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
+            // Chỉ hiện loading nếu chưa có vị trí hoặc đang retry
+            document.getElementById('locationInfo').innerHTML = `
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        <div><strong>Đang lấy vị trí GPS...</strong></div>
+                    </div>
+                </div>
+            `;
+
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
                     });
-
-                    fetch('/Settings/SaveLayoutFile', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            LayoutType: currentLayoutType,
-                            Content: content
-                        })
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Đã lưu!',
-                                text: data.message,
-                                timer: 2000
-                            });
-                            loadBackupFiles(); // Refresh backup list
-                        } else {
-                            Swal.fire('Lỗi', data.message, 'error');
-                        }
-                    })
-                    .catch(err => Swal.fire('Lỗi', 'Không thể lưu layout!', 'error'));
-                }
-            });
-        }
-
-        function openBackupModal() {
-            loadBackupFiles();
-            $('#backupModal').modal('show');
-        }
-
-        function loadBackupFiles() {
-            fetch('/Settings/GetBackupFiles')
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    const tbody = $('#backupTableBody');
-                    tbody.empty();
-
-                    if (!data.backups || data.backups.length === 0) {
-                        tbody.append(`
-                            <tr>
-                                <td colspan="4" class="text-center py-5">
-                                    <div class="empty-state">
-                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                        <p class="text-muted">Chưa có backup nào</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        `);
-                    } else {
-                        data.backups.forEach(item => {
-                            tbody.append(`
-                                <tr>
-                                    <td><code>${item.fileName}</code></td>
-                                    <td>${formatFileSize(item.size)}</td>
-                                    <td>${item.created}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-custom btn-edit"
-                                                onclick="restoreBackup('${item.fileName}')"
-                                                style="padding: 6px 12px;">
-                                            <i class="fas fa-undo"></i> Restore
-                                        </button>
-                                        <button class="btn btn-sm btn-custom btn-delete"
-                                                onclick="deleteBackup('${item.fileName}')"
-                                                style="padding: 6px 12px;">
-                                            <i class="fas fa-trash"></i> Xóa
-                                        </button>
-                                    </td>
-                                </tr>
-                            `);
-                        });
-                    }
-                }
-            })
-            .catch(err => console.error('Lỗi load backup:', err));
-        }
-
-        function formatFileSize(bytes) {
-            if (!bytes || bytes === 0) return '0 KB';
-            return (bytes / 1024).toFixed(2) + ' KB';
-        }
-
-        function restoreBackup(fileName) {
-            Swal.fire({
-                title: 'Khôi phục backup?',
-                html: `File: <code>${fileName}</code>`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Khôi phục',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (!result.isConfirmed) return;
-
-                Swal.fire({
-                    title: 'Đang khôi phục...',
-                    allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
                 });
 
-                fetch('/Settings/RestoreFromBackup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ BackupFileName: fileName })
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Đã khôi phục!',
-                            timer: 1500
-                        }).then(() => {
-                            if (currentLayoutType) {
-                                loadLayout(currentLayoutType);
-                            }
-                            loadBackupFiles();
-                        });
-                    } else {
-                        Swal.fire('Lỗi', data.message, 'error');
-                    }
-                })
-                .catch(err => Swal.fire('Lỗi', 'Không thể khôi phục!', 'error'));
-            });
-        }
+                latitude = position.coords.latitude;
+                longitude = position.coords.longitude;
+                const accuracy = position.coords.accuracy;
 
-        function deleteBackup(fileName) {
-            Swal.fire({
-                title: 'Xóa backup?',
-                html: `File: <code>${fileName}</code>`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: '#dc3545'
-            }).then((result) => {
-                if (!result.isConfirmed) return;
+                // Gọi API lấy địa chỉ
+                await getAddressFromServer(latitude, longitude, accuracy);
 
-                fetch('/Settings/DeleteBackup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ BackupFileName: fileName })
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Đã xóa!',
-                            timer: 1500
-                        }).then(() => loadBackupFiles());
-                    } else {
-                        Swal.fire('Lỗi', data.message, 'error');
-                    }
-                })
-                .catch(err => Swal.fire('Lỗi', 'Không thể xóa!', 'error'));
-            });
-        }
+                isGettingLocation = false;
+                isLocationLocked = true; // Khóa vị trí để không bị loading lại
 
-        // ============================================
-        // CÁC FUNCTION CŨ CỦA BẠN (GIỮ NGUYÊN)
-        // ============================================
-        function initializeInputs() {
-            $('[data-key]').each(function() {
-                const key = $(this).data('key');
-                originalValues[key] = $(this).val();
-            });
+            } catch (error) {
+                console.error('Location error:', error);
+                isGettingLocation = false;
+                isLocationLocked = false;
 
-            $('[data-key]').on('change input', function() {
-                const key = $(this).data('key');
-                const newValue = $(this).val();
+                let msg = 'Không thể lấy vị trí.';
+                if (error.code === 1) msg = 'Vui lòng cho phép truy cập vị trí.';
+                else if (error.code === 2) msg = 'Vị trí không khả dụng. Kiểm tra GPS.';
+                else if (error.code === 3) msg = 'Hết thời gian chờ lấy vị trí.';
 
-                if (newValue !== originalValues[key]) {
-                    modifiedSettings.add(key);
-                    $(this).addClass('modified');
-                    $(this).closest('.setting-card').addClass('modified');
-                } else {
-                    modifiedSettings.delete(key);
-                    $(this).removeClass('modified');
-                    if (modifiedSettings.size === 0) {
-                        $(this).closest('.setting-card').removeClass('modified');
-                    }
-                }
-                updateModifiedCount();
-            });
-        }
-
-        function initializeSearch() {
-            $('#searchSalary').on('input', function() {
-                const query = $(this).val().toLowerCase();
-                filterSettings('#salarySettingsList', query);
-            });
-
-            $('#searchAttendance').on('input', function() {
-                const query = $(this).val().toLowerCase();
-                filterSettings('#attendanceSettingsList', query);
-            });
-        }
-
-        function filterSettings(container, query) {
-            $(container + ' .setting-card').each(function() {
-                const key = $(this).data('key').toLowerCase();
-                const text = $(this).text().toLowerCase();
-
-                if (key.includes(query) || text.includes(query)) {
-                    $(this).fadeIn();
-                } else {
-                    $(this).fadeOut();
-                }
-            });
-        }
-
-        function initializeApplyMethodToggle() {
-            $('input[name="applyMethod"]').on('change', function() {
-                $('.method-option').removeClass('selected');
-                $(this).closest('.method-option').addClass('selected');
-
-                if ($(this).val() === 'CONDITIONAL') {
-                    $('#conditionalDescGroup').slideDown();
-                } else {
-                    $('#conditionalDescGroup').slideUp();
-                }
-            });
-
-            $('#createCategory').on('change', function() {
-                if ($(this).val() === 'Salary') {
-                    $('#applyMethodGroup').slideDown();
-                } else {
-                    $('#applyMethodGroup').slideUp();
-                    $('input[name="applyMethod"]').prop('checked', false);
-                    $('.method-option').removeClass('selected');
-                }
-            });
-        }
-
-        function updateModifiedCount() {
-            const count = modifiedSettings.size;
-            $('#modifiedCount').text(count);
-
-            if (count > 0) {
-                $('#saveIndicator').fadeIn();
-                $('#btnSaveAll').removeClass('btn-save-all').addClass('btn-custom').css({
-                    'background': 'var(--warning)',
-                    'animation': 'pulse 2s infinite'
-                });
-            } else {
-                $('#saveIndicator').fadeOut();
-                $('#btnSaveAll').removeClass('btn-custom').addClass('btn-save-all').css({
-                    'background': 'var(--success)',
-                    'animation': 'none'
-                });
+                showLocationError(msg, true);
             }
         }
 
-        $('#btnSaveAll').click(function() {
-            if (modifiedSettings.size === 0) {
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Không có thay đổi',
-                    text: 'Bạn chưa thay đổi cấu hình nào!',
-                    timer: 1500
-                });
+        function showLocationError(msg, showRetry = false) {
+            document.getElementById('locationInfo').innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> ${msg}
+                    ${showRetry ? `<button class="btn btn-sm btn-outline-warning w-100 mt-2" onclick="getLocation(true)">Thử lại</button>` : ''}
+                </div>
+            `;
+        }
+
+        async function getAddressFromServer(lat, lng, accuracy) {
+            try {
+                const response = await fetch(`/Staff/GetAddressFromCoordinatesApi?latitude=${lat}&longitude=${lng}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    currentAddress = (data.success && data.address) ? data.address : `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                } else {
+                    currentAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                }
+            } catch (err) {
+                currentAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            }
+            displayLocationSuccess(accuracy);
+        }
+
+        function displayLocationSuccess(accuracy) {
+            // Fix: Hiển thị ổn định
+            document.getElementById('locationInfo').innerHTML = `
+                <div class="alert alert-success">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong><i class="fas fa-check-circle"></i> Đã lấy vị trí</strong>
+                            <p class="mb-0 mt-1 small"><i class="fas fa-map-marker-alt text-danger"></i> ${currentAddress}</p>
+                            <small class="text-muted">Độ chính xác: ±${Math.round(accuracy)}m</small>
+                        </div>
+                        <button class="btn btn-sm btn-light text-primary" onclick="getLocation(true)" title="Làm mới vị trí">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            updateButtonsState();
+        }
+
+        // ========== FILE UPLOAD ==========
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedFile = file;
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                    document.getElementById('uploadedImage').src = e.target.result;
+                    document.getElementById('uploadedImage').style.display = 'block';
+                    document.getElementById('btnClearUpload').style.display = 'inline-block';
+                    updateButtonsState();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('uploadPlaceholder').addEventListener('click', () => document.getElementById('fileInput').click());
+
+        function clearUploadedImage() {
+            uploadedFile = null;
+            document.getElementById('uploadedImage').style.display = 'none';
+            document.getElementById('uploadPlaceholder').style.display = 'flex';
+            document.getElementById('btnClearUpload').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            updateButtonsState();
+        }
+
+        function updateButtonsState() {
+            const hasPhoto = capturedBlob !== null || uploadedFile !== null;
+            const hasLocation = latitude !== null && longitude !== null;
+
+            const btnCheckIn = document.getElementById('btnCheckIn');
+            const btnCheckOut = document.getElementById('btnCheckOut');
+
+            if (btnCheckIn) btnCheckIn.disabled = !(hasPhoto && hasLocation);
+            if (btnCheckOut) btnCheckOut.disabled = !(hasPhoto && hasLocation);
+        }
+
+        // ========== CHECK IN/OUT POPUP LOGIC ==========
+
+        function getCurrentTimeStr() {
+            const now = new Date();
+            return now.toTimeString().split(' ')[0].substring(0, 5); // HH:mm
+        }
+
+        async function checkIn() {
+            const photoFile = capturedBlob || uploadedFile;
+            if (!photoFile || !latitude || !longitude) {
+                Swal.fire('Thiếu thông tin', 'Vui lòng chụp ảnh và đợi lấy vị trí GPS', 'warning');
                 return;
             }
 
-            const settings = [];
-            modifiedSettings.forEach(key => {
-                const element = $(`[data-key="${key}"]`);
-                settings.push({
-                    SettingKey: key,
-                    SettingValue: element.val()
-                });
-            });
+            // Tính toán trạng thái hiển thị trên popup
+            const nowStr = getCurrentTimeStr(); // HH:mm hiện tại
+            let statusHtml = '';
+            if (nowStr > STANDARD_START_TIME) {
+                statusHtml = `<span class="badge bg-danger fs-6">Đi trễ</span> <small class="text-muted">(Chuẩn: ${STANDARD_START_TIME})</small>`;
+            } else {
+                statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
+            }
 
-            Swal.fire({
-                title: 'Xác nhận lưu',
-                html: `Lưu <strong>${settings.length}</strong> cấu hình đã thay đổi?`,
+            // POPUP XÁC NHẬN CHECK-IN
+            const result = await Swal.fire({
+                title: 'Xác nhận Check-in',
+                html: `
+                    <div class="text-start p-3 bg-light rounded">
+                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Thời gian:</strong> ${nowStr}</p>
+                        <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
+                        <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
+                             style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                `,
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-save"></i> Lưu',
+                confirmButtonText: '<i class="fas fa-check"></i> Xác nhận Check-in',
                 cancelButtonText: 'Hủy',
-                confirmButtonColor: 'var(--success)'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    saveSettings(settings);
-                }
-            });
-        });
-
-        function saveSettings(settings) {
-            Swal.fire({
-                title: 'Đang lưu...',
-                html: 'Vui lòng đợi trong giây lát',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading()
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true
             });
 
-            fetch('/Settings/BatchUpdateSettings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(settings)
-            })
-            .then(r => r.json())
-            .then(data => {
+            if (!result.isConfirmed) return;
+
+            // Gửi dữ liệu
+            const formData = new FormData();
+            formData.append('Photo', photoFile, 'checkin.jpg');
+            formData.append('Latitude', latitude);
+            formData.append('Longitude', longitude);
+            formData.append('Address', currentAddress);
+            formData.append('Notes', document.getElementById('attendanceNotes').value);
+
+            Swal.fire({ title: 'Đang Check-in...', text: 'Vui lòng đợi giây lát', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                const response = await fetch('/Staff/CheckIn', { method: 'POST', body: formData });
+                const data = await response.json();
                 if (data.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Thành công!',
-                        text: data.message,
-                        timer: 1500
+                        title: 'Check-in thành công!',
+                        html: data.message.replace(/\n/g, '<br>'),
+                        confirmButtonText: 'Tuyệt vời'
                     }).then(() => location.reload());
                 } else {
                     Swal.fire('Lỗi', data.message, 'error');
                 }
-            })
-            .catch(() => Swal.fire('Lỗi', 'Không thể kết nối server!', 'error'));
+            } catch (err) {
+                Swal.fire('Lỗi kết nối', err.message, 'error');
+            }
         }
 
-        function autoGenerateKey() {
-            const description = $('#createDescription').val();
-            if (!description) {
-                $('#keyStatus').html('');
+        async function checkOut() {
+            const photoFile = capturedBlob || uploadedFile;
+            if (!photoFile || !latitude || !longitude) {
+                Swal.fire('Thiếu thông tin', 'Vui lòng chụp ảnh và đợi lấy vị trí GPS', 'warning');
                 return;
             }
 
-            const category = $('#createCategory').val();
-            const applyMethod = $('input[name="applyMethod"]:checked').val();
-
-            fetch('/Settings/GenerateKey', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    description: description,
-                    applyMethod: applyMethod
-                })
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    $('#createKey').val(data.key);
-                    if (data.exists) {
-                        $('#keyStatus').html('<i class="fas fa-exclamation-triangle text-warning"></i> Key này đã tồn tại!');
-                    } else {
-                        $('#keyStatus').html('<i class="fas fa-check-circle text-success"></i> Key sẵn sàng');
-                    }
-                }
-            });
-        }
-
-        function openCreateModal(category = 'Salary') {
-            $('#createForm')[0].reset();
-            $('#createCategoryHidden').val(category);
-            $('#createCategory').val(category);
-            $('#keyStatus').html('');
-            $('.method-option').removeClass('selected');
-            $('input[name="applyMethod"]').prop('checked', false);
-            $('#conditionalDescGroup').hide();
-
-            if (category === 'Salary') {
-                $('#applyMethodGroup').show();
+            // Tính toán trạng thái hiển thị trên popup
+            const nowStr = getCurrentTimeStr();
+            let statusHtml = '';
+            if (nowStr < STANDARD_END_TIME) {
+                statusHtml = `<span class="badge bg-warning text-dark fs-6">Về sớm</span> <small class="text-muted">(Chuẩn: ${STANDARD_END_TIME})</small>`;
             } else {
-                $('#applyMethodGroup').hide();
+                statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
             }
 
-            $('#createModal').modal('show');
-        }
+            // POPUP XÁC NHẬN CHECK-OUT
+            const result = await Swal.fire({
+                title: 'Xác nhận Check-out',
+                html: `
+                    <div class="text-start p-3 bg-light rounded">
+                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Thời gian:</strong> ${nowStr}</p>
+                        <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
+                        <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
+                             style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-sign-out-alt"></i> Xác nhận Check-out',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true
+            });
 
-        function createSetting() {
-            const key = $('#createKey').val();
-            const value = $('#createValue').val();
-            const description = $('#createDescription').val();
-            const dataType = $('#createDataType').val();
-            const category = $('#createCategory').val();
-            const applyMethod = $('input[name="applyMethod"]:checked').val() || null;
+            if (!result.isConfirmed) return;
 
-            if (!key || !value || !description) {
-                Swal.fire('Lỗi', 'Vui lòng điền đầy đủ thông tin!', 'error');
-                return;
+            const formData = new FormData();
+            formData.append('Photo', photoFile, 'checkout.jpg');
+            formData.append('Latitude', latitude);
+            formData.append('Longitude', longitude);
+            formData.append('Address', currentAddress);
+            formData.append('Notes', document.getElementById('attendanceNotes').value);
+
+            Swal.fire({ title: 'Đang Check-out...', text: 'Đang tổng hợp công...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                const response = await fetch('/Staff/CheckOut', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Check-out thành công!',
+                        html: data.message.replace(/\n/g, '<br>'),
+                        confirmButtonText: 'Hẹn gặp lại'
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            } catch (err) {
+                Swal.fire('Lỗi kết nối', err.message, 'error');
             }
+        }
 
-            Swal.fire({
-                title: 'Xác nhận tạo?',
-                html: `<strong>${description}</strong><br><code>${key}</code>`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Tạo',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Đang tạo...',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
+        // ========== INIT ==========
+        // Giữ nguyên các hàm checkAttendanceStatus, loadMyTasks, renderTasks...
+        // ... (Copy lại các hàm loadMyTasks, renderTasks, checkAttendanceStatus từ code cũ của bạn vào đây) ...
 
-                    fetch('/Settings/CreateSetting', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            SettingKey: key,
-                            SettingValue: value,
-                            Description: description,
-                            DataType: dataType,
-                            Category: category,
-                            ApplyMethod: applyMethod
-                        })
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Thành công!',
-                                timer: 1500
-                            }).then(() => location.reload());
-                        } else {
-                            Swal.fire('Lỗi', data.message, 'error');
-                        }
-                    });
+        async function checkAttendanceStatus() {
+             try {
+                const response = await fetch('/Staff/GetTodayAttendance');
+                const data = await response.json();
+
+                const statusDiv = document.getElementById('attendanceStatus');
+                const checkInSection = document.getElementById('checkInSection');
+                const checkOutSection = document.getElementById('checkOutSection');
+                const completedSection = document.getElementById('completedSection');
+
+                if (data.hasCheckedIn) {
+                    statusDiv.style.display = 'none';
+                    if (data.hasCheckedOut) {
+                        checkInSection.style.display = 'none';
+                        checkOutSection.style.display = 'none';
+                        completedSection.style.display = 'block';
+                        completedSection.innerHTML = `
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-check-double"></i> Đã hoàn tất!</h5>
+                                <hr>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <small>Check-in</small>
+                                        <br><strong>${data.checkInTime}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <small>Check-out</small>
+                                        <br><strong>${data.checkOutTime}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        checkInSection.style.display = 'none';
+                        checkOutSection.style.display = 'block';
+                        checkInTimeValue = data.checkInTime;
+                        updateWorkingHours();
+                    }
+                } else {
+                    statusDiv.style.display = 'none';
+                    checkInSection.style.display = 'block';
                 }
-            });
+                updateButtonsState();
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
 
-        function toggleSettingStatus(settingId, settingKey) {
-            Swal.fire({
-                title: 'Thay đổi trạng thái?',
-                text: `Thiết lập: ${settingKey}`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Thay đổi',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({
-                        title: 'Đang cập nhật...',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-
-                    fetch('/Settings/ToggleSettingStatus', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ SettingId: settingId })
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: data.message,
-                                timer: 1500
-                            }).then(() => location.reload());
-                        } else {
-                            Swal.fire('Lỗi', data.message, 'error');
-                        }
-                    });
+        function updateWorkingHours() {
+            if (!checkInTimeValue) return;
+            const updateHours = () => {
+                const now = new Date();
+                const checkIn = new Date(`${now.toDateString()} ${checkInTimeValue}`);
+                const diff = now - checkIn;
+                const hours = Math.floor(diff / 3600000);
+                const minutes = Math.floor((diff % 3600000) / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                const el = document.querySelector('.sd-check-info');
+                if (el) {
+                    el.innerHTML = `
+                        <div class="alert alert-info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    <strong>Đã check-in:</strong> <code>${checkInTimeValue}</code>
+                                </div>
+                                <div class="badge bg-primary fs-6">
+                                    <i class="fas fa-clock me-1"></i>
+                                    ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
-            });
-        }
-
-        function openEditModal(id, key, value, desc, dataType, category, applyMethod) {
-            $('#editId').val(id);
-            $('#editKey').val(key);
-            $('#editValue').val(value);
-            $('#editDescription').val(desc);
-            $('#editDataType').val(dataType);
-            $('#editCategory').val(category);
-            $('#editApplyMethod').val(applyMethod || '');
-            $('#editModal').modal('show');
-        }
-
-        function editSetting() {
-            const data = {
-                SettingId: parseInt($('#editId').val()),
-                SettingKey: $('#editKey').val(),
-                SettingValue: $('#editValue').val(),
-                Description: $('#editDescription').val(),
-                DataType: $('#editDataType').val(),
-                Category: $('#editCategory').val(),
-                ApplyMethod: $('#editApplyMethod').val()
             };
-
-            Swal.fire({
-                title: 'Đang cập nhật...',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading()
-            });
-
-            fetch('/Settings/EditSetting', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Đã cập nhật!',
-                        timer: 1500
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire('Lỗi', data.message, 'error');
-                }
-            });
+            updateHours();
+            setInterval(updateHours, 1000);
         }
 
-        function moveToTrash(id) {
-            Swal.fire({
-                title: 'Chuyển vào thùng rác?',
-                text: 'Bạn có thể khôi phục sau!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: 'var(--danger)'
-            }).then((result) => {
-                if (!result.isConfirmed) return;
+        // Tải công việc và init
+        window.onload = async function() {
+            console.log('🚀 Initializing Staff Dashboard...');
+            await initCamera();
+            await getLocation();
+            await checkAttendanceStatus();
+            // Hàm loadMyTasks bạn giữ nguyên từ code cũ
+            if (typeof loadMyTasks === "function") await loadMyTasks();
+            console.log('✅ Dashboard initialized');
+        };
 
-                fetch('/Settings/MoveToTrash', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${id}`
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Đã xóa!',
-                            timer: 1500
-                        }).then(() => location.reload());
-                    } else {
-                        Swal.fire('Lỗi', data.message, 'error');
-                    }
-                });
-            });
-        }
-
-        function openTrashModal() {
-            fetch('/Settings/GetTrashList')
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    const tbody = $('#trashTableBody');
-                    tbody.empty();
-
-                    if (!data.data || data.data.length === 0) {
-                        tbody.append(`
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <div class="empty-state">
-                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                        <p class="text-muted">Thùng rác trống</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        `);
-                    } else {
-                        data.data.forEach(item => {
-                            tbody.append(`
-                                <tr>
-                                    <td><code>${item.settingKey}</code></td>
-                                    <td>${item.description || '-'}</td>
-                                    <td>${item.settingValue || '-'}</td>
-                                    <td><span class="badge bg-secondary">${item.category}</span></td>
-                                    <td>
-                                        <button class="btn btn-sm btn-custom btn-edit" onclick="restoreSetting(${item.settingId})" style="padding: 6px 12px;">
-                                            <i class="fas fa-undo"></i> Khôi phục
-                                        </button>
-                                        <button class="btn btn-sm btn-custom btn-delete" onclick="permanentDelete(${item.settingId})" style="padding: 6px 12px;">
-                                            <i class="fas fa-times"></i> Xóa vĩnh viễn
-                                        </button>
-                                    </td>
-                                </tr>
-                            `);
-                        });
-                    }
-                    $('#trashModal').modal('show');
-                }
-            });
-        }
-
-        function restoreSetting(id) {
-            Swal.fire({
-                title: 'Khôi phục?',
-                text: 'Cấu hình sẽ được khôi phục!',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Khôi phục',
-                cancelButtonText: 'Hủy'
-            }).then((result) => {
-                if (!result.isConfirmed) return;
-
-                fetch('/Settings/RestoreSetting', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${id}`
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Đã khôi phục!',
-                            timer: 1500
-                        }).then(() => location.reload());
-                    } else {
-                        Swal.fire('Lỗi', data.message, 'error');
-                    }
-                });
-            });
-        }
-
-        function permanentDelete(id) {
-            Swal.fire({
-                title: 'XÓA VĨNH VIỄN?',
-                html: '<strong>CẢNH BÁO:</strong> Không thể khôi phục sau khi xóa!',
-                icon: 'error',
-                showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-trash"></i> Xóa vĩnh viễn',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: '#dc3545'
-            }).then((result) => {
-                if (!result.isConfirmed) return;
-
-                fetch('/Settings/PermanentDelete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `id=${id}`
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Đã xóa vĩnh viễn!',
-                            timer: 1500
-                        }).then(() => location.reload());
-                    } else {
-                        Swal.fire('Lỗi', data.message, 'error');
-                    }
-                });
-            });
-        }
-
-        function loadTrashCount() {
-            fetch('/Settings/GetTrashList')
-            .then(r => r.json())
-            .then(data => {
-                if (data.success && data.data) {
-                    const count = data.data.length;
-                    $('#trashCount').text(count);
-                }
-            })
-            .catch(() => console.log('Error loading trash count'));
-        }
+        window.onbeforeunload = function() {
+            if (stream) stream.getTracks().forEach(track => track.stop());
+        };
     </script>
 }

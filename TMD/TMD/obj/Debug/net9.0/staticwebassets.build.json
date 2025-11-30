@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2bo+MBLSN8eHzBavciJlD2UslClQ//kiW+BkYWvb4X0=",
+  "Hash": "hWs9iQvsm8DKSrEhZzdxxmpQjBid3NZz/fv+yTzXwG4=",
   "Source": "TMD",
   "BasePath": "_content/TMD",
   "Mode": "Default",
@@ -288,6 +288,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\4i6yhbnbfo-7e8yapsbrr.gz",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "js/notification-hub#[.{fingerprint=7e8yapsbrr}]?.js.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "j3kg8xrmk1",
+      "Integrity": "vyXAvCVl1u5XAbJMnr4n18HjQytYBVZhfsOpjAwbqHc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js"
     },
     {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\4x7hmfq32c-ttgo8qnofa.gz",
@@ -794,12 +815,12 @@
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\lib\\jquery-validation-unobtrusive\\dist\\jquery.validate.unobtrusive.js"
     },
     {
-      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-ltkcnwcgra.gz",
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-2uucuqg7h4.gz",
       "SourceId": "TMD",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/TMD",
-      "RelativePath": "css/layout#[.{fingerprint=ltkcnwcgra}]?.css.gz",
+      "RelativePath": "css/layout#[.{fingerprint=2uucuqg7h4}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -808,8 +829,8 @@
       "RelatedAsset": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\layout.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "1bm0a3746b",
-      "Integrity": "E+la25RHpKTC8y7UA9WGontOuDPqViG0CShYFR3Cbng=",
+      "Fingerprint": "jukoum7e94",
+      "Integrity": "dZr5xRWdeiTzaxemSX9fsokoUyBOggj3WubWGXeebpw=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\layout.css"
@@ -1466,12 +1487,12 @@
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js"
     },
     {
-      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-qh24l88lrr.gz",
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-asvtjdiu91.gz",
       "SourceId": "TMD",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/TMD",
-      "RelativePath": "css/setting#[.{fingerprint=qh24l88lrr}]?.css.gz",
+      "RelativePath": "css/setting#[.{fingerprint=asvtjdiu91}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -1480,8 +1501,8 @@
       "RelatedAsset": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\setting.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "0m66159g0v",
-      "Integrity": "CDQFx/dJtWefmEAY9KvRz3yZhsvokRYmo5Luzu3nId0=",
+      "Fingerprint": "orvudogpnf",
+      "Integrity": "VMkKhz09315walxlitOia4gyOzfNyLSZr8kwcai07vY=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\setting.css"
@@ -2530,8 +2551,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "ltkcnwcgra",
-      "Integrity": "l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU=",
+      "Fingerprint": "2uucuqg7h4",
+      "Integrity": "5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\layout.css"
@@ -2824,8 +2845,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "qh24l88lrr",
-      "Integrity": "YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0=",
+      "Fingerprint": "asvtjdiu91",
+      "Integrity": "Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\setting.css"
@@ -3102,6 +3123,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\attendance-history.js"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "js/notification-hub#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "7e8yapsbrr",
+      "Integrity": "/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\notification-hub.js"
     },
     {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\resetpass.js",
@@ -4784,6 +4826,27 @@
       "OriginalItemSpec": "wwwroot\\uploads\\attendance\\3_20251130_013119_checkin.jpg"
     },
     {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251201_022235_checkin.jpg",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "uploads/attendance/3_20251201_022235_checkin#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "tc2gaylfcn",
+      "Integrity": "7ZEfPjtHzxkpIprfJoRBFSAHAn656eyD567NwDjn8T8=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\attendance\\3_20251201_022235_checkin.jpg"
+    },
+    {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251129_134923_checkin.jpg",
       "SourceId": "TMD",
       "SourceType": "Discovered",
@@ -4803,6 +4866,69 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\attendance\\6_20251129_134923_checkin.jpg"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251130_205543_checkout.jpg",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "uploads/attendance/6_20251130_205543_checkout#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "q0ubuhs902",
+      "Integrity": "ui6Mk6Nz0IhwUJFridmxfhc47tdoAghaA2U4ODQHoyY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\attendance\\6_20251130_205543_checkout.jpg"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251201_022842_checkin.jpg",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "uploads/attendance/6_20251201_022842_checkin#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ja0vh90txs",
+      "Integrity": "O8hX2NwwYqYRW8OnwB1PabATm2fM2Inx5PoltZrur7s=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\attendance\\6_20251201_022842_checkin.jpg"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\7_20251201_023123_checkin.jpg",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "uploads/attendance/7_20251201_023123_checkin#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "oo0trzqdbq",
+      "Integrity": "uO8gHUGAvAUM7YvU55YhN2B3TaZNyvwgAUzqtiLZuQ0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\attendance\\7_20251201_023123_checkin.jpg"
     },
     {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\9_20251116_015000_checkin.jpg",
@@ -5244,6 +5370,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\avatars\\3_20251130153135.png"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\avatars\\3_20251130204647.png",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "uploads/avatars/3_20251130204647#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "1xjae834yo",
+      "Integrity": "VaELHp3iT0hoyfxYR1RUAWpPIMhg2K7/xmIVnbC/aQk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\avatars\\3_20251130204647.png"
     },
     {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\avatars\\9_20251124141835.png",
@@ -8845,13 +8992,13 @@
       ]
     },
     {
-      "Route": "css/layout.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-ltkcnwcgra.gz",
+      "Route": "css/layout.2uucuqg7h4.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-2uucuqg7h4.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000271739130"
+          "Quality": "0.000267665953"
         }
       ],
       "ResponseHeaders": [
@@ -8861,19 +9008,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "3679"
+          "Value": "3735"
         },
         {
           "Name": "ETag",
-          "Value": "\"E+la25RHpKTC8y7UA9WGontOuDPqViG0CShYFR3Cbng=\""
+          "Value": "\"dZr5xRWdeiTzaxemSX9fsokoUyBOggj3WubWGXeebpw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 08:30:32 GMT"
+          "Value": "Sun, 30 Nov 2025 13:07:28 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -8889,18 +9036,26 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU=\""
+          "Value": "W/\"5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg=\""
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "2uucuqg7h4"
+        },
+        {
+          "Name": "label",
+          "Value": "css/layout.css"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU="
+          "Value": "sha256-5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg="
         }
       ]
     },
     {
-      "Route": "css/layout.css",
+      "Route": "css/layout.2uucuqg7h4.css",
       "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\layout.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -8910,7 +9065,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "18982"
+          "Value": "19224"
         },
         {
           "Name": "Content-Type",
@@ -8918,121 +9073,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU=\""
+          "Value": "\"5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 08:30:32 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU="
-        }
-      ]
-    },
-    {
-      "Route": "css/layout.css.gz",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-ltkcnwcgra.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3679"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"E+la25RHpKTC8y7UA9WGontOuDPqViG0CShYFR3Cbng=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 08:30:32 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-E+la25RHpKTC8y7UA9WGontOuDPqViG0CShYFR3Cbng="
-        }
-      ]
-    },
-    {
-      "Route": "css/layout.ltkcnwcgra.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-ltkcnwcgra.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000271739130"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3679"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"E+la25RHpKTC8y7UA9WGontOuDPqViG0CShYFR3Cbng=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 08:30:32 GMT"
+          "Value": "Sun, 30 Nov 2025 13:07:28 GMT"
         },
         {
           "Name": "Cache-Control",
           "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ltkcnwcgra"
+          "Value": "2uucuqg7h4"
         },
         {
           "Name": "label",
@@ -9040,13 +9095,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU="
+          "Value": "sha256-5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg="
         }
       ]
     },
     {
-      "Route": "css/layout.ltkcnwcgra.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\layout.css",
+      "Route": "css/layout.2uucuqg7h4.css.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-2uucuqg7h4.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -9055,7 +9110,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "18982"
+          "Value": "3735"
         },
         {
           "Name": "Content-Type",
@@ -9063,56 +9118,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU=\""
+          "Value": "\"dZr5xRWdeiTzaxemSX9fsokoUyBOggj3WubWGXeebpw=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 08:30:32 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "ltkcnwcgra"
-        },
-        {
-          "Name": "label",
-          "Value": "css/layout.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-l1Q5Rhv4affghzw7mTEN9Usc4n+PFrFS60lE9oHuxgU="
-        }
-      ]
-    },
-    {
-      "Route": "css/layout.ltkcnwcgra.css.gz",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-ltkcnwcgra.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3679"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"E+la25RHpKTC8y7UA9WGontOuDPqViG0CShYFR3Cbng=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 08:30:32 GMT"
+          "Value": "Sun, 30 Nov 2025 13:07:28 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9130,7 +9140,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ltkcnwcgra"
+          "Value": "2uucuqg7h4"
         },
         {
           "Name": "label",
@@ -9138,7 +9148,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-E+la25RHpKTC8y7UA9WGontOuDPqViG0CShYFR3Cbng="
+          "Value": "sha256-dZr5xRWdeiTzaxemSX9fsokoUyBOggj3WubWGXeebpw="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-2uucuqg7h4.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000267665953"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3735"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dZr5xRWdeiTzaxemSX9fsokoUyBOggj3WubWGXeebpw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 13:07:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\layout.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "19224"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 13:07:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5pILTQYVuObMrVGOI3dH/UjBAQYVLWyiHsfmpUW8NCg="
+        }
+      ]
+    },
+    {
+      "Route": "css/layout.css.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\decznbjriz-2uucuqg7h4.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3735"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dZr5xRWdeiTzaxemSX9fsokoUyBOggj3WubWGXeebpw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 13:07:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-dZr5xRWdeiTzaxemSX9fsokoUyBOggj3WubWGXeebpw="
         }
       ]
     },
@@ -13017,13 +13164,13 @@
       ]
     },
     {
-      "Route": "css/setting.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-qh24l88lrr.gz",
+      "Route": "css/setting.asvtjdiu91.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-asvtjdiu91.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000248077400"
+          "Quality": "0.000295857988"
         }
       ],
       "ResponseHeaders": [
@@ -13033,19 +13180,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4030"
+          "Value": "3379"
         },
         {
           "Name": "ETag",
-          "Value": "\"CDQFx/dJtWefmEAY9KvRz3yZhsvokRYmo5Luzu3nId0=\""
+          "Value": "\"VMkKhz09315walxlitOia4gyOzfNyLSZr8kwcai07vY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 29 Nov 2025 09:45:07 GMT"
+          "Value": "Sun, 30 Nov 2025 19:02:09 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -13061,18 +13208,26 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0=\""
+          "Value": "W/\"Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0=\""
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "asvtjdiu91"
+        },
+        {
+          "Name": "label",
+          "Value": "css/setting.css"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0="
+          "Value": "sha256-Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0="
         }
       ]
     },
     {
-      "Route": "css/setting.css",
+      "Route": "css/setting.asvtjdiu91.css",
       "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\setting.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -13082,7 +13237,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "24772"
+          "Value": "13712"
         },
         {
           "Name": "Content-Type",
@@ -13090,121 +13245,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0=\""
+          "Value": "\"Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 29 Nov 2025 09:45:07 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0="
-        }
-      ]
-    },
-    {
-      "Route": "css/setting.css.gz",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-qh24l88lrr.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4030"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"CDQFx/dJtWefmEAY9KvRz3yZhsvokRYmo5Luzu3nId0=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 29 Nov 2025 09:45:07 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-CDQFx/dJtWefmEAY9KvRz3yZhsvokRYmo5Luzu3nId0="
-        }
-      ]
-    },
-    {
-      "Route": "css/setting.qh24l88lrr.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-qh24l88lrr.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000248077400"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4030"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"CDQFx/dJtWefmEAY9KvRz3yZhsvokRYmo5Luzu3nId0=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 29 Nov 2025 09:45:07 GMT"
+          "Value": "Sun, 30 Nov 2025 19:02:09 GMT"
         },
         {
           "Name": "Cache-Control",
           "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "qh24l88lrr"
+          "Value": "asvtjdiu91"
         },
         {
           "Name": "label",
@@ -13212,13 +13267,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0="
+          "Value": "sha256-Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0="
         }
       ]
     },
     {
-      "Route": "css/setting.qh24l88lrr.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\setting.css",
+      "Route": "css/setting.asvtjdiu91.css.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-asvtjdiu91.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -13227,7 +13282,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "24772"
+          "Value": "3379"
         },
         {
           "Name": "Content-Type",
@@ -13235,56 +13290,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0=\""
+          "Value": "\"VMkKhz09315walxlitOia4gyOzfNyLSZr8kwcai07vY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 29 Nov 2025 09:45:07 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "qh24l88lrr"
-        },
-        {
-          "Name": "label",
-          "Value": "css/setting.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-YgUjC0BRK8SKBTWLX7SnWIwLAaaiYrV8cvyqe3npqE0="
-        }
-      ]
-    },
-    {
-      "Route": "css/setting.qh24l88lrr.css.gz",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-qh24l88lrr.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4030"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"CDQFx/dJtWefmEAY9KvRz3yZhsvokRYmo5Luzu3nId0=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 29 Nov 2025 09:45:07 GMT"
+          "Value": "Sun, 30 Nov 2025 19:02:09 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13302,7 +13312,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "qh24l88lrr"
+          "Value": "asvtjdiu91"
         },
         {
           "Name": "label",
@@ -13310,7 +13320,144 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-CDQFx/dJtWefmEAY9KvRz3yZhsvokRYmo5Luzu3nId0="
+          "Value": "sha256-VMkKhz09315walxlitOia4gyOzfNyLSZr8kwcai07vY="
+        }
+      ]
+    },
+    {
+      "Route": "css/setting.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-asvtjdiu91.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000295857988"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3379"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VMkKhz09315walxlitOia4gyOzfNyLSZr8kwcai07vY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:02:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0="
+        }
+      ]
+    },
+    {
+      "Route": "css/setting.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\setting.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "13712"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:02:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ki3e5AklJ6A1Ao/XbVPpgio9OdGj9uHDiKWjpYeL9J0="
+        }
+      ]
+    },
+    {
+      "Route": "css/setting.css.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\l8sgagmh8j-asvtjdiu91.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3379"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VMkKhz09315walxlitOia4gyOzfNyLSZr8kwcai07vY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:02:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VMkKhz09315walxlitOia4gyOzfNyLSZr8kwcai07vY="
         }
       ]
     },
@@ -17185,6 +17332,304 @@
         {
           "Name": "integrity",
           "Value": "sha256-n6tEr14V66+UEvilaxgeCSXma10jda0tSnMA9NCZaqE="
+        }
+      ]
+    },
+    {
+      "Route": "js/notification-hub.7e8yapsbrr.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\4i6yhbnbfo-7e8yapsbrr.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000479386385"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2085"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vyXAvCVl1u5XAbJMnr4n18HjQytYBVZhfsOpjAwbqHc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 14:01:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "7e8yapsbrr"
+        },
+        {
+          "Name": "label",
+          "Value": "js/notification-hub.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I="
+        }
+      ]
+    },
+    {
+      "Route": "js/notification-hub.7e8yapsbrr.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6845"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 14:01:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "7e8yapsbrr"
+        },
+        {
+          "Name": "label",
+          "Value": "js/notification-hub.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I="
+        }
+      ]
+    },
+    {
+      "Route": "js/notification-hub.7e8yapsbrr.js.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\4i6yhbnbfo-7e8yapsbrr.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2085"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vyXAvCVl1u5XAbJMnr4n18HjQytYBVZhfsOpjAwbqHc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 14:01:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "7e8yapsbrr"
+        },
+        {
+          "Name": "label",
+          "Value": "js/notification-hub.js.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vyXAvCVl1u5XAbJMnr4n18HjQytYBVZhfsOpjAwbqHc="
+        }
+      ]
+    },
+    {
+      "Route": "js/notification-hub.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\4i6yhbnbfo-7e8yapsbrr.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000479386385"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2085"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vyXAvCVl1u5XAbJMnr4n18HjQytYBVZhfsOpjAwbqHc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 14:01:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I="
+        }
+      ]
+    },
+    {
+      "Route": "js/notification-hub.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6845"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 14:01:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-/yzM5ah7cdYT8v/fQNTiSBA+Z3Vcjx0Y7xjhsdnNJ5I="
+        }
+      ]
+    },
+    {
+      "Route": "js/notification-hub.js.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\4i6yhbnbfo-7e8yapsbrr.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2085"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vyXAvCVl1u5XAbJMnr4n18HjQytYBVZhfsOpjAwbqHc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 14:01:40 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vyXAvCVl1u5XAbJMnr4n18HjQytYBVZhfsOpjAwbqHc="
         }
       ]
     },
@@ -37953,6 +38398,88 @@
       ]
     },
     {
+      "Route": "uploads/attendance/3_20251201_022235_checkin.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251201_022235_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "101028"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7ZEfPjtHzxkpIprfJoRBFSAHAn656eyD567NwDjn8T8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:22:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-7ZEfPjtHzxkpIprfJoRBFSAHAn656eyD567NwDjn8T8="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/3_20251201_022235_checkin.tc2gaylfcn.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251201_022235_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "101028"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7ZEfPjtHzxkpIprfJoRBFSAHAn656eyD567NwDjn8T8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:22:35 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tc2gaylfcn"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/attendance/3_20251201_022235_checkin.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-7ZEfPjtHzxkpIprfJoRBFSAHAn656eyD567NwDjn8T8="
+        }
+      ]
+    },
+    {
       "Route": "uploads/attendance/6_20251129_134923_checkin.gxs2wizdpk.jpg",
       "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251129_134923_checkin.jpg",
       "Selectors": [],
@@ -38031,6 +38558,252 @@
         {
           "Name": "integrity",
           "Value": "sha256-DOk495FHKhbbJuXTtSZjqZ0x2EG0BIMAV7vbywvsP1s="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/6_20251130_205543_checkout.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251130_205543_checkout.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "142924"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ui6Mk6Nz0IhwUJFridmxfhc47tdoAghaA2U4ODQHoyY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 13:55:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ui6Mk6Nz0IhwUJFridmxfhc47tdoAghaA2U4ODQHoyY="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/6_20251130_205543_checkout.q0ubuhs902.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251130_205543_checkout.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "142924"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ui6Mk6Nz0IhwUJFridmxfhc47tdoAghaA2U4ODQHoyY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 13:55:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "q0ubuhs902"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/attendance/6_20251130_205543_checkout.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ui6Mk6Nz0IhwUJFridmxfhc47tdoAghaA2U4ODQHoyY="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/6_20251201_022842_checkin.ja0vh90txs.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251201_022842_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "83775"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"O8hX2NwwYqYRW8OnwB1PabATm2fM2Inx5PoltZrur7s=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:28:42 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ja0vh90txs"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/attendance/6_20251201_022842_checkin.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-O8hX2NwwYqYRW8OnwB1PabATm2fM2Inx5PoltZrur7s="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/6_20251201_022842_checkin.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251201_022842_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "83775"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"O8hX2NwwYqYRW8OnwB1PabATm2fM2Inx5PoltZrur7s=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:28:42 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-O8hX2NwwYqYRW8OnwB1PabATm2fM2Inx5PoltZrur7s="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/7_20251201_023123_checkin.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\7_20251201_023123_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39418"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uO8gHUGAvAUM7YvU55YhN2B3TaZNyvwgAUzqtiLZuQ0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:31:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-uO8gHUGAvAUM7YvU55YhN2B3TaZNyvwgAUzqtiLZuQ0="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/7_20251201_023123_checkin.oo0trzqdbq.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\7_20251201_023123_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "39418"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uO8gHUGAvAUM7YvU55YhN2B3TaZNyvwgAUzqtiLZuQ0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 19:31:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "oo0trzqdbq"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/attendance/7_20251201_023123_checkin.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-uO8gHUGAvAUM7YvU55YhN2B3TaZNyvwgAUzqtiLZuQ0="
         }
       ]
     },
@@ -39753,6 +40526,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-ZFXES36wRtFBwlV3A2yxeU9HganrxieX1JXpchRMdJw="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/avatars/3_20251130204647.1xjae834yo.png",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\avatars\\3_20251130204647.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "803375"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VaELHp3iT0hoyfxYR1RUAWpPIMhg2K7/xmIVnbC/aQk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 13:46:47 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1xjae834yo"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/avatars/3_20251130204647.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VaELHp3iT0hoyfxYR1RUAWpPIMhg2K7/xmIVnbC/aQk="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/avatars/3_20251130204647.png",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\avatars\\3_20251130204647.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "803375"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VaELHp3iT0hoyfxYR1RUAWpPIMhg2K7/xmIVnbC/aQk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 30 Nov 2025 13:46:47 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VaELHp3iT0hoyfxYR1RUAWpPIMhg2K7/xmIVnbC/aQk="
         }
       ]
     },

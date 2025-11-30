@@ -183,6 +183,7 @@ namespace AIHUBOS.Controllers
 		// ============================================
 		// STAFF DASHBOARD
 		// ============================================
+		// Trong StaffController.cs
 		public async System.Threading.Tasks.Task<IActionResult> Dashboard()
 		{
 			if (!IsAuthenticated())
@@ -203,6 +204,23 @@ namespace AIHUBOS.Controllers
 
 			ViewBag.User = user;
 
+			// ============================================
+			// THÊM: Lấy cấu hình giờ làm việc từ SystemSettings
+			// Dùng để tính toán trạng thái (Đi trễ/Về sớm) trên Dashboard.cshtml
+			// ============================================
+			var configs = await _context.SystemSettings
+				.Where(c => c.IsActive == true && c.IsEnabled == true)
+				// Chỉ lấy các setting cần thiết để tối ưu truy vấn
+				.Where(c => c.SettingKey == "CHECK_IN_STANDARD_TIME" || c.SettingKey == "CHECK_OUT_STANDARD_TIME")
+				.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
+
+			// Gán vào ViewBag. Nếu không tìm thấy, dùng giá trị mặc định "08:00" và "17:00"
+			ViewBag.StandardStartTime = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00");
+			ViewBag.StandardEndTime = configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME", "17:00");
+
+			// ============================================
+			// GIỮ NGUYÊN: Các logic thống kê khác
+			// ============================================
 			var myLoginHistory = await _context.LoginHistories
 				.Where(l => l.UserId == userId && l.IsSuccess == true)
 				.OrderByDescending(l => l.LoginTime)
@@ -752,9 +770,10 @@ namespace AIHUBOS.Controllers
 
 			try
 			{
-				var configs = await _context.SalaryConfigurations
-					.Where(c => c.IsActive == true)
-					.ToDictionaryAsync(c => c.ConfigCode, c => c.Value);
+				// ✅ ĐỌC TỪ SystemSettings THAY VÌ SalaryConfigurations
+				var configs = await _context.SystemSettings
+					.Where(c => c.IsActive == true && c.IsEnabled == true)
+					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
 				var standardStartTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00"));
 
@@ -800,7 +819,6 @@ namespace AIHUBOS.Controllers
 				if (isLate)
 				{
 					var user = await _context.Users.FindAsync(userId);
-					// ✅ ĐÚNG
 					await _notificationService.SendToAdminsAsync(
 						"Nhân viên đi trễ",
 						$"{user?.FullName ?? "Nhân viên"} vừa check-in muộn lúc {serverNow:HH:mm:ss}",
@@ -830,8 +848,11 @@ namespace AIHUBOS.Controllers
 		// ============================================
 		// IMPROVED CHECK-OUT - Calculate Exact Working Hours
 		// ============================================
+		// ============================================
+		// CHECK-OUT - ĐÃ SỬA ĐỌC TỪ SystemSettings
+		// ============================================
 		[HttpPost]
-		[RequestSizeLimit(10_485_760)]
+		[RequestSizeLimit(5_242_880)]
 		public async System.Threading.Tasks.Task<IActionResult> CheckOut([FromForm] CheckOutRequest request)
 		{
 			if (!IsAuthenticated())
@@ -882,6 +903,15 @@ namespace AIHUBOS.Controllers
 
 			try
 			{
+				// ✅ ĐỌC TỪ SystemSettings THAY VÌ HARD-CODE
+				var configs = await _context.SystemSettings
+					.Where(c => c.IsActive == true && c.IsEnabled == true)
+					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
+
+				var standardEndTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME", "17:00"));
+				var standardStartTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00"));
+				var standardHoursPerDay = decimal.Parse(configs.GetValueOrDefault("STANDARD_HOURS_PER_DAY", "8"));
+
 				var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "attendance");
 				if (!Directory.Exists(uploadsFolder))
 					Directory.CreateDirectory(uploadsFolder);
@@ -902,6 +932,18 @@ namespace AIHUBOS.Controllers
 				var minutes = duration.Minutes;
 				var seconds = duration.Seconds;
 
+				// ✅ KIỂM TRA CHECKOUT SỚM (TRƯỚC GIỜ CHUẨN)
+				var checkOutTime = new TimeOnly(serverNow.Hour, serverNow.Minute, serverNow.Second);
+				bool isEarlyCheckout = checkOutTime < standardEndTime;
+
+				// ✅ TÍNH GIỜ THIẾU NẾU CHECKOUT SỚM
+				decimal penaltyHours = 0;
+				if (isEarlyCheckout)
+				{
+					var missedTime = standardEndTime - checkOutTime;
+					penaltyHours = (decimal)missedTime.TotalHours;
+				}
+
 				attendance.CheckOutTime = serverNow;
 				attendance.CheckOutLatitude = request.Latitude;
 				attendance.CheckOutLongitude = request.Longitude;
@@ -912,24 +954,69 @@ namespace AIHUBOS.Controllers
 				attendance.TotalHours = totalHours;
 				attendance.ActualWorkHours = totalHours;
 
+				// ✅ GHI CHÚ NẾU CHECKOUT SỚM
+				if (isEarlyCheckout)
+				{
+					attendance.CheckOutNotes = $"{request.Notes ?? ""} [Checkout sớm {penaltyHours:F2}h - Thiếu {penaltyHours:F2}h so với chuẩn]".Trim();
+				}
+
 				await _context.SaveChangesAsync();
 
 				await _auditHelper.LogDetailedAsync(
 					userId, "CHECK_OUT", "Attendance", attendance.AttendanceId,
-					null, new { CheckOutTime = serverNow.ToString("HH:mm:ss"), TotalHours = $"{hours:D2}:{minutes:D2}:{seconds:D2}", Address = address },
+					null, new
+					{
+						CheckOutTime = serverNow.ToString("HH:mm:ss"),
+						TotalHours = $"{hours:D2}:{minutes:D2}:{seconds:D2}",
+						Address = address,
+						IsEarlyCheckout = isEarlyCheckout,
+						PenaltyHours = penaltyHours
+					},
 					$"Check-out tại {address} - Tổng giờ: {hours:D2}:{minutes:D2}:{seconds:D2}",
-					new Dictionary<string, object> { { "CheckOutTime", serverNow.ToString("HH:mm:ss") }, { "TotalHours", $"{hours:D2}:{minutes:D2}:{seconds:D2}" } }
+					new Dictionary<string, object> {
+				{ "CheckOutTime", serverNow.ToString("HH:mm:ss") },
+				{ "TotalHours", $"{hours:D2}:{minutes:D2}:{seconds:D2}" },
+				{ "StandardEndTime", standardEndTime.ToString("HH:mm") },
+				{ "IsEarlyCheckout", isEarlyCheckout }
+					}
 				);
+
+				// ✅ THÔNG BÁO CHO ADMIN NẾU CHECKOUT SỚM
+				if (isEarlyCheckout)
+				{
+					var user = await _context.Users.FindAsync(userId);
+					await _notificationService.SendToAdminsAsync(
+						"Nhân viên checkout sớm",
+						$"{user?.FullName ?? "Nhân viên"} vừa checkout sớm lúc {serverNow:HH:mm:ss} (Chuẩn: {standardEndTime:HH:mm})",
+						"warning",
+						$"/Admin/AttendanceHistory?userId={userId}&fromDate={serverNow:yyyy-MM-dd}&toDate={serverNow:yyyy-MM-dd}"
+					);
+				}
+
+				// ✅ TẠO MESSAGE ĐỘNG
+				string message = $"✅ Check-out thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n⌚ Tổng giờ làm: {hours:D2}:{minutes:D2}:{seconds:D2}\n📍 Vị trí: {address}";
+
+				if (isEarlyCheckout)
+				{
+					message += $"\n\n⚠️ Lưu ý: Bạn checkout sớm hơn {penaltyHours:F2}h so với giờ chuẩn ({standardEndTime:HH:mm})";
+				}
+				else
+				{
+					message += "\n\n😊 Chúc bạn một buổi tối vui vẻ!";
+				}
 
 				return Json(new
 				{
 					success = true,
-					message = $"✅ Check-out thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n⌚ Tổng giờ làm: {hours:D2}:{minutes:D2}:{seconds:D2}\n📍 Vị trí: {address}\n\n😊 Chúc bạn một buổi tối vui vẻ!",
+					message = message,
 					totalHours = totalHours,
 					totalHoursFormatted = $"{hours:D2}:{minutes:D2}:{seconds:D2}",
 					serverTime = serverNow.ToString("yyyy-MM-dd HH:mm:ss"),
 					checkOutTime = serverNow.ToString("HH:mm:ss"),
-					address = address
+					address = address,
+					isEarlyCheckout = isEarlyCheckout,
+					penaltyHours = penaltyHours,
+					standardEndTime = standardEndTime.ToString("HH:mm")
 				});
 			}
 			catch (Exception ex)
@@ -1291,9 +1378,10 @@ namespace AIHUBOS.Controllers
 					}
 				}
 
-				var configs = await _context.SalaryConfigurations
-					.Where(c => c.IsActive == true)
-					.ToDictionaryAsync(c => c.ConfigCode, c => c.Value);
+				// ✅ ĐỌC TỪ SystemSettings THAY VÌ SalaryConfigurations
+				var configs = await _context.SystemSettings
+					.Where(c => c.IsActive == true && c.IsEnabled == true)
+					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
 				var standardEndTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME", "17:00"));
 				var standardHoursPerDay = decimal.Parse(configs.GetValueOrDefault("STANDARD_HOURS_PER_DAY", "8"));
@@ -1392,7 +1480,6 @@ namespace AIHUBOS.Controllers
 				);
 
 				// GỬI THÔNG BÁO CHO ADMIN
-				// ✅ ĐÚNG
 				await _notificationService.SendToAdminsAsync(
 					"Yêu cầu tăng ca mới",
 					$"Nhân viên vừa gửi yêu cầu tăng ca {overtimeHours:F2}h cho ngày {workDateDo:dd/MM/yyyy}",
@@ -1429,9 +1516,10 @@ namespace AIHUBOS.Controllers
 				if (!missingCheckouts.Any())
 					return;
 
-				var configs = await _context.SalaryConfigurations
-					.Where(c => c.IsActive == true)
-					.ToDictionaryAsync(c => c.ConfigCode, c => c.Value);
+				// ✅ ĐỌC TỪ SystemSettings THAY VÌ SalaryConfigurations
+				var configs = await _context.SystemSettings
+					.Where(c => c.IsActive == true && c.IsEnabled == true)
+					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
 				var standardHoursPerDay = decimal.Parse(configs.GetValueOrDefault("STANDARD_HOURS_PER_DAY", "8"));
 

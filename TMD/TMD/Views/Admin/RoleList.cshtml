@@ -1,0 +1,563 @@
+﻿@model List<AIHUBOS.Models.Role>
+@{
+    ViewData["Title"] = "Quản lý Role";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/user-management.css">
+
+<div class="um-container">
+    <!-- Page Header -->
+    <div class="um-page-header">
+        <div class="um-d-flex um-justify-between um-align-center">
+            <div>
+                <h2 class="um-page-title">
+                    <i class="fas fa-user-tag"></i>
+                    Quản lý Role
+                </h2>
+                <p class="um-page-subtitle">Quản lý các vai trò trong hệ thống</p>
+            </div>
+            <button class="um-btn-create" onclick="showCreateRoleModal()">
+                <i class="fas fa-plus"></i>
+                Tạo Role mới
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="um-stats-grid">
+        <div class="um-stats-card um-stats-primary">
+            <div class="um-stats-icon">
+                <i class="fas fa-user-tag"></i>
+            </div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Tổng số Role</div>
+                <div class="um-stats-value">@ViewBag.TotalRoles</div>
+            </div>
+        </div>
+        <div class="um-stats-card um-stats-success">
+            <div class="um-stats-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Tổng người dùng</div>
+                <div class="um-stats-value">@ViewBag.TotalUsers</div>
+            </div>
+        </div>
+        <div class="um-stats-card um-stats-warning">
+            <div class="um-stats-icon">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Đang hoạt động</div>
+                <div class="um-stats-value">@ViewBag.ActiveUsers</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role List Table -->
+    <div class="um-card">
+        <div class="um-card-header">
+            <h5><i class="fas fa-list me-2"></i>Danh sách Role</h5>
+        </div>
+        <div class="um-card-body um-card-body-table">
+            <div class="um-table-wrapper">
+                <table class="um-table" id="roleTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%">#</th>
+                            <th style="width: 25%">Tên Role</th>
+                            <th style="width: 20%">Số người dùng</th>
+                            <th style="width: 20%">Đang hoạt động</th>
+                            <th style="width: 15%">Ngày tạo</th>
+                            <th style="width: 15%" class="um-text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            int index = 1;
+                            foreach (var role in Model)
+                            {
+                                var totalUsers = role.Users?.Count ?? 0;
+                                var activeUsers = role.Users?.Count(u => u.IsActive == true) ?? 0;
+                                var isSystemRole = new[] { "Admin", "Staff", "Tester" }.Contains(role.RoleName);
+
+                                <tr data-role-id="@role.RoleId">
+                                    <td>@index</td>
+                                    <td>
+                                        <strong class="um-fw-bold">@role.RoleName</strong>
+                                        @if (isSystemRole)
+                                        {
+                                            <span class="um-badge um-badge-info">
+                                                <i class="fas fa-shield-alt um-me-1"></i>Hệ thống
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="um-badge um-badge-secondary">
+                                            <i class="fas fa-users um-me-1"></i>@totalUsers người
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="um-badge um-badge-success">
+                                            <i class="fas fa-user-check um-me-1"></i>@activeUsers
+                                        </span>
+                                        @if (totalUsers - activeUsers > 0)
+                                        {
+                                            <span class="um-badge um-badge-danger" style="margin-left: 0.5rem;">
+                                                <i class="fas fa-user-times um-me-1"></i>@(totalUsers - activeUsers)
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small class="um-text-muted">
+                                            @(role.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                                        </small>
+                                    </td>
+                                    <td class="um-text-center">
+                                        <div class="um-action-buttons">
+                                            <button class="um-action-btn"
+                                                    onclick="viewRoleDetail(@role.RoleId)"
+                                                    title="Xem chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="um-action-btn"
+                                                    onclick="showEditRoleModal(@role.RoleId, '@role.RoleName')"
+                                                    title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            @if (!isSystemRole && totalUsers == 0)
+                                            {
+                                                <button class="um-action-btn"
+                                                        onclick="deleteRole(@role.RoleId, '@role.RoleName')"
+                                                        title="Xóa">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                index++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="um-text-center" style="padding: 3rem;">
+                                    <div style="color: var(--text-muted);">
+                                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 1rem; display: block;"></i>
+                                        <p style="margin: 0;">Chưa có role nào</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Create Role -->
+<div class="um-modal-overlay" id="createRoleModal">
+    <div class="um-modal-card">
+        <div class="um-modal-header">
+            <h3>
+                <i class="fas fa-plus-circle"></i>
+                Tạo Role mới
+            </h3>
+            <button class="um-modal-close" onclick="closeModal('createRoleModal')">&times;</button>
+        </div>
+        <div class="um-modal-body">
+            <div class="um-form-group">
+                <label class="um-form-label required">Tên Role</label>
+                <input type="text"
+                       class="um-form-control"
+                       id="newRoleName"
+                       placeholder="Ví dụ: Manager, Developer..."
+                       maxlength="50">
+                <small class="um-text-muted">Tên role không được trùng với các role đã có</small>
+            </div>
+            <div class="d-flex gap-2 justify-content-end" style="margin-top: 1.5rem;">
+                <button class="um-btn um-btn-secondary" onclick="closeModal('createRoleModal')">
+                    <i class="fas fa-times"></i>
+                    Hủy
+                </button>
+                <button class="um-btn um-btn-primary" onclick="createRole()">
+                    <i class="fas fa-save"></i>
+                    Tạo Role
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Edit Role -->
+<div class="um-modal-overlay" id="editRoleModal">
+    <div class="um-modal-card">
+        <div class="um-modal-header">
+            <h3>
+                <i class="fas fa-edit"></i>
+                Chỉnh sửa Role
+            </h3>
+            <button class="um-modal-close" onclick="closeModal('editRoleModal')">&times;</button>
+        </div>
+        <div class="um-modal-body">
+            <input type="hidden" id="editRoleId">
+            <div class="um-form-group">
+                <label class="um-form-label required">Tên Role</label>
+                <input type="text"
+                       class="um-form-control"
+                       id="editRoleName"
+                       maxlength="50">
+                <small class="um-text-muted">Tên role không được trùng với các role khác</small>
+            </div>
+            <div class="d-flex gap-2 justify-content-end" style="margin-top: 1.5rem;">
+                <button class="um-btn um-btn-secondary" onclick="closeModal('editRoleModal')">
+                    <i class="fas fa-times"></i>
+                    Hủy
+                </button>
+                <button class="um-btn um-btn-primary" onclick="updateRole()">
+                    <i class="fas fa-save"></i>
+                    Cập nhật
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Role Detail -->
+<div class="um-modal-overlay" id="roleDetailModal">
+    <div class="um-modal-card" style="max-width: 800px;">
+        <div class="um-modal-header">
+            <h3>
+                <i class="fas fa-info-circle"></i>
+                Chi tiết Role
+            </h3>
+            <button class="um-modal-close" onclick="closeModal('roleDetailModal')">&times;</button>
+        </div>
+        <div class="um-modal-body" id="roleDetailContent">
+            <div class="um-loading-inline">
+                <div class="um-spinner"></div>
+                <p class="um-text-muted">Đang tải dữ liệu...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Modal Functions
+        function showCreateRoleModal() {
+            $('#newRoleName').val('');
+            document.getElementById('createRoleModal').classList.add('open');
+        }
+
+        function showEditRoleModal(roleId, roleName) {
+            $('#editRoleId').val(roleId);
+            $('#editRoleName').val(roleName);
+            document.getElementById('editRoleModal').classList.add('open');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('open');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('um-modal-overlay')) {
+                e.target.classList.remove('open');
+            }
+        });
+
+        // DataTable initialization
+        $(document).ready(function() {
+            $('#roleTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.5/i18n/vi.json'
+                },
+                pageLength: 10,
+                order: [[1, 'asc']],
+                dom: '<"um-table-controls"<"um-table-search"f><"um-table-length"l>>rt<"um-table-footer"<"um-table-info"i><"um-table-pagination"p>>'
+            });
+        });
+
+        function createRole() {
+            const roleName = $('#newRoleName').val().trim();
+
+            if (!roleName) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Vui lòng nhập tên Role!',
+                    confirmButtonColor: '#6366f1'
+                });
+                return;
+            }
+
+            const btn = event.target;
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            $.ajax({
+                url: '/Admin/CreateRole',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ roleName: roleName }),
+                success: function(response) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response.message,
+                            confirmButtonColor: '#6366f1'
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: response.message,
+                            confirmButtonColor: '#6366f1'
+                        });
+                    }
+                },
+                error: function() {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Có lỗi kết nối đến server!',
+                        confirmButtonColor: '#6366f1'
+                    });
+                }
+            });
+        }
+
+        function updateRole() {
+            const roleId = $('#editRoleId').val();
+            const roleName = $('#editRoleName').val().trim();
+
+            if (!roleName) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Vui lòng nhập tên Role!',
+                    confirmButtonColor: '#6366f1'
+                });
+                return;
+            }
+
+            const btn = event.target;
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            $.ajax({
+                url: '/Admin/UpdateRole',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    roleId: parseInt(roleId),
+                    roleName: roleName
+                }),
+                success: function(response) {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: response.message,
+                            confirmButtonColor: '#6366f1'
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: response.message,
+                            confirmButtonColor: '#6366f1'
+                        });
+                    }
+                },
+                error: function() {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Có lỗi kết nối đến server!',
+                        confirmButtonColor: '#6366f1'
+                    });
+                }
+            });
+        }
+
+        function deleteRole(roleId, roleName) {
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                html: `Bạn có chắc muốn xóa Role <strong>"${roleName}"</strong>?<br><small style="color: var(--danger);">Hành động này không thể hoàn tác!</small>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="fas fa-trash me-2"></i>Xóa',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Admin/DeleteRole',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ roleId: roleId }),
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Đã xóa!',
+                                    text: response.message,
+                                    confirmButtonColor: '#6366f1'
+                                }).then(() => location.reload());
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Lỗi',
+                                    text: response.message,
+                                    confirmButtonColor: '#6366f1'
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Lỗi',
+                                text: 'Có lỗi kết nối đến server!',
+                                confirmButtonColor: '#6366f1'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function viewRoleDetail(roleId) {
+            document.getElementById('roleDetailModal').classList.add('open');
+
+            // Reset content
+            $('#roleDetailContent').html(`
+                <div class="um-loading-inline">
+                    <div class="um-spinner"></div>
+                    <p class="um-text-muted">Đang tải dữ liệu...</p>
+                </div>
+            `);
+
+            $.ajax({
+                url: '/Admin/GetRoleDetail',
+                type: 'GET',
+                data: { roleId: roleId },
+                success: function(response) {
+                    if (response.success) {
+                        const role = response.role;
+                        let html = `
+                            <div class="um-row" style="margin-bottom: 2rem;">
+                                <div class="um-col-2">
+                                    <p class="um-text-muted" style="margin-bottom: 0.5rem;"><strong>Tên Role:</strong></p>
+                                    <h5 style="color: var(--secondary); margin: 0;">${role.roleName}</h5>
+                                </div>
+                                <div class="um-col-2">
+                                    <p class="um-text-muted" style="margin-bottom: 0.5rem;"><strong>Ngày tạo:</strong></p>
+                                    <p style="margin: 0;">${role.createdAt}</p>
+                                </div>
+                            </div>
+                            <div class="um-stats-grid-inline" style="margin-bottom: 2rem;">
+                                <div>
+                                    <div class="um-stat-value" style="color: var(--secondary);">${role.totalUsers}</div>
+                                    <div class="um-stat-label">Tổng người dùng</div>
+                                </div>
+                                <div>
+                                    <div class="um-stat-value" style="color: var(--success);">${role.activeUsers}</div>
+                                    <div class="um-stat-label">Đang hoạt động</div>
+                                </div>
+                                <div>
+                                    <div class="um-stat-value" style="color: var(--text-muted);">${role.inactiveUsers}</div>
+                                    <div class="um-stat-label">Ngừng hoạt động</div>
+                                </div>
+                            </div>`;
+
+                        if (role.users && role.users.length > 0) {
+                            html += `
+                                <h6 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-users"></i>Danh sách người dùng
+                                </h6>
+                                <div class="um-table-wrapper">
+                                    <table class="um-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Họ tên</th>
+                                                <th>Email</th>
+                                                <th>Phòng ban</th>
+                                                <th>Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+
+                            role.users.forEach(user => {
+                                html += `
+                                    <tr>
+                                        <td>
+                                            <strong>${user.fullName}</strong>
+                                            <br><small class="um-text-muted">${user.username}</small>
+                                        </td>
+                                        <td><small>${user.email || 'N/A'}</small></td>
+                                        <td><small>${user.departmentName}</small></td>
+                                        <td>
+                                            <span class="um-badge ${user.isActive ? 'um-badge-success' : 'um-badge-secondary'}">
+                                                ${user.isActive ? 'Hoạt động' : 'Ngừng'}
+                                            </span>
+                                        </td>
+                                    </tr>`;
+                            });
+
+                            html += `
+                                        </tbody>
+                                    </table>
+                                </div>`;
+                        } else {
+                            html += `
+                                <div class="um-alert um-alert-info" style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>Chưa có người dùng nào thuộc role này</span>
+                                </div>`;
+                        }
+
+                        $('#roleDetailContent').html(html);
+                    } else {
+                        $('#roleDetailContent').html(`
+                            <div class="um-alert um-alert-error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>${response.message}</span>
+                            </div>
+                        `);
+                    }
+                },
+                error: function() {
+                    $('#roleDetailContent').html(`
+                        <div class="um-alert um-alert-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Có lỗi kết nối đến server!</span>
+                        </div>
+                    `);
+                }
+            });
+        }
+    </script>
+}

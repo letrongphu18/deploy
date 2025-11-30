@@ -3422,6 +3422,452 @@ namespace AIHUBOS.Controllers
 
 			return changes.Count > 0 ? string.Join(", ", changes) : "No changes";
 		}
+
+		/// <summary>
+		/// Hiển thị danh sách tất cả các Role
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> RoleList()
+		{
+			if (!IsAdmin())
+				return RedirectToAction("Login", "Account");
+
+			await _auditHelper.LogViewAsync(
+				HttpContext.Session.GetInt32("UserId").Value,
+				"Role",
+				0,
+				"Xem danh sách Role"
+			);
+
+			var roles = await _context.Roles
+				.Include(r => r.Users)
+				.OrderBy(r => r.RoleName)
+				.ToListAsync();
+
+			// Thống kê
+			ViewBag.TotalRoles = roles.Count;
+			ViewBag.TotalUsers = roles.Sum(r => r.Users.Count);
+			ViewBag.ActiveUsers = roles.Sum(r => r.Users.Count(u => u.IsActive == true));
+
+			return View(roles);
+		}
+
+		/// <summary>
+		/// Lấy thông tin chi tiết Role (AJAX)
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> GetRoleDetail(int roleId)
+		{
+			if (!IsAdmin())
+				return Json(new { success = false, message = "Không có quyền truy cập" });
+
+			try
+			{
+				var role = await _context.Roles
+					.Include(r => r.Users)
+						.ThenInclude(u => u.Department)
+					.FirstOrDefaultAsync(r => r.RoleId == roleId);
+
+				if (role == null)
+					return Json(new { success = false, message = "Không tìm thấy Role" });
+
+				await _auditHelper.LogViewAsync(
+					HttpContext.Session.GetInt32("UserId").Value,
+					"Role",
+					roleId,
+					$"Xem chi tiết Role: {role.RoleName}"
+				);
+
+				var result = new
+				{
+					success = true,
+					role = new
+					{
+						roleId = role.RoleId,
+						roleName = role.RoleName,
+						createdAt = role.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A",
+						totalUsers = role.Users.Count,
+						activeUsers = role.Users.Count(u => u.IsActive == true),
+						inactiveUsers = role.Users.Count(u => u.IsActive == false),
+						users = role.Users
+							.OrderBy(u => u.FullName)
+							.Select(u => new
+							{
+								userId = u.UserId,
+								username = u.Username,
+								fullName = u.FullName,
+								email = u.Email,
+								departmentName = u.Department?.DepartmentName ?? "Chưa phân công",
+								isActive = u.IsActive,
+								avatar = u.Avatar,
+								lastLoginAt = u.LastLoginAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa đăng nhập"
+							})
+							.ToList()
+					}
+				};
+
+				return Json(result);
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"VIEW",
+					"Role",
+					$"Exception: {ex.Message}",
+					new { RoleId = roleId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Tạo Role mới (AJAX)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"CREATE",
+					"Role",
+					"Không có quyền tạo Role",
+					new { RoleName = request.RoleName }
+				);
+
+				return Json(new { success = false, message = "Chỉ Admin mới có quyền tạo Role!" });
+			}
+
+			if (string.IsNullOrWhiteSpace(request.RoleName))
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"CREATE",
+					"Role",
+					"Tên Role rỗng",
+					null
+				);
+
+				return Json(new { success = false, message = "Tên Role không được để trống!" });
+			}
+
+			// Kiểm tra tên Role đã tồn tại chưa
+			var existingRole = await _context.Roles
+				.FirstOrDefaultAsync(r => r.RoleName.ToLower() == request.RoleName.Trim().ToLower());
+
+			if (existingRole != null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"CREATE",
+					"Role",
+					"Tên Role đã tồn tại",
+					new { RoleName = request.RoleName }
+				);
+
+				return Json(new { success = false, message = $"Role '{request.RoleName}' đã tồn tại!" });
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+
+				var role = new Role
+				{
+					RoleName = request.RoleName.Trim(),
+					CreatedAt = DateTime.Now
+				};
+
+				_context.Roles.Add(role);
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"CREATE",
+					"Role",
+					role.RoleId,
+					null,
+					new { role.RoleName, role.CreatedAt },
+					$"Tạo Role mới: {role.RoleName}"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Tạo Role '{role.RoleName}' thành công!",
+					roleId = role.RoleId
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"CREATE",
+					"Role",
+					$"Exception: {ex.Message}",
+					new { RoleName = request.RoleName, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Cập nhật Role (AJAX)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"UPDATE",
+					"Role",
+					"Không có quyền cập nhật",
+					new { RoleId = request.RoleId }
+				);
+
+				return Json(new { success = false, message = "Chỉ Admin mới có quyền cập nhật Role!" });
+			}
+
+			if (string.IsNullOrWhiteSpace(request.RoleName))
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"UPDATE",
+					"Role",
+					"Tên Role rỗng",
+					new { RoleId = request.RoleId }
+				);
+
+				return Json(new { success = false, message = "Tên Role không được để trống!" });
+			}
+
+			var role = await _context.Roles
+				.Include(r => r.Users)
+				.FirstOrDefaultAsync(r => r.RoleId == request.RoleId);
+
+			if (role == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"UPDATE",
+					"Role",
+					"Role không tồn tại",
+					new { RoleId = request.RoleId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy Role!" });
+			}
+
+			// Kiểm tra tên mới có trùng với Role khác không
+			var duplicateRole = await _context.Roles
+				.FirstOrDefaultAsync(r => r.RoleId != request.RoleId &&
+										  r.RoleName.ToLower() == request.RoleName.Trim().ToLower());
+
+			if (duplicateRole != null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"UPDATE",
+					"Role",
+					"Tên Role đã tồn tại",
+					new { RoleId = request.RoleId, RoleName = request.RoleName }
+				);
+
+				return Json(new { success = false, message = $"Role '{request.RoleName}' đã tồn tại!" });
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+
+				var oldValues = new
+				{
+					RoleName = role.RoleName
+				};
+
+				role.RoleName = request.RoleName.Trim();
+
+				await _context.SaveChangesAsync();
+
+				var newValues = new
+				{
+					RoleName = role.RoleName
+				};
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"UPDATE",
+					"Role",
+					role.RoleId,
+					oldValues,
+					newValues,
+					$"Cập nhật Role: {oldValues.RoleName} → {role.RoleName}"
+				);
+
+				// Gửi thông báo cho tất cả user có role này
+				var affectedUserIds = role.Users.Select(u => u.UserId).ToList();
+				foreach (var userId in affectedUserIds)
+				{
+					await _notificationService.SendToUserAsync(
+						userId,
+						"Vai trò được cập nhật",
+						$"Vai trò của bạn đã được đổi tên thành: {role.RoleName}",
+						"info",
+						"/Staff/Profile"
+					);
+				}
+
+				return Json(new
+				{
+					success = true,
+					message = $"Cập nhật Role thành công! ({role.Users.Count} người dùng bị ảnh hưởng)"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"UPDATE",
+					"Role",
+					$"Exception: {ex.Message}",
+					new { RoleId = request.RoleId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Xóa Role (AJAX) - Chỉ xóa được khi không có user nào sử dụng
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> DeleteRole([FromBody] DeleteRoleRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"DELETE",
+					"Role",
+					"Không có quyền xóa",
+					new { RoleId = request.RoleId }
+				);
+
+				return Json(new { success = false, message = "Chỉ Admin mới có quyền xóa Role!" });
+			}
+
+			var role = await _context.Roles
+				.Include(r => r.Users)
+				.FirstOrDefaultAsync(r => r.RoleId == request.RoleId);
+
+			if (role == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"DELETE",
+					"Role",
+					"Role không tồn tại",
+					new { RoleId = request.RoleId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy Role!" });
+			}
+
+			// Không cho xóa role Admin, Staff, Tester (hệ thống mặc định)
+			var protectedRoles = new[] { "Admin", "Staff", "Tester" };
+			if (protectedRoles.Contains(role.RoleName))
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"DELETE",
+					"Role",
+					"Không thể xóa Role hệ thống",
+					new { RoleId = request.RoleId, RoleName = role.RoleName }
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"Không thể xóa Role '{role.RoleName}' - Đây là role hệ thống!"
+				});
+			}
+
+			// Kiểm tra có user nào đang sử dụng role này không
+			if (role.Users != null && role.Users.Any())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"DELETE",
+					"Role",
+					"Role đang được sử dụng",
+					new { RoleId = request.RoleId, UserCount = role.Users.Count }
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"Không thể xóa Role '{role.RoleName}' vì có {role.Users.Count} người dùng đang sử dụng!"
+				});
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var roleName = role.RoleName;
+
+				_context.Roles.Remove(role);
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"DELETE",
+					"Role",
+					request.RoleId,
+					new { RoleName = roleName },
+					null,
+					$"Xóa Role: {roleName}"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Đã xóa Role '{roleName}' thành công!"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"DELETE",
+					"Role",
+					$"Exception: {ex.Message}",
+					new { RoleId = request.RoleId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+		public class CreateRoleRequest
+		{
+			public string RoleName { get; set; } = string.Empty;
+		}
+
+		public class UpdateRoleRequest
+		{
+			public int RoleId { get; set; }
+			public string RoleName { get; set; } = string.Empty;
+		}
+
+		public class DeleteRoleRequest
+		{
+			public int RoleId { get; set; }
+		}
 		public class UpdateUserRequest
 		{
 			public int UserId { get; set; }

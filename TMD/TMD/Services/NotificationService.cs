@@ -1,19 +1,27 @@
-﻿// Services/NotificationService.cs
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using AIHUBOS.Hubs;
 using AIHUBOS.Models;
-using TaskModel = AIHUBOS.Models.Task; // ✅ Alias cho Model Task
-using SystemTask = System.Threading.Tasks.Task; // ✅ Alias cho System Task
+using System.Linq;
+using System.Collections.Generic;
+using TaskModel = AIHUBOS.Models.Task;
+using SystemTask = System.Threading.Tasks.Task;
 
 namespace AIHUBOS.Services
 {
 	public interface INotificationService
 	{
+		// ✅ CŨ - GIỮ NGUYÊN ĐỂ TƯƠNG THÍCH
 		SystemTask SendToUserAsync(int userId, string title, string message, string type = "info", string? link = null);
 		SystemTask SendToDepartmentAsync(int departmentId, string title, string message, string type = "info", string? link = null);
 		SystemTask SendToAdminsAsync(string title, string message, string type = "info", string? link = null);
 		SystemTask SendBroadcastAsync(string title, string message, string type = "info", string? link = null);
+
+		// ✅ MỚI - DYNAMIC ROLE-BASED
+		SystemTask SendToRoleAsync(string roleName, string title, string message, string type = "info", string? link = null);
+		SystemTask SendToRolesAsync(List<string> roleNames, string title, string message, string type = "info", string? link = null);
+
+		// ✅ EXISTING READ METHODS
 		System.Threading.Tasks.Task<List<UserNotification>> GetUserNotificationsAsync(int userId, int skip = 0, int take = 20);
 		System.Threading.Tasks.Task<int> GetUnreadCountAsync(int userId);
 		SystemTask MarkAsReadAsync(int userNotificationId);
@@ -31,7 +39,135 @@ namespace AIHUBOS.Services
 			_hubContext = hubContext;
 		}
 
-		public async SystemTask SendToUserAsync(int userId, string title, string message, string type = "info", string? link = null)
+		// ============================================
+		// Helper: thêm UserNotification cho list userIds nếu chưa tồn tại
+		// ============================================
+		private async System.Threading.Tasks.Task AddUserNotificationsIfNotExistAsync(Notification notification, List<int> userIds)
+		{
+			if (userIds == null || userIds.Count == 0)
+				return;
+
+			var existing = await _context.UserNotifications
+				.Where(un => un.NotificationId == notification.NotificationId && userIds.Contains(un.UserId))
+				.Select(un => un.UserId)
+				.ToListAsync();
+
+			var toAdd = userIds.Except(existing).ToList();
+
+			foreach (var uid in toAdd)
+			{
+				_context.UserNotifications.Add(new UserNotification
+				{
+					NotificationId = notification.NotificationId,
+					UserId = uid,
+					IsRead = false
+				});
+			}
+		}
+
+		// ============================================
+		// ✅ DYNAMIC ROLE-BASED NOTIFICATION (single role)
+		// - đảm bảo Admin(s) cũng nhận
+		// - tránh duplicate UserNotification
+		// ============================================
+		public async System.Threading.Tasks.Task SendToRoleAsync(string roleName, string title, string message, string type = "info", string? link = null)
+		{
+			// Create notification record
+			var notification = new Notification
+			{
+				Title = title,
+				Message = message,
+				Type = type,
+				Link = link,
+				CreatedAt = DateTime.UtcNow,
+				IsBroadcast = false
+			};
+
+			_context.Notifications.Add(notification);
+			await _context.SaveChangesAsync();
+
+			// 1) Lấy userId của role mục tiêu
+			var roleUserIds = await _context.Users
+				.Include(u => u.Role)
+				.Where(u => u.Role != null && u.Role.RoleName == roleName && u.IsActive == true)
+				.Select(u => u.UserId)
+				.ToListAsync();
+
+			// 2) Lấy admin userIds (dynamic: nếu có nhiều role admin, thay đổi logic ở đây)
+			var adminUserIds = await _context.Users
+				.Include(u => u.Role)
+				.Where(u => u.Role != null && u.Role.RoleName == "Admin" && u.IsActive == true)
+				.Select(u => u.UserId)
+				.ToListAsync();
+
+			// 3) Kết hợp và thêm UserNotification (không duplicate)
+			var allTargetUserIds = roleUserIds.Union(adminUserIds).ToList();
+			await AddUserNotificationsIfNotExistAsync(notification, allTargetUserIds);
+			await _context.SaveChangesAsync();
+
+			// 4) Gửi SignalR tới role group và tới Role_Admin để admin online nhận realtime
+			await _hubContext.Clients.Group($"Role_{roleName}").SendAsync("ReceiveMessage", title, message, type, link ?? "");
+			await _hubContext.Clients.Group($"Role_Admin").SendAsync("ReceiveMessage", title, message, type, link ?? "");
+		}
+
+		// ============================================
+		// ✅ GỬI ĐẾN NHIỀU ROLE CÙNG LÚC (single notification record)
+		// - tạo 1 Notification duy nhất, thêm UserNotification cho tất cả user thuộc các role + admin(s)
+		// - gửi SignalR tới từng role group và Role_Admin
+		// ============================================
+		public async System.Threading.Tasks.Task SendToRolesAsync(List<string> roleNames, string title, string message, string type = "info", string? link = null)
+		{
+			if (roleNames == null || roleNames.Count == 0)
+				return;
+
+			// Create single notification record for all roles
+			var notification = new Notification
+			{
+				Title = title,
+				Message = message,
+				Type = type,
+				Link = link,
+				CreatedAt = DateTime.UtcNow,
+				IsBroadcast = false
+			};
+
+			_context.Notifications.Add(notification);
+			await _context.SaveChangesAsync();
+
+			// Lấy tất cả user thuộc các role
+			var roleUserIds = await _context.Users
+				.Include(u => u.Role)
+				.Where(u => u.Role != null && roleNames.Contains(u.Role.RoleName) && u.IsActive == true)
+				.Select(u => u.UserId)
+				.ToListAsync();
+
+			// Lấy admin userIds
+			var adminUserIds = await _context.Users
+				.Include(u => u.Role)
+				.Where(u => u.Role != null && u.Role.RoleName == "Admin" && u.IsActive == true)
+				.Select(u => u.UserId)
+				.ToListAsync();
+
+			var allTargetUserIds = roleUserIds.Union(adminUserIds).ToList();
+
+			// Thêm UserNotification cho tất cả (không duplicate)
+			await AddUserNotificationsIfNotExistAsync(notification, allTargetUserIds);
+			await _context.SaveChangesAsync();
+
+			// Gửi SignalR tới từng role group
+			foreach (var rn in roleNames)
+			{
+				await _hubContext.Clients.Group($"Role_{rn}").SendAsync("ReceiveMessage", title, message, type, link ?? "");
+			}
+
+			// Gửi tới admin group
+			await _hubContext.Clients.Group($"Role_Admin").SendAsync("ReceiveMessage", title, message, type, link ?? "");
+		}
+
+		// ============================================
+		// ✅ CŨ - GỬI TỚI 1 USER
+		// ============================================
+		public async System.Threading.Tasks.Task SendToUserAsync(int userId, string title, string message, string type = "info", string? link = null)
 		{
 			var notification = new Notification
 			{
@@ -56,17 +192,13 @@ namespace AIHUBOS.Services
 			_context.UserNotifications.Add(userNotification);
 			await _context.SaveChangesAsync();
 
-			// Send via SignalR
-			await _hubContext.Clients.Group($"User_{userId}").SendAsync(
-				"ReceiveMessage",
-				title,
-				message,
-				type,
-				link ?? ""
-			);
+			await _hubContext.Clients.Group($"User_{userId}").SendAsync("ReceiveMessage", title, message, type, link ?? "");
 		}
 
-		public async SystemTask SendToDepartmentAsync(int departmentId, string title, string message, string type = "info", string? link = null)
+		// ============================================
+		// ✅ GỬI TỚI PHÒNG BAN
+		// ============================================
+		public async System.Threading.Tasks.Task SendToDepartmentAsync(int departmentId, string title, string message, string type = "info", string? link = null)
 		{
 			var notification = new Notification
 			{
@@ -99,58 +231,22 @@ namespace AIHUBOS.Services
 
 			await _context.SaveChangesAsync();
 
-			await _hubContext.Clients.Group($"Dept_{departmentId}").SendAsync(
-				"ReceiveMessage",
-				title,
-				message,
-				type,
-				link ?? ""
-			);
+			await _hubContext.Clients.Group($"Dept_{departmentId}").SendAsync("ReceiveMessage", title, message, type, link ?? "");
 		}
 
-		public async SystemTask SendToAdminsAsync(string title, string message, string type = "info", string? link = null)
+		// ============================================
+		// ✅ GỬI CHO ADMIN (BACKWARD COMPATIBLE)
+		// ============================================
+		public async System.Threading.Tasks.Task SendToAdminsAsync(string title, string message, string type = "info", string? link = null)
 		{
-			var notification = new Notification
-			{
-				Title = title,
-				Message = message,
-				Type = type,
-				Link = link,
-				CreatedAt = DateTime.UtcNow,
-				IsBroadcast = false
-			};
-
-			_context.Notifications.Add(notification);
-			await _context.SaveChangesAsync();
-
-			var adminUserIds = await _context.Users
-				.Include(u => u.Role)
-				.Where(u => u.Role.RoleName == "Admin" && u.IsActive == true)
-				.Select(u => u.UserId)
-				.ToListAsync();
-
-			foreach (var userId in adminUserIds)
-			{
-				_context.UserNotifications.Add(new UserNotification
-				{
-					NotificationId = notification.NotificationId,
-					UserId = userId,
-					IsRead = false
-				});
-			}
-
-			await _context.SaveChangesAsync();
-
-			await _hubContext.Clients.Group("Admins").SendAsync(
-				"ReceiveMessage",
-				title,
-				message,
-				type,
-				link ?? ""
-			);
+			// Sử dụng dynamic role-based method
+			await SendToRoleAsync("Admin", title, message, type, link);
 		}
 
-		public async SystemTask SendBroadcastAsync(string title, string message, string type = "info", string? link = null)
+		// ============================================
+		// ✅ BROADCAST TO ALL USERS
+		// ============================================
+		public async System.Threading.Tasks.Task SendBroadcastAsync(string title, string message, string type = "info", string? link = null)
 		{
 			var notification = new Notification
 			{
@@ -182,15 +278,12 @@ namespace AIHUBOS.Services
 
 			await _context.SaveChangesAsync();
 
-			await _hubContext.Clients.All.SendAsync(
-				"ReceiveMessage",
-				title,
-				message,
-				type,
-				link ?? ""
-			);
+			await _hubContext.Clients.Group("AllUsers").SendAsync("ReceiveMessage", title, message, type, link ?? "");
 		}
 
+		// ============================================
+		// Read helpers
+		// ============================================
 		public async System.Threading.Tasks.Task<List<UserNotification>> GetUserNotificationsAsync(int userId, int skip = 0, int take = 20)
 		{
 			return await _context.UserNotifications
@@ -208,7 +301,7 @@ namespace AIHUBOS.Services
 				.CountAsync(un => un.UserId == userId && !un.IsRead);
 		}
 
-		public async SystemTask MarkAsReadAsync(int userNotificationId)
+		public async System.Threading.Tasks.Task MarkAsReadAsync(int userNotificationId)
 		{
 			var userNotif = await _context.UserNotifications
 				.FirstOrDefaultAsync(un => un.UserNotificationId == userNotificationId);
@@ -221,7 +314,7 @@ namespace AIHUBOS.Services
 			}
 		}
 
-		public async SystemTask MarkAllAsReadAsync(int userId)
+		public async System.Threading.Tasks.Task MarkAllAsReadAsync(int userId)
 		{
 			var unreadNotifs = await _context.UserNotifications
 				.Where(un => un.UserId == userId && !un.IsRead)

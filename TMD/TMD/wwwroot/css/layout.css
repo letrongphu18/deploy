@@ -873,3 +873,18 @@ a {
 .dropdown-item {
     text-decoration: none !important;
 }
+
+
+#roleTable tbody tr {
+    transition: all 0.3s ease;
+}
+
+    #roleTable tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: translateX(3px);
+    }
+
+.badge {
+    padding: 0.4em 0.8em;
+    font-weight: 500;
+}
