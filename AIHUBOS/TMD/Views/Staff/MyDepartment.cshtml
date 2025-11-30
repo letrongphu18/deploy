@@ -1,0 +1,163 @@
+﻿@{
+    ViewData["Title"] = "Phòng ban của tôi";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    var department = ViewBag.MyDepartment as AIHUBOS.Models.Department;
+    var currentUser = ViewBag.CurrentUser as AIHUBOS.Models.User;
+}
+<link href="~/css/my-department.css" rel="stylesheet" />
+<div class="department-container">
+    <!-- DEPARTMENT HEADER -->
+    <div class="department-header">
+        <div class="department-header__icon">
+            <i class="fas fa-building"></i>
+        </div>
+        <div class="department-header__content">
+            <h2>@department.DepartmentName</h2>
+            @if (!string.IsNullOrEmpty(department.Description))
+            {
+                <p class="text-muted mb-0">@department.Description</p>
+            }
+        </div>
+        <div class="department-header__badge">
+            @if (department.IsActive == true)
+            {
+                <span class="badge badge-success">
+                    <i class="fas fa-check-circle"></i> Hoạt động
+                </span>
+            }
+        </div>
+    </div>
+
+    <!-- DEPARTMENT STATS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card stat-card--primary">
+                <div class="stat-card__icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-card__content">
+                    <h3>@department.Users.Count</h3>
+                    <p>Tổng thành viên</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card--success">
+                <div class="stat-card__icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-card__content">
+                    <h3>@department.Users.Count(u => u.IsActive == true)</h3>
+                    <p>Đang hoạt động</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card--info">
+                <div class="stat-card__icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-card__content">
+                    <h3>@department.CreatedAt?.ToString("dd/MM/yyyy")</h3>
+                    <p>Ngày thành lập</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEMBERS LIST -->
+    <div class="members-section">
+        <div class="members-section__header">
+            <h5><i class="fas fa-users"></i> Danh sách thành viên</h5>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm thành viên...">
+            </div>
+        </div>
+
+        <div class="members-grid">
+            @foreach (var member in department.Users.OrderBy(u => u.FullName))
+            {
+                var isCurrentUser = member.UserId == currentUser.UserId;
+
+                <div class="member-card @(isCurrentUser ? "member-card--current" : "")">
+                    <div class="member-card__avatar">
+                        @member.FullName?.Substring(0, 1)
+                    </div>
+                    <div class="member-card__content">
+                        <h6>@member.FullName</h6>
+                        @if (isCurrentUser)
+                        {
+                            <span class="badge badge-primary mb-2">
+                                <i class="fas fa-star"></i> Bạn
+                            </span>
+                        }
+                        <p class="member-card__username">@@@member.Username</p>
+                        <div class="member-card__info">
+                            <span class="info-badge">
+                                <i class="fas fa-user-tag"></i>
+                                @member.Role?.RoleName
+                            </span>
+                            @if (member.IsActive == true)
+                            {
+                                <span class="info-badge info-badge--success">
+                                    <i class="fas fa-circle"></i> Hoạt động
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="info-badge info-badge--inactive">
+                                    <i class="fas fa-circle"></i> Không hoạt động
+                                </span>
+                            }
+                        </div>
+                        @if (!string.IsNullOrEmpty(member.Email))
+                        {
+                            <div class="member-card__contact">
+                                <i class="fas fa-envelope"></i>
+                                <a href="mailto:@member.Email">@member.Email</a>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(member.PhoneNumber))
+                        {
+                            <div class="member-card__contact">
+                                <i class="fas fa-phone"></i>
+                                <a href="tel:@member.PhoneNumber">@member.PhoneNumber</a>
+                            </div>
+                        }
+                        @if (member.LastLoginAt.HasValue)
+                        {
+                            <div class="member-card__last-login">
+                                <i class="far fa-clock"></i>
+                                <span>Đăng nhập: @member.LastLoginAt.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        // Search members
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const memberCards = document.querySelectorAll('.member-card');
+
+            memberCards.forEach(card => {
+                const name = card.querySelector('h6')?.textContent.toLowerCase() || '';
+                const username = card.querySelector('.member-card__username')?.textContent.toLowerCase() || '';
+
+                if (name.includes(searchTerm) || username.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

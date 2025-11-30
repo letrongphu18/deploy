@@ -1,0 +1,246 @@
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\salary.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\user-management.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\tester-dashboard.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\pending-requests.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\attendance-management.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation\dist\additional-methods.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\layout.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\favicon.ico
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\edittask-ad.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\js\resetpass.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\tasklist-ad.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\task-create.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\user-tasks.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation\dist\jquery.validate.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\layoutstaff.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\fg-pass.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery\dist\jquery.min.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\auth-page.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\attendance-modal.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery\dist\jquery.slim.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\verify-otp.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\profile.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\js\attendance-history.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\js\verify-otp.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\admin-request.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\reset-password.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\reset-user-password.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\register-reset.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\passwordresethistory.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\login.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\requestcard.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery\LICENSE.txt
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery\dist\jquery.slim.min.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery\dist\jquery.slim.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\tasklist-staff.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\kpi-dashboard.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\audit-logs.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\js\site.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery\dist\jquery.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\loginhistory.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery\dist\jquery.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\js\admin-request.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\staff-dashboard.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\department-list.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\departmen-detail.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\my-department.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\jquery-validation\LICENSE.md
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\recycle-bin.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\staff-requests.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\sounds\notification.wav
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\attendance-history.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\setting.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\dashboard-management.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\css\site.css
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+E:\AIHUB TASK\AIHUBSYSTEM\aihubos_system\AIHUBOS\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\css\admin-request.css
+wwwroot\css\attendance-history.css
+wwwroot\css\attendance-management.css
+wwwroot\css\attendance-modal.css
+wwwroot\css\audit-logs.css
+wwwroot\css\auth-page.css
+wwwroot\css\dashboard-management.css
+wwwroot\css\departmen-detail.css
+wwwroot\css\department-list.css
+wwwroot\css\edittask-ad.css
+wwwroot\css\fg-pass.css
+wwwroot\css\kpi-dashboard.css
+wwwroot\css\layout.css
+wwwroot\css\layoutstaff.css
+wwwroot\css\login.css
+wwwroot\css\loginhistory.css
+wwwroot\css\my-department.css
+wwwroot\css\passwordresethistory.css
+wwwroot\css\pending-requests.css
+wwwroot\css\profile.css
+wwwroot\css\recycle-bin.css
+wwwroot\css\register-reset.css
+wwwroot\css\requestcard.css
+wwwroot\css\reset-password.css
+wwwroot\css\reset-user-password.css
+wwwroot\css\salary.css
+wwwroot\css\setting.css
+wwwroot\css\site.css
+wwwroot\css\staff-dashboard.css
+wwwroot\css\staff-requests.css
+wwwroot\css\task-create.css
+wwwroot\css\tasklist-ad.css
+wwwroot\css\tasklist-staff.css
+wwwroot\css\tester-dashboard.css
+wwwroot\css\user-management.css
+wwwroot\css\user-tasks.css
+wwwroot\css\verify-otp.css
+wwwroot\favicon.ico
+wwwroot\js\admin-request.js
+wwwroot\js\attendance-history.js
+wwwroot\js\resetpass.js
+wwwroot\js\site.js
+wwwroot\js\verify-otp.js
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\dist\jquery.slim.js
+wwwroot\lib\jquery\dist\jquery.slim.min.js
+wwwroot\lib\jquery\dist\jquery.slim.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\sounds\notification.mp3
+wwwroot\sounds\notification.wav
+wwwroot\uploads\attendance\12_20251117_121108_checkin.jpg
+wwwroot\uploads\attendance\12_20251118_142904_checkin.jpg
+wwwroot\uploads\attendance\12_20251121_193700_checkin.jpg
+wwwroot\uploads\attendance\12_20251121_194138_checkout.jpg
+wwwroot\uploads\attendance\12_20251123_020538_checkin.jpg
+wwwroot\uploads\attendance\12_20251123_234053_checkout.jpg
+wwwroot\uploads\attendance\12_20251124_113424_checkin.jpg
+wwwroot\uploads\attendance\14_20251121_202839_checkin.jpg
+wwwroot\uploads\attendance\15_20251121_210659_checkin.jpg
+wwwroot\uploads\attendance\15_20251121_213522_checkout.jpg
+wwwroot\uploads\attendance\3_20251127_141009_checkin.jpg
+wwwroot\uploads\attendance\3_20251127_235420_checkout.jpg
+wwwroot\uploads\attendance\3_20251128_095116_checkin.jpg
+wwwroot\uploads\attendance\3_20251128_200553_checkout.jpg
+wwwroot\uploads\attendance\3_20251130_013119_checkin.jpg
+wwwroot\uploads\attendance\6_20251129_134923_checkin.jpg
+wwwroot\uploads\attendance\9_20251116_015000_checkin.jpg
+wwwroot\uploads\attendance\9_20251116_015018_checkout.jpg
+wwwroot\uploads\attendance\9_20251117_133031_checkin.jpg
+wwwroot\uploads\attendance\9_20251117_233836_checkout.jpg
+wwwroot\uploads\attendance\9_20251118_003358_checkin.jpg
+wwwroot\uploads\attendance\9_20251118_110612_checkout.jpg
+wwwroot\uploads\attendance\9_20251119_103323_checkin.jpg
+wwwroot\uploads\attendance\9_20251119_121212_checkout.jpg
+wwwroot\uploads\attendance\9_20251120_134508_checkin.jpg
+wwwroot\uploads\attendance\9_20251121_003641_checkin.jpg
+wwwroot\uploads\attendance\9_20251121_193629_checkout.jpg
+wwwroot\uploads\attendance\9_20251123_013310_checkin.jpg
+wwwroot\uploads\attendance\9_20251123_013319_checkin.jpg
+wwwroot\uploads\attendance\9_20251123_013332_checkin.jpg
+wwwroot\uploads\attendance\9_20251123_013405_checkin.jpg
+wwwroot\uploads\attendance\9_20251123_021821_checkin.jpg
+wwwroot\uploads\attendance\9_20251123_222326_checkout.jpg
+wwwroot\uploads\attendance\9_20251124_014027_checkin.jpg
+wwwroot\uploads\avatars\11_20251124124412.png
+wwwroot\uploads\avatars\2_20251127135614.png
+wwwroot\uploads\avatars\3_20251130153135.png
+wwwroot\uploads\avatars\9_20251124141835.png

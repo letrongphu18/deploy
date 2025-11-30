@@ -1,0 +1,462 @@
+﻿@model AIHUBOS.Models.Task
+@{
+    ViewData["Title"] = "Tạo Task mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/task-create.css" rel="stylesheet" />
+
+<div class="aihub-tm-container">
+    <!-- Header Section -->
+    <div class="aihub-tm-page-header">
+        <div class="aihub-tm-d-flex aihub-tm-justify-between aihub-tm-align-center">
+            <div>
+                <h1 class="aihub-tm-page-title">
+                    <i class="fas fa-plus-circle"></i> Tạo Task mới
+                </h1>
+                <p class="aihub-tm-page-subtitle">Tạo và gán task cho nhân viên của bạn</p>
+            </div>
+            <a asp-action="TaskList" class="aihub-tm-btn-back">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Form -->
+        <div class="col-lg-8">
+            <div class="aihub-tm-card">
+                <div class="aihub-tm-card-header">
+                    <h6>
+                        <i class="fas fa-edit"></i> Thông tin Task
+                    </h6>
+                </div>
+                <div class="aihub-tm-card-body">
+                    <form id="createTaskForm">
+                        <div class="aihub-tm-form-group">
+                            <label for="taskName" class="aihub-tm-form-label">
+                                Tên Task <span class="aihub-tm-text-danger">*</span>
+                            </label>
+                            <input type="text" class="aihub-tm-form-control aihub-tm-form-control-lg" id="taskName"
+                                   placeholder="Nhập tên task..." required>
+                            <small class="aihub-tm-text-muted aihub-tm-mt-2" style="display: block;">
+                                <i class="fas fa-info-circle"></i> Tên task phải rõ ràng và dễ hiểu
+                            </small>
+                        </div>
+
+                        <div class="aihub-tm-form-group">
+                            <label for="description" class="aihub-tm-form-label">Mô tả</label>
+                            <textarea class="aihub-tm-form-control" id="description" rows="4"
+                                      placeholder="Mô tả chi tiết về task..."></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="aihub-tm-form-group">
+                                    <label for="platform" class="aihub-tm-form-label">Platform</label>
+                                    <select class="aihub-tm-form-control" id="platform">
+                                        <option value="">-- Chọn Platform --</option>
+                                        <option value="Facebook">📘 Facebook</option>
+                                        <option value="Instagram">📷 Instagram</option>
+                                        <option value="TikTok">🎵 TikTok</option>
+                                        <option value="YouTube">📺 YouTube</option>
+                                        <option value="LinkedIn">💼 LinkedIn</option>
+                                        <option value="Twitter">🐦 Twitter</option>
+                                        <option value="Google Ads">🎯 Google Ads</option>
+                                        <option value="Website">🌐 Website</option>
+                                        <option value="Other">📌 Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="aihub-tm-form-group">
+                                    <label for="deadline" class="aihub-tm-form-label">Deadline</label>
+                                    <input type="datetime-local" class="aihub-tm-form-control" id="deadline">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="aihub-tm-form-group">
+                            <label for="priority" class="aihub-tm-form-label">Priority</label>
+                            <select class="aihub-tm-form-control" id="priority">
+                                <option value="Low">🟢 Low - Ưu tiên thấp</option>
+                                <option value="Medium" selected>🟡 Medium - Ưu tiên trung bình</option>
+                                <option value="High">🔴 High - Ưu tiên cao</option>
+                            </select>
+                        </div>
+
+                        <div class="aihub-tm-divider"></div>
+
+                        <div class="aihub-tm-form-group">
+                            <label class="aihub-tm-form-label">
+                                <i class="fas fa-users"></i> Gán cho nhân viên
+                                <span class="aihub-tm-text-muted aihub-tm-font-weight-normal">(Chọn nhiều)</span>
+                            </label>
+                            <div class="aihub-tm-card" style="border: 2px solid var(--aihub-terracotta);">
+                                <div class="aihub-tm-card-body">
+                                    <div class="aihub-tm-mb-3">
+                                        <div class="aihub-tm-input-group">
+                                            <div class="aihub-tm-input-group-prepend">
+                                                <span class="aihub-tm-input-group-text aihub-tm-bg-gradient-primary aihub-tm-text-white">
+                                                    <i class="fas fa-search"></i>
+                                                </span>
+                                            </div>
+                                            <input type="text" class="aihub-tm-form-control" id="searchUsers"
+                                                   placeholder="Tìm kiếm nhân viên theo tên hoặc phòng ban...">
+                                        </div>
+                                    </div>
+
+                                    <div class="aihub-tm-checkbox-wrapper aihub-tm-mb-3" style="padding-bottom: 12px; border-bottom: 1px solid var(--aihub-border-color);">
+                                        <input type="checkbox" class="aihub-tm-checkbox" id="selectAll">
+                                        <span class="aihub-tm-checkmark"></span>
+                                        <label for="selectAll" class="aihub-tm-font-weight-bold aihub-tm-text-primary" style="padding-left: 12px;">
+                                            <i class="fas fa-check-double"></i> Chọn tất cả
+                                        </label>
+                                        <span class="aihub-tm-badge aihub-tm-badge-info" style="float: right;" id="selectedCount">0</span>
+                                    </div>
+
+                                    <div class="aihub-tm-user-list" id="userList">
+                                        @if (ViewBag.Users != null)
+                                        {
+                                            var usersByDept = ((List<AIHUBOS.Models.User>)ViewBag.Users)
+                                            .GroupBy(u => u.Department?.DepartmentName ?? "Chưa có phòng ban")
+                                            .OrderBy(g => g.Key);
+
+                                            foreach (var deptGroup in usersByDept)
+                                            {
+                                                <div class="aihub-tm-dept-group">
+                                                    <div class="aihub-tm-dept-header">
+                                                        <h6 class="aihub-tm-dept-title">
+                                                            <i class="fas fa-building"></i> @deptGroup.Key
+                                                            <span class="aihub-tm-badge aihub-tm-badge-info">@deptGroup.Count()</span>
+                                                        </h6>
+                                                    </div>
+                                                    @foreach (var user in deptGroup.OrderBy(u => u.FullName))
+                                                    {
+                                                        <div class="aihub-tm-user-item"
+                                                             data-name="@user.FullName.ToLower()"
+                                                             data-dept="@(user.Department?.DepartmentName?.ToLower() ?? "")">
+                                                            <div class="aihub-tm-checkbox-wrapper">
+                                                                <input type="checkbox" class="aihub-tm-checkbox user-checkbox"
+                                                                       id="user_@user.UserId" value="@user.UserId">
+                                                                <span class="aihub-tm-checkmark"></span>
+                                                                <label class="aihub-tm-user-label" for="user_@user.UserId" style="padding-left: 12px;">
+                                                                    <div class="aihub-tm-d-flex aihub-tm-align-center aihub-tm-gap-2">
+                                                                        @if (!string.IsNullOrEmpty(user.Avatar) && user.Avatar != "/images/default-avatar.png")
+                                                                        {
+                                                                            <img src="@user.Avatar"
+                                                                                 class="aihub-tm-user-avatar"
+                                                                                 alt="@user.FullName"
+                                                                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                                                            <div class="aihub-tm-user-avatar-placeholder" style="display:none;">
+                                                                                @user.FullName.Substring(0, 1).ToUpper()
+                                                                            </div>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <div class="aihub-tm-user-avatar-placeholder">
+                                                                                @user.FullName.Substring(0, 1).ToUpper()
+                                                                            </div>
+                                                                        }
+                                                                        <div>
+                                                                            <strong style="display: block;">@user.FullName</strong>
+                                                                            <small class="aihub-tm-text-muted">@user.Username</small>
+                                                                        </div>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="aihub-tm-divider"></div>
+
+                        <div class="aihub-tm-alert aihub-tm-alert-info">
+                            <i class="fas fa-lightbulb fa-lg"></i>
+                            <div>
+                                <strong>Lưu ý:</strong>
+                                <ul class="aihub-tm-mt-2">
+                                    <li>Tên task không được để trống</li>
+                                    <li>Có thể gán task cho nhiều nhân viên cùng lúc</li>
+                                    <li>Deadline và Platform có thể để trống</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aihub-tm-d-flex aihub-tm-justify-between aihub-tm-align-center aihub-tm-mt-4">
+                            <a asp-action="TaskList" class="aihub-tm-btn aihub-tm-btn-secondary aihub-tm-btn-lg">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit" class="aihub-tm-btn aihub-tm-btn-primary aihub-tm-btn-lg aihub-tm-shadow" id="btnSubmit">
+                                <i class="fas fa-save"></i> Tạo Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Preview Card -->
+            <div class="aihub-tm-card aihub-tm-sticky">
+                <div class="aihub-tm-card-header aihub-tm-bg-gradient-info aihub-tm-text-white">
+                    <h6>
+                        <i class="fas fa-eye"></i> Xem trước
+                    </h6>
+                </div>
+                <div class="aihub-tm-card-body">
+                    <div class="aihub-tm-preview-section aihub-tm-mb-3">
+                        <h5 id="previewTaskName" class="aihub-tm-text-muted aihub-tm-font-weight-bold">
+                            <i class="fas fa-clipboard-list"></i> Tên task...
+                        </h5>
+                        <p id="previewDescription" class="aihub-tm-text-muted aihub-tm-small aihub-tm-mb-0">Mô tả...</p>
+                    </div>
+
+                    <div class="aihub-tm-divider"></div>
+
+                    <div class="aihub-tm-preview-item aihub-tm-mb-3">
+                        <small class="aihub-tm-text-muted">
+                            <i class="fas fa-globe"></i> Platform
+                        </small>
+                        <div class="aihub-tm-mt-2">
+                            <span id="previewPlatform" class="aihub-tm-badge aihub-tm-badge-secondary">N/A</span>
+                        </div>
+                    </div>
+
+                    <div class="aihub-tm-preview-item aihub-tm-mb-3">
+                        <small class="aihub-tm-text-muted">
+                            <i class="far fa-calendar-alt"></i> Deadline
+                        </small>
+                        <div class="aihub-tm-mt-2">
+                            <span id="previewDeadline" class="aihub-tm-text-muted">Không có</span>
+                        </div>
+                    </div>
+
+                    <div class="aihub-tm-preview-item aihub-tm-mb-3">
+                        <small class="aihub-tm-text-muted">
+                            <i class="fas fa-flag"></i> Priority
+                        </small>
+                        <div class="aihub-tm-mt-2">
+                            <span id="previewPriority" class="aihub-tm-badge aihub-tm-badge-warning">🟡 Medium</span>
+                        </div>
+                    </div>
+
+                    <div class="aihub-tm-divider"></div>
+
+                    <div class="aihub-tm-preview-item">
+                        <small class="aihub-tm-text-muted">
+                            <i class="fas fa-users"></i> Số người được gán
+                        </small>
+                        <div class="aihub-tm-text-center aihub-tm-mt-2">
+                            <div class="aihub-tm-display-4 aihub-tm-font-weight-bold aihub-tm-text-primary" id="previewUserCount">0</div>
+                            <small class="aihub-tm-text-muted">nhân viên</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('createTaskForm');
+            const btnSubmit = document.getElementById('btnSubmit');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const userCheckboxes = document.querySelectorAll('.user-checkbox');
+            const searchInput = document.getElementById('searchUsers');
+            const selectedCountSpan = document.getElementById('selectedCount');
+
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `aihub-tm-toast aihub-tm-toast-${type}`;
+                toast.innerHTML = `
+                    <div class="aihub-tm-toast-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} aihub-tm-toast-icon"></i>
+                        <span class="aihub-tm-toast-message">${message}</span>
+                        <button class="aihub-tm-toast-close" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 10);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 5000);
+            }
+
+            function updateSelectedCount() {
+                const count = document.querySelectorAll('.user-checkbox:checked').length;
+                selectedCountSpan.textContent = count;
+                document.getElementById('previewUserCount').textContent = count;
+
+                const visibleCheckboxes = Array.from(userCheckboxes).filter(cb =>
+                    cb.closest('.aihub-tm-user-item').style.display !== 'none'
+                );
+                const checkedVisible = visibleCheckboxes.filter(cb => cb.checked);
+                selectAllCheckbox.checked = visibleCheckboxes.length > 0 &&
+                                           visibleCheckboxes.length === checkedVisible.length;
+            }
+
+            selectAllCheckbox.addEventListener('change', function() {
+                userCheckboxes.forEach(cb => {
+                    if (cb.closest('.aihub-tm-user-item').style.display !== 'none') {
+                        cb.checked = this.checked;
+                    }
+                });
+                updateSelectedCount();
+            });
+
+            userCheckboxes.forEach(cb => {
+                cb.addEventListener('change', updateSelectedCount);
+            });
+
+            searchInput.addEventListener('input', function() {
+                const searchText = this.value.toLowerCase().trim();
+                document.querySelectorAll('.aihub-tm-user-item').forEach(item => {
+                    const name = item.dataset.name || '';
+                    const dept = item.dataset.dept || '';
+                    const matches = name.includes(searchText) || dept.includes(searchText);
+                    item.style.display = matches || searchText === '' ? '' : 'none';
+                });
+                updateSelectedCount();
+            });
+
+            // Live Preview
+            document.getElementById('taskName').addEventListener('input', function() {
+                const preview = document.getElementById('previewTaskName');
+                const icon = '<i class="fas fa-clipboard-list"></i>';
+                if (this.value.trim()) {
+                    preview.innerHTML = `${icon} ${this.value}`;
+                    preview.classList.remove('aihub-tm-text-muted');
+                    preview.classList.add('aihub-tm-text-dark');
+                } else {
+                    preview.innerHTML = `${icon} Tên task...`;
+                    preview.classList.add('aihub-tm-text-muted');
+                    preview.classList.remove('aihub-tm-text-dark');
+                }
+            });
+
+            document.getElementById('description').addEventListener('input', function() {
+                const preview = document.getElementById('previewDescription');
+                preview.textContent = this.value.trim() || 'Mô tả...';
+                preview.classList.toggle('aihub-tm-text-muted', !this.value.trim());
+                if (this.value.trim()) {
+                    preview.classList.add('aihub-tm-text-dark');
+                } else {
+                    preview.classList.remove('aihub-tm-text-dark');
+                }
+            });
+
+            document.getElementById('platform').addEventListener('change', function() {
+                const preview = document.getElementById('previewPlatform');
+                const value = this.value;
+                if (value) {
+                    const text = this.options[this.selectedIndex].text;
+                    preview.textContent = text;
+                    preview.className = 'aihub-tm-badge aihub-tm-badge-info';
+                } else {
+                    preview.textContent = 'N/A';
+                    preview.className = 'aihub-tm-badge aihub-tm-badge-secondary';
+                }
+            });
+
+            document.getElementById('deadline').addEventListener('change', function() {
+                const preview = document.getElementById('previewDeadline');
+                if (this.value) {
+                    const date = new Date(this.value);
+                    preview.textContent = date.toLocaleString('vi-VN', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    preview.classList.remove('aihub-tm-text-muted');
+                    preview.classList.add('aihub-tm-text-dark', 'aihub-tm-font-weight-bold');
+                } else {
+                    preview.textContent = 'Không có';
+                    preview.classList.add('aihub-tm-text-muted');
+                    preview.classList.remove('aihub-tm-text-dark', 'aihub-tm-font-weight-bold');
+                }
+            });
+
+            document.getElementById('priority').addEventListener('change', function() {
+                const preview = document.getElementById('previewPriority');
+                const priority = this.value;
+                const badgeClass = priority === 'High' ? 'aihub-tm-badge-danger' :
+                                 priority === 'Medium' ? 'aihub-tm-badge-warning' : 'aihub-tm-badge-success';
+                const icon = priority === 'High' ? '🔴' :
+                           priority === 'Medium' ? '🟡' : '🟢';
+                preview.className = `aihub-tm-badge ${badgeClass}`;
+                preview.textContent = `${icon} ${priority}`;
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const taskName = document.getElementById('taskName').value.trim();
+                const description = document.getElementById('description').value.trim();
+                const platform = document.getElementById('platform').value;
+                const deadlineInput = document.getElementById('deadline').value;
+                const deadline = deadlineInput ? new Date(deadlineInput).toISOString() : null;
+                const priority = document.getElementById('priority').value;
+
+                const assignedUserIds = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+                    .map(cb => parseInt(cb.value));
+
+                if (!taskName) {
+                    showToast('Vui lòng nhập tên task!', 'danger');
+                    document.getElementById('taskName').focus();
+                    return;
+                }
+
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+
+                fetch('@Url.Action("CreateTaskPost", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        taskName: taskName,
+                        description: description,
+                        platform: platform,
+                        targetPerWeek: 0,
+                        deadline: deadline,
+                        priority: priority,
+                        assignedUserIds: assignedUserIds
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("TaskList", "Admin")';
+                        }, 1500);
+                    } else {
+                        showToast(data.message || 'Có lỗi xảy ra!', 'danger');
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="fas fa-save"></i> Tạo Task';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Có lỗi xảy ra khi tạo task!', 'danger');
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<i class="fas fa-save"></i> Tạo Task';
+                });
+            });
+        });
+    </script>
+}

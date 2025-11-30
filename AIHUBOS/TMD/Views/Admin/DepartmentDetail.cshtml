@@ -1,0 +1,463 @@
+﻿@model AIHUBOS.Models.Department
+@{
+    ViewData["Title"] = "Chi tiết phòng ban";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/department-list.css" rel="stylesheet" />
+
+<div class="tmdpt-container">
+    <!-- Header Section -->
+    <div class="tmdpt-page-header">
+        <div class="tmdpt-d-flex tmdpt-justify-content-between tmdpt-align-items-center">
+            <div>
+                <h1 class="tmdpt-page-title">
+                    <i class="fas fa-building"></i> @Model.DepartmentName
+                </h1>
+                <p class="tmdpt-page-subtitle">Chi tiết thông tin phòng ban</p>
+            </div>
+            <div class="tmdpt-d-flex tmdpt-gap-2">
+                <button class="tmdpt-btn-create" onclick="editDepartment()">
+                    <i class="fas fa-edit"></i> Chỉnh sửa
+                </button>
+                <a asp-action="DepartmentList" class="tmdpt-btn-back">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="tmdpt-row">
+        <!-- Main Info -->
+        <div class="tmdpt-col-lg-8">
+            <!-- Basic Information -->
+            <div class="tmdpt-card tmdpt-mb-4">
+                <div class="tmdpt-card-header">
+                    <h6>
+                        <i class="fas fa-info-circle"></i> Thông tin cơ bản
+                    </h6>
+                </div>
+                <div class="tmdpt-card-body">
+                    <div class="tmdpt-detail-grid">
+                        <div class="tmdpt-detail-section">
+                            <div class="tmdpt-detail-item">
+                                <label>Tên phòng ban</label>
+                                <div class="tmdpt-detail-value">@Model.DepartmentName</div>
+                            </div>
+
+                            <div class="tmdpt-detail-item">
+                                <label>Mô tả</label>
+                                <div class="tmdpt-detail-value">
+                                    @if (!string.IsNullOrEmpty(Model.Description))
+                                    {
+                                        @Model.Description
+                                    }
+                                    else
+                                    {
+                                        <span class="tmdpt-text-muted">Không có mô tả</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tmdpt-detail-section">
+                            <div class="tmdpt-detail-item">
+                                <label>Trạng thái</label>
+                                <div class="tmdpt-detail-value">
+                                    @if (Model.IsActive == true)
+                                    {
+                                        <span class="tmdpt-badge tmdpt-badge-success">
+                                            <i class="fas fa-check-circle"></i> Hoạt động
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="tmdpt-badge tmdpt-badge-secondary">
+                                            <i class="fas fa-ban"></i> Không hoạt động
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="tmdpt-detail-item">
+                                <label>Ngày tạo</label>
+                                <div class="tmdpt-detail-value">
+                                    @(Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                                </div>
+                            </div>
+
+                            <div class="tmdpt-detail-item">
+                                <label>Cập nhật lần cuối</label>
+                                <div class="tmdpt-detail-value">
+                                    @(Model.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users List -->
+            <div class="tmdpt-card">
+                <div class="tmdpt-card-header">
+                    <div class="tmdpt-d-flex tmdpt-justify-content-between tmdpt-align-items-center">
+                        <h6>
+                            <i class="fas fa-users"></i> Danh sách nhân viên (@(Model.Users?.Count ?? 0))
+                        </h6>
+                        <button class="tmdpt-btn-icon tmdpt-btn-icon--success" onclick="addUserToDepartment()">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="tmdpt-card-body-table">
+                    @if (Model.Users != null && Model.Users.Any())
+                    {
+                        <div class="tmdpt-table-responsive">
+                            <table class="tmdpt-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%;">#</th>
+                                        <th style="width: 10%;">Avatar</th>
+                                        <th style="width: 25%;">Họ tên</th>
+                                        <th style="width: 20%;">Username</th>
+                                        <th style="width: 20%;">Email</th>
+                                        <th style="width: 15%;">Vai trò</th>
+                                        <th style="width: 5%;">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int index = 1;
+                                        foreach (var user in Model.Users.OrderBy(u => u.FullName))
+                                        {
+                                            <tr>
+                                                <td class="text-center">@index</td>
+                                                <td>
+                                                    <div class="tmdpt-user-avatar">
+                                                        @if (!string.IsNullOrEmpty(user.Avatar))
+                                                        {
+                                                            <img src="@user.Avatar" alt="@user.FullName" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                            <span style="display:none;">@user.FullName?.Substring(0, 1)</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@user.FullName?.Substring(0, 1)</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="tmdpt-user-name">@user.FullName</div>
+                                                </td>
+                                                <td>
+                                                    <span class="tmdpt-text-muted">@user.Username</span>
+                                                </td>
+                                                <td>
+                                                    <span class="tmdpt-text-muted">@(user.Email ?? "N/A")</span>
+                                                </td>
+                                                <td>
+                                                    @if (user.Role != null)
+                                                    {
+                                                        <span class="tmdpt-badge tmdpt-badge-info">
+                                                            @user.Role.RoleName
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="tmdpt-text-muted">N/A</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (user.IsActive == true)
+                                                    {
+                                                        <span class="tmdpt-badge tmdpt-badge-success">
+                                                            <i class="fas fa-check"></i>
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="tmdpt-badge tmdpt-badge-secondary">
+                                                            <i class="fas fa-ban"></i>
+                                                        </span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="tmdpt-empty-state">
+                            <i class="fas fa-users fa-3x"></i>
+                            <h4>Chưa có nhân viên nào</h4>
+                            <p>Nhấn nút "Thêm nhân viên" để thêm nhân viên vào phòng ban</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Stats -->
+        <div class="tmdpt-col-lg-4">
+            <!-- Statistics -->
+            <div class="tmdpt-card tmdpt-mb-4">
+                <div class="tmdpt-card-header tmdpt-bg-gradient-primary tmdpt-text-white">
+                    <h6>
+                        <i class="fas fa-chart-bar"></i> Thống kê
+                    </h6>
+                </div>
+                <div class="tmdpt-card-body">
+                    <div class="tmdpt-stat-item tmdpt-mb-4">
+                        <small>
+                            <i class="fas fa-users"></i> Tổng nhân viên
+                        </small>
+                        <h3 class="tmdpt-text-primary tmdpt-font-weight-bold">
+                            @(Model.Users?.Count ?? 0) <span class="small">người</span>
+                        </h3>
+                    </div>
+
+                    <div class="tmdpt-divider"></div>
+
+                    <div class="tmdpt-stat-item tmdpt-mb-4">
+                        <small>
+                            <i class="fas fa-user-check"></i> Nhân viên hoạt động
+                        </small>
+                        <h3 class="tmdpt-text-success tmdpt-font-weight-bold">
+                            @(Model.Users?.Count(u => u.IsActive == true) ?? 0)
+                        </h3>
+                    </div>
+
+                    <div class="tmdpt-divider"></div>
+
+                    <div class="tmdpt-stat-item">
+                        <small>
+                            <i class="fas fa-user-slash"></i> Nhân viên không hoạt động
+                        </small>
+                        <h3 class="tmdpt-text-secondary tmdpt-font-weight-bold">
+                            @(Model.Users?.Count(u => u.IsActive == false) ?? 0)
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="tmdpt-card">
+                <div class="tmdpt-card-header tmdpt-bg-gradient-info tmdpt-text-white">
+                    <h6>
+                        <i class="fas fa-bolt"></i> Thao tác nhanh
+                    </h6>
+                </div>
+                <div class="tmdpt-card-body">
+                    <div class="tmdpt-d-grid tmdpt-gap-2">
+                        <button class="tmdpt-btn-outline-primary" onclick="editDepartment()">
+                            <i class="fas fa-edit"></i> Chỉnh sửa thông tin
+                        </button>
+
+                        @if (Model.IsActive == true)
+                        {
+                            <button class="tmdpt-btn-outline-danger" onclick="toggleStatus()">
+                                <i class="fas fa-ban"></i> Vô hiệu hóa
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="tmdpt-btn-outline-success" onclick="toggleStatus()">
+                                <i class="fas fa-check-circle"></i> Kích hoạt
+                            </button>
+                        }
+
+                        <button class="tmdpt-btn-outline-info" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Xuất Excel
+                        </button>
+
+                        <a asp-action="DepartmentList" class="tmdpt-btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Department -->
+<div class="tmdpt-modal-overlay" id="editModalOverlay" onclick="closeEditModal()"></div>
+<div class="tmdpt-modal" id="editModal">
+    <div class="tmdpt-modal-header">
+        <h5 class="tmdpt-modal-title">
+            <i class="fas fa-edit"></i> Chỉnh sửa phòng ban
+        </h5>
+        <button type="button" class="tmdpt-btn-close" onclick="closeEditModal()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="tmdpt-modal-body">
+        <form id="editForm" onsubmit="handleEditSubmit(event)">
+            <input type="hidden" id="departmentId" value="@Model.DepartmentId">
+
+            <div class="tmdpt-form-group">
+                <label for="departmentName" class="tmdpt-form-label">
+                    Tên phòng ban <span class="tmdpt-text-danger">*</span>
+                </label>
+                <input type="text" class="tmdpt-form-control" id="departmentName"
+                       value="@Model.DepartmentName" required>
+            </div>
+
+            <div class="tmdpt-form-group">
+                <label for="departmentDescription" class="tmdpt-form-label">Mô tả</label>
+                <textarea class="tmdpt-form-control" id="departmentDescription" rows="3">@Model.Description</textarea>
+            </div>
+
+            <div class="tmdpt-form-group">
+                <label class="tmdpt-checkbox-wrapper">
+                    <input type="checkbox" id="departmentIsActive" @(Model.IsActive == true ? "checked" : "")>
+                    <span class="tmdpt-checkbox-label">
+                        <i class="fas fa-check-circle"></i> Kích hoạt phòng ban
+                    </span>
+                </label>
+            </div>
+
+            <div class="tmdpt-divider"></div>
+
+            <div class="tmdpt-btn-group">
+                <button type="button" class="tmdpt-btn-secondary" onclick="closeEditModal()">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button type="submit" class="tmdpt-btn-primary" id="btnSave">
+                    <i class="fas fa-save"></i> Cập nhật
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `tmdpt-toast tmdpt-toast-${type}`;
+            toast.innerHTML = `
+                <div class="tmdpt-toast-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} tmdpt-toast-icon"></i>
+                    <span class="tmdpt-toast-message">${message}</span>
+                    <button class="tmdpt-toast-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function openEditModal() {
+            document.getElementById('editModalOverlay').classList.add('active');
+            document.getElementById('editModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModalOverlay').classList.remove('active');
+            document.getElementById('editModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeEditModal();
+        });
+
+        function editDepartment() {
+            openEditModal();
+        }
+
+        function toggleStatus() {
+            const departmentId = @Model.DepartmentId;
+            const departmentName = '@Model.DepartmentName';
+            const currentStatus = @Model.IsActive.ToString().ToLower();
+
+            Swal.fire({
+                title: 'Xác nhận',
+                text: `Bạn có chắc muốn ${currentStatus ? 'vô hiệu hóa' : 'kích hoạt'} phòng ban "${departmentName}"?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#E74C3C',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: 'Xác nhận',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('@Url.Action("ToggleDepartmentStatus", "Admin")', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ departmentId: departmentId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showToast(data.message, 'success');
+                            setTimeout(() => location.reload(), 1000);
+                        } else {
+                            showToast(data.message, 'danger');
+                        }
+                    })
+                    .catch(() => showToast('Có lỗi xảy ra!', 'danger'));
+                }
+            });
+        }
+
+        function addUserToDepartment() {
+            showToast('Chức năng đang phát triển', 'info');
+        }
+
+        function exportToExcel() {
+            showToast('Chức năng xuất Excel đang phát triển', 'info');
+        }
+
+        async function handleEditSubmit(e) {
+            e.preventDefault();
+
+            const departmentId = parseInt(document.getElementById('departmentId').value);
+            const departmentName = document.getElementById('departmentName').value.trim();
+            const description = document.getElementById('departmentDescription').value.trim();
+            const isActive = document.getElementById('departmentIsActive').checked;
+            const btnSave = document.getElementById('btnSave');
+
+            if (!departmentName) {
+                showToast('Vui lòng nhập tên phòng ban!', 'danger');
+                return;
+            }
+
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
+
+            try {
+                const response = await fetch('@Url.Action("UpdateDepartment", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ departmentId, departmentName, description, isActive })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    showToast(data.message, 'danger');
+                    btnSave.disabled = false;
+                    btnSave.innerHTML = '<i class="fas fa-save"></i> Cập nhật';
+                }
+            } catch (error) {
+                showToast('Có lỗi xảy ra!', 'danger');
+                btnSave.disabled = false;
+                btnSave.innerHTML = '<i class="fas fa-save"></i> Cập nhật';
+            }
+        }
+    </script>
+}

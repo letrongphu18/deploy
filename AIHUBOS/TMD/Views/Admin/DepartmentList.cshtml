@@ -1,0 +1,402 @@
+﻿@model List<AIHUBOS.Models.Department>
+@{
+    ViewData["Title"] = "Quản lý phòng ban";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/department-list.css" rel="stylesheet" />
+
+<div class="tmdpt-container">
+    <!-- Header Section -->
+    <div class="tmdpt-page-header">
+        <div class="tmdpt-d-flex tmdpt-justify-content-between tmdpt-align-items-center">
+            <div>
+                <h1 class="tmdpt-page-title">
+                    <i class="fas fa-building"></i> Quản lý phòng ban
+                </h1>
+                <p class="tmdpt-page-subtitle">Danh sách các phòng ban trong hệ thống</p>
+            </div>
+            <button class="tmdpt-btn-create" onclick="addDepartment()">
+                <i class="fas fa-plus"></i> Thêm phòng ban
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="tmdpt-row">
+        <div class="tmdpt-col-xl-4 tmdpt-col-md-6">
+            <div class="tmdpt-stats-card tmdpt-stats-primary">
+                <div class="tmdpt-stats-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="tmdpt-stats-content">
+                    <div class="tmdpt-stats-label">Tổng phòng ban</div>
+                    <div class="tmdpt-stats-value">@Model.Count</div>
+                </div>
+                <div class="tmdpt-stats-trend">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="tmdpt-col-xl-4 tmdpt-col-md-6">
+            <div class="tmdpt-stats-card tmdpt-stats-success">
+                <div class="tmdpt-stats-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="tmdpt-stats-content">
+                    <div class="tmdpt-stats-label">Tổng nhân viên</div>
+                    <div class="tmdpt-stats-value">@Model.Sum(d => d.Users?.Count ?? 0)</div>
+                </div>
+                <div class="tmdpt-stats-trend">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="tmdpt-col-xl-4 tmdpt-col-md-6">
+            <div class="tmdpt-stats-card tmdpt-stats-info">
+                <div class="tmdpt-stats-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="tmdpt-stats-content">
+                    <div class="tmdpt-stats-label">Trung bình/phòng</div>
+                    <div class="tmdpt-stats-value">@(Model.Count > 0 ? Math.Round((double)Model.Sum(d => d.Users?.Count ?? 0) / Model.Count, 1) : 0)</div>
+                </div>
+                <div class="tmdpt-stats-trend">
+                    <i class="fas fa-calculator"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Cards -->
+    @if (Model.Any())
+    {
+        <div class="tmdpt-row">
+            @foreach (var dept in Model)
+            {
+                <div class="tmdpt-col-xl-4 tmdpt-col-lg-6 tmdpt-col-md-6">
+                    <div class="tmdpt-dept-card">
+                        <div class="tmdpt-dept-card__header">
+                            <div class="tmdpt-dept-card__icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <div class="tmdpt-dept-card__actions">
+                                <a asp-action="DepartmentDetail" asp-route-id="@dept.DepartmentId" class="tmdpt-btn-icon tmdpt-btn-icon--info" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <button class="tmdpt-btn-icon tmdpt-btn-icon--primary" onclick="editDepartment(@dept.DepartmentId, '@dept.DepartmentName', '@Html.Raw(dept.Description?.Replace("'", "\\'") ?? "")', @dept.IsActive.ToString().ToLower())" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                @if (dept.IsActive == true)
+                                {
+                                    <button class="tmdpt-btn-icon tmdpt-btn-icon--danger" onclick="toggleDepartmentStatus(@dept.DepartmentId, '@Html.Raw(dept.DepartmentName.Replace("'", "\\'"))')" title="Vô hiệu hóa">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="tmdpt-btn-icon tmdpt-btn-icon--success" onclick="toggleDepartmentStatus(@dept.DepartmentId, '@Html.Raw(dept.DepartmentName.Replace("'", "\\'"))')" title="Kích hoạt">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="tmdpt-dept-card__body">
+                            <h4 class="tmdpt-dept-card__name">@dept.DepartmentName</h4>
+
+                            <div class="tmdpt-dept-card__stats">
+                                <div class="tmdpt-stat-badge">
+                                    <i class="fas fa-users"></i>
+                                    <span>@(dept.Users?.Count ?? 0) nhân viên</span>
+                                </div>
+                                @if (dept.IsActive == true)
+                                {
+                                    <span class="tmdpt-badge tmdpt-badge-success">
+                                        <i class="fas fa-check-circle"></i> Hoạt động
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="tmdpt-badge tmdpt-badge-secondary">
+                                        <i class="fas fa-ban"></i> Không hoạt động
+                                    </span>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(dept.Description))
+                            {
+                                <p class="tmdpt-dept-card__desc">@dept.Description</p>
+                            }
+
+                            @if (dept.Users != null && dept.Users.Any())
+                            {
+                                <div class="tmdpt-dept-card__members">
+                                    <p class="tmdpt-members-title">
+                                        <i class="fas fa-users"></i> Thành viên:
+                                    </p>
+                                    <div class="tmdpt-member-avatars">
+                                        @foreach (var user in dept.Users.Take(5))
+                                        {
+                                            <div class="tmdpt-member-avatar" title="@user.FullName">
+                                                @if (!string.IsNullOrEmpty(user.Avatar))
+                                                {
+                                                    <img src="@user.Avatar" alt="@user.FullName" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                    <span style="display:none;">@user.FullName?.Substring(0, 1)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@user.FullName?.Substring(0, 1)</span>
+                                                }
+                                            </div>
+                                        }
+                                        @if (dept.Users.Count > 5)
+                                        {
+                                            <div class="tmdpt-member-avatar tmdpt-member-avatar--more">
+                                                +@(dept.Users.Count - 5)
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="tmdpt-dept-card__footer">
+                            <small class="tmdpt-text-muted">
+                                <i class="far fa-calendar"></i>
+                                Tạo: @(dept.CreatedAt?.ToString("dd/MM/yyyy") ?? "N/A")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="tmdpt-empty-state">
+            <i class="fas fa-building fa-3x"></i>
+            <h4>Chưa có phòng ban nào</h4>
+            <p>Nhấn nút "Thêm phòng ban" để tạo phòng ban mới</p>
+        </div>
+    }
+</div>
+
+<!-- Modal -->
+<div class="tmdpt-modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+<div class="tmdpt-modal" id="departmentModal">
+    <div class="tmdpt-modal-header">
+        <h5 class="tmdpt-modal-title" id="modalTitle">
+            <i class="fas fa-building"></i> Thêm phòng ban
+        </h5>
+        <button type="button" class="tmdpt-btn-close" onclick="closeModal()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="tmdpt-modal-body">
+        <form id="departmentForm" onsubmit="handleSubmit(event)">
+            <input type="hidden" id="departmentId" value="0">
+
+            <div class="tmdpt-form-group">
+                <label for="departmentName" class="tmdpt-form-label">
+                    Tên phòng ban <span class="tmdpt-text-danger">*</span>
+                </label>
+                <input type="text" class="tmdpt-form-control" id="departmentName"
+                       placeholder="Nhập tên phòng ban..." required>
+            </div>
+
+            <div class="tmdpt-form-group">
+                <label for="departmentDescription" class="tmdpt-form-label">Mô tả</label>
+                <textarea class="tmdpt-form-control" id="departmentDescription" rows="4"
+                          placeholder="Mô tả về phòng ban..."></textarea>
+            </div>
+
+            <div class="tmdpt-form-group">
+                <label class="tmdpt-checkbox-wrapper">
+                    <input type="checkbox" id="departmentIsActive" checked>
+                    <span class="tmdpt-checkbox-label">
+                        <i class="fas fa-check-circle"></i> Kích hoạt phòng ban
+                    </span>
+                </label>
+            </div>
+
+            <div class="tmdpt-divider"></div>
+
+            <div class="tmdpt-btn-group">
+                <button type="button" class="tmdpt-btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button type="submit" class="tmdpt-btn-primary" id="btnSaveDepartment">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Modal Functions
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            document.getElementById('departmentModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('departmentModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Toast Notification
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `tmdpt-toast tmdpt-toast-${type}`;
+            toast.innerHTML = `
+                <div class="tmdpt-toast-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'} tmdpt-toast-icon"></i>
+                    <span class="tmdpt-toast-message">${message}</span>
+                    <button class="tmdpt-toast-close" onclick="this.parentElement.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        function addDepartment() {
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-plus me-2"></i> Thêm phòng ban';
+            document.getElementById('departmentId').value = '0';
+            document.getElementById('departmentName').value = '';
+            document.getElementById('departmentDescription').value = '';
+            document.getElementById('departmentIsActive').checked = true;
+            openModal();
+        }
+
+        function editDepartment(id, name, description, isActive) {
+            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit me-2"></i> Chỉnh sửa phòng ban';
+            document.getElementById('departmentId').value = id;
+            document.getElementById('departmentName').value = name;
+            document.getElementById('departmentDescription').value = description || '';
+            document.getElementById('departmentIsActive').checked = isActive;
+            openModal();
+        }
+
+        function toggleDepartmentStatus(id, name) {
+            Swal.fire({
+                title: 'Xác nhận thay đổi',
+                html: `Bạn có chắc muốn thay đổi trạng thái phòng ban<br><strong>"${name}"</strong>?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#E74C3C',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-check me-2"></i>Xác nhận',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy',
+                showLoaderOnConfirm: true,
+                preConfirm: async () => {
+                    try {
+                        const response = await fetch('/Admin/ToggleDepartmentStatus', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ departmentId: parseInt(id) })
+                        });
+                        const data = await response.json();
+                        if (!data.success) throw new Error(data.message || 'Có lỗi xảy ra');
+                        return data;
+                    } catch (error) {
+                        Swal.showValidationMessage(`Lỗi: ${error.message}`);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: result.value.message,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60',
+                        confirmButtonText: '<i class="fas fa-check me-2"></i>OK'
+                    }).then(() => location.reload());
+                }
+            });
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            const departmentId = parseInt(document.getElementById('departmentId').value);
+            const departmentName = document.getElementById('departmentName').value.trim();
+            const description = document.getElementById('departmentDescription').value.trim();
+            const isActive = document.getElementById('departmentIsActive').checked;
+            const btnSave = document.getElementById('btnSaveDepartment');
+
+            if (!departmentName) {
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Vui lòng nhập tên phòng ban!',
+                    icon: 'error',
+                    confirmButtonColor: '#E74C3C'
+                });
+                return;
+            }
+
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+            const url = departmentId > 0 ? '/Admin/UpdateDepartment' : '/Admin/CreateDepartment';
+            const data = departmentId > 0
+                ? { departmentId, departmentName, description, isActive }
+                : { departmentName, description, isActive };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    closeModal();
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: result.message,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60'
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: result.message,
+                        icon: 'error',
+                        confirmButtonColor: '#E74C3C'
+                    });
+                    btnSave.disabled = false;
+                    btnSave.innerHTML = '<i class="fas fa-save"></i> ' + (departmentId > 0 ? 'Cập nhật' : 'Lưu');
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra khi kết nối đến server!',
+                    icon: 'error',
+                    confirmButtonColor: '#E74C3C'
+                });
+                btnSave.disabled = false;
+                btnSave.innerHTML = '<i class="fas fa-save"></i> ' + (departmentId > 0 ? 'Cập nhật' : 'Lưu');
+            }
+        }
+    </script>
+}

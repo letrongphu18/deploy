@@ -1,0 +1,678 @@
+﻿@model List<AIHUBOS.Models.Attendance>
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Lịch Sử Chấm Công";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    var pageSize = 10;
+}
+<link href="~/css/attendance-history.css" rel="stylesheet" />
+
+<!-- Page Header -->
+<div class="page-header-modern">
+    <div class="page-header-content">
+        <div class="page-title-wrapper">
+            <div class="page-icon">
+                <i class="fas fa-history"></i>
+            </div>
+            <div>
+                <h1 class="page-title">Lịch Sử Chấm Công</h1>
+                <div class="page-breadcrumb">
+                    <a href="/Staff/Dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Lịch sử chấm công</span>
+                </div>
+            </div>
+        </div>
+        <div class="page-actions">
+            <button class="btn-export" onclick="exportAttendance()">
+                <i class="fas fa-file-excel"></i>
+                Xuất Excel
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+    <div class="stat-card stat-gradient-1">
+        <div class="stat-icon">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">@ViewBag.TotalRecords</div>
+            <div class="stat-label">Tổng số ngày</div>
+        </div>
+        <div class="stat-trend">
+            <i class="fas fa-arrow-up"></i>
+            <span>Tháng này</span>
+        </div>
+    </div>
+
+    <div class="stat-card stat-gradient-2">
+        <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">@ViewBag.OnTimeCount</div>
+            <div class="stat-label">Đúng giờ</div>
+        </div>
+        <div class="stat-trend success">
+            <i class="fas fa-thumbs-up"></i>
+            <span>Xuất sắc</span>
+        </div>
+    </div>
+
+    <div class="stat-card stat-gradient-3">
+        <div class="stat-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">@ViewBag.LateCount</div>
+            <div class="stat-label">Đi muộn</div>
+        </div>
+        <div class="stat-trend warning">
+            <i class="fas fa-clock"></i>
+            <span>Cần cải thiện</span>
+        </div>
+    </div>
+
+    <div class="stat-card stat-gradient-4">
+        <div class="stat-icon">
+            <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="stat-content">
+            <div class="stat-value">@ViewBag.TotalWorkHours.ToString("F1")h</div>
+            <div class="stat-label">Tổng giờ làm</div>
+        </div>
+        <div class="stat-trend">
+            <i class="fas fa-chart-line"></i>
+            <span>Thống kê</span>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance Card -->
+<div class="modern-card">
+    <div class="card-header-modern">
+        <div class="header-left">
+            <h5 class="card-title-modern">
+                <i class="fas fa-list-ul"></i>
+                Chi Tiết Chấm Công
+            </h5>
+            <p class="card-subtitle">Xem lịch sử chấm công chi tiết của bạn</p>
+        </div>
+        <div class="header-right">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm kiếm theo ngày hoặc địa điểm...">
+            </div>
+
+            <div class="view-toggle">
+                <button class="btn-toggle active" data-view="table" onclick="switchView('table')">
+                    <i class="fas fa-table"></i> Bảng
+                </button>
+                <button class="btn-toggle" data-view="list" onclick="switchView('list')">
+                    <i class="fas fa-list"></i> Danh sách
+                </button>
+                <button class="btn-toggle" data-view="calendar" onclick="switchView('calendar')">
+                    <i class="fas fa-calendar-alt"></i> Lịch
+                </button>
+            </div>
+
+            <div class="filter-dropdown">
+                <button class="btn-filter" onclick="toggleFilter()">
+                    <i class="fas fa-filter"></i>
+                    Lọc
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body-modern">
+        @if (Model.Any())
+        {
+            <div id="attendanceApp">
+                <!-- Table view -->
+                <div id="tableView" class="view-section">
+                    <div class="table-container">
+                        <table class="modern-table" id="attendanceTable">
+                            <thead>
+                                <tr>
+                                    <th width="60"><div class="th-content">STT</div></th>
+                                    <th><div class="th-content"><i class="far fa-calendar"></i> Ngày làm việc</div></th>
+                                    <th><div class="th-content"><i class="fas fa-sign-in-alt"></i> Check-in</div></th>
+                                    <th><div class="th-content"><i class="fas fa-sign-out-alt"></i> Check-out</div></th>
+                                    <th><div class="th-content"><i class="fas fa-clock"></i> Tổng giờ</div></th>
+                                    <th><div class="th-content"><i class="fas fa-info-circle"></i> Trạng thái</div></th>
+                                    <th width="120"><div class="th-content">Thao tác</div></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="pagination-wrapper">
+                        <button class="page-btn" id="prevPage" onclick="changePage(currentPage - 1)">‹</button>
+                        <div id="pageNumbers" class="page-numbers"></div>
+                        <button class="page-btn" id="nextPage" onclick="changePage(currentPage + 1)">›</button>
+                        <select id="pageSizeSelect" onchange="changePageSize(this.value)">
+                            <option value="5">5 / trang</option>
+                            <option value="10" selected>10 / trang</option>
+                            <option value="20">20 / trang</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- List view -->
+                <div id="listView" class="view-section" style="display:none;">
+                    <div id="listContainer"></div>
+                    <div class="pagination-wrapper">
+                        <button class="page-btn" onclick="changePage(currentPage - 1)">‹</button>
+                        <div id="pageNumbersList" class="page-numbers"></div>
+                        <button class="page-btn" onclick="changePage(currentPage + 1)">›</button>
+                    </div>
+                </div>
+
+                <!-- Calendar view -->
+                <div id="calendarView" class="view-section" style="display:none;">
+                    <div id="calendarControls" class="calendar-controls">
+                        <button onclick="calendarPrev()">‹</button>
+                        <span id="calendarTitle"></span>
+                        <button onclick="calendarNext()">›</button>
+                    </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h3 class="empty-title">Chưa có dữ liệu chấm công</h3>
+                <p class="empty-text">Bạn chưa có lịch sử chấm công nào. Hãy bắt đầu check-in ngay!</p>
+                <a href="/Staff/Dashboard" class="btn-primary-modern">
+                    <i class="fas fa-clock"></i>
+                    Check-in ngay
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content modal-modern">
+            <div class="modal-header-modern">
+                <div class="modal-title-wrapper">
+                    <div class="modal-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h5 class="modal-title-modern">Chi Tiết Chấm Công</h5>
+                </div>
+                <button type="button" class="btn-close-modern" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body-modern">
+                <div class="detail-header">
+                    <div class="detail-header-icon">
+                        <i class="far fa-calendar-alt"></i>
+                    </div>
+                    <div class="detail-header-content">
+                        <h6>Ngày làm việc</h6>
+                        <p id="detailWorkDate">—</p>
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-section section-checkin">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <h6 class="section-title">Thông tin Check-in</h6>
+                        </div>
+                        <div class="section-content">
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="far fa-clock"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Thời gian</label>
+                                    <p id="detailCheckInTime">—</p>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Địa điểm</label>
+                                    <p id="detailCheckInAddress" class="address-text">—</p>
+                                </div>
+                            </div>
+                            <div class="info-row" id="checkInPhotoGroup" style="display: none;">
+                                <div class="info-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Hình ảnh</label>
+                                    <div class="photo-container" id="checkInPhotoContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section section-checkout">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <h6 class="section-title">Thông tin Check-out</h6>
+                        </div>
+                        <div class="section-content">
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="far fa-clock"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Thời gian</label>
+                                    <p id="detailCheckOutTime">—</p>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-hourglass-half"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Tổng giờ làm</label>
+                                    <p id="detailTotalHours" class="hours-highlight">—</p>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Địa điểm</label>
+                                    <p id="detailCheckOutAddress" class="address-text">—</p>
+                                </div>
+                            </div>
+                            <div class="info-row" id="checkOutPhotoGroup" style="display: none;">
+                                <div class="info-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <div class="info-content">
+                                    <label>Hình ảnh</label>
+                                    <div class="photo-container" id="checkOutPhotoContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer-modern">
+                <button type="button" class="btn-secondary-modern" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Serialize model to client
+        const rawData = @Html.Raw(JsonSerializer.Serialize(Model.Select(item => new
+            {
+                workDate = item.WorkDate.ToString("yyyy-MM-dd"),
+                workDateDisplay = item.WorkDate.ToString("dd/MM/yyyy"),
+                workDayName = item.WorkDate.ToString("dddd", new System.Globalization.CultureInfo("vi-VN")),
+                checkInTime = item.CheckInTime?.ToString("HH:mm:ss"),
+                checkOutTime = item.CheckOutTime?.ToString("HH:mm:ss"),
+                checkInTimeIso = item.CheckInTime?.ToString("yyyy-MM-ddTHH:mm:ss"),
+                checkOutTimeIso = item.CheckOutTime?.ToString("yyyy-MM-ddTHH:mm:ss"),
+                totalHours = item.TotalHours ?? 0,
+                checkInAddress = item.CheckInAddress ?? "",
+                checkOutAddress = item.CheckOutAddress ?? "",
+                checkInPhotos = item.CheckInPhotos ?? "",
+                checkOutPhotos = item.CheckOutPhotos ?? "",
+                isLate = item.IsLate ?? false,
+                lateMinutes = (item.GetType().GetProperty("LateMinutes") != null) ? (object)(item.GetType().GetProperty("LateMinutes").GetValue(item)) : null
+            })));
+    </script>
+
+    <script>
+        let attendanceData = rawData || [];
+        let filteredData = attendanceData.slice();
+        let currentPage = 1;
+        let pageSize = @pageSize;
+        let currentView = 'table';
+        let calendarDate = new Date();
+
+        function formatHours(h) {
+            return (h && h > 0) ? h.toFixed(2) + 'h' : '—';
+        }
+
+        function parsePhotosField(field) {
+            if (!field) return [];
+            try {
+                const parsed = JSON.parse(field);
+                if (Array.isArray(parsed)) return parsed;
+            } catch (e) {}
+            if (field.indexOf(';') !== -1) {
+                return field.split(';').map(s => s.trim()).filter(Boolean);
+            }
+            return [field].filter(Boolean);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        function unescapeHtml(str) {
+            return String(str)
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'");
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            const start = (currentPage - 1) * pageSize;
+            const pageItems = filteredData.slice(start, start + pageSize);
+            let index = start + 1;
+            for (const item of pageItems) {
+                const tr = document.createElement('tr');
+                tr.className = 'table-row-modern';
+                tr.innerHTML = `
+                    <td><div class="index-badge">${index}</div></td>
+                    <td>
+                        <div class="date-cell">
+                            <div class="date-primary">${item.workDateDisplay}</div>
+                            <div class="date-secondary">${item.workDayName}</div>
+                        </div>
+                    </td>
+                    <td>
+                        ${item.checkInTime ? `<div class="time-badge time-in"><i class="fas fa-sign-in-alt"></i><span>${item.checkInTime}</span></div>` : `<span class="text-muted-modern">—</span>`}
+                    </td>
+                    <td>
+                        ${item.checkOutTime ? `<div class="time-badge time-out"><i class="fas fa-sign-out-alt"></i><span>${item.checkOutTime}</span></div>` : `<div class="status-badge badge-pending"><i class="fas fa-clock"></i>Chưa checkout</div>`}
+                    </td>
+                    <td>
+                        ${item.totalHours && item.totalHours > 0 ? `<div class="hours-display"><i class="fas fa-hourglass-half"></i><strong>${item.totalHours.toFixed(2)}h</strong></div>` : `<span class="text-muted-modern">—</span>`}
+                    </td>
+                    <td>
+                        <div class="status-group">
+                            ${item.checkInTime && item.checkOutTime ? `<div class="status-badge badge-success"><i class="fas fa-check-circle"></i>Hoàn thành</div>` : (item.checkInTime ? `<div class="status-badge badge-warning"><i class="fas fa-clock"></i>Đang làm việc</div>` : '')}
+                            ${item.isLate ? `<div class="status-badge badge-late"><i class="fas fa-exclamation-triangle"></i>Đi muộn</div>` : (item.checkInTime ? `<div class="status-badge badge-ontime"><i class="fas fa-check"></i>Đúng giờ</div>` : '')}
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn-action btn-view" data-item='${escapeHtml(JSON.stringify(item))}' onclick="viewDetailsFromButton(this)">
+                            <i class="fas fa-eye"></i> Chi tiết
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+                index++;
+            }
+            renderPagination();
+        }
+
+        function renderListView() {
+            const container = document.getElementById('listContainer');
+            container.innerHTML = '';
+            const start = (currentPage - 1) * pageSize;
+            const pageItems = filteredData.slice(start, start + pageSize);
+            for (const item of pageItems) {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div class="list-item-left">
+                        <div class="date-primary">${item.workDateDisplay}</div>
+                        <div class="date-secondary">${item.workDayName}</div>
+                    </div>
+                    <div class="list-item-right">
+                        <div><strong>In:</strong> ${item.checkInTime || '—'}</div>
+                        <div><strong>Out:</strong> ${item.checkOutTime || '—'}</div>
+                        <div><strong>Giờ:</strong> ${formatHours(item.totalHours)}</div>
+                        <div class="list-actions">
+                            <button class="btn-action btn-view" data-item='${escapeHtml(JSON.stringify(item))}' onclick="viewDetailsFromButton(this)"><i class="fas fa-eye"></i> Chi tiết</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+            renderPagination('List');
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            const year = calendarDate.getFullYear();
+            const month = calendarDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startWeekDay = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+
+            document.getElementById('calendarTitle').innerText = firstDay.toLocaleString('vi-VN', { month: 'long', year: 'numeric' });
+
+            const header = document.createElement('div');
+            header.className = 'calendar-row calendar-header';
+            const days = ['CN','T2','T3','T4','T5','T6','T7'];
+            for (const d of days) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-cell calendar-cell-header';
+                cell.innerText = d;
+                header.appendChild(cell);
+            }
+            grid.appendChild(header);
+
+            let day = 1 - ((startWeekDay + 6) % 7);
+            for (let r = 0; r < 6; r++) {
+                const row = document.createElement('div');
+                row.className = 'calendar-row';
+                for (let c = 0; c < 7; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'calendar-cell';
+                    if (day > 0 && day <= daysInMonth) {
+                        const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                        cell.innerHTML = `<div class="calendar-day">${day}</div>`;
+                        const items = attendanceData.filter(it => it.workDate === dateStr);
+                        if (items.length) {
+                            const list = document.createElement('div');
+                            list.className = 'calendar-items';
+                            for (const it of items) {
+                                const badge = document.createElement('div');
+                                badge.className = 'calendar-item-badge';
+                                badge.innerText = it.checkInTime ? it.checkInTime : '—';
+
+                                // classify badge by lateMinutes or isLate
+                                if (typeof it.lateMinutes !== 'undefined' && it.lateMinutes !== null) {
+                                    const mins = Number(it.lateMinutes);
+                                    if (mins <= 0) badge.classList.add('ontime');
+                                    else if (mins <= 15) badge.classList.add('late-warning');
+                                    else badge.classList.add('late-danger');
+                                } else {
+                                    if (it.isLate === true) badge.classList.add('late-warning');
+                                    else badge.classList.add('ontime');
+                                }
+
+                                badge.setAttribute('data-item', escapeHtml(JSON.stringify(it)));
+                                badge.onclick = function() { viewDetailsFromJson(it); };
+                                list.appendChild(badge);
+                            }
+                            cell.appendChild(list);
+                        }
+                    } else {
+                        cell.classList.add('calendar-cell-empty');
+                    }
+                    row.appendChild(cell);
+                    day++;
+                }
+                grid.appendChild(row);
+            }
+        }
+
+        function calendarPrev() {
+            calendarDate.setMonth(calendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+        function calendarNext() {
+            calendarDate.setMonth(calendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function renderPagination(suffix = '') {
+            const total = filteredData.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const pageNumbersContainer = document.getElementById(suffix === 'List' ? 'pageNumbersList' : 'pageNumbers');
+            pageNumbersContainer.innerHTML = '';
+            const maxButtons = 7;
+            let start = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+            let end = Math.min(totalPages, start + maxButtons - 1);
+            if (end - start < maxButtons - 1) start = Math.max(1, end - maxButtons + 1);
+            for (let p = start; p <= end; p++) {
+                const btn = document.createElement('button');
+                btn.className = 'page-number' + (p === currentPage ? ' active' : '');
+                btn.innerText = p;
+                btn.onclick = (function(pp){ return function(){ changePage(pp); }; })(p);
+                pageNumbersContainer.appendChild(btn);
+            }
+            const prev = document.getElementById('prevPage');
+            const next = document.getElementById('nextPage');
+            if (prev) prev.disabled = currentPage <= 1;
+            if (next) next.disabled = currentPage >= totalPages;
+        }
+
+        function changePage(p) {
+            const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
+            if (p < 1) p = 1;
+            if (p > totalPages) p = totalPages;
+            currentPage = p;
+            renderCurrentView();
+        }
+
+        function changePageSize(size) {
+            pageSize = parseInt(size, 10);
+            currentPage = 1;
+            renderCurrentView();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e){
+            const q = e.target.value.trim().toLowerCase();
+            filteredData = attendanceData.filter(it => {
+                return it.workDateDisplay.toLowerCase().includes(q)
+                    || (it.checkInAddress && it.checkInAddress.toLowerCase().includes(q))
+                    || (it.checkOutAddress && it.checkOutAddress.toLowerCase().includes(q));
+            });
+            currentPage = 1;
+            renderCurrentView();
+        });
+
+        function toggleFilter() {
+            alert('Chức năng lọc nâng cao chưa được cấu hình. Bạn có thể thêm bộ lọc theo trạng thái, khoảng thời gian, v.v.');
+        }
+
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.btn-toggle').forEach(b => { if (b.dataset.view === view) b.classList.add('active'); });
+            document.getElementById('tableView').style.display = view === 'table' ? '' : 'none';
+            document.getElementById('listView').style.display = view === 'list' ? '' : 'none';
+            document.getElementById('calendarView').style.display = view === 'calendar' ? '' : 'none';
+            renderCurrentView();
+        }
+
+        function renderCurrentView() {
+            if (currentView === 'table') renderTable();
+            else if (currentView === 'list') renderListView();
+            else if (currentView === 'calendar') renderCalendar();
+        }
+
+        function viewDetailsFromButton(btn) {
+            const json = btn.getAttribute('data-item');
+            try {
+                const item = JSON.parse(unescapeHtml(json));
+                viewDetailsFromJson(item);
+            } catch (e) {
+                console.error('Không thể parse dữ liệu chi tiết', e);
+                alert('Lỗi khi mở chi tiết. Vui lòng thử lại.');
+            }
+        }
+
+        function viewDetailsFromJson(item) {
+            document.getElementById('detailWorkDate').innerText = item.workDateDisplay || item.workDate;
+            document.getElementById('detailCheckInTime').innerText = item.checkInTime || '—';
+            document.getElementById('detailCheckOutTime').innerText = item.checkOutTime || '—';
+            document.getElementById('detailTotalHours').innerText = formatHours(item.totalHours);
+            document.getElementById('detailCheckInAddress').innerText = item.checkInAddress || '—';
+            document.getElementById('detailCheckOutAddress').innerText = item.checkOutAddress || '—';
+
+            const checkInPhotos = parsePhotosField(item.checkInPhotos);
+            const checkOutPhotos = parsePhotosField(item.checkOutPhotos);
+
+            const checkInGroup = document.getElementById('checkInPhotoGroup');
+            const checkInContainer = document.getElementById('checkInPhotoContainer');
+            checkInContainer.innerHTML = '';
+            if (checkInPhotos.length) {
+                checkInGroup.style.display = '';
+                for (const p of checkInPhotos) {
+                    const img = document.createElement('img');
+                    img.src = p;
+                    img.className = 'detail-photo';
+                    img.alt = 'Check-in photo';
+                    checkInContainer.appendChild(img);
+                }
+            } else {
+                checkInGroup.style.display = 'none';
+            }
+
+            const checkOutGroup = document.getElementById('checkOutPhotoGroup');
+            const checkOutContainer = document.getElementById('checkOutPhotoContainer');
+            checkOutContainer.innerHTML = '';
+            if (checkOutPhotos.length) {
+                checkOutGroup.style.display = '';
+                for (const p of checkOutPhotos) {
+                    const img = document.createElement('img');
+                    img.src = p;
+                    img.className = 'detail-photo';
+                    img.alt = 'Check-out photo';
+                    checkOutContainer.appendChild(img);
+                }
+            } else {
+                checkOutGroup.style.display = 'none';
+            }
+
+            const modalEl = document.getElementById('detailModal');
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
+        function exportAttendance() {
+            alert('Chức năng xuất Excel chưa được cấu hình ở server. Bạn có thể gọi API /Staff/ExportAttendance để xuất file.');
+        }
+
+        (function init(){
+            const sel = document.getElementById('pageSizeSelect');
+            if (sel) pageSize = parseInt(sel.value, 10) || pageSize;
+            filteredData = attendanceData.slice();
+            currentPage = 1;
+            renderCurrentView();
+        })();
+    </script>
+}

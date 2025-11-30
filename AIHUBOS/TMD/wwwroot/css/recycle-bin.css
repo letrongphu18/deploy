@@ -1,0 +1,543 @@
+﻿/* ===== RECYCLE BIN - DEDICATED STYLES ===== */
+/* Prefix: aihub-recycle- */
+
+/* Variables are inherited from admin-layout.css */
+
+/* ===== CONTAINER ===== */
+.aihub-recycle-container {
+    padding: 24px;
+}
+
+/* ===== HEADER ===== */
+.aihub-recycle-header {
+    background: linear-gradient(135deg, #6B7280, #4B5563);
+    color: white;
+    padding: 32px;
+    border-radius: 16px;
+    margin-bottom: 28px;
+    box-shadow: 0 8px 24px rgba(107, 114, 128, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+    .aihub-recycle-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: aihub-recycle-pulse 3s ease-in-out infinite;
+    }
+
+@keyframes aihub-recycle-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.aihub-recycle-header-content {
+    position: relative;
+    z-index: 1;
+}
+
+.aihub-recycle-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .aihub-recycle-title i {
+        font-size: 26px;
+    }
+
+.aihub-recycle-subtitle {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.aihub-recycle-btn-back {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .aihub-recycle-btn-back:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+/* ===== STATISTICS ===== */
+.aihub-recycle-stats {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.aihub-recycle-stat-card {
+    background: var(--aihub-bg-primary);
+    border-radius: 12px;
+    padding: 24px;
+    border: 2px solid var(--aihub-border-color);
+    box-shadow: 0 2px 12px var(--aihub-shadow);
+}
+
+.aihub-recycle-stat-count {
+    font-size: 48px;
+    font-weight: 700;
+    color: #6B7280;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.aihub-recycle-stat-label {
+    color: var(--aihub-text-secondary);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aihub-recycle-info-card {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+    border-radius: 12px;
+    padding: 20px 24px;
+    border-left: 4px solid var(--aihub-info);
+    box-shadow: 0 2px 12px var(--aihub-shadow);
+}
+
+.aihub-recycle-info-title {
+    font-weight: 700;
+    color: var(--aihub-text-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .aihub-recycle-info-title i {
+        color: var(--aihub-info);
+    }
+
+.aihub-recycle-info-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+    .aihub-recycle-info-list li {
+        color: var(--aihub-text-secondary);
+        margin-bottom: 6px;
+        font-size: 13px;
+    }
+
+        .aihub-recycle-info-list li:last-child {
+            margin-bottom: 0;
+        }
+
+/* ===== TASK CARDS ===== */
+.aihub-recycle-task-card {
+    background: var(--aihub-bg-primary);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px var(--aihub-shadow);
+    opacity: 0.85;
+    border-left: 5px solid #6B7280;
+    border: 1px solid var(--aihub-border-color);
+    transition: all 0.3s ease;
+}
+
+    .aihub-recycle-task-card:hover {
+        opacity: 1;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px var(--aihub-shadow-lg);
+        border-left-width: 8px;
+    }
+
+.aihub-recycle-task-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.aihub-recycle-task-title-wrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+.aihub-recycle-task-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--aihub-text-primary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.aihub-recycle-task-description {
+    color: var(--aihub-text-secondary);
+    font-size: 13px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.aihub-recycle-task-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 200px;
+}
+
+.aihub-recycle-meta-item {
+    font-size: 13px;
+}
+
+.aihub-recycle-meta-label {
+    color: var(--aihub-text-secondary);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.aihub-recycle-meta-value {
+    font-weight: 600;
+    color: var(--aihub-text-primary);
+}
+
+.aihub-recycle-task-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* ===== BADGES ===== */
+.aihub-recycle-badge {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.aihub-recycle-badge-urgent {
+    background: linear-gradient(135deg, #DC2626, #991B1B);
+    color: white;
+}
+
+.aihub-recycle-badge-high {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    color: white;
+}
+
+.aihub-recycle-badge-medium {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: white;
+}
+
+.aihub-recycle-badge-low {
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+}
+
+.aihub-recycle-badge-deleted {
+    background: linear-gradient(135deg, #EF4444, #DC2626);
+    color: white;
+}
+
+.aihub-recycle-badge-platform {
+    background: var(--aihub-bg-tertiary);
+    color: var(--aihub-info);
+    border: 1px solid var(--aihub-border-color);
+}
+
+/* ===== BUTTONS ===== */
+.aihub-recycle-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.aihub-recycle-btn-restore {
+    background: linear-gradient(135deg, var(--aihub-success), #059669);
+    color: white;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+    .aihub-recycle-btn-restore:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+.aihub-recycle-btn-delete {
+    background: linear-gradient(135deg, var(--aihub-danger), #DC2626);
+    color: white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+    .aihub-recycle-btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+.aihub-recycle-btn-primary {
+    background: linear-gradient(135deg, var(--aihub-terracotta), var(--aihub-clay));
+    color: white;
+    box-shadow: 0 2px 8px rgba(122, 63, 48, 0.3);
+}
+
+    .aihub-recycle-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(122, 63, 48, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+/* ===== EMPTY STATE ===== */
+.aihub-recycle-empty-state {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+    border-radius: 16px;
+    padding: 60px 40px;
+    text-align: center;
+    border: 2px dashed var(--aihub-success);
+}
+
+.aihub-recycle-empty-icon {
+    font-size: 80px;
+    color: var(--aihub-success);
+    margin-bottom: 20px;
+    animation: aihub-recycle-bounce 2s ease-in-out infinite;
+}
+
+@keyframes aihub-recycle-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.aihub-recycle-empty-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--aihub-text-primary);
+    margin-bottom: 12px;
+}
+
+.aihub-recycle-empty-text {
+    color: var(--aihub-text-secondary);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 991px) {
+    .aihub-recycle-container {
+        padding: 20px 16px;
+    }
+
+    .aihub-recycle-header {
+        padding: 24px;
+    }
+
+    .aihub-recycle-title {
+        font-size: 24px;
+    }
+
+    .aihub-recycle-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .aihub-recycle-task-card {
+        padding: 20px;
+    }
+
+    .aihub-recycle-task-header {
+        flex-direction: column;
+    }
+
+    .aihub-recycle-task-meta {
+        min-width: auto;
+    }
+
+    .aihub-recycle-task-actions {
+        flex-direction: column;
+    }
+
+    .aihub-recycle-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .aihub-recycle-container {
+        padding: 16px;
+    }
+
+    .aihub-recycle-header {
+        padding: 20px;
+    }
+
+    .aihub-recycle-header-content {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 16px;
+    }
+
+    .aihub-recycle-btn-back {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .aihub-recycle-title {
+        font-size: 20px;
+    }
+
+    .aihub-recycle-stat-count {
+        font-size: 36px;
+    }
+
+    .aihub-recycle-stat-card {
+        padding: 20px;
+    }
+
+    .aihub-recycle-info-card {
+        padding: 16px 20px;
+    }
+
+    .aihub-recycle-task-card {
+        padding: 16px;
+    }
+
+    .aihub-recycle-task-title {
+        font-size: 16px;
+    }
+
+    .aihub-recycle-empty-state {
+        padding: 40px 20px;
+    }
+
+    .aihub-recycle-empty-icon {
+        font-size: 60px;
+    }
+
+    .aihub-recycle-empty-title {
+        font-size: 20px;
+    }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes aihub-recycle-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.aihub-recycle-header,
+.aihub-recycle-stats,
+.aihub-recycle-task-card,
+.aihub-recycle-empty-state {
+    animation: aihub-recycle-fadeIn 0.5s ease-out;
+}
+
+    .aihub-recycle-task-card:nth-child(1) {
+        animation-delay: 0.05s;
+    }
+
+    .aihub-recycle-task-card:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .aihub-recycle-task-card:nth-child(3) {
+        animation-delay: 0.15s;
+    }
+
+    .aihub-recycle-task-card:nth-child(4) {
+        animation-delay: 0.2s;
+    }
+
+    .aihub-recycle-task-card:nth-child(5) {
+        animation-delay: 0.25s;
+    }
+
+/* ===== DARK MODE ENHANCEMENTS ===== */
+body.dark-mode .aihub-recycle-info-card {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.1));
+}
+
+body.dark-mode .aihub-recycle-empty-state {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
+}
+
+/* ===== UTILITY CLASSES ===== */
+.aihub-recycle-d-flex {
+    display: flex;
+}
+
+.aihub-recycle-align-center {
+    align-items: center;
+}
+
+.aihub-recycle-justify-between {
+    justify-content: space-between;
+}
+
+.aihub-recycle-gap-2 {
+    gap: 8px;
+}
+
+.aihub-recycle-mb-0 {
+    margin-bottom: 0;
+}
+
+.aihub-recycle-text-center {
+    text-align: center;
+}
+
+.aihub-recycle-text-end {
+    text-align: right;
+}

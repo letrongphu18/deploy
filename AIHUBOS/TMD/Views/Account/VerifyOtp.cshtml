@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Xác Thực OTP";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AIHUBOS System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="~/css/auth-page.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="votp-container">
+        <div class="votp-card">
+            <div class="votp-header">
+                <i class="fas fa-shield-alt votp-header-icon"></i>
+                <h3 class="votp-header-title">Xác Thực OTP</h3>
+                <p class="votp-header-desc">Nhập mã 6 số đã gửi đến email</p>
+            </div>
+
+            <div class="votp-body">
+                <div class="votp-email-info">
+                    <i class="fas fa-envelope"></i>
+                    <p><strong>@ViewBag.Email</strong></p>
+                </div>
+
+                <div class="votp-timer-box">
+                    <small class="votp-timer-label">Mã OTP sẽ hết hạn sau:</small>
+                    <div class="votp-timer" id="timer">05:00</div>
+                </div>
+
+                <form id="verifyOtpForm">
+                    <input type="hidden" id="email" value="@ViewBag.Email">
+
+                    <div class="votp-input-container">
+                        <input type="text" class="votp-input" maxlength="1" id="otp1" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="votp-input" maxlength="1" id="otp2" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="votp-input" maxlength="1" id="otp3" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="votp-input" maxlength="1" id="otp4" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="votp-input" maxlength="1" id="otp5" pattern="[0-9]" inputmode="numeric">
+                        <input type="text" class="votp-input" maxlength="1" id="otp6" pattern="[0-9]" inputmode="numeric">
+                    </div>
+
+                    <button type="submit" class="votp-btn votp-btn-primary" id="btnVerify">
+                        <i class="fas fa-check"></i>
+                        Xác Nhận
+                    </button>
+
+                    <div class="votp-text-center">
+                        <button type="button" class="votp-btn votp-btn-secondary" id="btnResend" disabled>
+                            <i class="fas fa-redo"></i>
+                            <span id="resendText">Gửi lại mã (120s)</span>
+                        </button>
+                    </div>
+
+                    <div class="votp-back-link">
+                        <a href="/Account/ForgotPassword" class="votp-btn-back">
+                            <i class="fas fa-arrow-left"></i>
+                            Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/verify-otp.js"></script>
+</body>
+</html>

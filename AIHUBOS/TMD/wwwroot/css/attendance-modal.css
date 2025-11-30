@@ -1,0 +1,486 @@
+﻿/* =====================================================
+   ATTENDANCE MODAL STYLES - HARMONIZED
+   Custom CSS for the detail view modal (Map/Info)
+   Relies on CSS variables defined in user-management.css
+   ===================================================== */
+
+/* ===== MODAL OVERRIDE (Sử dụng biến chung) ===== */
+.att-modal .modal-content {
+    border: none;
+    border-radius: 1rem; /* Thay thế --att-radius-lg */
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 10px 25px var(--shadow);
+}
+
+body.staff-dark-mode .att-modal .modal-content {
+    background: var(--light);
+}
+
+.att-modal-header {
+    /* Dùng gradient theme chính: Secondary -> Primary */
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: white;
+    padding: 24px 28px;
+    border-bottom: none;
+}
+
+.att-modal-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white; /* Đảm bảo màu trắng */
+}
+
+    .att-modal-title i {
+        font-size: 24px;
+    }
+
+.att-modal-body {
+    padding: 28px;
+    background: white;
+}
+
+body.staff-dark-mode .att-modal-body {
+    background: var(--dark);
+}
+
+.modal-footer {
+    padding: 20px 28px;
+    background: var(--light); /* Thay thế --att-gray-100 */
+    border-top: 2px solid var(--border); /* Thay thế --att-gray-200 */
+}
+
+body.staff-dark-mode .modal-footer {
+    background: var(--light);
+}
+
+/* ===== USER CARD ===== */
+.att-user-card {
+    /* Màu nền nhạt dùng Secondary và Warning */
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(245, 158, 11, 0.08));
+    border-radius: 1rem;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 2px solid var(--border);
+}
+
+.att-user-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    /* Dùng gradient theme chính */
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 32px;
+    border: 4px solid white;
+    /* Dùng shadow Secondary */
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+    .att-user-avatar-large img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .att-user-avatar-large span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        text-transform: uppercase;
+    }
+
+.att-user-card-info {
+    flex: 1;
+}
+
+.att-user-card-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text); /* Thay thế --att-dark */
+    margin-bottom: 12px;
+}
+
+.att-user-card-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.att-user-card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-muted); /* Thay thế --att-gray-700 */
+}
+
+    .att-user-card-meta-item i {
+        color: var(--secondary); /* Dùng màu Secondary theme */
+        font-size: 16px;
+    }
+
+/* ===== DETAIL SECTION ===== */
+.att-detail-section {
+    background: var(--light); /* Thay thế --att-gray-100 */
+    border-radius: 1rem;
+    padding: 24px;
+    height: 100%;
+}
+
+body.staff-dark-mode .att-detail-section {
+    background: var(--dark);
+}
+
+.att-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text); /* Thay thế --att-dark */
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border); /* Thay thế --att-gray-200 */
+}
+
+    .att-section-title i {
+        color: var(--secondary); /* Dùng màu Secondary theme */
+        font-size: 20px;
+    }
+
+/* ===== INFO GROUP ===== */
+.att-info-group {
+    margin-bottom: 20px;
+}
+
+    .att-info-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .att-info-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-muted); /* Thay thế --att-gray-600 */
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+        .att-info-group label i {
+            color: var(--secondary); /* Dùng màu Secondary theme */
+            font-size: 14px;
+        }
+
+    .att-info-group p {
+        font-size: 14px;
+        color: var(--text); /* Thay thế --att-dark */
+        margin: 0;
+        line-height: 1.6;
+        padding: 12px 16px;
+        background: white;
+        border-radius: 8px; /* Thay thế --att-radius-sm */
+        border-left: 3px solid var(--secondary); /* Dùng màu Secondary theme */
+    }
+
+body.staff-dark-mode .att-info-group p {
+    background: var(--light);
+}
+
+/* Màu Info */
+.att-text-info {
+    background: rgba(59, 130, 246, 0.08) !important; /* Dùng rgba của var(--info) */
+    border-left-color: var(--info) !important;
+}
+
+/* ===== COORDINATES ===== */
+.att-coordinates {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--text-muted); /* Thay thế --att-gray-700 */
+    background: rgba(99, 102, 241, 0.05) !important; /* Dùng rgba của var(--secondary) */
+}
+
+/* ===== PHOTO PREVIEW ===== */
+.att-photo-preview {
+    background: white;
+    border-radius: 12px; /* Thay thế --att-radius-md */
+    overflow: hidden;
+    border: 2px solid var(--border); /* Thay thế --att-gray-200 */
+}
+
+    .att-photo-preview img {
+        width: 100%;
+        height: auto;
+        display: block;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+        .att-photo-preview img:hover {
+            transform: scale(1.05);
+        }
+
+/* ===== STATUS CONTAINER (Đảm bảo màu nhất quán với Attendance History) ===== */
+.att-status-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.att-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: var(--shadow); /* Thay thế --att-shadow-sm */
+}
+
+    .att-status-badge i {
+        font-size: 16px;
+    }
+
+    /* COMPLETE / ON TIME / INSIDE (SUCCESS) */
+    .att-status-badge.completed,
+    .att-status-badge.ontime,
+    .att-status-badge.inside {
+        background: rgba(16, 185, 129, 0.15); /* rgba của var(--success) */
+        color: var(--success);
+        border: 2px solid var(--success);
+    }
+
+    /* PARTIAL (WARNING) */
+    .att-status-badge.partial {
+        background: rgba(245, 158, 11, 0.15); /* rgba của var(--warning) */
+        color: var(--warning);
+        border: 2px solid var(--warning);
+    }
+
+    /* LATE / OUTSIDE (DANGER) */
+    .att-status-badge.late,
+    .att-status-badge.outside {
+        background: rgba(239, 68, 68, 0.15); /* rgba của var(--danger) */
+        color: var(--danger);
+        border: 2px solid var(--danger);
+    }
+
+/* ===== BUTTONS (Dùng màu Info/Success cho hành động) ===== */
+.att-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 12px; /* Thay thế --att-radius-md */
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.att-btn-primary {
+    /* Dùng màu Info cho Primary button trong Modal */
+    background: linear-gradient(135deg, var(--info), var(--info));
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+    .att-btn-primary:hover {
+        background: linear-gradient(135deg, #2563eb, var(--info)); /* Màu đậm hơn cho hover */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+.att-btn-success {
+    /* Dùng màu Success */
+    background: linear-gradient(135deg, var(--success), var(--success));
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+    .att-btn-success:hover {
+        background: linear-gradient(135deg, #0d9468, var(--success));
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+.att-btn-secondary {
+    background: var(--border); /* Thay thế --att-gray-200 */
+    color: var(--text); /* Thay thế --att-dark */
+}
+
+    .att-btn-secondary:hover {
+        background: var(--light);
+        transform: translateY(-2px);
+    }
+
+/* ===== MAP CONTAINER ===== */
+.att-map-container {
+    width: 100%;
+    height: 500px;
+    border-radius: 12px; /* Thay thế --att-radius-md */
+    overflow: hidden;
+    border: 2px solid var(--border); /* Thay thế --att-gray-200 */
+    box-shadow: var(--shadow); /* Thay thế --att-shadow-md */
+}
+
+.att-map-info {
+    background: var(--light); /* Thay thế --att-gray-100 */
+    padding: 20px;
+    border-radius: 12px;
+}
+
+    .att-map-info strong {
+        color: var(--text); /* Thay thế --att-dark */
+        font-weight: 700;
+    }
+
+    .att-map-info p {
+        color: var(--text-muted); /* Thay thế --att-gray-700 */
+        margin: 0;
+    }
+
+/* ===== LEAFLET CUSTOMIZATION ===== */
+.leaflet-popup-content-wrapper {
+    border-radius: 12px; /* Thay thế --att-radius-md */
+    box-shadow: var(--shadow); /* Thay thế --att-shadow-md */
+}
+
+.leaflet-popup-content {
+    font-size: 14px;
+    color: var(--text); /* Thay thế --att-dark */
+}
+
+    .leaflet-popup-content b {
+        color: var(--secondary); /* Dùng màu Secondary theme */
+    }
+
+/* Override Leaflet circle color to match theme */
+/* Giả định mã màu #5e72e4 là màu mặc định cần thay đổi */
+.leaflet-interactive[fill="#5e72e4"],
+.leaflet-interactive[stroke="#5e72e4"] {
+    fill: var(--secondary) !important;
+    stroke: var(--secondary) !important;
+}
+
+/* ===== RESPONSIVE (Giữ nguyên) ===== */
+@media (max-width: 768px) {
+    .att-modal-body {
+        padding: 20px;
+    }
+
+    .att-user-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .att-user-card-name {
+        font-size: 20px;
+    }
+
+    .att-user-card-meta {
+        justify-content: center;
+    }
+
+    .att-detail-section {
+        padding: 20px;
+    }
+
+    .att-section-title {
+        font-size: 15px;
+    }
+
+    .att-map-container {
+        height: 350px;
+    }
+
+    .att-status-container {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .att-modal-header,
+    .att-modal-body,
+    .modal-footer {
+        padding: 16px;
+    }
+
+    .att-user-avatar-large {
+        width: 64px;
+        height: 64px;
+        font-size: 24px;
+    }
+
+    .att-user-card-name {
+        font-size: 18px;
+    }
+
+    .att-map-container {
+        height: 300px;
+    }
+
+    .att-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ===== ANIMATIONS (Giữ nguyên) ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.att-modal .modal-content {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.att-detail-section,
+.att-user-card {
+    animation: slideUp 0.4s ease-out;
+}

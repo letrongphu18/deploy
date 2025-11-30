@@ -1,0 +1,620 @@
+﻿/* =====================================================
+   LOGIN HISTORY STYLES (FULL VERSION)
+   Prefix: lh-
+   Based on User Management Design System
+   ===================================================== */
+
+:root {
+    /* Color Palette */
+    --lh-primary: #1a1f4a;
+    --lh-secondary: #6366f1;
+    --lh-success: #10b981;
+    --lh-warning: #f59e0b;
+    --lh-danger: #ef4444;
+    --lh-info: #3b82f6;
+    --lh-light: #f8fafc;
+    --lh-dark: #0f172a;
+    --lh-border: #e2e8f0;
+    --lh-shadow: rgba(15, 23, 42, 0.08);
+    --lh-text: #334155;
+    --lh-text-muted: #64748b;
+}
+
+/* Dark Mode Variables */
+body.staff-dark-mode {
+    --lh-light: #1e293b;
+    --lh-dark: #0f172a;
+    --lh-border: #334155;
+    --lh-shadow: rgba(0, 0, 0, 0.3);
+    --lh-text: #e2e8f0;
+    --lh-text-muted: #94a3b8;
+}
+
+/* ========== LAYOUT ========== */
+.content-wrapper {
+    padding: 2rem;
+    background: var(--lh-light);
+    min-height: calc(100vh - 70px);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--lh-text);
+}
+
+/* ========== PAGE HEADER ========== */
+.lh-page-header {
+    background: linear-gradient(135deg, var(--lh-primary) 0%, var(--lh-secondary) 100%);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px var(--lh-shadow);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+    .lh-page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+.lh-page-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.lh-page-subtitle {
+    opacity: 0.9;
+    margin: 0;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+}
+
+.lh-btn-back {
+    padding: 0.6rem 1.2rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+    .lh-btn-back:hover {
+        background: white;
+        color: var(--lh-secondary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+/* ========== STATISTICS CARDS ========== */
+.lh-stats-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px var(--lh-shadow);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    height: 100%;
+}
+
+body.staff-dark-mode .lh-stats-card {
+    background: #1e293b;
+}
+
+.lh-stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--lh-shadow);
+}
+
+/* Card Variants */
+.lh-stats-card--primary {
+    border-left-color: var(--lh-secondary);
+}
+
+.lh-stats-card--success {
+    border-left-color: var(--lh-success);
+}
+
+.lh-stats-card--warning {
+    border-left-color: var(--lh-warning);
+}
+
+.lh-stats-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.lh-stats-card--primary .lh-stats-icon {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--lh-secondary);
+}
+
+.lh-stats-card--success .lh-stats-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--lh-success);
+}
+
+.lh-stats-card--warning .lh-stats-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--lh-warning);
+}
+
+.lh-stats-content {
+    flex: 1;
+}
+
+.lh-stats-label {
+    font-size: 0.8rem;
+    color: var(--lh-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.lh-stats-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--lh-text);
+    line-height: 1.2;
+}
+
+/* ========== MAIN CARD & HEADER ========== */
+.lh-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px var(--lh-shadow);
+    border: 1px solid var(--lh-border);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+body.staff-dark-mode .lh-card {
+    background: #1e293b;
+    border-color: var(--lh-border);
+}
+
+.lh-card-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--lh-border);
+    background: white;
+}
+
+body.staff-dark-mode .lh-card-header {
+    background: #1e293b;
+}
+
+.lh-card-header h5 {
+    margin: 0;
+    font-weight: 700;
+    color: var(--lh-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+body.staff-dark-mode .lh-card-header h5 {
+    color: var(--lh-text);
+}
+
+/* ========== FILTER FORM STYLES (NEW) ========== */
+.lh-filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-end;
+    margin-top: 1rem;
+}
+
+.lh-filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.lh-filter-action {
+    flex: 0 0 auto;
+}
+
+.lh-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--lh-text);
+}
+
+.lh-form-control {
+    width: 100%;
+    height: 44px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--lh-text);
+    background-color: var(--lh-light);
+    border: 1px solid var(--lh-border);
+    border-radius: 0.75rem;
+    transition: all 0.2s ease-in-out;
+}
+
+    .lh-form-control:focus {
+        outline: none;
+        border-color: var(--lh-secondary);
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+.lh-btn-filter {
+    height: 44px;
+    padding: 0 1.5rem;
+    background: var(--lh-secondary);
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+}
+
+    .lh-btn-filter:hover {
+        background: #4f46e5;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3);
+    }
+
+/* Dark mode inputs */
+body.staff-dark-mode .lh-form-control {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: var(--lh-border);
+}
+
+    body.staff-dark-mode .lh-form-control:focus {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+/* ========== TABLE STYLES ========== */
+.lh-card-body--table {
+    padding: 0;
+    overflow-x: auto; /* Fix overflow issues */
+    -webkit-overflow-scrolling: touch;
+}
+
+.lh-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+    .lh-table thead th {
+        background: var(--lh-light);
+        color: var(--lh-text-muted);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 1rem 1.5rem;
+        border-bottom: 2px solid var(--lh-border);
+        text-align: left;
+    }
+
+        /* Fix header alignment */
+        .lh-table thead th.text-end {
+            text-align: right;
+        }
+
+        .lh-table thead th.text-center {
+            text-align: center;
+        }
+
+body.staff-dark-mode .lh-table thead th {
+    background: rgba(255,255,255,0.03);
+    border-bottom-color: var(--lh-border);
+}
+
+.lh-table tbody td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--lh-border);
+    vertical-align: middle;
+    color: var(--lh-text);
+    font-size: 0.9rem;
+}
+
+.lh-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.lh-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+    .lh-table tbody tr:hover {
+        background-color: rgba(99, 102, 241, 0.03);
+    }
+
+body.staff-dark-mode .lh-table tbody tr:hover {
+    background-color: rgba(255,255,255,0.03);
+}
+
+/* ========== TABLE CONTENT ELEMENTS ========== */
+
+/* Timestamp */
+.lh-timestamp {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+    .lh-timestamp i {
+        font-size: 1.2rem;
+        color: var(--lh-text-muted);
+        background: var(--lh-light);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+body.staff-dark-mode .lh-timestamp i {
+    background: rgba(255,255,255,0.05);
+}
+
+.lh-timestamp-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.lh-timestamp-date {
+    font-weight: 600;
+    color: var(--lh-text);
+}
+
+.lh-timestamp-time {
+    font-size: 0.8rem;
+    color: var(--lh-text-muted);
+}
+
+/* User Info */
+.lh-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.lh-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--lh-secondary), #818cf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+    .lh-user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.lh-user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.lh-user-name {
+    font-weight: 600;
+    color: var(--lh-text);
+}
+
+.lh-user-username {
+    font-size: 0.8rem;
+    color: var(--lh-text-muted);
+}
+
+/* IP Badge */
+.lh-ip-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    background: var(--lh-light);
+    border: 1px solid var(--lh-border);
+    border-radius: 2rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--lh-text);
+}
+
+body.staff-dark-mode .lh-ip-badge {
+    background: rgba(255,255,255,0.05);
+}
+
+/* Device Info */
+.lh-device-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--lh-text-muted);
+}
+
+.lh-device-icon {
+    width: 24px;
+    text-align: center;
+}
+
+/* Status Badges */
+.lh-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.lh-badge--success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--lh-success);
+}
+
+.lh-badge--danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--lh-danger);
+}
+
+.lh-badge--warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--lh-warning);
+}
+
+/* Empty State */
+.lh-empty-state {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--lh-text-muted);
+}
+
+    .lh-empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        opacity: 0.2;
+        color: var(--lh-text);
+    }
+
+    .lh-empty-state h4 {
+        margin: 0 0 0.5rem 0;
+        color: var(--lh-text);
+        font-weight: 700;
+    }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .lh-stats-card {
+        padding: 1rem;
+    }
+
+    .lh-stats-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+    }
+
+    .lh-stats-value {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 1rem;
+    }
+
+    .lh-page-header {
+        padding: 1.5rem;
+    }
+
+    /* Mobile Table View */
+    .lh-table thead {
+        display: none;
+    }
+
+    .lh-table, .lh-table tbody, .lh-table tr, .lh-table td {
+        display: block;
+        width: 100%;
+        white-space: normal;
+    }
+
+        .lh-table tbody tr {
+            margin-bottom: 1rem;
+            border: 1px solid var(--lh-border);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            background: white;
+        }
+
+    body.staff-dark-mode .lh-table tbody tr {
+        background: rgba(255,255,255,0.03);
+    }
+
+    .lh-table tbody td {
+        padding: 0.75rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--lh-border);
+        text-align: right;
+    }
+
+    .lh-user-details {
+        align-items: flex-end;
+    }
+
+    /* Labels for mobile data */
+    .lh-table tbody td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: var(--lh-text-muted);
+        text-transform: uppercase;
+        margin-right: 1rem;
+        float: left;
+    }
+
+    /* Stack filter form on mobile */
+    .lh-filter-form {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .lh-filter-group {
+        width: 100%;
+    }
+
+    .lh-btn-filter {
+        width: 100%;
+        justify-content: center;
+    }
+}

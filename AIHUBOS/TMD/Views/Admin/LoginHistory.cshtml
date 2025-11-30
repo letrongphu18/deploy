@@ -1,0 +1,286 @@
+﻿@model List<AIHUBOS.Models.LoginHistory>
+@{
+    ViewData["Title"] = "Lịch sử đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/loginhistory.css" rel="stylesheet" />
+
+<div class="content-wrapper">
+    <!-- PAGE HEADER -->
+    <div class="lh-page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="lh-page-title">
+                    <i class="fas fa-history"></i>
+                    Lịch sử đăng nhập
+                </h2>
+                <p class="lh-page-subtitle">Theo dõi tất cả hoạt động đăng nhập của hệ thống</p>
+            </div>
+            <a href="@Url.Action("Dashboard", "Admin")" class="lh-btn-back">
+                <i class="fas fa-arrow-left"></i>
+                Quay lại
+            </a>
+        </div>
+    </div>
+
+    <!-- STATISTICS CARDS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="lh-stats-card lh-stats-card--primary">
+                <div class="lh-stats-icon">
+                    <i class="fas fa-list"></i>
+                </div>
+                <div class="lh-stats-content">
+                    <div class="lh-stats-label">Tổng lượt đăng nhập</div>
+                    <div class="lh-stats-value">@Model.Count</div>
+                </div>
+                <div class="lh-stats-trend">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="lh-stats-card lh-stats-card--success">
+                <div class="lh-stats-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="lh-stats-content">
+                    <div class="lh-stats-label">Thành công</div>
+                    <div class="lh-stats-value">@Model.Count(l => l.IsSuccess == true)</div>
+                </div>
+                <div class="lh-stats-trend">
+                    <i class="fas fa-shield-check"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="lh-stats-card lh-stats-card--danger">
+                <div class="lh-stats-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="lh-stats-content">
+                    <div class="lh-stats-label">Thất bại</div>
+                    <div class="lh-stats-value">@Model.Count(l => l.IsSuccess == false)</div>
+                </div>
+                <div class="lh-stats-trend">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="lh-card mb-4">
+        <div class="lh-card-header">
+            <h5 class="mb-3"><i class="fas fa-filter"></i> Bộ lọc tìm kiếm</h5>
+
+            <form method="get" class="lh-filter-form">
+                <div class="lh-filter-group">
+                    <label class="lh-form-label">Từ ngày</label>
+                    <input type="datetime-local" name="startDate" class="lh-form-control"
+                           value="@Context.Request.Query["startDate"]">
+                </div>
+
+                <div class="lh-filter-group">
+                    <label class="lh-form-label">Đến ngày</label>
+                    <input type="datetime-local" name="endDate" class="lh-form-control"
+                           value="@Context.Request.Query["endDate"]">
+                </div>
+
+                <div class="lh-filter-group">
+                    <label class="lh-form-label">Trạng thái</label>
+                    <select name="status" class="lh-form-control">
+                        <option value="">-- Tất cả --</option>
+                        <option value="success" selected="@(Context.Request.Query["status"] == "success")">Thành công</option>
+                        <option value="failed" selected="@(Context.Request.Query["status"] == "failed")">Thất bại</option>
+                    </select>
+                </div>
+
+                <div class="lh-filter-group" style="flex: 2;">
+                    <label class="lh-form-label">Tìm kiếm</label>
+                    <input type="text" name="searchTerm" class="lh-form-control"
+                           placeholder="Nhập username hoặc IP..."
+                           value="@Context.Request.Query["searchTerm"]">
+                </div>
+
+                <div class="lh-filter-action">
+                    <button type="submit" class="lh-btn-filter">
+                        <i class="fas fa-search"></i> Lọc dữ liệu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIN HISTORY TABLE -->
+    <div class="lh-card">
+        <div class="lh-card-header">
+            <h5>
+                <i class="fas fa-table"></i>
+                Danh sách lịch sử (@Model.Count)
+            </h5>
+        </div>
+        <div class="lh-card-body lh-card-body--table">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="lh-table">
+                        <thead>
+                            <tr>
+                                <th><i class="far fa-clock"></i> Thời gian</th>
+                                <th><i class="fas fa-user"></i> Người dùng</th>
+                                <th><i class="fas fa-network-wired"></i> IP Address</th>
+                                <th><i class="fas fa-browser"></i> Trình duyệt</th>
+                                <th><i class="fas fa-mobile-alt"></i> Thiết bị</th>
+                                <th><i class="fas fa-check-circle"></i> Trạng thái</th>
+                                <th><i class="fas fa-stopwatch"></i> Thời gian sử dụng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var login in Model)
+                            {
+                                <tr class="@(login.IsSuccess == false ? "lh-row-failed" : "")">
+                                    <td>
+                                        <div class="lh-timestamp">
+                                            <i class="far fa-calendar-check"></i>
+                                            <div class="lh-timestamp-content">
+                                                <div class="lh-timestamp-date">@login.LoginTime?.ToString("dd/MM/yyyy")</div>
+                                                <div class="lh-timestamp-time">@login.LoginTime?.ToString("HH:mm:ss")</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (login.User != null)
+                                        {
+                                            <div class="lh-user-info">
+                                                <div class="lh-user-avatar">
+                                                    @if (!string.IsNullOrEmpty(login.User?.Avatar))
+                                                    {
+                                                        <img src="@login.User.Avatar" alt="@login.User?.FullName"
+                                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                        <span style="display:none;">@login.User?.FullName?.Substring(0, 1)</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@login.User?.FullName?.Substring(0, 1)</span>
+                                                    }
+                                                </div>
+                                                <div class="lh-user-details">
+                                                    <div class="lh-user-name">@login.User?.FullName</div>
+                                                    <div class="lh-user-username">@@@login.Username</div>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="lh-user-invalid">
+                                                <i class="fas fa-user-slash"></i>
+                                                <div>
+                                                    <div class="lh-user-invalid-name">@login.Username</div>
+                                                    <div class="lh-user-invalid-label">Không tồn tại</div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="lh-badge lh-badge--ip">
+                                            <i class="fas fa-globe"></i>
+                                            @login.Ipaddress
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="lh-badge lh-badge--browser">
+                                            <i class="fab fa-@(login.Browser?.ToLower() == "chrome" ? "chrome" : login.Browser?.ToLower() == "firefox" ? "firefox" : login.Browser?.ToLower() == "safari" ? "safari" : login.Browser?.ToLower() == "edge" ? "edge" : "question")"></i>
+                                            @(login.Browser ?? "Unknown")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @{
+                                            var deviceClass = "lh-badge--device";
+                                            var deviceIcon = "desktop";
+
+                                            if (login.Device?.ToLower() == "mobile")
+                                            {
+                                                deviceClass = "lh-badge--device-mobile";
+                                                deviceIcon = "mobile-alt";
+                                            }
+                                            else if (login.Device?.ToLower() == "tablet")
+                                            {
+                                                deviceClass = "lh-badge--device-tablet";
+                                                deviceIcon = "tablet-alt";
+                                            }
+                                            else if (login.Device?.ToLower() == "desktop")
+                                            {
+                                                deviceClass = "lh-badge--device-desktop";
+                                                deviceIcon = "desktop";
+                                            }
+                                        }
+                                        <span class="lh-badge @deviceClass">
+                                            <i class="fas fa-@deviceIcon"></i>
+                                            @(login.Device ?? "Unknown")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (login.IsSuccess == true)
+                                        {
+                                            <span class="lh-badge lh-badge--success">
+                                                <i class="fas fa-check-circle"></i>
+                                                Thành công
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <div class="lh-status-failed">
+                                                <span class="lh-badge lh-badge--danger">
+                                                    <i class="fas fa-times-circle"></i>
+                                                    Thất bại
+                                                </span>
+                                                @if (!string.IsNullOrEmpty(login.FailReason))
+                                                {
+                                                    <div class="lh-fail-reason">
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                        <small>@login.FailReason</small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (login.LogoutTime.HasValue && login.LoginTime.HasValue)
+                                        {
+                                            var duration = login.LogoutTime.Value - login.LoginTime.Value;
+                                            <span class="lh-badge lh-badge--duration">
+                                                <i class="fas fa-hourglass-half"></i>
+                                                @duration.Hours giờ @duration.Minutes phút
+                                            </span>
+                                        }
+                                        else if (login.IsSuccess == true)
+                                        {
+                                            <span class="lh-badge lh-badge--warning">
+                                                <i class="fas fa-spinner fa-pulse"></i>
+                                                Đang hoạt động
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color: var(--aihub-text-secondary);">-</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="lh-empty-state">
+                    <i class="fas fa-history"></i>
+                    <h4>Không có dữ liệu</h4>
+                    <p>Không tìm thấy lịch sử đăng nhập nào phù hợp với bộ lọc</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

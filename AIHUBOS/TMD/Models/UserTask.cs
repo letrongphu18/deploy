@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace AIHUBOS.Models;
+
+public partial class UserTask
+{
+    public int UserTaskId { get; set; }
+
+    public int UserId { get; set; }
+
+    public int TaskId { get; set; }
+
+    public string? ReportLink { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public string? Status { get; set; }
+
+    public int? TesterId { get; set; }
+
+    public virtual Task Task { get; set; } = null!;
+
+    public virtual User? Tester { get; set; }
+
+    public virtual User User { get; set; } = null!;
+}

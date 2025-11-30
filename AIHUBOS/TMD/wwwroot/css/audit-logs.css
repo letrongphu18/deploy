@@ -1,0 +1,499 @@
+﻿/* =====================================================
+   AUDIT LOGS STYLES
+   Prefix: aihub-audit-
+   Based on User Management Design System
+   ===================================================== */
+
+:root {
+    /* Color Palette - Đồng bộ với hệ thống */
+    --audit-primary: #1a1f4a;
+    --audit-secondary: #6366f1;
+    --audit-success: #10b981;
+    --audit-warning: #f59e0b;
+    --audit-danger: #ef4444;
+    --audit-info: #3b82f6;
+    --audit-light: #f8fafc;
+    --audit-dark: #0f172a;
+    --audit-border: #e2e8f0;
+    --audit-shadow: rgba(15, 23, 42, 0.08);
+    --audit-text: #334155;
+    --audit-text-muted: #64748b;
+}
+
+/* Dark Mode Variables */
+body.staff-dark-mode {
+    --audit-light: #1e293b;
+    --audit-dark: #0f172a;
+    --audit-border: #334155;
+    --audit-shadow: rgba(0, 0, 0, 0.3);
+    --audit-text: #e2e8f0;
+    --audit-text-muted: #94a3b8;
+}
+
+/* ========== LAYOUT ========== */
+.aihub-audit-container {
+    padding: 2rem;
+    background: var(--audit-light);
+    min-height: calc(100vh - 70px);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--audit-text);
+}
+
+/* ========== HEADER ========== */
+.aihub-audit-header {
+    background: linear-gradient(135deg, var(--audit-primary) 0%, var(--audit-secondary) 100%);
+    border-radius: 1.5rem;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px var(--audit-shadow);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Hiệu ứng nền */
+    .aihub-audit-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+.aihub-audit-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.aihub-audit-header p {
+    opacity: 0.9;
+    margin: 0;
+    font-size: 0.95rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== FILTERS SECTION ========== */
+.aihub-audit-filters {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px var(--audit-shadow);
+    border: 1px solid var(--audit-border);
+}
+
+body.staff-dark-mode .aihub-audit-filters {
+    background: #1e293b;
+    border-color: var(--audit-border);
+}
+
+.aihub-audit-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-end;
+}
+
+.aihub-audit-form-col {
+    flex: 1;
+    min-width: 200px;
+}
+
+.aihub-audit-form-col-auto {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.aihub-audit-form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--audit-text);
+}
+
+.aihub-audit-form-select,
+.aihub-audit-form-control {
+    width: 100%;
+    height: 42px;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    color: var(--audit-text);
+    background-color: var(--audit-light);
+    border: 1px solid var(--audit-border);
+    border-radius: 0.75rem;
+    transition: all 0.2s;
+}
+
+body.staff-dark-mode .aihub-audit-form-select,
+body.staff-dark-mode .aihub-audit-form-control {
+    background-color: var(--audit-dark);
+    color: var(--audit-text);
+    border-color: var(--audit-border);
+}
+
+.aihub-audit-form-select:focus,
+.aihub-audit-form-control:focus {
+    border-color: var(--audit-secondary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    background-color: white;
+}
+
+body.staff-dark-mode .aihub-audit-form-select:focus,
+body.staff-dark-mode .aihub-audit-form-control:focus {
+    background-color: rgba(255,255,255,0.05);
+}
+
+.aihub-audit-btn {
+    height: 42px;
+    padding: 0 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.aihub-audit-btn-primary {
+    background: var(--audit-secondary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+}
+
+    .aihub-audit-btn-primary:hover {
+        background: #4f46e5;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+
+.aihub-audit-btn-outline {
+    background: transparent;
+    color: var(--audit-text-muted);
+    border: 1px solid var(--audit-border);
+}
+
+    .aihub-audit-btn-outline:hover {
+        background: var(--audit-border);
+        color: var(--audit-text);
+    }
+
+/* ========== TABLE STYLES ========== */
+.aihub-audit-table {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px var(--audit-shadow);
+    border: 1px solid var(--audit-border);
+    overflow: hidden;
+}
+
+body.staff-dark-mode .aihub-audit-table {
+    background: #1e293b;
+    border-color: var(--audit-border);
+}
+
+.aihub-audit-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.aihub-audit-table table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.aihub-audit-table thead th {
+    background: var(--audit-light);
+    color: var(--audit-text-muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid var(--audit-border);
+    text-align: left;
+}
+
+body.staff-dark-mode .aihub-audit-table thead th {
+    background: rgba(255,255,255,0.03);
+    border-bottom-color: var(--audit-border);
+}
+
+.aihub-audit-table tbody td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--audit-border);
+    vertical-align: middle;
+    font-size: 0.9rem;
+    color: var(--audit-text);
+}
+
+.aihub-audit-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.aihub-audit-table tbody tr:hover {
+    background-color: rgba(99, 102, 241, 0.03);
+}
+
+body.staff-dark-mode .aihub-audit-table tbody tr:hover {
+    background-color: rgba(255,255,255,0.03);
+}
+
+/* ========== TABLE CELL CONTENTS ========== */
+
+/* Timestamp */
+.aihub-audit-timestamp {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+    .aihub-audit-timestamp i {
+        font-size: 1.1rem;
+        color: var(--audit-text-muted);
+        background: var(--audit-light);
+        padding: 8px;
+        border-radius: 50%;
+    }
+
+body.staff-dark-mode .aihub-audit-timestamp i {
+    background: rgba(255,255,255,0.05);
+}
+
+.aihub-audit-timestamp-date {
+    font-weight: 600;
+    color: var(--audit-text);
+}
+
+.aihub-audit-timestamp-time {
+    font-size: 0.8rem;
+    color: var(--audit-text-muted);
+}
+
+/* User Info */
+.aihub-audit-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.aihub-audit-user-avatar {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+    .aihub-audit-user-avatar img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+.aihub-audit-user-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--audit-secondary), #818cf8);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.aihub-audit-user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.aihub-audit-user-username {
+    font-size: 0.8rem;
+    color: var(--audit-text-muted);
+}
+
+/* Action Badges */
+.aihub-audit-action-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Color mappings for specific actions */
+.aihub-audit-action-badge--create,
+.aihub-audit-action-badge--task-report {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--audit-success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.aihub-audit-action-badge--update,
+.aihub-audit-action-badge--password-change,
+.aihub-audit-action-badge--password-reset {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--audit-info);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.aihub-audit-action-badge--delete,
+.aihub-audit-action-badge--login-failed {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--audit-danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.aihub-audit-action-badge--login,
+.aihub-audit-action-badge--logout,
+.aihub-audit-action-badge--check-in,
+.aihub-audit-action-badge--check-out,
+.aihub-audit-action-badge--unknown {
+    background: var(--audit-light);
+    color: var(--audit-text-muted);
+    border: 1px solid var(--audit-border);
+}
+
+/* Entity & Description */
+.aihub-audit-entity-name {
+    font-weight: 600;
+    color: var(--audit-primary);
+}
+
+body.staff-dark-mode .aihub-audit-entity-name {
+    color: var(--audit-text);
+}
+
+.aihub-audit-entity-id {
+    font-size: 0.8rem;
+    color: var(--audit-text-muted);
+    font-family: monospace;
+    background: var(--audit-light);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin-top: 0.25rem;
+}
+
+body.staff-dark-mode .aihub-audit-entity-id {
+    background: rgba(255,255,255,0.1);
+}
+
+.aihub-audit-description {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--audit-text-muted);
+}
+
+.aihub-audit-ip {
+    font-family: monospace;
+    font-size: 0.85rem;
+    background: var(--audit-light);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+}
+
+body.staff-dark-mode .aihub-audit-ip {
+    background: rgba(255,255,255,0.05);
+}
+
+/* Buttons */
+.aihub-audit-btn-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--audit-border);
+    background: white;
+    color: var(--audit-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+    .aihub-audit-btn-icon:hover {
+        background: var(--audit-primary);
+        color: white;
+        border-color: var(--audit-primary);
+    }
+
+.aihub-audit-no-data {
+    color: var(--audit-text-muted);
+    font-style: italic;
+}
+
+/* ========== EMPTY STATE ========== */
+.aihub-audit-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--audit-text-muted);
+}
+
+    .aihub-audit-empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .aihub-audit-empty-state h4 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: var(--audit-text);
+    }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .aihub-audit-container {
+        padding: 1rem;
+    }
+
+    .aihub-audit-header {
+        padding: 1.5rem;
+    }
+
+    .aihub-audit-form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .aihub-audit-form-col {
+        width: 100%;
+    }
+
+    .aihub-audit-form-col-auto {
+        width: 100%;
+    }
+
+    .aihub-audit-btn {
+        width: 100%;
+    }
+}

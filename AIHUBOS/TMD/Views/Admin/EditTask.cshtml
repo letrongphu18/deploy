@@ -1,0 +1,461 @@
+﻿@model AIHUBOS.Models.Task
+@{
+    ViewData["Title"] = "Chỉnh sửa Task";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var assignedUserIds = ViewBag.AssignedUserIds as List<int> ?? new List<int>();
+}
+<link href="~/css/edittask-ad.css" rel="stylesheet" />
+
+<div class="et-container">
+    <!-- Header Section -->
+    <div class="et-page-header">
+        <div class="et-d-flex et-justify-between et-align-center">
+            <div>
+                <h1 class="et-page-title">
+                    <i class="fas fa-edit"></i> Chỉnh sửa Task
+                </h1>
+                <p class="et-page-subtitle">Cập nhật thông tin task #@Model.TaskId</p>
+            </div>
+            <a asp-action="TaskList" class="et-btn-back">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+
+    <div class="et-row">
+        <!-- Main Form -->
+        <div class="et-col-lg-8">
+            <div class="et-card">
+                <div class="et-card-header">
+                    <div class="et-d-flex et-justify-between et-align-center">
+                        <h6 class="et-mb-0">
+                            <i class="fas fa-edit"></i> Thông tin Task
+                        </h6>
+                        <span class="et-badge @(Model.IsActive == true ? "et-badge-success" : "et-badge-secondary")">
+                            <i class="fas fa-@(Model.IsActive == true ? "check" : "pause")-circle"></i>
+                            @(Model.IsActive == true ? "Active" : "Inactive")
+                        </span>
+                    </div>
+                </div>
+                <div class="et-card-body">
+                    <form id="updateTaskForm">
+                        <input type="hidden" id="taskId" value="@Model.TaskId">
+
+                        <div class="et-form-group">
+                            <label for="taskName" class="et-form-label">
+                                Tên Task <span class="et-text-danger">*</span>
+                            </label>
+                            <input type="text" class="et-form-control et-form-control-lg" id="taskName"
+                                   value="@Model.TaskName" required>
+                        </div>
+
+                        <div class="et-form-group">
+                            <label for="description" class="et-form-label">Mô tả</label>
+                            <textarea class="et-form-control" id="description" rows="4">@Model.Description</textarea>
+                        </div>
+
+                        <div class="et-row">
+                            <div class="et-col-md-6">
+                                <div class="et-form-group">
+                                    <label for="platform" class="et-form-label">Platform</label>
+                                    <select class="et-form-control" id="platform">
+                                        <option value="">-- Chọn Platform --</option>
+                                        <option value="Facebook">📘 Facebook</option>
+                                        <option value="Instagram">📷 Instagram</option>
+                                        <option value="TikTok">🎵 TikTok</option>
+                                        <option value="YouTube">📺 YouTube</option>
+                                        <option value="LinkedIn">💼 LinkedIn</option>
+                                        <option value="Twitter">🐦 Twitter</option>
+                                        <option value="Google Ads">🎯 Google Ads</option>
+                                        <option value="Website">🌐 Website</option>
+                                        <option value="Other">📌 Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="et-col-md-6">
+                                <div class="et-form-group">
+                                    <label for="deadline" class="et-form-label">Deadline</label>
+                                    <input type="datetime-local" class="et-form-control" id="deadline"
+                                           value="@(Model.Deadline?.ToString("yyyy-MM-ddTHH:mm"))">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="et-form-group">
+                            <label for="priority" class="et-form-label">Priority</label>
+                            <select class="et-form-control" id="priority">
+                                <option value="Low">🟢 Low - Ưu tiên thấp</option>
+                                <option value="Medium">🟡 Medium - Ưu tiên trung bình</option>
+                                <option value="High">🔴 High - Ưu tiên cao</option>
+                            </select>
+                        </div>
+
+                        <div class="et-divider"></div>
+
+                        <div class="et-form-group">
+                            <label class="et-form-label">
+                                <i class="fas fa-users"></i> Gán cho nhân viên
+                                <span class="et-text-muted">(Chọn nhiều)</span>
+                            </label>
+                            <div class="et-card et-user-selection-card">
+                                <div class="et-card-body">
+                                    <div class="et-search-wrapper">
+                                        <div class="et-input-group">
+                                            <div class="et-input-group-prepend">
+                                                <i class="fas fa-search"></i>
+                                            </div>
+                                            <input type="text" class="et-form-control" id="searchUsers"
+                                                   placeholder="Tìm kiếm nhân viên theo tên hoặc phòng ban...">
+                                        </div>
+                                    </div>
+
+                                    <div class="et-checkbox-wrapper">
+                                        <label class="et-checkbox">
+                                            <input type="checkbox" id="selectAll">
+                                            <span class="et-checkbox-label">
+                                                <i class="fas fa-check-double"></i> Chọn tất cả
+                                            </span>
+                                            <span class="et-badge et-badge-info et-float-right" id="selectedCount">0</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="et-user-list" id="userList">
+                                        @if (ViewBag.Users != null)
+                                        {
+                                            var usersByDept = ((List<AIHUBOS.Models.User>)ViewBag.Users)
+                                            .GroupBy(u => u.Department?.DepartmentName ?? "Chưa có phòng ban")
+                                            .OrderBy(g => g.Key);
+
+                                            foreach (var deptGroup in usersByDept)
+                                            {
+                                                <div class="et-dept-group">
+                                                    <div class="et-dept-header">
+                                                        <h6 class="et-dept-title">
+                                                            <i class="fas fa-building"></i> @deptGroup.Key
+                                                            <span class="et-badge et-badge-info et-ms-2">@deptGroup.Count()</span>
+                                                        </h6>
+                                                    </div>
+                                                    @foreach (var user in deptGroup.OrderBy(u => u.FullName))
+                                                    {
+                                                        var isChecked = assignedUserIds.Contains(user.UserId);
+                                                        <div class="et-user-item"
+                                                             data-name="@user.FullName.ToLower()"
+                                                             data-dept="@(user.Department?.DepartmentName?.ToLower() ?? "")">
+                                                            <input type="checkbox" class="user-checkbox"
+                                                                   id="user_@user.UserId" value="@user.UserId"
+                                                            @(isChecked ? "checked" : "")
+                                                                   style="display: none;">
+                                                            <label class="et-user-label" for="user_@user.UserId">
+                                                                <div class="et-d-flex et-align-center et-gap-3">
+                                                                    @if (!string.IsNullOrEmpty(user.Avatar) && user.Avatar != "/images/default-avatar.png")
+                                                                    {
+                                                                        <img src="@user.Avatar"
+                                                                             class="et-user-avatar"
+                                                                             style="object-fit: cover;"
+                                                                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                                                        <div class="et-user-avatar"
+                                                                             style="display:none;background:linear-gradient(135deg,#667eea,#764ba2);color:white;align-items:center;justify-content:center;font-weight:700;font-size:14px;">
+                                                                            @user.FullName.Substring(0, 1).ToUpper()
+                                                                        </div>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div class="et-user-avatar"
+                                                                             style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">
+                                                                            @user.FullName.Substring(0, 1).ToUpper()
+                                                                        </div>
+                                                                    }
+                                                                    <div class="et-user-info-inline">
+                                                                        <strong>@user.FullName</strong>
+                                                                        <small class="et-text-muted">@user.Username</small>
+                                                                    </div>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="et-divider"></div>
+
+                        <div class="et-alert et-alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <strong>Thông tin:</strong>
+                                <ul class="et-mb-0">
+                                    <li>Task được tạo: <strong>@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</strong></li>
+                                    <li>Cập nhật lần cuối: <strong>@Model.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="et-d-flex et-justify-between et-align-center et-mt-4">
+                            <a asp-action="TaskList" class="et-btn et-btn-secondary et-btn-lg">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit" class="et-btn et-btn-primary et-btn-lg" id="btnSubmit">
+                                <i class="fas fa-save"></i> Cập nhật Task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="et-col-lg-4">
+            <!-- Current Assignments -->
+            <div class="et-card">
+                <div class="et-card-header et-sidebar-card-header">
+                    <h6 class="et-mb-0">
+                        <i class="fas fa-users"></i> Hiện đang gán (@Model.UserTasks.Count)
+                    </h6>
+                </div>
+                <div class="et-card-body" style="max-height: 400px; overflow-y: auto;">
+                    @if (Model.UserTasks.Any())
+                    {
+                        foreach (var ut in Model.UserTasks.OrderBy(ut => ut.User.FullName))
+                        {
+                            <div class="et-user-card et-mb-3">
+                                @if (!string.IsNullOrEmpty(ut.User.Avatar) && ut.User.Avatar != "/images/default-avatar.png")
+                                {
+                                    <img src="@ut.User.Avatar"
+                                         class="et-user-card-avatar"
+                                         style="object-fit: cover;"
+                                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                    <div class="et-user-card-avatar"
+                                         style="display:none;background:linear-gradient(135deg,#667eea,#764ba2);color:white;align-items:center;justify-content:center;font-weight:700;font-size:18px;">
+                                        @ut.User.FullName.Substring(0, 1).ToUpper()
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="et-user-card-avatar"
+                                         style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;">
+                                        @ut.User.FullName.Substring(0, 1).ToUpper()
+                                    </div>
+                                }
+                                <div class="et-user-info">
+                                    <div class="et-user-name">@ut.User.FullName</div>
+                                    <div class="et-user-department">
+                                        <i class="fas fa-building"></i> @(ut.User.Department?.DepartmentName ?? "N/A")
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="et-empty-state">
+                            <i class="fas fa-users fa-3x"></i>
+                            <p>Chưa có ai được gán</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="et-card et-mt-4">
+                <div class="et-card-header et-stats-card-header">
+                    <h6 class="et-mb-0">
+                        <i class="fas fa-chart-bar"></i> Thống kê
+                    </h6>
+                </div>
+                <div class="et-card-body">
+                    <div class="et-stat-item et-mb-3">
+                        <small>
+                            <i class="fas fa-users"></i> Tổng số người gán
+                        </small>
+                        <h3>
+                            @Model.UserTasks.Count <span class="small">người</span>
+                        </h3>
+                    </div>
+
+                    @if (Model.Deadline.HasValue)
+                    {
+                        var daysLeft = (Model.Deadline.Value - DateTime.Now).Days;
+                        var hoursLeft = (Model.Deadline.Value - DateTime.Now).Hours;
+                        var alertClass = daysLeft < 0 ? "et-alert-danger" : daysLeft < 7 ? "et-alert-warning" : "et-alert-info";
+                        var iconClass = daysLeft < 0 ? "fa-exclamation-triangle" : "fa-clock";
+
+                        <div class="et-divider"></div>
+
+                        <div class="et-stat-item">
+                            <small>
+                                <i class="far fa-calendar-alt"></i> Thời hạn
+                            </small>
+                            <div class="et-alert @alertClass et-mb-0">
+                                <div class="et-d-flex et-align-center">
+                                    <i class="fas @iconClass" style="font-size: 32px;"></i>
+                                    <div style="margin-left: 12px;">
+                                        <strong style="display: block;">
+                                            @if (daysLeft < 0)
+                                            {
+                                                <span>Quá hạn @Math.Abs(daysLeft) ngày</span>
+                                            }
+                                            else if (daysLeft == 0)
+                                            {
+                                                <span>Hết hạn hôm nay</span>
+                                                <small style="display: block;">(@hoursLeft giờ nữa)</small>
+                                            }
+                                            else
+                                            {
+                                                <span>Còn @daysLeft ngày</span>
+                                            }
+                                        </strong>
+                                        <small style="display: block; margin-top: 4px;">
+                                            @Model.Deadline.Value.ToString("dd/MM/yyyy HH:mm")
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const userCheckboxes = document.querySelectorAll('.user-checkbox');
+            const searchInput = document.getElementById('searchUsers');
+            const selectedCountSpan = document.getElementById('selectedCount');
+            const form = document.getElementById('updateTaskForm');
+            const btnSubmit = document.getElementById('btnSubmit');
+
+            document.getElementById('platform').value = '@Model.Platform';
+            document.getElementById('priority').value = '@Model.Priority';
+
+            function showToast(message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `et-toast et-toast-${type}`;
+                toast.innerHTML = `
+                    <div class="et-toast-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} et-toast-icon"></i>
+                        <span class="et-toast-message">${message}</span>
+                        <button class="et-toast-close" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 10);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 5000);
+            }
+
+            function updateSelectedCount() {
+                const count = document.querySelectorAll('.user-checkbox:checked').length;
+                selectedCountSpan.textContent = count;
+            }
+
+            function updateSelectAllCheckbox() {
+                const visibleCheckboxes = Array.from(userCheckboxes).filter(cb =>
+                    cb.closest('.et-user-item').style.display !== 'none'
+                );
+                const checkedVisible = visibleCheckboxes.filter(cb => cb.checked);
+                selectAllCheckbox.checked = visibleCheckboxes.length > 0 &&
+                                           visibleCheckboxes.length === checkedVisible.length;
+            }
+
+            updateSelectedCount();
+            updateSelectAllCheckbox();
+
+            selectAllCheckbox.addEventListener('change', function() {
+                userCheckboxes.forEach(cb => {
+                    if (cb.closest('.et-user-item').style.display !== 'none') {
+                        cb.checked = this.checked;
+                    }
+                });
+                updateSelectedCount();
+            });
+
+            userCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    updateSelectedCount();
+                    updateSelectAllCheckbox();
+                });
+            });
+
+            searchInput.addEventListener('input', function() {
+                const searchText = this.value.toLowerCase().trim();
+                document.querySelectorAll('.et-user-item').forEach(item => {
+                    const name = item.dataset.name || '';
+                    const dept = item.dataset.dept || '';
+                    const matches = name.includes(searchText) || dept.includes(searchText);
+                    item.style.display = matches || searchText === '' ? '' : 'none';
+                });
+                updateSelectAllCheckbox();
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const taskId = parseInt(document.getElementById('taskId').value);
+                const taskName = document.getElementById('taskName').value.trim();
+                const description = document.getElementById('description').value.trim();
+                const platform = document.getElementById('platform').value;
+                const deadlineInput = document.getElementById('deadline').value;
+                const deadline = deadlineInput ? new Date(deadlineInput).toISOString() : null;
+                const priority = document.getElementById('priority').value;
+                const assignedUserIds = Array.from(document.querySelectorAll('.user-checkbox:checked'))
+                    .map(cb => parseInt(cb.value));
+
+                if (!taskName) {
+                    showToast('Vui lòng nhập tên task!', 'danger');
+                    document.getElementById('taskName').focus();
+                    return;
+                }
+
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang cập nhật...';
+
+                fetch('@Url.Action("UpdateTask", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        taskId: taskId,
+                        taskName: taskName,
+                        description: description,
+                        platform: platform,
+                        targetPerWeek: 0,
+                        deadline: deadline,
+                        priority: priority,
+                        assignedUserIds: assignedUserIds
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = '@Url.Action("TaskList", "Admin")';
+                        }, 1500);
+                    } else {
+                        showToast(data.message || 'Có lỗi xảy ra!', 'danger');
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="fas fa-save"></i> Cập nhật Task';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Có lỗi xảy ra khi cập nhật task!', 'danger');
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<i class="fas fa-save"></i> Cập nhật Task';
+                });
+            });
+        });
+    </script>
+}

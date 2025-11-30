@@ -1,0 +1,468 @@
+﻿/* ===== AUTHENTICATION UNIFIED STYLES - Scoped by body classes ===== */
+
+/* Root variables (từ forgot password) */
+:root {
+    --primary: #1a1f4a;
+    --secondary: #6366f1;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --light: #f8fafc;
+    --dark: #0f172a;
+    --border: #e2e8f0;
+    --shadow: rgba(15, 23, 42, 0.08);
+    --shadow-lg: rgba(15, 23, 42, 0.15);
+    --text: #334155;
+    --text-muted: #64748b;
+}
+
+/* Dark mode mapping */
+body.staff-dark-mode {
+    --light: #1e293b;
+    --dark: #0f172a;
+    --border: #334155;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --shadow-lg: rgba(0, 0, 0, 0.5);
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+    /* -------------------------
+   Page wrappers (scoped)
+   - Only the page whose body has the matching class will be centered.
+   - This prevents layout interference when multiple components exist.
+   ------------------------- */
+
+    /* Forgot Password page */
+    body.fp-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: var(--light);
+        padding: 20px;
+    }
+
+    /* Verify OTP page */
+    body.votp-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: var(--light);
+        padding: 20px;
+    }
+
+    /* Reset Password page */
+    body.rp-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: var(--light);
+        padding: 20px;
+    }
+
+/* Generic container sizing used by all pages */
+.fp-container, .votp-container, .rp-container {
+    width: 100%;
+    max-width: 520px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+
+/* Shared card */
+.fp-card, .votp-card, .rp-card {
+    background: var(--light);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    width: 100%;
+}
+
+/* Shared header */
+.fp-header, .votp-header, .rp-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    color: var(--light);
+    padding: 36px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* header icon */
+.fp-header-icon, .votp-header-icon, .rp-icon-wrapper {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+    background: rgba(99,102,241,0.08);
+    backdrop-filter: blur(6px);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    z-index: 1;
+}
+
+    .fp-header-icon i, .votp-header-icon i, .rp-icon-wrapper i {
+        font-size: 34px;
+        color: var(--light);
+    }
+
+/* header titles */
+.fp-header-title, .votp-header-title, .rp-header h3 {
+    margin: 0 0 8px 0;
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--light);
+}
+
+.fp-header-subtitle, .votp-header-desc, .rp-header p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+}
+
+/* Shared body */
+.fp-body, .votp-body, .rp-body {
+    padding: 32px 28px;
+    background: var(--light);
+    color: var(--text);
+}
+
+/* Info box */
+.fp-info-box, .votp-email-info, .rp-email-info {
+    background: linear-gradient(135deg, rgba(99,102,241,0.04) 0%, rgba(99,102,241,0.02) 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* Form controls */
+.fp-form-group, .votp-form-group, .rp-form-group {
+    margin-bottom: 18px;
+}
+
+.fp-label, .votp-label, .rp-label {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fp-input, .votp-input, .rp-input {
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    transition: all 0.18s ease;
+    background: var(--light);
+    color: var(--text);
+    outline: none;
+    font-family: inherit;
+}
+
+    .fp-input:focus, .votp-input:focus, .rp-input:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.06);
+    }
+
+/* Buttons */
+.fp-btn, .votp-btn, .rp-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 6px 18px var(--shadow);
+}
+
+/* -------------------------
+   Verify OTP specifics
+   - Scoped: only active when body has class "votp-page"
+   ------------------------- */
+body.votp-page .votp-container {
+    /* full-page centering already handled by body.votp-page */
+    display: block; /* container is block inside centered body */
+    max-width: 520px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.votp-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.votp-input-container {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 32px 0;
+}
+
+.votp-input {
+    width: 55px;
+    height: 65px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+    background: var(--light);
+    color: var(--text);
+}
+
+    .votp-input:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+        transform: scale(1.05);
+    }
+
+.votp-timer-box {
+    background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(99,102,241,0.04) 100%);
+    border-left: 4px solid var(--secondary);
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    text-align: center;
+    box-shadow: 0 2px 12px var(--shadow);
+}
+
+.votp-timer {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--secondary);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+/* OTP button variants (still scoped) */
+.votp-btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+.votp-btn-secondary {
+    background: var(--light);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+    font-size: 14px;
+    width: auto;
+    margin: 0 auto 16px;
+}
+
+/* -------------------------
+   Reset Password specifics
+   - Scoped: only active when body has class "rp-page"
+   ------------------------- */
+body.rp-page .rp-wrapper {
+    display: block; /* wrapper inside centered body */
+    max-width: 540px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.rp-card {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.rp-input-wrapper {
+    position: relative;
+}
+
+.rp-toggle-password {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color .18s ease, background .18s ease, transform .12s ease;
+}
+
+    .rp-toggle-password:hover {
+        color: var(--secondary);
+        background: rgba(99,102,241,0.04);
+        transform: translateY(-1px);
+    }
+
+.rp-strength-meter {
+    margin-top: 0.75rem;
+}
+
+.rp-strength-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.rp-strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: width .4s ease;
+    border-radius: 6px;
+}
+
+    .rp-strength-fill.weak {
+        width: 33%;
+        background: linear-gradient(90deg, var(--danger), #ff6b6b);
+    }
+
+    .rp-strength-fill.medium {
+        width: 66%;
+        background: linear-gradient(90deg, var(--warning), #fdb44b);
+    }
+
+    .rp-strength-fill.strong {
+        width: 100%;
+        background: linear-gradient(90deg, var(--success), #34d399);
+    }
+
+.rp-requirements {
+    background: linear-gradient(135deg, rgba(99,102,241,0.04), rgba(99,102,241,0.03));
+    border-left: 4px solid var(--secondary);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    margin: 1rem 0 1.25rem;
+    border: 1px solid rgba(99,102,241,0.08);
+}
+
+.rp-requirement {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin: 0.5rem 0;
+}
+
+    .rp-requirement.valid {
+        color: var(--success);
+        font-weight: 600;
+    }
+
+/* Reset page primary button */
+.rp-btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+}
+
+/* -------------------------
+   SweetAlert2 overrides (shared)
+   ------------------------- */
+.swal2-popup {
+    border-radius: 12px !important;
+    font-family: 'Inter', 'Segoe UI', sans-serif !important;
+    background: var(--light) !important;
+    color: var(--text) !important;
+}
+
+.swal2-title {
+    font-weight: 700 !important;
+    font-size: 20px !important;
+    color: var(--text) !important;
+}
+
+.swal2-html-container {
+    color: var(--text-muted) !important;
+}
+
+.swal2-confirm {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%) !important;
+    border-radius: 10px !important;
+    padding: 10px 28px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(15,23,42,0.12) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fp-header, .votp-header, .rp-header {
+        padding: 24px 18px;
+    }
+
+    .fp-header-icon, .votp-header-icon, .rp-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+    }
+
+    .fp-header-title, .votp-header-title, .rp-header h3 {
+        font-size: 20px;
+    }
+
+    .fp-body, .votp-body, .rp-body {
+        padding: 20px;
+    }
+
+    .votp-input {
+        width: 45px;
+        height: 55px;
+        font-size: 24px;
+    }
+
+    .votp-timer {
+        font-size: 28px;
+    }
+
+    .rp-card {
+        border-radius: 14px;
+    }
+}
+
+@media (max-width: 420px) {
+    .votp-input {
+        width: 40px;
+        height: 50px;
+        font-size: 22px;
+    }
+
+    .rp-input {
+        padding: 0.8rem 2.5rem 0.8rem 0.9rem;
+        font-size: 0.92rem;
+    }
+
+    .rp-btn {
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+    }
+}

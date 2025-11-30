@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - AIHUBOS System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+	<link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="lgn-container">
+        <!-- Left Side - Branding -->
+        <div class="lgn-branding">
+            <div class="lgn-branding-content">
+                <div class="lgn-branding-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <h1 class="lgn-branding-title">AIHUBOS System</h1>
+                <p class="lgn-branding-subtitle">Hệ thống quản lý nhân sự hiện đại</p>
+
+                <div class="lgn-features">
+                    <div class="lgn-feature-item">
+                        <div class="lgn-feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="lgn-feature-text">
+                            Chấm công thông minh với GPS và nhận diện khuôn mặt
+                        </div>
+                    </div>
+                    <div class="lgn-feature-item">
+                        <div class="lgn-feature-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="lgn-feature-text">
+                            Quản lý công việc và dự án hiệu quả
+                        </div>
+                    </div>
+                    <div class="lgn-feature-item">
+                        <div class="lgn-feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="lgn-feature-text">
+                            Báo cáo và thống kê chi tiết theo thời gian thực
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="lgn-form-section">
+            <div class="lgn-form-wrapper">
+                <div class="lgn-form-header">
+                    <h2>Chào mừng trở lại!</h2>
+                    <p>Đăng nhập để tiếp tục sử dụng hệ thống</p>
+                </div>
+
+                <form id="loginForm">
+                    <div class="lgn-form-group">
+                        <label class="lgn-form-label">Tên đăng nhập</label>
+                        <div class="lgn-input-group">
+                            <input type="text"
+                                   id="username"
+                                   class="lgn-form-control"
+                                   placeholder="Nhập tên đăng nhập của bạn"
+                                   required
+                                   autocomplete="username" />
+                            <i class="fas fa-user lgn-input-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="lgn-form-group">
+                        <label class="lgn-form-label">Mật khẩu</label>
+                        <div class="lgn-input-group">
+                            <input type="password"
+                                   id="password"
+                                   class="lgn-form-control"
+                                   placeholder="Nhập mật khẩu của bạn"
+                                   required
+                                   autocomplete="current-password" />
+                            <i class="fas fa-lock lgn-input-icon"></i>
+                            <button type="button" class="lgn-password-toggle" id="togglePassword">
+                                <i class="fas fa-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lgn-form-options">
+                        <div class="lgn-custom-checkbox">
+                            <input type="checkbox" id="rememberMe" />
+                            <label for="rememberMe">Ghi nhớ đăng nhập</label>
+                        </div>
+                        <a href="Account/ForgotPassword" class="lgn-forgot-password">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="lgn-btn-login" id="btnLogin">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Đăng nhập</span>
+                    </button>
+                </form>
+
+                <div class="lgn-divider">
+                    <span>hoặc đăng nhập với</span>
+                </div>
+
+                <div class="lgn-social-login">
+                    <button type="button" class="lgn-btn-social">
+                        <i class="fab fa-google"></i>
+                        Google
+                    </button>
+                    <button type="button" class="lgn-btn-social">
+                        <i class="fab fa-microsoft"></i>
+                        Microsoft
+                    </button>
+                </div>
+
+                <div class="lgn-footer-text">
+                    &copy; 2024 AIHUBOS System. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Toggle Password Visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            if (type === 'password') {
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        });
+
+        // Login Form Submit
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const btnLogin = document.getElementById('btnLogin');
+
+            if (!username || !password) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu'
+                });
+                return;
+            }
+
+            // Show loading state
+            btnLogin.classList.add('loading');
+            btnLogin.innerHTML = '<i class="fas fa-spinner"></i><span>Đang đăng nhập...</span>';
+
+            try {
+                const response = await fetch('/Account/LoginJson', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, rememberMe })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: result.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = result.redirectUrl;
+                    });
+                } else {
+                    btnLogin.classList.remove('loading');
+                    btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Đăng nhập</span>';
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Đăng nhập thất bại',
+                        text: result.message
+                    });
+                }
+            } catch (error) {
+                btnLogin.classList.remove('loading');
+                btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Đăng nhập</span>';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra. Vui lòng thử lại.'
+                });
+            }
+        });
+
+        // Prevent form resubmission on page refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+@inject AIHUBOS.Models.AihubSystemContext _dbContext
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AIHUBOS Staff</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    @{
+        var customCss = "";
+        try { customCss = AIHUBOS.Controllers.SettingsController.GetSettingValue(_dbContext, "CUSTOM_CSS"); } catch { }
+    }
+    @if (!string.IsNullOrWhiteSpace(customCss))
+    {
+        <style id="staff-custom-css">@Html.Raw(customCss)</style>
+    }
+</head>
+<link href="~/css/layoutstaff.css" rel="stylesheet" />
+<body class="staff-body">
+    <audio id="notifSound" src="~/sounds/notification.wav" preload="auto"></audio>
+    <div id="toast-container"></div>
+
+    <nav class="staff-navbar navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="staff-navbar__brand" href="/Staff/Dashboard">
+                <i class="fas fa-briefcase"></i><span>AIHUBOS System v1</span>
+            </a>
+            <button class="navbar-toggler staff-navbar__toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="staff-nav-link" href="/Staff/Dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="staff-nav-link" href="/Staff/MyTasks"><i class="fas fa-clipboard-list"></i><span>Công việc</span></a></li>
+
+                    @* ✅ MENU TESTER - CHỈ HIỂN THỊ NẾU IsTester = "1" *@
+                    @if (Context.Session.GetString("IsTester") == "1")
+                    {
+                        <li class="nav-item">
+                            <a class="staff-nav-link" href="/Tester/Dashboard">
+                                <i class="fas fa-flask"></i>
+                                <span>Task cần test</span>
+                                <span class="badge bg-warning ms-1" id="testingTaskCount" style="display:none;">0</span>
+                            </a>
+                        </li>
+                    }
+
+                    <li class="nav-item"><a class="staff-nav-link" href="/Staff/AttendanceHistory"><i class="fas fa-history"></i><span>Lịch sử chấm công</span></a></li>
+
+                    <!-- Theme Toggle Button -->
+                    <li class="nav-item ms-2">
+                        <button class="staff-theme-toggle" id="staffThemeToggle" onclick="toggleStaffTheme()">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item dropdown ms-2">
+                        <a class="staff-notif-btn" href="#" id="notifDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell fa-lg"></i>
+                            <span class="staff-notif-badge" id="notifBadge">0</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end staff-notif-dropdown" aria-labelledby="notifDropdown">
+                            <div class="staff-notif-header">Thông báo mới</div>
+                            <div id="notifList">
+                                <div class="p-3 text-center text-muted small">Không có thông báo nào</div>
+                            </div>
+                            <div class="staff-notif-clear">
+                                <button onclick="clearAllNotifications()">
+                                    <i class="fas fa-check-double me-1"></i> Đánh dấu đã đọc tất cả
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown ms-3">
+                        <a class="staff-user-dropdown" href="#" id="userDropdown" data-bs-toggle="dropdown">
+                            <img src="@Context.Session.GetString("Avatar")" alt="Avatar" class="staff-user-avatar" />
+                            <div class="staff-user-info d-none d-lg-block">
+                                <div class="staff-user-name">@Context.Session.GetString("FullName")</div>
+                                <div class="staff-user-role">
+                                    @Context.Session.GetString("RoleName")
+                                    @* ✅ BADGE TESTER - CHỈ HIỂN THỊ NẾU IsTester = "1" *@
+                                    @if (Context.Session.GetString("IsTester") == "1")
+                                    {
+                                        <span class="badge bg-info ms-1" style="font-size:0.65rem;">Tester</span>
+                                    }
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end staff-dropdown-menu">
+                            <li><a class="staff-dropdown-item" href="/Staff/Profile"><i class="fas fa-user-circle"></i><span>Hồ sơ cá nhân</span></a></li>
+                            <li><a class="staff-dropdown-item" href="/Staff/MyDepartment"><i class="fas fa-users"></i><span>Phòng ban của tôi</span></a></li>
+                            <li><a class="staff-dropdown-item" href="/Staff/MyRequests"><i class="fas fa-file-alt"></i><span>Yêu cầu của tôi</span></a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="staff-dropdown-item staff-dropdown-item--danger" href="/Account/Logout"><i class="fas fa-sign-out-alt"></i><span>Đăng xuất</span></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="staff-container">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert staff-alert staff-alert--success alert-dismissible fade show"><i class="fas fa-check-circle"></i><div><strong>Thành công!</strong><p class="mb-0">@TempData["Success"]</p></div><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert staff-alert staff-alert--danger alert-dismissible fade show"><i class="fas fa-exclamation-circle"></i><div><strong>Lỗi!</strong><p class="mb-0">@TempData["Error"]</p></div><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        }
+        @if (TempData["Warning"] != null)
+        {
+            <div class="alert staff-alert staff-alert--warning alert-dismissible fade show"><i class="fas fa-exclamation-triangle"></i><div><strong>Cảnh báo!</strong><p class="mb-0">@TempData["Warning"]</p></div><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        }
+        @if (TempData["Info"] != null)
+        {
+            <div class="alert staff-alert staff-alert--info alert-dismissible fade show"><i class="fas fa-info-circle"></i><div><strong>Thông tin!</strong><p class="mb-0">@TempData["Info"]</p></div><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        }
+        @RenderBody()
+    </div>
+
+    <div class="staff-scroll-top" id="scrollToTop"><i class="fas fa-arrow-up"></i></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+
+    <script>
+        // --- UI Scripts ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.staff-nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPath) link.classList.add('active');
+            });
+            const scrollBtn = document.getElementById('scrollToTop');
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) scrollBtn.classList.add('show'); else scrollBtn.classList.remove('show');
+            });
+            scrollBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+            setTimeout(() => { document.querySelectorAll('.alert').forEach(a => new bootstrap.Alert(a).close()); }, 5000);
+        });
+
+        // --- ✅ SIGNALR NOTIFICATION LOGIC ---
+        var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+        var notifications = [];
+
+        connection.on("ReceiveMessage", function (title, message, type, link) {
+            var audio = document.getElementById("notifSound");
+            if(audio) audio.play().catch(e => console.log("Cần tương tác để phát âm thanh"));
+
+            showFloatingToast(title, message, type);
+
+            var notif = {
+                id: Date.now(),
+                title: title,
+                message: message,
+                type: type,
+                link: link || null,
+                time: new Date(),
+                read: false
+            };
+            notifications.unshift(notif);
+
+            updateNotifBadge();
+            renderNotifList();
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        // ✅ LOAD NOTIFICATIONS FROM DATABASE
+        async function loadNotifications() {
+            try {
+                const response = await fetch('/Staff/GetMyNotifications?skip=0&take=20');
+                const data = await response.json();
+
+                if (data.success) {
+                    notifications = data.notifications.map(n => ({
+                        id: n.id,
+                        title: n.title,
+                        message: n.message,
+                        type: n.type,
+                        link: n.link,
+                        time: new Date(n.time),
+                        read: n.read
+                    }));
+
+                    updateNotifBadge();
+                    renderNotifList();
+                }
+            } catch (e) {
+                console.error('Failed to load notifications:', e);
+            }
+        }
+
+        function updateNotifBadge() {
+            var unreadCount = notifications.filter(n => !n.read).length;
+            var badge = document.getElementById("notifBadge");
+            if (unreadCount > 0) {
+                badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+                badge.style.display = "block";
+            } else {
+                badge.style.display = "none";
+            }
+        }
+
+        function renderNotifList() {
+            var list = document.getElementById("notifList");
+            if (notifications.length === 0) {
+                list.innerHTML = '<div class="p-3 text-center text-muted small">Không có thông báo nào</div>';
+                return;
+            }
+
+            var html = '';
+            notifications.slice(0, 20).forEach(function(notif) {
+                var timeStr = getTimeAgo(notif.time);
+                var readClass = notif.read ? 'read' : 'unread';
+                var linkAttr = notif.link
+                    ? `onclick="handleNotifClick(${notif.id}, '${notif.link}')" style="cursor:pointer"`
+                    : `onclick="markAsRead(${notif.id})" style="cursor:pointer"`;
+
+                html += `
+                    <div class="staff-notif-item staff-notif-item--${readClass}" ${linkAttr}>
+                        <div class="staff-notif-title">${notif.title}</div>
+                        <div class="staff-notif-msg">${notif.message}</div>
+                        <div class="staff-notif-time">${timeStr}</div>
+                    </div>`;
+            });
+
+            list.innerHTML = html;
+        }
+
+        function handleNotifClick(id, link) {
+            markAsRead(id);
+            if (link) {
+                window.location.href = link;
+            }
+        }
+
+        async function markAsRead(id) {
+            var notif = notifications.find(n => n.id === id);
+            if (notif && !notif.read) {
+                notif.read = true;
+                updateNotifBadge();
+                renderNotifList();
+
+                // ✅ LƯU VÀO DATABASE
+                try {
+                    await fetch('/Staff/MarkNotificationAsRead', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(id)
+                    });
+                } catch (e) {
+                    console.error('Failed to mark as read:', e);
+                }
+            }
+        }
+
+        async function clearAllNotifications() {
+            var hasUnread = notifications.some(n => !n.read);
+
+            notifications.forEach(n => n.read = true);
+            updateNotifBadge();
+            renderNotifList();
+
+            // ✅ CHỈ GỌI API NẾU CÓ THÔNG BÁO CHƯA ĐỌC
+            if (hasUnread) {
+                try {
+                    await fetch('/Staff/MarkAllNotificationsAsRead', {
+                        method: 'POST'
+                    });
+                } catch (e) {
+                    console.error('Failed to mark all as read:', e);
+                }
+            }
+        }
+
+        function getTimeAgo(date) {
+            var seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'Vừa xong';
+            var minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return minutes + ' phút trước';
+            var hours = Math.floor(minutes / 60);
+            if (hours < 24) return hours + ' giờ trước';
+            var days = Math.floor(hours / 24);
+            return days + ' ngày trước';
+        }
+
+        function showFloatingToast(title, message, type) {
+            var container = document.getElementById("toast-container");
+            var color = type === 'success' ? '#7A3F30' : (type === 'error' ? '#CC7051' : '#D4A459');
+            var div = document.createElement('div');
+            div.className = "staff-toast";
+            div.style.borderLeftColor = color;
+            div.innerHTML = `
+                <div style="flex:1">
+                    <div style="font-weight:bold; margin-bottom:4px">${title}</div>
+                    <div style="font-size:13px; color:var(--staff-text-secondary)">${message}</div>
+                </div>
+            `;
+            container.appendChild(div);
+            setTimeout(() => div.remove(), 5000);
+        }
+
+        // --- Theme Toggle ---
+        function toggleStaffTheme() {
+            const body = document.body;
+            const themeIcon = document.querySelector('#staffThemeToggle i');
+
+            body.classList.toggle('staff-dark-mode');
+
+            if (body.classList.contains('staff-dark-mode')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('staffTheme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('staffTheme', 'light');
+            }
+        }
+
+        // ✅ CẬP NHẬT SỐ LƯỢNG TASK CẦN TEST (CHỈ DÀNH CHO TESTER)
+        async function updateTestingTaskCount() {
+            // Kiểm tra xem user có phải Tester không
+            const isTester = document.getElementById('testingTaskCount');
+            if (!isTester) return; // Không phải tester thì return
+
+            try {
+                const response = await fetch('/Tester/GetStatistics');
+                const data = await response.json();
+
+                if (data.success && data.stats.totalTesting > 0) {
+                    isTester.textContent = data.stats.totalTesting;
+                    isTester.style.display = 'inline-block';
+                } else {
+                    isTester.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error fetching testing count:', error);
+            }
+        }
+
+        // ✅ LOAD KHI TRANG VỪA MỞ
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved theme
+            const savedTheme = localStorage.getItem('staffTheme');
+            const themeIcon = document.querySelector('#staffThemeToggle i');
+
+            if (savedTheme === 'dark') {
+                document.body.classList.add('staff-dark-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+
+            // Load notifications
+            loadNotifications();
+
+            // ✅ CẬP NHẬT TASK COUNT CHO TESTER
+            updateTestingTaskCount();
+
+            // Refresh task count mỗi 30 giây
+            setInterval(updateTestingTaskCount, 30000);
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @{
+        var customJs = "";
+        try { customJs = AIHUBOS.Controllers.SettingsController.GetSettingValue(_dbContext, "CUSTOM_JS"); } catch { }
+    }
+    @if (!string.IsNullOrWhiteSpace(customJs))
+    {
+        <script id="staff-custom-js">(function() { @Html.Raw(customJs) })();</script>
+    }
+</body>
+</html>

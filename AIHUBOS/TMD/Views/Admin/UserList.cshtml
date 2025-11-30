@@ -1,0 +1,485 @@
+﻿@model AIHUBOS.ViewModels.UserListViewModel
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/user-management.css" rel="stylesheet" />
+
+<div class="um-container">
+    <!-- PAGE HEADER -->
+    <header class="um-page-header">
+        <div class="um-d-flex um-justify-between um-align-center">
+            <div>
+                <h2 class="um-page-title"><i class="fas fa-users"></i> Quản lý người dùng</h2>
+                <p class="um-page-subtitle">Danh sách tất cả người dùng và công việc của họ</p>
+            </div>
+            <a href="/Account/Register" class="um-btn-create">
+                <i class="fas fa-user-plus"></i> Tạo người dùng mới
+            </a>
+        </div>
+    </header>
+
+    <!-- STATISTICS CARDS -->
+    <section class="um-stats-grid">
+        <div class="um-stats-card um-stats-primary">
+            <div class="um-stats-icon"><i class="fas fa-users"></i></div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Tổng người dùng</div>
+                <div class="um-stats-value">
+                    @(
+                        ViewBag.TotalUsers != null
+                        ? (int)ViewBag.TotalUsers
+                        : Model.TotalCount
+                        )
+                </div>
+            </div>
+        </div>
+
+        <div class="um-stats-card um-stats-success">
+            <div class="um-stats-icon"><i class="fas fa-user-check"></i></div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Đang hoạt động</div>
+                <div class="um-stats-value">
+                    @(
+                        ViewBag.ActiveUsers != null
+                        ? (int)ViewBag.ActiveUsers
+                        : Model.Users.Count(u => u.IsActive == true)
+                        )
+                    <small class="um-stats-note">@((ViewBag.ActiveUsers != null) ? "" : "(trên trang)")</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="um-stats-card um-stats-warning">
+            <div class="um-stats-icon"><i class="fas fa-crown"></i></div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Admin</div>
+                <div class="um-stats-value">
+                    @(
+                        ViewBag.AdminCount != null
+                        ? (int)ViewBag.AdminCount
+                        : Model.Users.Count(u => u.Role?.RoleName == "Admin")
+                        )
+                    <small class="um-stats-note">@((ViewBag.AdminCount != null) ? "" : "(trên trang)")</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="um-stats-card um-stats-danger">
+            <div class="um-stats-icon"><i class="fas fa-user-slash"></i></div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Vô hiệu hóa</div>
+                <div class="um-stats-value">
+                    @(
+                        ViewBag.InactiveUsers != null
+                        ? (int)ViewBag.InactiveUsers
+                        : Model.Users.Count(u => u.IsActive == false)
+                        )
+                    <small class="um-stats-note">@((ViewBag.InactiveUsers != null) ? "" : "(trên trang)")</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FILTER & SEARCH (server-side form optional) -->
+    <section class="um-card um-mb-4">
+        <div class="um-filters-header">
+            <h6><i class="fas fa-filter"></i> Bộ lọc và tìm kiếm</h6>
+        </div>
+
+        <div class="um-card-body">
+            <form method="get" id="filterForm" class="um-row" action="@Url.Action("UserList","Admin")">
+                <input type="hidden" name="pageSize" value="@Model.PageSize" />
+                <div class="um-col-4">
+                    <label class="um-form-label"><i class="fas fa-search"></i> Tìm kiếm</label>
+                    <div class="um-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" name="search" value="@Model.Search" class="um-form-control" placeholder="Tên, username, email..." />
+                    </div>
+                </div>
+
+                <div class="um-col-2">
+                    <label class="um-form-label"><i class="fas fa-building"></i> Phòng ban</label>
+                    <select id="deptFilter" name="departmentId" class="um-form-control">
+                        <option value="">Tất cả</option>
+                        @{
+                            var depts = Model.Departments ?? new List<AIHUBOS.Models.Department>();
+                        }
+                        @foreach (var dept in depts)
+                        {
+                            if (Model.DepartmentId.HasValue && Model.DepartmentId.Value == dept.DepartmentId)
+                            {
+                                <option value="@dept.DepartmentId" selected>@dept.DepartmentName</option>
+                            }
+                            else
+                            {
+                                <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="um-col-2">
+                    <label class="um-form-label"><i class="fas fa-user-tag"></i> Vai trò</label>
+                    <select id="roleFilter" name="roleName" class="um-form-control">
+                        <option value="">Tất cả</option>
+                        @if (Model.Roles != null && Model.Roles.Any())
+                        {
+                            foreach (var r in Model.Roles)
+                            {
+                                if (!string.IsNullOrEmpty(Model.RoleName) && Model.RoleName == r.RoleName)
+                                {
+                                    <option value="@r.RoleName" selected>@r.RoleName</option>
+                                }
+                                else
+                                {
+                                    <option value="@r.RoleName">@r.RoleName</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="um-col-2">
+                    <label class="um-form-label"><i class="fas fa-toggle-on"></i> Trạng thái</label>
+                    <select id="statusFilter" name="status" class="um-form-control">
+                        <option value="">Tất cả</option>
+                        @if (Model.Status == "active")
+                        {
+                            <option value="active" selected>Hoạt động</option>
+                            <option value="inactive">Vô hiệu hóa</option>
+                        }
+                        else if (Model.Status == "inactive")
+                        {
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive" selected>Vô hiệu hóa</option>
+                        }
+                        else
+                        {
+                            <option value="active">Hoạt động</option>
+                            <option value="inactive">Vô hiệu hóa</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="um-col-2 um-flex-end">
+                    <div style="display:flex; gap:8px;">
+                        <button type="submit" class="um-btn um-btn-primary">Áp dụng</button>
+                        <a href="@Url.Action("UserList","Admin")" class="um-btn um-btn-secondary">Reset</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- USER TABLE -->
+    <section class="um-card">
+        <div class="um-card-header">
+            <h5 class="um-mb-0"><i class="fas fa-table"></i> Danh sách người dùng (<span id="showingCount">@Model.Users.Count</span>/<span id="totalCount">@Model.TotalCount</span>)</h5>
+        </div>
+
+        <div class="um-card-body-table">
+            <div class="um-table-wrapper">
+                <table class="um-table" id="userTable" role="table">
+                    <thead>
+                        <tr>
+                            <th width="5%">STT</th>
+                            <th width="20%">Người dùng</th>
+                            <th width="12%">Username</th>
+                            <th width="13%">Email</th>
+                            <th width="12%">Phòng ban</th>
+                            <th width="10%">Vai trò</th>
+                            <th width="10%">Trạng thái</th>
+                            <th width="10%">Đăng nhập cuối</th>
+                            <th width="13%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Users.Count; i++)
+                        {
+                            var user = Model.Users[i];
+                            <tr data-role="@user.Role?.RoleName"
+                                data-status="@(user.IsActive == true ? "active" : "inactive")"
+                                data-dept="@(user.DepartmentId?.ToString() ?? "")"
+                                data-fullname="@user.FullName?.ToLower()"
+                                data-username="@user.Username?.ToLower()"
+                                data-email="@user.Email?.ToLower()"
+                                data-phone="@user.PhoneNumber">
+                                <td class="um-text-center um-fw-bold">@(((Model.Page - 1) * Model.PageSize) + i + 1)</td>
+                                <td>
+                                    <div class="um-user-info">
+                                        <div class="um-user-avatar">
+                                            @if (!string.IsNullOrEmpty(user.Avatar))
+                                            {
+                                                <img src="@user.Avatar" alt="@user.FullName" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                                <span style="display:none;">@user.FullName?.Substring(0, 1)</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@(user.FullName != null ? user.FullName.Substring(0, 1) : "U")</span>
+                                            }
+                                        </div>
+                                        <div class="um-user-details">
+                                            <div class="um-user-name">@user.FullName</div>
+                                            <small class="um-text-muted"><i class="fas fa-phone-alt um-me-1"></i>@(user.PhoneNumber ?? "N/A")</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="um-username-badge">@("@" + user.Username)</span></td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(user.Email))
+                                    {
+                                        <span class="um-email"><i class="fas fa-envelope"></i>@user.Email</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="um-text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.Department != null)
+                                    {
+                                        <span class="um-badge um-badge-info"><i class="fas fa-building um-me-1"></i>@user.Department.DepartmentName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="um-text-muted">Chưa phân công</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(user.Role?.RoleName))
+                                    {
+                                        <span class="um-badge @(user.Role.RoleName == "Admin" ? "um-badge-admin" : "um-badge-secondary")">
+                                            <i class="fas fa-user um-me-1"></i> @user.Role.RoleName
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="um-badge um-badge-secondary">N/A</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.IsActive == true)
+                                    {
+                                        <span class="um-badge um-badge-success"><i class="fas fa-check-circle um-me-1"></i> Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="um-badge um-badge-danger"><i class="fas fa-ban um-me-1"></i> Vô hiệu</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.LastLoginAt.HasValue)
+                                    {
+                                        <div class="um-last-login"><i class="far fa-clock"></i><small>@user.LastLoginAt.Value.ToString("dd/MM/yyyy HH:mm")</small></div>
+                                    }
+                                    else
+                                    {
+                                        <span class="um-text-muted"><small>Chưa đăng nhập</small></span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="um-action-buttons">
+                                        <a href="/Admin/EditUser/@user.UserId" class="um-action-btn" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                        <button class="um-action-btn um-action-view" data-id="@user.UserId" data-name="@user.FullName" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                        <button class="um-action-btn um-action-toggle" onclick="toggleUserStatus(@user.UserId, '@user.FullName', @(user.IsActive == true ? "true" : "false"))" title="@(user.IsActive == true ? "Vô hiệu hóa" : "Kích hoạt")">
+                                            <i class="fas fa-@(user.IsActive == true ? "ban" : "check")"></i>
+                                        </button>
+                                        <a href="/Admin/ResetUserPassword/@user.UserId" class="um-action-btn" title="Reset mật khẩu"><i class="fas fa-key"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAGINATION -->
+        <footer class="um-card-footer">
+            <nav class="um-pagination" aria-label="User list pagination">
+                <ul class="pagination">
+                    <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page - 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">Prev</a>
+                    </li>
+
+                    @for (int p = 1; p <= Model.TotalPages; p++)
+                    {
+                        <li class="page-item @(p == Model.Page ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("UserList", new { page = p, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">@p</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page + 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">Next</a>
+                    </li>
+                </ul>
+
+                <div class="um-pagination-info">Hiển thị <strong>@Model.Users.Count</strong> / <strong>@Model.TotalCount</strong> người dùng</div>
+            </nav>
+        </footer>
+    </section>
+</div>
+
+<!-- CUSTOM MODAL (CSS only, no Bootstrap) -->
+<div id="um-modal-overlay" class="um-modal-overlay" aria-hidden="true">
+    <div class="um-modal-card" role="dialog" aria-modal="true" aria-labelledby="um-modal-title">
+        <header class="um-modal-header">
+            <h3 id="um-modal-title"><i class="fas fa-user-circle"></i> Chi tiết người dùng</h3>
+            <button id="um-modal-close" class="um-modal-close" aria-label="Close">&times;</button>
+        </header>
+        <div id="um-modal-body" class="um-modal-body">
+            <div class="um-loading-inline">
+                <div class="um-spinner"></div>
+                <p class="um-text-muted">Đang tải dữ liệu...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Modal controls (no bootstrap)
+        const modalOverlay = document.getElementById('um-modal-overlay');
+        const modalBody = document.getElementById('um-modal-body');
+        const modalClose = document.getElementById('um-modal-close');
+
+        function openModal() {
+            modalOverlay.setAttribute('aria-hidden', 'false');
+            modalOverlay.classList.add('open');
+        }
+        function closeModal() {
+            modalOverlay.setAttribute('aria-hidden', 'true');
+            modalOverlay.classList.remove('open');
+        }
+        modalClose.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+
+        // View detail buttons
+        document.querySelectorAll('.um-action-view').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const userId = this.dataset.id;
+                openModal();
+                modalBody.innerHTML = `<div class="um-loading-inline"><div class="um-spinner"></div><p class="um-text-muted">Đang tải dữ liệu...</p></div>`;
+
+                try {
+                    const res = await fetch(`/Admin/GetUserDetail?userId=${userId}`);
+                    const data = await res.json();
+                    if (!data.success) {
+                        modalBody.innerHTML = `<div class="um-alert um-alert-error">${data.message}</div>`;
+                        return;
+                    }
+
+                    const u = data.user;
+                    const t = data.tasks;
+                    const a = data.attendance;
+                    const s = data.salary;
+                    const r = data.requests;
+
+                    const html = `
+                        <section class="um-detail">
+                            <div class="um-detail-row"><strong>Tên:</strong> ${u.fullName}</div>
+                            <div class="um-detail-row"><strong>Username:</strong> ${u.username}</div>
+                            <div class="um-detail-row"><strong>Email:</strong> ${u.email || 'N/A'}</div>
+                            <div class="um-detail-row"><strong>Phòng ban:</strong> ${u.departmentName}</div>
+                            <div class="um-detail-row"><strong>Trạng thái:</strong> ${u.isActive ? 'Hoạt động' : 'Vô hiệu'}</div>
+                            <hr/>
+                            <div class="um-detail-section"><strong>Công việc</strong>
+                                <div class="um-stats-grid-inline">
+                                    <div><div class="um-stat-value">${t.total}</div><div class="um-stat-label">Tổng</div></div>
+                                    <div><div class="um-stat-value">${t.completed}</div><div class="um-stat-label">Hoàn thành</div></div>
+                                    <div><div class="um-stat-value">${t.inProgress}</div><div class="um-stat-label">Đang làm</div></div>
+                                    <div><div class="um-stat-value">${t.overdue}</div><div class="um-stat-label">Quá hạn</div></div>
+                                </div>
+                            </div>
+                            <hr/>
+                            <div class="um-detail-section"><strong>Chấm công (tháng này)</strong>
+                                <div class="um-detail-row">Ngày làm: ${a.totalWorkDays} — Đúng giờ: ${a.onTimeDays} — Muộn: ${a.lateDays}</div>
+                                <div class="um-detail-row">Giờ làm: ${a.totalWorkHours} h — Tăng ca đã duyệt: ${a.approvedOvertimeHours} h</div>
+                            </div>
+                            <hr/>
+                            <div class="um-detail-section"><strong>Lương (tháng này)</strong>
+                                <div class="um-detail-row">Lương cơ bản: ${s.baseSalary?.toLocaleString('vi-VN')} ₫</div>
+                                <div class="um-detail-row">Lương giờ: ${s.workHoursSalary?.toLocaleString('vi-VN')} ₫ — Tăng ca: ${s.overtimeSalary?.toLocaleString('vi-VN')} ₫</div>
+                                <div class="um-detail-row">Khấu trừ: ${s.totalDeduction?.toLocaleString('vi-VN')} ₫</div>
+                                <div class="um-detail-row"><strong>Lương dự kiến: ${s.estimatedSalary?.toLocaleString('vi-VN')} ₫</strong></div>
+                            </div>
+                        </section>
+                    `;
+                    modalBody.innerHTML = html;
+                } catch (err) {
+                    modalBody.innerHTML = `<div class="um-alert um-alert-error">Lỗi: ${err.message}</div>`;
+                }
+            });
+        });
+
+        // Toggle user status (uses existing endpoint)
+        async function toggleUserStatus(userId, fullName, currentStatus) {
+            const isActive = currentStatus === "true";
+            const action = isActive ? 'vô hiệu hóa' : 'kích hoạt';
+            if (!confirm(`Bạn có chắc muốn ${action} tài khoản của ${fullName}?`)) return;
+
+            try {
+                const res = await fetch('/Admin/ToggleUserStatus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: userId })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Thất bại: ' + data.message);
+                }
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        // Client-side quick filter (works on current page)
+        const searchInput = document.getElementById('searchInput');
+        const roleFilter = document.getElementById('roleFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const deptFilter = document.getElementById('deptFilter');
+
+        function filterTable() {
+            const rows = document.querySelectorAll('#userTable tbody tr');
+            const searchTerm = (searchInput?.value || '').toLowerCase();
+            const selectedRole = roleFilter?.value || '';
+            const selectedStatus = statusFilter?.value || '';
+            const selectedDept = deptFilter?.value || '';
+
+            let visible = 0;
+            rows.forEach(row => {
+                const fullname = (row.getAttribute('data-fullname') || '').toLowerCase();
+                const username = (row.getAttribute('data-username') || '').toLowerCase();
+                const email = (row.getAttribute('data-email') || '').toLowerCase();
+                const phone = (row.getAttribute('data-phone') || '').toLowerCase();
+                const role = (row.getAttribute('data-role') || '');
+                const status = (row.getAttribute('data-status') || '');
+                const dept = (row.getAttribute('data-dept') || '');
+
+                const matchSearch = !searchTerm || fullname.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm);
+                const matchRole = !selectedRole || role === selectedRole;
+                const matchStatus = !selectedStatus || status === selectedStatus;
+                const matchDept = !selectedDept || dept === selectedDept;
+
+                if (matchSearch && matchRole && matchStatus && matchDept) {
+                    row.style.display = '';
+                    visible++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            document.getElementById('showingCount').textContent = visible;
+        }
+
+        if (searchInput) searchInput.addEventListener('input', filterTable);
+        if (roleFilter) roleFilter.addEventListener('change', filterTable);
+        if (statusFilter) statusFilter.addEventListener('change', filterTable);
+        if (deptFilter) deptFilter.addEventListener('change', filterTable);
+    </script>
+}

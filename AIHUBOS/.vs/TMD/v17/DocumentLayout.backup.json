@@ -1,0 +1,2493 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\kpidashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\kpidashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\kpi-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\kpi-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\audit-logs.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\audit-logs.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\auditlogs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\auditlogs.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\createtask.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\createtask.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\loginhistory.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\loginhistory.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\loginhistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\loginhistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\passwordresethistory.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\passwordresethistory.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\passwordresethistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\passwordresethistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\edittask-ad.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\edittask-ad.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\edittask.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\edittask.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\task-create.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\task-create.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\tasklist-ad.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\tasklist-ad.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\edituser.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\edituser.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\tasklist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\tasklist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\attendance-modal.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\attendance-modal.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\attendancehistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\attendancehistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\attendance-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\attendance-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\pending-requests.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\pending-requests.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\pendingrequests.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\pendingrequests.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\usertask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\usertask.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\department-list.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\department-list.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\departmentdetail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\departmentdetail.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\departmentlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\departmentlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\user-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\user-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\userlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\userlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\account\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\staff\\mytasks.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\staff\\mytasks.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\login.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\login.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\user-tasks.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\user-tasks.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\userlistviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\userlistviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\dashboard-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\dashboard-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\layout.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\layoutstaff.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\layoutstaff.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\shared\\_layoutstaff.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\shared\\_layoutstaff.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\services\\emailservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\auth-page.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\auth-page.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\account\\verifyotp.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\account\\verifyotp.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\account\\resetpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\account\\forgotpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\reset-password.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\reset-password.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\verify-otp.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\verify-otp.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\staff-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\staff-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\staff\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\staff\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\testercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\testercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\attendance-history.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\attendance-history.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\staff\\attendancehistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\staff\\attendancehistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\tester-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\tester-dashboard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\tester\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\tester\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\staff-requests.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\staff-requests.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\staff\\myrequests.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\staff\\myrequests.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\profile.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\profile.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\staff\\profile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\staff\\profile.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\js\\attendance-history.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\js\\attendance-history.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\my-department.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\my-department.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\staff\\mydepartment.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\staff\\mydepartment.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\vwtaskswithdeadline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\vwtaskswithdeadline.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\salaryconfighistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\salaryconfighistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\task.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\task.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\department.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\department.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\aihubsystemcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\aihubsystemcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\registerviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\registerviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\tasklist-staff.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\tasklist-staff.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\kpicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\kpicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\hubs\\notificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\hubs\\notificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\attendancelist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\attendancelist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\setting.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\setting.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\settings\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\settings\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\salarycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\salarycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\settingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\settingscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\salary.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\salary.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\salary\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\salary\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\resetuserpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\resetuserpassword.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\reset-user-password.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\reset-user-password.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\usernotification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\usernotification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\services\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\services\\notificationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\notificationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\deletedtasks.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\deletedtasks.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\departmen-detail.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\departmen-detail.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\recycle-bin.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\recycle-bin.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\requestcard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\requestcard.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\_leaverequestcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\_leaverequestcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\_overtimerequestcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\_overtimerequestcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\admin\\_laterequestcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\admin\\_laterequestcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\js\\verify-otp.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\js\\verify-otp.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\js\\resetpass.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\js\\resetpass.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\register-reset.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\register-reset.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\fg-pass.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\fg-pass.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\admin-request.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\admin-request.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\backups\\layouts\\_layoutstaff_20251122171819.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\backups\\layouts\\_layoutstaff_20251122171819.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\vwactivesalarysetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\vwactivesalarysetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\usersalarysetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\usersalarysetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\systemsettingsbackup20251123.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\systemsettingsbackup20251123.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\salaryconfigcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\salaryconfigcategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\passwordresettoken1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\passwordresettoken1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\backups\\layouts\\_layout_20251119161232.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\backups\\layouts\\_layout_20251119161232.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\backups\\layouts\\_layoutstaff_20251120002435.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\backups\\layouts\\_layoutstaff_20251120002435.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\workschedulecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\workschedulecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\controllers\\usersalarycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\controllers\\usersalarycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\backups\\layouts\\_layoutstaff_20251119161302.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\backups\\layouts\\_layoutstaff_20251119161302.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\services\\autorejectrequestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\services\\autorejectrequestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\helpers\\audithelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\helpers\\audithelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\settings\\_settingcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\settings\\_settingcard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\updateprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\updateprofileviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\staff\\myloginhistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\staff\\myloginhistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\usersalary\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\usersalary\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\workschedule\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\workschedule\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\reviewrequestviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\reviewrequestviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\requestviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\requestviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\pendingrequestsviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\pendingrequestsviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\forgotpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\forgotpasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\createovertimerequestviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\createovertimerequestviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\createleaverequestviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\createleaverequestviewmodels.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\vwsalarycalculation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\vwsalarycalculation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\salaryconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\salaryconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\systemsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\systemsetting.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\passwordresethistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\passwordresethistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\salaryadjustment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\salaryadjustment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\overtimerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\overtimerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\passwordresetotp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\passwordresetotp.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\passwordresettoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\passwordresettoken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\loginhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\loginhistory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\leaverequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\leaverequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\laterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\laterequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\attendance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\attendance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\auditlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\auditlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\services\\attendancepolicyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\services\\attendancepolicyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\css\\staff-requests.css||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\css\\staff-requests.css||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\wwwroot\\js\\admin-request.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\wwwroot\\js\\admin-request.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\vwtodayattendance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\vwtodayattendance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\vwuserdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\vwuserdetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\workscheduleexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\workscheduleexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\vwtaskperformance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\vwtaskperformance.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\views\\_viewstart.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|e:\\aihub task\\aihubsystem\\aihubos_system\\aihubos\\tmd\\models\\tmdcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\AIHUBOS.csproj|solutionrelative:tmd\\models\\tmdcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 79,
+              "Title": "SettingsController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\SettingsController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\SettingsController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\SettingsController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\SettingsController.cs",
+              "ViewState": "AgIAADYEAAAAAAAAAAA6wFUEAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T07:08:49.731Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\AdminController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAAKkNAAAAAAAAAADwv84NAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:44:28.334Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "StaffController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\StaffController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\StaffController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\StaffController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\StaffController.cs",
+              "ViewState": "AgIAAOQIAAAAAAAAAAAkwAEJAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T04:28:56.236Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "AccountController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\AccountController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\AccountController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\AccountController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\AccountController.cs",
+              "ViewState": "AgIAAIwBAAAAAAAAAAAUwJkBAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:43:43.719Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:522429826:0:{83107a3e-496a-485e-b455-16ddb978e55e}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Dockerfile",
+              "RelativeDocumentMoniker": "TMD\\Dockerfile",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Dockerfile",
+              "RelativeToolTip": "TMD\\Dockerfile",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-11-30T11:03:00.116Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AuditLogs.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\AuditLogs.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\AuditLogs.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\AuditLogs.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\AuditLogs.cshtml",
+              "ViewState": "AgIAALwAAAAAAAAAAAAAAPEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:47:26.87Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "audit-logs.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\audit-logs.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\audit-logs.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\audit-logs.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\audit-logs.css",
+              "ViewState": "AgIAANUBAAAAAAAAAAAAAPMBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T18:14:00.55Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "KPIDashboard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\KPIDashboard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\KPIDashboard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\KPIDashboard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\KPIDashboard.cshtml",
+              "ViewState": "AgIAAKcBAAAAAAAAAAAQwLkBAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-28T04:47:24.898Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\appsettings.json",
+              "RelativeDocumentMoniker": "TMD\\appsettings.json",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\appsettings.json",
+              "RelativeToolTip": "TMD\\appsettings.json",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAACkAAABdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-26T07:51:39.621Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "CreateTask.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\CreateTask.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\CreateTask.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\CreateTask.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\CreateTask.cshtml",
+              "ViewState": "AgIAALABAAAAAAAAAAAcwM0BAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-16T09:09:57.392Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "kpi-dashboard.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\kpi-dashboard.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\kpi-dashboard.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\kpi-dashboard.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\kpi-dashboard.css",
+              "ViewState": "AgIAAHIBAAAAAAAAAAAgwKkBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-30T10:30:23.515Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "loginhistory.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\loginhistory.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\loginhistory.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\loginhistory.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\loginhistory.css",
+              "ViewState": "AgIAAE4CAAAAAAAAAAAAAGwCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T18:51:19.352Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "LoginHistory.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\LoginHistory.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\LoginHistory.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\LoginHistory.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\LoginHistory.cshtml",
+              "ViewState": "AgIAAFQAAAAAAAAAAAAcwHEAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:47:49.465Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "tasklist-ad.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\tasklist-ad.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\tasklist-ad.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\tasklist-ad.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\tasklist-ad.css",
+              "ViewState": "AgIAAFMCAAAAAAAAAAAgwIoCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T17:01:27.248Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "passwordresethistory.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\passwordresethistory.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\passwordresethistory.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\passwordresethistory.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\passwordresethistory.css",
+              "ViewState": "AgIAAOMBAAAAAAAAAAAAAAECAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T18:45:51.286Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "PasswordResetHistory.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\PasswordResetHistory.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\PasswordResetHistory.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\PasswordResetHistory.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\PasswordResetHistory.cshtml",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAuwLIAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:48:14.494Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "edittask-ad.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\edittask-ad.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\edittask-ad.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\edittask-ad.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\edittask-ad.css",
+              "ViewState": "AgIAAIQCAAAAAAAAAAAIwKICAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T17:06:46.57Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "task-create.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\task-create.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\task-create.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\task-create.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\task-create.css",
+              "ViewState": "AgIAAFYCAAAAAAAAAAAgwI0CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-27T03:27:35.963Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "EditTask.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\EditTask.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\EditTask.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\EditTask.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\EditTask.cshtml",
+              "ViewState": "AgIAAK8BAAAAAAAAAAAcwMwBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-16T13:34:14.932Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "EditUser.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\EditUser.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\EditUser.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\EditUser.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\EditUser.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-29T04:08:06.463Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "TaskList.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\TaskList.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\TaskList.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\TaskList.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\TaskList.cshtml",
+              "ViewState": "AgIAAOoBAAAAAAAAAAAuwCACAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:46:31.788Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "attendance-modal.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\attendance-modal.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\attendance-modal.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\attendance-modal.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\attendance-modal.css",
+              "ViewState": "AgIAAMgBAAAAAAAAAAAAAOYBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-18T04:37:04.602Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "AttendanceHistory.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\AttendanceHistory.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\AttendanceHistory.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\AttendanceHistory.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\AttendanceHistory.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-16T07:56:05.974Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "attendance-management.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\attendance-management.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\attendance-management.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\attendance-management.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\attendance-management.css",
+              "ViewState": "AgIAAEQCAAAAAAAAAAAAAGICAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T17:43:43.328Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "pending-requests.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\pending-requests.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\pending-requests.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\pending-requests.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\pending-requests.css",
+              "ViewState": "AgIAALYCAAAAAAAAAAAAANQCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-24T13:18:07.835Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "PendingRequests.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\PendingRequests.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\PendingRequests.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\PendingRequests.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\PendingRequests.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-19T18:35:28.27Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "UserTask.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\UserTask.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\UserTask.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\UserTask.cs",
+              "RelativeToolTip": "TMD\\Models\\UserTask.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAgwBIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T04:15:21.092Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "department-list.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\department-list.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\department-list.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\department-list.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\department-list.css",
+              "ViewState": "AgIAAFQFAAAAAAAAAAAAAHIFAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-27T03:45:10.262Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "DepartmentDetail.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\DepartmentDetail.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\DepartmentDetail.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\DepartmentDetail.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\DepartmentDetail.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAM4BAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-16T17:19:21.115Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "UserList.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\UserList.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\UserList.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\UserList.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\UserList.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:38:01.223Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "DepartmentList.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\DepartmentList.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\DepartmentList.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\DepartmentList.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\DepartmentList.cshtml",
+              "ViewState": "AgIAAFwBAAAAAAAAAAAAAJEBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:46:11.462Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "user-management.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\user-management.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\user-management.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\user-management.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\user-management.css",
+              "ViewState": "AgIAADwGAAAAAAAAAAAAAFoGAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T17:37:27.883Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "MyTasks.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyTasks.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyTasks.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyTasks.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Staff\\MyTasks.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T18:23:57.292Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "login.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\login.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\login.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\login.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\login.css",
+              "ViewState": "AgIAANYBAAAAAAAAAAAgwA0CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-18T04:21:50.79Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\Register.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Account\\Register.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\Register.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Account\\Register.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-14T10:49:14.346Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "UserListViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\UserListViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\UserListViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\UserListViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\UserListViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-30T08:27:53.639Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "user-tasks.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\user-tasks.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\user-tasks.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\user-tasks.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\user-tasks.css",
+              "ViewState": "AgIAAMACAAAAAAAAAAAAAN4CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-30T05:56:43.778Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "dashboard-management.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\dashboard-management.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\dashboard-management.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\dashboard-management.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\dashboard-management.css",
+              "ViewState": "AgIAAG0DAAAAAAAAAAAAAIsDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-16T17:50:10.843Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "layout.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\layout.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\layout.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\layout.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\layout.css",
+              "ViewState": "AgIAADQDAAAAAAAAAAAkwGsDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-20T07:30:09.583Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Account\\Login.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-14T10:48:36.038Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "layoutstaff.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\layoutstaff.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\layoutstaff.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\layoutstaff.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\layoutstaff.css",
+              "ViewState": "AgIAAJ4CAAAAAAAAAAAIwLwCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-20T07:26:00.41Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "User.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\User.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\User.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\User.cs",
+              "RelativeToolTip": "TMD\\Models\\User.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAA1wGsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T18:02:43.213Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\Dashboard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\Dashboard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\Dashboard.cshtml",
+              "ViewState": "AgIAAIYCAAAAAAAAAAAowKoCAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T04:58:33.689Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "ResetPassword.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\ResetPassword.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Account\\ResetPassword.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\ResetPassword.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Account\\ResetPassword.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T03:38:22.665Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "_LayoutStaff.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Shared\\_LayoutStaff.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Shared\\_LayoutStaff.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Shared\\_LayoutStaff.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Shared\\_LayoutStaff.cshtml",
+              "ViewState": "AgIAAF8BAAAAAAAAAAAkwHwBAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-14T10:45:42.878Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAF4BAAAAAAAAAAAkwHsBAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-14T10:45:31.528Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "EmailService.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\EmailService.cs",
+              "RelativeDocumentMoniker": "TMD\\Services\\EmailService.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\EmailService.cs",
+              "RelativeToolTip": "TMD\\Services\\EmailService.cs",
+              "ViewState": "AgIAAFQBAAAAAAAAAAAAAHABAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-24T17:06:58.699Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "auth-page.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\auth-page.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\auth-page.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\auth-page.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\auth-page.css",
+              "ViewState": "AgIAALYBAAAAAAAAAAAAANQBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-25T16:42:17.12Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "ForgotPassword.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\ForgotPassword.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Account\\ForgotPassword.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\ForgotPassword.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Account\\ForgotPassword.cshtml",
+              "ViewState": "AgIAALYBAAAAAAAAAAAAAOsBAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-14T10:49:43.17Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "VerifyOtp.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\VerifyOtp.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Account\\VerifyOtp.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Account\\VerifyOtp.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Account\\VerifyOtp.cshtml",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAAwAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T03:37:32.405Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "reset-password.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\reset-password.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\reset-password.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\reset-password.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\reset-password.css",
+              "ViewState": "AgIAAA4CAAAAAAAAAAAAACwCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-26T16:42:21.619Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "staff-dashboard.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\staff-dashboard.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\staff-dashboard.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\staff-dashboard.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\staff-dashboard.css",
+              "ViewState": "AgIAAOkBAAAAAAAAAAAgwCACAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-17T06:26:19.078Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "verify-otp.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\verify-otp.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\verify-otp.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\verify-otp.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\verify-otp.css",
+              "ViewState": "AgIAAHgBAAAAAAAAAAAgwK8BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-26T16:48:54.336Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\Dashboard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\Dashboard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Staff\\Dashboard.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADAAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:13:03.35Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "TesterController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\TesterController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\TesterController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\TesterController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\TesterController.cs",
+              "ViewState": "AgIAADIAAAAAAAAAAAA3wF0AAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-28T18:34:23.29Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "AttendanceHistory.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\AttendanceHistory.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\AttendanceHistory.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\AttendanceHistory.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Staff\\AttendanceHistory.cshtml",
+              "ViewState": "AgIAAHECAAAAAAAAAAAAAKYCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T16:12:08.344Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "attendance-history.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\attendance-history.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\attendance-history.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\attendance-history.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\attendance-history.css",
+              "ViewState": "AgIAAGgEAAAAAAAAAAAAAIYEAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-25T02:52:11.148Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "tester-dashboard.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\tester-dashboard.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\tester-dashboard.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\tester-dashboard.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\tester-dashboard.css",
+              "ViewState": "AgIAAKcCAAAAAAAAAAAAwMUCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-30T04:06:34.45Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 57,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Tester\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Tester\\Dashboard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Tester\\Dashboard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Tester\\Dashboard.cshtml",
+              "ViewState": "AgIAAEMCAAAAAAAAAADwv3gCAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-28T18:34:43.551Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "staff-requests.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\staff-requests.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\staff-requests.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\staff-requests.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\staff-requests.css",
+              "ViewState": "AgIAAP4BAAAAAAAAAAAQwBwCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-25T04:41:04.185Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 59,
+              "Title": "MyRequests.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyRequests.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyRequests.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyRequests.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Staff\\MyRequests.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAPoBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-22T18:04:48.555Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 60,
+              "Title": "profile.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\profile.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\profile.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\profile.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\profile.css",
+              "ViewState": "AgIAAOUBAAAAAAAAAAAAAAMCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-25T16:28:06.864Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 61,
+              "Title": "Profile.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\Profile.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\Profile.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\Profile.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Staff\\Profile.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAECAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T04:29:30.55Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "attendance-history.js",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\attendance-history.js",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\js\\attendance-history.js",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\attendance-history.js",
+              "RelativeToolTip": "TMD\\wwwroot\\js\\attendance-history.js",
+              "ViewState": "AgIAAJcAAAAAAAAAAAAmwMwAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-25T02:52:51.675Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "my-department.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\my-department.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\my-department.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\my-department.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\my-department.css",
+              "ViewState": "AgIAABECAAAAAAAAAAAAAC8CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-25T03:53:50.16Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "MyDepartment.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyDepartment.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyDepartment.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyDepartment.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Staff\\MyDepartment.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T09:08:22.111Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 65,
+              "Title": "VwTasksWithDeadline.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwTasksWithDeadline.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\VwTasksWithDeadline.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwTasksWithDeadline.cs",
+              "RelativeToolTip": "TMD\\Models\\VwTasksWithDeadline.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-29T17:45:54.51Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 66,
+              "Title": "SalaryConfigHistory.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryConfigHistory.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\SalaryConfigHistory.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryConfigHistory.cs",
+              "RelativeToolTip": "TMD\\Models\\SalaryConfigHistory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:47:00.917Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 67,
+              "Title": "Task.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Task.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\Task.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Task.cs",
+              "RelativeToolTip": "TMD\\Models\\Task.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAcwBsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T05:49:48.447Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 68,
+              "Title": "Department.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Department.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\Department.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Department.cs",
+              "RelativeToolTip": "TMD\\Models\\Department.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAcwB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T05:00:56.484Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 69,
+              "Title": "AihubSystemContext.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\AihubSystemContext.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\AihubSystemContext.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\AihubSystemContext.cs",
+              "RelativeToolTip": "TMD\\Models\\AihubSystemContext.cs",
+              "ViewState": "AgIAAOgCAAAAAAAAAAAqwAUDAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T07:55:55.373Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 70,
+              "Title": "Role.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Role.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\Role.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Role.cs",
+              "RelativeToolTip": "TMD\\Models\\Role.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:46:57.032Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 152,
+              "Title": "TmdContext.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\TmdContext.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\TmdContext.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\TmdContext.cs",
+              "RelativeToolTip": "TMD\\Models\\TmdContext.cs",
+              "ViewState": "AgIAAGgCAAAAAAAAAAAtwH8CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-29T03:58:06.946Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 71,
+              "Title": "RegisterViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\RegisterViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\RegisterViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\RegisterViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\RegisterViewModel.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAIwDUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:41:41Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 72,
+              "Title": "tasklist-staff.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\tasklist-staff.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\tasklist-staff.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\tasklist-staff.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\tasklist-staff.css",
+              "ViewState": "AgIAAIQDAAAAAAAAAAAcwLEDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-25T15:46:37.146Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 73,
+              "Title": "KPIController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\KPIController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\KPIController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\KPIController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\KPIController.cs",
+              "ViewState": "AgIAACwCAAAAAAAAAAAkwEECAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-28T03:24:13.594Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 74,
+              "Title": "NotificationHub.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Hubs\\NotificationHub.cs",
+              "RelativeDocumentMoniker": "TMD\\Hubs\\NotificationHub.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Hubs\\NotificationHub.cs",
+              "RelativeToolTip": "TMD\\Hubs\\NotificationHub.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAmwC0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-23T18:00:32.144Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 75,
+              "Title": "AttendanceList.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\AttendanceList.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\AttendanceList.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\AttendanceList.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\AttendanceList.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:47:06.1Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 76,
+              "Title": "setting.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\setting.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\setting.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\setting.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\setting.css",
+              "ViewState": "AgIAAK0DAAAAAAAAAAAowMYDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-24T13:26:19.895Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 77,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Settings\\Index.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Settings\\Index.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Settings\\Index.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Settings\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-18T07:11:02.438Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 80,
+              "Title": "salary.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\salary.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\salary.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\salary.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\salary.css",
+              "ViewState": "AgIAAA4DAAAAAAAAAAAmwCcDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-24T13:23:07.13Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 81,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Salary\\Index.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Salary\\Index.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Salary\\Index.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Salary\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAN4CAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-18T07:11:25.48Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 78,
+              "Title": "SalaryController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\SalaryController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\SalaryController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\SalaryController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\SalaryController.cs",
+              "ViewState": "AgIAAPsCAAAAAAAAAADwvxcDAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T07:08:12.813Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 82,
+              "Title": "ResetUserPassword.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\ResetUserPassword.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\ResetUserPassword.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\ResetUserPassword.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\ResetUserPassword.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:45:44.665Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 84,
+              "Title": "UserNotification.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\UserNotification.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\UserNotification.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\UserNotification.cs",
+              "RelativeToolTip": "TMD\\Models\\UserNotification.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T12:35:41.865Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 83,
+              "Title": "reset-user-password.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\reset-user-password.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\reset-user-password.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\reset-user-password.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\reset-user-password.css",
+              "ViewState": "AgIAAGkBAAAAAAAAAAAmwJYBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-27T16:59:50.992Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 85,
+              "Title": "Notification.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Notification.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\Notification.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Notification.cs",
+              "RelativeToolTip": "TMD\\Models\\Notification.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T12:35:33.263Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 86,
+              "Title": "NotificationService.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\NotificationService.cs",
+              "RelativeDocumentMoniker": "TMD\\Services\\NotificationService.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\NotificationService.cs",
+              "RelativeToolTip": "TMD\\Services\\NotificationService.cs",
+              "ViewState": "AgIAAMEAAAAAAAAAAAAcwO4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T12:24:49.114Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 87,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Program.cs",
+              "RelativeDocumentMoniker": "TMD\\Program.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Program.cs",
+              "RelativeToolTip": "TMD\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:43:03.491Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 88,
+              "Title": "NotificationController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\NotificationController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\NotificationController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\NotificationController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\NotificationController.cs",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAYwGYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-27T12:31:16.835Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 90,
+              "Title": "departmen-detail.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\departmen-detail.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\departmen-detail.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\departmen-detail.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\departmen-detail.css",
+              "ViewState": "AgIAAJEDAAAAAAAAAAAwwMMDAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-18T03:50:37.508Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 89,
+              "Title": "DeletedTasks.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\DeletedTasks.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\DeletedTasks.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\DeletedTasks.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\DeletedTasks.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAO4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-16T09:11:56.283Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 91,
+              "Title": "recycle-bin.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\recycle-bin.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\recycle-bin.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\recycle-bin.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\recycle-bin.css",
+              "ViewState": "AgIAAO4BAAAAAAAAAAAAAB8CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-27T03:40:01.598Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 92,
+              "Title": "requestcard.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\requestcard.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\requestcard.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\requestcard.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\requestcard.css",
+              "ViewState": "AgIAAPIBAAAAAAAAAAAAwA0CAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-24T06:21:34.692Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 93,
+              "Title": "_LeaveRequestCard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\_LeaveRequestCard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\_LeaveRequestCard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\_LeaveRequestCard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\_LeaveRequestCard.cshtml",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAYwJEAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-19T18:54:19.47Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 94,
+              "Title": "_OvertimeRequestCard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\_OvertimeRequestCard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\_OvertimeRequestCard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\_OvertimeRequestCard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\_OvertimeRequestCard.cshtml",
+              "ViewState": "AgIAAKkAAAAAAAAAAAAYwNkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-19T18:36:01.685Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 95,
+              "Title": "_LateRequestCard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\_LateRequestCard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\_LateRequestCard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Admin\\_LateRequestCard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\_LateRequestCard.cshtml",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAYwIoAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-19T18:54:35.82Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 96,
+              "Title": "verify-otp.js",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\verify-otp.js",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\js\\verify-otp.js",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\verify-otp.js",
+              "RelativeToolTip": "TMD\\wwwroot\\js\\verify-otp.js",
+              "ViewState": "AgIAANIAAAAAAAAAAAAgwOwAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-26T16:51:41.273Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 97,
+              "Title": "resetpass.js",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\resetpass.js",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\js\\resetpass.js",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\resetpass.js",
+              "RelativeToolTip": "TMD\\wwwroot\\js\\resetpass.js",
+              "ViewState": "AgIAAFEAAAAAAAAAAAAcwGsAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-25T02:42:00.805Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 98,
+              "Title": "register-reset.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\register-reset.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\register-reset.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\register-reset.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\register-reset.css",
+              "ViewState": "AgIAAOEBAAAAAAAAAAAwwBMCAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-18T03:54:13.733Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 99,
+              "Title": "fg-pass.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\fg-pass.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\fg-pass.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\fg-pass.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\fg-pass.css",
+              "ViewState": "AgIAAFsBAAAAAAAAAADwv3YBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-26T16:24:22.384Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 100,
+              "Title": "admin-request.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\admin-request.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\admin-request.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\admin-request.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\admin-request.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAIACAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-20T04:59:14.645Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 109,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\HomeController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:52:07.103Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 101,
+              "Title": "_LayoutStaff_20251122171819.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_LayoutStaff_20251122171819.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Backups\\Layouts\\_LayoutStaff_20251122171819.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_LayoutStaff_20251122171819.cshtml",
+              "RelativeToolTip": "TMD\\Backups\\Layouts\\_LayoutStaff_20251122171819.cshtml",
+              "ViewState": "AgIAAAgCAAAAAAAAAAAmwCECAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-26T09:02:27.877Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 110,
+              "Title": "_Layout_20251119161232.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_Layout_20251119161232.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Backups\\Layouts\\_Layout_20251119161232.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_Layout_20251119161232.cshtml",
+              "RelativeToolTip": "TMD\\Backups\\Layouts\\_Layout_20251119161232.cshtml",
+              "ViewState": "AgIAAEQCAAAAAAAAAAAmwF0CAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-22T10:15:52.807Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 111,
+              "Title": "_LayoutStaff_20251120002435.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_LayoutStaff_20251120002435.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Backups\\Layouts\\_LayoutStaff_20251120002435.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_LayoutStaff_20251120002435.cshtml",
+              "RelativeToolTip": "TMD\\Backups\\Layouts\\_LayoutStaff_20251120002435.cshtml",
+              "ViewState": "AgIAAAgCAAAAAAAAAAAmwCECAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-22T10:16:45.615Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 112,
+              "Title": "WorkScheduleController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\WorkScheduleController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\WorkScheduleController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\WorkScheduleController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\WorkScheduleController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T02:14:50.726Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 113,
+              "Title": "UserSalaryController.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\UserSalaryController.cs",
+              "RelativeDocumentMoniker": "TMD\\Controllers\\UserSalaryController.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Controllers\\UserSalaryController.cs",
+              "RelativeToolTip": "TMD\\Controllers\\UserSalaryController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T02:14:27.158Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 114,
+              "Title": "_LayoutStaff_20251119161302.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_LayoutStaff_20251119161302.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Backups\\Layouts\\_LayoutStaff_20251119161302.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Backups\\Layouts\\_LayoutStaff_20251119161302.cshtml",
+              "RelativeToolTip": "TMD\\Backups\\Layouts\\_LayoutStaff_20251119161302.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-22T10:16:51.231Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 115,
+              "Title": "AutoRejectRequestService.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\AutoRejectRequestService.cs",
+              "RelativeDocumentMoniker": "TMD\\Services\\AutoRejectRequestService.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\AutoRejectRequestService.cs",
+              "RelativeToolTip": "TMD\\Services\\AutoRejectRequestService.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAcwDMAAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-23T08:10:05.654Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 116,
+              "Title": "AuditHelper.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Helpers\\AuditHelper.cs",
+              "RelativeDocumentMoniker": "TMD\\Helpers\\AuditHelper.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Helpers\\AuditHelper.cs",
+              "RelativeToolTip": "TMD\\Helpers\\AuditHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:42:49.687Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 117,
+              "Title": "_SettingCard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Settings\\_SettingCard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Settings\\_SettingCard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Settings\\_SettingCard.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Settings\\_SettingCard.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-18T08:03:29.57Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 118,
+              "Title": "UpdateProfileViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\UpdateProfileViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\UpdateProfileViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\UpdateProfileViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\UpdateProfileViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAgAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T04:57:32.753Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 119,
+              "Title": "MyLoginHistory.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyLoginHistory.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyLoginHistory.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Staff\\MyLoginHistory.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Staff\\MyLoginHistory.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T09:07:53.756Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 120,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\UserSalary\\Index.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\UserSalary\\Index.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\UserSalary\\Index.cshtml",
+              "RelativeToolTip": "TMD\\Views\\UserSalary\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-19T02:48:40.432Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 102,
+              "Title": "_ViewImports.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\_ViewImports.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\_ViewImports.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\_ViewImports.cshtml",
+              "RelativeToolTip": "TMD\\Views\\_ViewImports.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-26T08:49:40.86Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 121,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\WorkSchedule\\Index.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\WorkSchedule\\Index.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\WorkSchedule\\Index.cshtml",
+              "RelativeToolTip": "TMD\\Views\\WorkSchedule\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-19T02:49:11.449Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 122,
+              "Title": "ReviewRequestViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\ReviewRequestViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\ReviewRequestViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\ReviewRequestViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\ReviewRequestViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T18:17:53.66Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 123,
+              "Title": "RequestViewModels.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\RequestViewModels.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\RequestViewModels.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\RequestViewModels.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\RequestViewModels.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T16:39:30.53Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 124,
+              "Title": "PendingRequestsViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\PendingRequestsViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\PendingRequestsViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\PendingRequestsViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\PendingRequestsViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T18:25:47.126Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 125,
+              "Title": "LoginViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\LoginViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\LoginViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\LoginViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\LoginViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:41:23.385Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 126,
+              "Title": "ForgotPasswordViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:42:11.576Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 127,
+              "Title": "CreateOvertimeRequestViewModels.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\CreateOvertimeRequestViewModels.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\CreateOvertimeRequestViewModels.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\CreateOvertimeRequestViewModels.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\CreateOvertimeRequestViewModels.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T18:16:34.187Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 128,
+              "Title": "CreateLeaveRequestViewModels.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\CreateLeaveRequestViewModels.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\CreateLeaveRequestViewModels.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\CreateLeaveRequestViewModels.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\CreateLeaveRequestViewModels.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T18:17:01.416Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 129,
+              "Title": "ChangePasswordViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\ChangePasswordViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\ChangePasswordViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ViewModels\\ChangePasswordViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ViewModels\\ChangePasswordViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T04:28:32.654Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 130,
+              "Title": "VwSalaryCalculation.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwSalaryCalculation.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\VwSalaryCalculation.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwSalaryCalculation.cs",
+              "RelativeToolTip": "TMD\\Models\\VwSalaryCalculation.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAswCcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-21T12:25:12.805Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 103,
+              "Title": "VwActiveSalarySetting.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwActiveSalarySetting.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\VwActiveSalarySetting.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwActiveSalarySetting.cs",
+              "RelativeToolTip": "TMD\\Models\\VwActiveSalarySetting.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:47:14.092Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 104,
+              "Title": "UserSalarySetting.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\UserSalarySetting.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\UserSalarySetting.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\UserSalarySetting.cs",
+              "RelativeToolTip": "TMD\\Models\\UserSalarySetting.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:47:12.543Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 105,
+              "Title": "SystemSettingsBackup20251123.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SystemSettingsBackup20251123.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\SystemSettingsBackup20251123.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SystemSettingsBackup20251123.cs",
+              "RelativeToolTip": "TMD\\Models\\SystemSettingsBackup20251123.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:47:09.544Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 106,
+              "Title": "SalaryConfigCategory.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryConfigCategory.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\SalaryConfigCategory.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryConfigCategory.cs",
+              "RelativeToolTip": "TMD\\Models\\SalaryConfigCategory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:47:00.412Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 131,
+              "Title": "SalaryConfiguration.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryConfiguration.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\SalaryConfiguration.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryConfiguration.cs",
+              "RelativeToolTip": "TMD\\Models\\SalaryConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-21T07:33:37.025Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 132,
+              "Title": "SystemSetting.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SystemSetting.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\SystemSetting.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SystemSetting.cs",
+              "RelativeToolTip": "TMD\\Models\\SystemSetting.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-22T03:06:53.578Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 107,
+              "Title": "PasswordResetToken1.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetToken1.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\PasswordResetToken1.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetToken1.cs",
+              "RelativeToolTip": "TMD\\Models\\PasswordResetToken1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:46:55.968Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 133,
+              "Title": "PasswordResetHistory.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetHistory.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\PasswordResetHistory.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetHistory.cs",
+              "RelativeToolTip": "TMD\\Models\\PasswordResetHistory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T03:23:13.402Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 134,
+              "Title": "SalaryAdjustment.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryAdjustment.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\SalaryAdjustment.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\SalaryAdjustment.cs",
+              "RelativeToolTip": "TMD\\Models\\SalaryAdjustment.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T02:33:36.055Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 135,
+              "Title": "OvertimeRequest.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\OvertimeRequest.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\OvertimeRequest.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\OvertimeRequest.cs",
+              "RelativeToolTip": "TMD\\Models\\OvertimeRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-22T04:19:35.597Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 136,
+              "Title": "PasswordResetOtp.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetOtp.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\PasswordResetOtp.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetOtp.cs",
+              "RelativeToolTip": "TMD\\Models\\PasswordResetOtp.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T03:23:17.74Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 137,
+              "Title": "PasswordResetToken.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetToken.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\PasswordResetToken.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\PasswordResetToken.cs",
+              "RelativeToolTip": "TMD\\Models\\PasswordResetToken.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T05:03:06.33Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 138,
+              "Title": "LoginHistory.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\LoginHistory.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\LoginHistory.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\LoginHistory.cs",
+              "RelativeToolTip": "TMD\\Models\\LoginHistory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T05:01:00.051Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 139,
+              "Title": "LeaveRequest.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\LeaveRequest.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\LeaveRequest.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\LeaveRequest.cs",
+              "RelativeToolTip": "TMD\\Models\\LeaveRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-18T16:45:21.823Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 140,
+              "Title": "LateRequest.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\LateRequest.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\LateRequest.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\LateRequest.cs",
+              "RelativeToolTip": "TMD\\Models\\LateRequest.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAA1wCUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T19:08:16.999Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 108,
+              "Title": "ErrorViewModel.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ErrorViewModel.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\ErrorViewModel.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\ErrorViewModel.cs",
+              "RelativeToolTip": "TMD\\Models\\ErrorViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T08:46:35.11Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 141,
+              "Title": "Attendance.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Attendance.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\Attendance.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\Attendance.cs",
+              "RelativeToolTip": "TMD\\Models\\Attendance.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T10:51:14.017Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 142,
+              "Title": "AuditLog.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\AuditLog.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\AuditLog.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\AuditLog.cs",
+              "RelativeToolTip": "TMD\\Models\\AuditLog.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAADwvyEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-14T11:04:54.983Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 143,
+              "Title": "AttendancePolicyService.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\AttendancePolicyService.cs",
+              "RelativeDocumentMoniker": "TMD\\Services\\AttendancePolicyService.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Services\\AttendancePolicyService.cs",
+              "RelativeToolTip": "TMD\\Services\\AttendancePolicyService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-21T18:36:44.722Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 144,
+              "Title": "staff-requests.css",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\staff-requests.css",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\staff-requests.css",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\css\\staff-requests.css",
+              "RelativeToolTip": "TMD\\wwwroot\\css\\staff-requests.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAswI8DAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-11-25T03:57:05.703Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 145,
+              "Title": "admin-request.js",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\admin-request.js",
+              "RelativeDocumentMoniker": "TMD\\wwwroot\\js\\admin-request.js",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\wwwroot\\js\\admin-request.js",
+              "RelativeToolTip": "TMD\\wwwroot\\js\\admin-request.js",
+              "ViewState": "AgIAAPIAAAAAAAAAAAAIwCYBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-11-20T05:00:07.512Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 146,
+              "Title": "VwTodayAttendance.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwTodayAttendance.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\VwTodayAttendance.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwTodayAttendance.cs",
+              "RelativeToolTip": "TMD\\Models\\VwTodayAttendance.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T05:01:27.531Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 147,
+              "Title": "VwUserDetail.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwUserDetail.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\VwUserDetail.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwUserDetail.cs",
+              "RelativeToolTip": "TMD\\Models\\VwUserDetail.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAYwB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T05:01:30.972Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 148,
+              "Title": "WorkScheduleException.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\WorkScheduleException.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\WorkScheduleException.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\WorkScheduleException.cs",
+              "RelativeToolTip": "TMD\\Models\\WorkScheduleException.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAswC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-21T12:24:39.197Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 149,
+              "Title": "VwTaskPerformance.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwTaskPerformance.cs",
+              "RelativeDocumentMoniker": "TMD\\Models\\VwTaskPerformance.cs",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Models\\VwTaskPerformance.cs",
+              "RelativeToolTip": "TMD\\Models\\VwTaskPerformance.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-15T05:01:23.912Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 150,
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-19T08:22:33.793Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 151,
+              "Title": "_ViewStart.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\_ViewStart.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\_ViewStart.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\Views\\_ViewStart.cshtml",
+              "RelativeToolTip": "TMD\\Views\\_ViewStart.cshtml",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAMAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T04:50:32.28Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

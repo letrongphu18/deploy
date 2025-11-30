@@ -1,0 +1,1195 @@
+﻿@{
+    ViewData["Title"] = "Staff Dashboard";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+    var user = ViewBag.User as AIHUBOS.Models.User;
+}
+
+<link href="~/css/staff-dashboard.css" rel="stylesheet" />
+
+<div class="sd-container">
+    <!-- WELCOME HEADER -->
+    <div class="sd-page-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="sd-welcome-content">
+                    <h2 class="sd-page-title">
+                        <i class="fas fa-hand-sparkles me-2"></i>
+                        Chào mừng trở lại, <strong>@user.FullName</strong>!
+                    </h2>
+                    <p class="sd-page-subtitle">
+                        <i class="fas fa-briefcase"></i> @user.Role?.RoleName
+                        @if (user.Department != null)
+                        {
+                            <span class="mx-2">•</span>
+                            <i class="fas fa-building"></i> @user.Department.DepartmentName
+                        }
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-end align-items-center">
+                <div class="sd-current-time me-3">
+                    <div id="currentDate" class="sd-date-display"></div>
+                    <div id="currentTime" class="sd-time-display"></div>
+                    <small class="sd-text-muted">Thời gian server</small>
+                </div>
+
+                <!-- Quick Requests -->
+               @*  <div class="sd-quick-requests ms-3">
+                    <div class="btn-group">
+                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#overtimeModal">
+                            <i class="fas fa-clock me-1"></i> Tăng ca
+                        </button>
+                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#leaveModal">
+                            <i class="fas fa-umbrella-beach me-1"></i> Nghỉ phép
+                        </button>
+                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#lateModal">
+                            <i class="fas fa-user-clock me-1"></i> Đi trễ
+                        </button>
+                    </div>
+                </div> *@
+            </div>
+        </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="sd-stats-card sd-stats-primary">
+                <div class="sd-stats-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="sd-stats-content">
+                    <div class="sd-stats-label">Ngày chấm công</div>
+                    <div class="sd-stats-value">@(ViewBag.AttendanceThisMonth ?? 0)</div>
+                </div>
+                <div class="sd-stats-trend">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="sd-stats-card sd-stats-success">
+                <div class="sd-stats-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="sd-stats-content">
+                    <div class="sd-stats-label">Tổng giờ làm</div>
+                    <div class="sd-stats-value">@(ViewBag.TotalHoursThisMonth?.ToString("F0") ?? "0")h</div>
+                </div>
+                <div class="sd-stats-trend">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="sd-stats-card sd-stats-warning">
+                <div class="sd-stats-icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="sd-stats-content">
+                    <div class="sd-stats-label">Lần đăng nhập</div>
+                    <div class="sd-stats-value">@ViewBag.ThisMonthLogins</div>
+                </div>
+                <div class="sd-stats-trend">
+                    <i class="fas fa-user-check"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="sd-stats-card sd-stats-info">
+                <div class="sd-stats-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="sd-stats-content">
+                    <div class="sd-stats-label">Thành viên</div>
+                    <div class="sd-stats-value">@(ViewBag.DepartmentUserCount ?? 0)</div>
+                </div>
+                <div class="sd-stats-trend">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- CHECK-IN/OUT SECTION -->
+        <div class="col-lg-8">
+            <div class="sd-card">
+                <div class="sd-card-header">
+                    <h5>
+                        <i class="fas fa-user-clock me-2"></i> Chấm công hôm nay
+                    </h5>
+                </div>
+                <div class="sd-card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Photo Options -->
+                            <div class="sd-photo-options mb-3">
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="photoMode" id="modeCamera" value="camera" checked>
+                                    <label class="btn btn-outline-primary" for="modeCamera">
+                                        <i class="fas fa-camera"></i> Chụp ảnh
+                                    </label>
+                                    <input type="radio" class="btn-check" name="photoMode" id="modeUpload" value="upload">
+                                    <label class="btn btn-outline-primary" for="modeUpload">
+                                        <i class="fas fa-upload"></i> Tải ảnh lên
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Camera Mode -->
+                            <div id="cameraMode" class="photo-mode">
+                                <div class="sd-camera-container">
+                                    <div class="sd-camera-preview" id="cameraPreview">
+                                        <video id="video" autoplay playsinline></video>
+                                        <canvas id="canvas" style="display: none;"></canvas>
+                                        <img id="capturedImage" style="display: none;" />
+                                        <div class="sd-camera-overlay"></div>
+                                    </div>
+                                    <div class="sd-camera-controls">
+                                        <button class="sd-btn-camera" id="btnCapture" onclick="capturePhoto()">
+                                            <i class="fas fa-camera"></i>
+                                        </button>
+                                        <button class="sd-btn-camera sd-btn-warning" id="btnRetake" onclick="retakePhoto()" style="display: none;">
+                                            <i class="fas fa-redo"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Mode -->
+                            <div id="uploadMode" class="photo-mode" style="display: none;">
+                                <div class="sd-upload-container">
+                                    <div class="sd-upload-preview" id="uploadPreview">
+                                        <div class="sd-upload-placeholder" id="uploadPlaceholder">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <p>Kéo thả ảnh vào đây hoặc nhấn để chọn</p>
+                                            <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" style="display: none;">
+                                        </div>
+                                        <img id="uploadedImage" style="display: none;" />
+                                    </div>
+                                    <div class="sd-upload-controls">
+                                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                            <i class="fas fa-folder-open"></i> Chọn ảnh
+                                        </button>
+                                        <button class="btn btn-warning ms-2" id="btnClearUpload" onclick="clearUploadedImage()" style="display: none;">
+                                            <i class="fas fa-times"></i> Xóa
+                                        </button>
+                                    </div>
+                                    <small class="sd-text-muted d-block mt-2 text-center">
+                                        Chấp nhận: JPG, JPEG, PNG (Tối đa 10MB)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="sd-attendance-info">
+                                <!-- Status Display -->
+                                <div id="attendanceStatus" class="sd-attendance-status mb-3">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                    <span class="ms-2">Đang kiểm tra trạng thái...</span>
+                                </div>
+
+                                <!-- Location Info -->
+                                <div class="sd-location-box mb-3">
+                                    <h6><i class="fas fa-map-marker-alt me-2"></i> Vị trí hiện tại</h6>
+                                    <div id="locationInfo">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-spinner fa-spin"></i> Đang lấy vị trí GPS...
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Notes -->
+                                <div class="mb-3">
+                                    <label class="sd-form-label">Ghi chú (tùy chọn)</label>
+                                    <textarea id="attendanceNotes" class="sd-form-control" rows="2" placeholder="Thêm ghi chú nếu cần..."></textarea>
+                                </div>
+
+                                <!-- Check-in Button -->
+                                <div id="checkInSection" style="display: none;">
+                                    <button class="btn btn-success btn-lg w-100" onclick="checkIn()" id="btnCheckIn" disabled>
+                                        <i class="fas fa-sign-in-alt"></i> Check In Ngay
+                                    </button>
+                                </div>
+
+                                <!-- Check-out Section -->
+                                <div id="checkOutSection" style="display: none;">
+                                    <div class="sd-check-info mb-3"></div>
+                                    <button class="btn btn-danger btn-lg w-100" onclick="checkOut()" id="btnCheckOut" disabled>
+                                        <i class="fas fa-sign-out-alt"></i> Check Out Ngay
+                                    </button>
+                                </div>
+
+                                <!-- Completed Section -->
+                                <div id="completedSection" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CÔNG VIỆC CỦA TÔI -->
+        <div class="col-lg-4">
+            <div class="sd-card">
+                <div class="sd-card-header">
+                    <h5>
+                        <i class="fas fa-tasks me-2"></i> Công việc của tôi
+                    </h5>
+                    <a href="/Staff/MyTasks" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-list me-1"></i> Xem tất cả
+                    </a>
+                </div>
+                <div class="sd-card-body p-0">
+                    <div id="myTasksToday" class="sd-task-container">
+                        <div class="sd-loading text-center py-4">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2 sd-text-muted">Đang tải công việc...</p>
+                        </div>
+                    </div>
+                    <div id="taskLoadMore" style="display: none;" class="p-3 border-top bg-light">
+                        <button class="btn btn-sm btn-outline-primary w-100" onclick="loadMoreTasks()">
+                            <i class="fas fa-chevron-down me-1"></i> <span id="loadMoreText">Xem thêm</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="row g-3 mt-2">
+        <div class="col-md-4 col-6">
+            <a href="/Staff/AttendanceHistory" class="sd-quick-action-card">
+                <div class="sd-quick-action-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="sd-quick-action-content">
+                    <h6>Lịch sử chấm công</h6>
+                    <p>Xem chi tiết chấm công</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-6">
+            <a href="/Staff/MyTasks" class="sd-quick-action-card">
+                <div class="sd-quick-action-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="sd-quick-action-content">
+                    <h6>Quản lý công việc</h6>
+                    <p>Cập nhật tiến độ task</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 col-6">
+            <a href="/Staff/Profile" class="sd-quick-action-card">
+                <div class="sd-quick-action-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="sd-quick-action-content">
+                    <h6>Hồ sơ cá nhân</h6>
+                    <p>Xem và chỉnh sửa</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ====== IMPROVED OVERTIME MODAL ====== -->
+<div class="modal fade" id="overtimeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-clock me-2"></i>Đề xuất tăng ca
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Lưu ý:</strong> Hệ thống sẽ tự động tính số giờ tăng ca dựa trên bản ghi chấm công của bạn.
+                </div>
+                <form id="overtimeForm">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-day me-1"></i>Ngày tăng ca *
+                        </label>
+                        <input type="date" class="form-control" id="overtimeWorkDate" required>
+                        <small class="text-muted">Chọn ngày đã check-out có giờ tăng ca</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-comment-dots me-1"></i>Lý do *
+                        </label>
+                        <textarea class="form-control" id="overtimeReason" rows="3"
+                                  placeholder="Ví dụ: Hoàn thành dự án X, xử lý công việc khẩn cấp..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-tasks me-1"></i>Mô tả công việc (tùy chọn)
+                        </label>
+                        <textarea class="form-control" id="overtimeTaskDesc" rows="2"
+                                  placeholder="Mô tả chi tiết công việc đã làm..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Đóng
+                </button>
+                <button type="button" class="btn btn-warning" onclick="submitOvertimeRequest()">
+                    <i class="fas fa-paper-plane me-1"></i>Gửi đề xuất
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== IMPROVED LEAVE MODAL ====== -->
+<div class="modal fade" id="leaveModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-umbrella-beach me-2"></i>Đề xuất nghỉ phép
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Lưu ý:</strong> Số ngày sẽ được tự động tính dựa trên khoảng thời gian bạn chọn.
+                </div>
+                <form id="leaveForm">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-tag me-1"></i>Loại nghỉ *
+                        </label>
+                        <select class="form-select" id="leaveType" required>
+                            <option value="">-- Chọn loại nghỉ --</option>
+                            <option value="Nghỉ phép năm">Nghỉ phép năm</option>
+                            <option value="Nghỉ ốm">Nghỉ ốm</option>
+                            <option value="Nghỉ việc riêng">Nghỉ việc riêng</option>
+                            <option value="Nghỉ không lương">Nghỉ không lương</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-calendar-check me-1"></i>Từ ngày *
+                            </label>
+                            <input type="date" class="form-control" id="leaveStartDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-calendar-times me-1"></i>Đến ngày *
+                            </label>
+                            <input type="date" class="form-control" id="leaveEndDate" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-comment-dots me-1"></i>Lý do *
+                        </label>
+                        <textarea class="form-control" id="leaveReason" rows="3"
+                                  placeholder="Lý do nghỉ phép..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-paperclip me-1"></i>Tài liệu đính kèm (URL)
+                        </label>
+                        <input type="url" class="form-control" id="leaveProof"
+                               placeholder="https://drive.google.com/...">
+                        <small class="text-muted">
+                            <i class="fas fa-lightbulb me-1"></i>
+                            Nếu có giấy khám/chứng từ, upload lên Drive và dán link tại đây
+                        </small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Đóng
+                </button>
+                <button type="button" class="btn btn-info" onclick="submitLeaveRequest()">
+                    <i class="fas fa-paper-plane me-1"></i>Gửi đề xuất
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====== IMPROVED LATE MODAL ====== -->
+<div class="modal fade" id="lateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-clock me-2"></i>Đề xuất đi trễ
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Lưu ý:</strong> Nên gửi đề xuất trước khi đến công ty để quản lý biết và sắp xếp công việc.
+                </div>
+                <form id="lateForm">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-day me-1"></i>Ngày *
+                        </label>
+                        <input type="date" class="form-control" id="lateRequestDate" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-clock me-1"></i>Dự kiến đến lúc *
+                        </label>
+                        <input type="time" class="form-control" id="lateExpectedTime" required>
+                        <small class="text-muted">Chọn giờ:phút dự kiến bạn sẽ đến</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-comment-dots me-1"></i>Lý do *
+                        </label>
+                        <textarea class="form-control" id="lateReason" rows="3"
+                                  placeholder="Ví dụ: Tắc đường, việc gia đình khẩn cấp..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-paperclip me-1"></i>Tài liệu đính kèm (URL)
+                        </label>
+                        <input type="url" class="form-control" id="lateProof"
+                               placeholder="https://...">
+                        <small class="text-muted">Tùy chọn: Link ảnh/file minh chứng</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Đóng
+                </button>
+                <button type="button" class="btn btn-danger" onclick="submitLateRequest()">
+                    <i class="fas fa-paper-plane me-1"></i>Gửi đề xuất
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+    <script>
+        // ========== GLOBAL VARIABLES ==========
+        let stream = null;
+        let capturedBlob = null;
+        let uploadedFile = null;
+        let latitude = null;
+        let longitude = null;
+        let checkInTimeValue = null;
+        let currentAddress = '';
+        let locationAttempts = 0;
+        const MAX_LOCATION_ATTEMPTS = 5;
+        let isGettingLocation = false;
+
+        // Tasks pagination
+        let allTasks = [];
+        let displayedTasksCount = 0;
+        const TASKS_PER_PAGE = 5;
+
+        // ========== TIME UPDATE ==========
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('vi-VN', options);
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('vi-VN');
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ========== PHOTO MODE SWITCH ==========
+        document.querySelectorAll('input[name="photoMode"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'camera') {
+                    document.getElementById('cameraMode').style.display = 'block';
+                    document.getElementById('uploadMode').style.display = 'none';
+                    uploadedFile = null;
+                    initCamera();
+                } else {
+                    document.getElementById('cameraMode').style.display = 'none';
+                    document.getElementById('uploadMode').style.display = 'block';
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                        stream = null;
+                    }
+                }
+                updateButtonsState();
+            });
+        });
+
+        // ========== CAMERA INIT ==========
+        async function initCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
+                });
+                document.getElementById('video').srcObject = stream;
+            } catch (err) {
+                console.error('Camera error:', err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi Camera',
+                    text: 'Không thể truy cập camera. Vui lòng chuyển sang chế độ tải ảnh lên.',
+                    confirmButtonText: 'Chuyển sang tải ảnh'
+                }).then(() => document.getElementById('modeUpload').click());
+            }
+        }
+
+        // ========== GET LOCATION - IMPROVED ==========
+        async function getLocation(isRetry = false) {
+            if (isGettingLocation) return;
+            if (!navigator.geolocation) {
+                document.getElementById('locationInfo').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-times-circle"></i> Trình duyệt không hỗ trợ GPS
+                    </div>
+                `;
+                return;
+            }
+
+            isGettingLocation = true;
+            locationAttempts++;
+
+            document.getElementById('locationInfo').innerHTML = `
+                <div class="alert alert-info">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        <div class="flex-grow-1">
+                            <strong>Đang lấy vị trí GPS...</strong>
+                            ${isRetry ? `<br><small>Lần thử ${locationAttempts}/${MAX_LOCATION_ATTEMPTS}</small>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    const timeoutId = setTimeout(() => reject(new Error('Timeout')), 30000);
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => { clearTimeout(timeoutId); resolve(pos); },
+                        (err) => { clearTimeout(timeoutId); reject(err); },
+                        { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 }
+                    );
+                });
+
+                latitude = position.coords.latitude;
+                longitude = position.coords.longitude;
+                const accuracy = position.coords.accuracy;
+
+                await getAddressFromServer(latitude, longitude, accuracy);
+
+                isGettingLocation = false;
+                locationAttempts = 0;
+
+            } catch (error) {
+                console.error('Location error:', error);
+                isGettingLocation = false;
+                handleLocationError(error);
+            }
+        }
+
+        async function getAddressFromServer(lat, lng, accuracy) {
+            try {
+                const response = await fetch(`/Staff/GetAddressFromCoordinatesApi?latitude=${lat}&longitude=${lng}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.address) {
+                        currentAddress = data.address;
+                    } else {
+                        currentAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    }
+                } else {
+                    currentAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                }
+            } catch (err) {
+                console.error('Address fetch error:', err);
+                currentAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            }
+            displayLocationSuccess(lat, lng, accuracy);
+        }
+
+        function displayLocationSuccess(lat, lng, accuracy) {
+            const accuracyClass = accuracy < 50 ? 'success' : accuracy < 100 ? 'warning' : 'danger';
+            const accuracyIcon = accuracy < 50 ? 'check-circle' : accuracy < 100 ? 'exclamation-triangle' : 'times-circle';
+
+            document.getElementById('locationInfo').innerHTML = `
+                <div class="alert alert-success">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <strong><i class="fas fa-${accuracyIcon}"></i> Vị trí GPS</strong>
+                        <button class="btn btn-sm btn-outline-success" onclick="refreshLocation()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <hr class="my-2">
+                    <small class="d-block mb-1"><i class="fas fa-map-marker-alt me-1"></i>${currentAddress}</small>
+                    <small class="d-block text-${accuracyClass}">
+                        <i class="fas fa-crosshairs me-1"></i>Độ chính xác: ±${Math.round(accuracy)}m
+                        ${accuracy > 100 ? ' (Nên thử lại)' : ''}
+                    </small>
+                </div>
+            `;
+            updateButtonsState();
+        }
+
+        function refreshLocation() {
+            locationAttempts = 0;
+            latitude = null;
+            longitude = null;
+            currentAddress = '';
+            getLocation(false);
+        }
+
+        function handleLocationError(error) {
+            let errorMsg = 'Không thể lấy vị trí GPS';
+            let errorDetail = '';
+            if (error && error.code) {
+                switch (error.code) {
+                    case 1: errorMsg = 'Bạn đã từ chối quyền truy cập vị trí'; errorDetail = 'Vui lòng cho phép truy cập GPS trong cài đặt trình duyệt'; break;
+                    case 2: errorMsg = 'Không thể xác định vị trí'; errorDetail = 'Kiểm tra GPS/Wi-Fi hoặc thử lại'; break;
+                    case 3: errorMsg = 'Hết thời gian chờ'; errorDetail = 'Vui lòng thử lại'; break;
+                }
+            }
+
+            const canRetry = locationAttempts < MAX_LOCATION_ATTEMPTS;
+            document.getElementById('locationInfo').innerHTML = `
+                <div class="alert alert-warning">
+                    <strong><i class="fas fa-exclamation-triangle"></i> ${errorMsg}</strong>
+                    ${errorDetail ? `<br><small>${errorDetail}</small>` : ''}
+                    ${canRetry ? `
+                        <button class="btn btn-sm btn-warning w-100 mt-2" onclick="getLocation(true)">
+                            <i class="fas fa-redo me-1"></i> Thử lại (${locationAttempts}/${MAX_LOCATION_ATTEMPTS})
+                        </button>
+                    ` : `
+                        <button class="btn btn-sm btn-info w-100 mt-2" onclick="refreshLocation()">
+                            <i class="fas fa-sync-alt me-1"></i> Bắt đầu lại
+                        </button>
+                    `}
+                </div>
+            `;
+        }
+
+        // ========== FILE UPLOAD ==========
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    Swal.fire('Lỗi', 'File quá lớn (>10MB)', 'error');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedFile = file;
+                    document.getElementById('uploadPlaceholder').style.display = 'none';
+                    document.getElementById('uploadedImage').src = e.target.result;
+                    document.getElementById('uploadedImage').style.display = 'block';
+                    document.getElementById('btnClearUpload').style.display = 'inline-block';
+                    updateButtonsState();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('uploadPlaceholder').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        function clearUploadedImage() {
+            uploadedFile = null;
+            document.getElementById('uploadedImage').style.display = 'none';
+            document.getElementById('uploadPlaceholder').style.display = 'flex';
+            document.getElementById('btnClearUpload').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            updateButtonsState();
+        }
+
+        // ========== CAMERA CAPTURE ==========
+        function capturePhoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const capturedImage = document.getElementById('capturedImage');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+
+            canvas.toBlob(blob => {
+                capturedBlob = blob;
+                capturedImage.src = URL.createObjectURL(blob);
+                capturedImage.style.display = 'block';
+                video.style.display = 'none';
+                document.getElementById('btnCapture').style.display = 'none';
+                document.getElementById('btnRetake').style.display = 'inline-block';
+                updateButtonsState();
+            }, 'image/jpeg', 0.9);
+        }
+
+        function retakePhoto() {
+            document.getElementById('video').style.display = 'block';
+            document.getElementById('capturedImage').style.display = 'none';
+            document.getElementById('btnCapture').style.display = 'inline-block';
+            document.getElementById('btnRetake').style.display = 'none';
+            capturedBlob = null;
+            updateButtonsState();
+        }
+
+        function updateButtonsState() {
+            const hasPhoto = capturedBlob !== null || uploadedFile !== null;
+            const hasLocation = latitude !== null && longitude !== null;
+            const btnCheckIn = document.getElementById('btnCheckIn');
+            const btnCheckOut = document.getElementById('btnCheckOut');
+            if (btnCheckIn) btnCheckIn.disabled = !(hasPhoto && hasLocation);
+            if (btnCheckOut) btnCheckOut.disabled = !(hasPhoto && hasLocation);
+        }
+
+        // ========== CHECK ATTENDANCE STATUS ==========
+        async function checkAttendanceStatus() {
+            try {
+                const response = await fetch('/Staff/GetTodayAttendance');
+                const data = await response.json();
+
+                const statusDiv = document.getElementById('attendanceStatus');
+                const checkInSection = document.getElementById('checkInSection');
+                const checkOutSection = document.getElementById('checkOutSection');
+                const completedSection = document.getElementById('completedSection');
+
+                if (data.hasCheckedIn) {
+                    statusDiv.style.display = 'none';
+                    if (data.hasCheckedOut) {
+                        checkInSection.style.display = 'none';
+                        checkOutSection.style.display = 'none';
+                        completedSection.style.display = 'block';
+                        completedSection.innerHTML = `
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-check-double"></i> Đã hoàn tất!</h5>
+                                <hr>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <small>Check-in</small>
+                                        <br><strong>${data.checkInTime}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <small>Check-out</small>
+                                        <br><strong>${data.checkOutTime}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        checkInSection.style.display = 'none';
+                        checkOutSection.style.display = 'block';
+                        checkInTimeValue = data.checkInTime;
+                        updateWorkingHours();
+                    }
+                } else {
+                    statusDiv.style.display = 'none';
+                    checkInSection.style.display = 'block';
+                }
+                updateButtonsState();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateWorkingHours() {
+            if (!checkInTimeValue) return;
+
+            const updateHours = () => {
+                const now = new Date();
+                const checkIn = new Date(`${now.toDateString()} ${checkInTimeValue}`);
+                const diff = now - checkIn;
+
+                const hours = Math.floor(diff / 3600000);
+                const minutes = Math.floor((diff % 3600000) / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+
+                const el = document.querySelector('.sd-check-info');
+                if (el) {
+                    el.innerHTML = `
+                        <div class="alert alert-info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-sign-in-alt me-2"></i>
+                                    <strong>Đã check-in:</strong> <code>${checkInTimeValue}</code>
+                                </div>
+                                <div class="badge bg-primary fs-6">
+                                    <i class="fas fa-clock me-1"></i>
+                                    ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            };
+
+            updateHours();
+            setInterval(updateHours, 1000);
+        }
+
+        // ========== CHECK-IN ==========
+        async function checkIn() {
+            const photoFile = capturedBlob || uploadedFile;
+            if (!photoFile || !latitude || !longitude) {
+                Swal.fire('Cảnh báo', 'Vui lòng chụp ảnh và đợi lấy vị trí', 'warning');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('Photo', photoFile, 'checkin.jpg');
+            formData.append('Latitude', latitude);
+            formData.append('Longitude', longitude);
+            formData.append('Address', currentAddress);
+            formData.append('Notes', document.getElementById('attendanceNotes').value);
+
+            Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                const response = await fetch('/Staff/CheckIn', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        html: data.message.replace(/\n/g, '<br>'),
+                        confirmButtonText: 'Đóng'
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            } catch (err) {
+                Swal.fire('Lỗi', err.message, 'error');
+            }
+        }
+
+        // ========== CHECK-OUT ==========
+        async function checkOut() {
+            const photoFile = capturedBlob || uploadedFile;
+            if (!photoFile || !latitude || !longitude) {
+                Swal.fire('Cảnh báo', 'Vui lòng chụp ảnh và đợi lấy vị trí', 'warning');
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Xác nhận Check-out',
+                text: 'Bạn có chắc muốn check-out?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Check-out',
+                cancelButtonText: 'Hủy'
+            });
+
+            if (!result.isConfirmed) return;
+
+            const formData = new FormData();
+            formData.append('Photo', photoFile, 'checkout.jpg');
+            formData.append('Latitude', latitude);
+            formData.append('Longitude', longitude);
+            formData.append('Address', currentAddress);
+            formData.append('Notes', document.getElementById('attendanceNotes').value);
+
+            Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                const response = await fetch('/Staff/CheckOut', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        html: data.message.replace(/\n/g, '<br>'),
+                        confirmButtonText: 'Đóng'
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            } catch (err) {
+                Swal.fire('Lỗi', err.message, 'error');
+            }
+        }
+
+        // ========== LOAD MY TASKS ==========
+        async function loadMyTasks() {
+            try {
+                const response = await fetch('/Staff/GetMyTasksSummary');
+                const data = await response.json();
+                const container = document.getElementById('myTasksToday');
+                const loadMoreBtn = document.getElementById('taskLoadMore');
+
+                if (data.success && data.tasks.length > 0) {
+                    allTasks = data.tasks;
+                    displayedTasksCount = 0;
+                    container.innerHTML = '';
+                    renderTasks();
+                    if (allTasks.length > TASKS_PER_PAGE) loadMoreBtn.style.display = 'block';
+                } else {
+                    container.innerHTML = `
+                        <div class="sd-empty-state">
+                            <i class="fas fa-inbox fa-3x"></i>
+                            <p class="mt-3">Bạn chưa có công việc nào</p>
+                        </div>
+                    `;
+                    loadMoreBtn.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading tasks:', error);
+                document.getElementById('myTasksToday').innerHTML = `
+                    <div class="alert alert-danger m-3">
+                        <i class="fas fa-exclamation-triangle"></i> Không thể tải công việc
+                        <button class="btn btn-sm btn-outline-danger w-100 mt-2" onclick="loadMyTasks()">
+                            <i class="fas fa-redo me-1"></i> Thử lại
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('myTasksToday');
+            const loadMoreBtn = document.getElementById('taskLoadMore');
+            const tasksToShow = allTasks.slice(0, displayedTasksCount + TASKS_PER_PAGE);
+            displayedTasksCount = tasksToShow.length;
+            let html = '';
+
+            tasksToShow.forEach(task => {
+                const priorityClass = (task.priority || 'Medium').toLowerCase();
+                const priorityBadgeClass = `badge-${priorityClass}`;
+                const statusIcon = task.status === 'Completed' ? 'check-circle' : 'hourglass-half';
+                const statusColor = task.status === 'Completed' ? 'success' : 'warning';
+                const deadlineText = task.deadline ? task.deadline : 'Không có';
+                const isOverdue = task.isOverdue;
+
+                html += `
+                    <div class="sd-task-item priority-${priorityClass}" onclick="viewTaskDetail(${task.taskId})">
+                        <div class="sd-task-header">
+                            <div class="sd-task-title">
+                                <i class="fas fa-${statusIcon} text-${statusColor} me-1"></i>
+                                ${task.taskName}
+                            </div>
+                            <span class="sd-task-badge ${priorityBadgeClass}">
+                                ${task.priority === 'High' ? 'Cao' : task.priority === 'Medium' ? 'Trung bình' : 'Thấp'}
+                            </span>
+                        </div>
+                        ${task.description ? `<small class="text-muted d-block mb-2">${task.description}</small>` : ''}
+                        <div class="sd-task-meta">
+                            ${task.platform ? `<span class="sd-task-meta-item"><i class="fas fa-globe"></i> ${task.platform}</span>` : ''}
+                            <span class="sd-task-meta-item ${isOverdue ? 'text-danger' : ''}"><i class="fas fa-calendar-alt"></i> ${deadlineText} ${isOverdue ? '<i class="fas fa-exclamation-triangle ms-1"></i>' : ''}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            if (displayedTasksCount >= allTasks.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+                const remaining = allTasks.length - displayedTasksCount;
+                document.getElementById('loadMoreText').textContent = `Xem thêm (${remaining} công việc)`;
+            }
+        }
+
+        function loadMoreTasks() { renderTasks(); }
+        function viewTaskDetail(taskId) { window.location.href = `/Staff/MyTasks`; }
+
+        // ========== REQUEST FUNCTIONS ==========
+        async function submitOvertimeRequest() {
+            const workDate = document.getElementById('overtimeWorkDate').value;
+            const reason = document.getElementById('overtimeReason').value;
+            const taskDesc = document.getElementById('overtimeTaskDesc').value;
+
+            if (!workDate || !reason) {
+                Swal.fire('Cảnh báo', 'Vui lòng chọn ngày và nhập lý do', 'warning');
+                return;
+            }
+
+            const data = { WorkDate: workDate, Reason: reason, TaskDescription: taskDesc };
+
+            try {
+                Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+                const response = await fetch('/Staff/CreateOvertimeRequest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        html: result.message.replace(/\n/g, '<br>'),
+                        confirmButtonText: 'Đóng'
+                    });
+                    bootstrap.Modal.getInstance(document.getElementById('overtimeModal')).hide();
+                    document.getElementById('overtimeForm').reset();
+                } else {
+                    Swal.fire('Lỗi', result.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Lỗi', error.message, 'error');
+            }
+        }
+
+        async function submitLeaveRequest() {
+            const leaveType = document.getElementById('leaveType').value;
+            const startDate = document.getElementById('leaveStartDate').value;
+            const endDate = document.getElementById('leaveEndDate').value;
+            const reason = document.getElementById('leaveReason').value;
+            const proof = document.getElementById('leaveProof').value;
+
+            if (!leaveType || !startDate || !endDate || !reason) {
+                Swal.fire('Cảnh báo', 'Vui lòng điền đầy đủ: Loại nghỉ, Từ ngày, Đến ngày, Lý do', 'warning');
+                return;
+            }
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (end < start) {
+                Swal.fire('Cảnh báo', 'Ngày kết thúc phải sau ngày bắt đầu', 'warning');
+                return;
+            }
+
+            const totalDays = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+            const result = await Swal.fire({
+                title: 'Xác nhận gửi đề xuất',
+                html: `
+                    <div class="text-start">
+                        <p><strong>Loại nghỉ:</strong> ${leaveType}</p>
+                        <p><strong>Từ ngày:</strong> ${new Date(startDate).toLocaleDateString('vi-VN')}</p>
+                        <p><strong>Đến ngày:</strong> ${new Date(endDate).toLocaleDateString('vi-VN')}</p>
+                        <p><strong>Tổng số ngày:</strong> ${totalDays} ngày</p>
+                        <p><strong>Lý do:</strong> ${reason}</p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Gửi đề xuất',
+                cancelButtonText: 'Hủy'
+            });
+
+            if (!result.isConfirmed) return;
+
+            const data = { LeaveType: leaveType, StartDate: startDate, EndDate: endDate, Reason: reason, ProofDocument: proof };
+
+            try {
+                Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+                const response = await fetch('/Staff/CreateLeaveRequest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+
+                if (res.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        html: res.message.replace(/\n/g, '<br>'),
+                        confirmButtonText: 'Đóng'
+                    });
+                    bootstrap.Modal.getInstance(document.getElementById('leaveModal')).hide();
+                    document.getElementById('leaveForm').reset();
+                } else {
+                    Swal.fire('Lỗi', res.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Lỗi', error.message, 'error');
+            }
+        }
+
+        async function submitLateRequest() {
+            const requestDate = document.getElementById('lateRequestDate').value;
+            const expectedTime = document.getElementById('lateExpectedTime').value;
+            const reason = document.getElementById('lateReason').value;
+            const proof = document.getElementById('lateProof').value;
+
+            if (!requestDate || !expectedTime || !reason) {
+                Swal.fire('Cảnh báo', 'Vui lòng điền đầy đủ: Ngày, Giờ dự kiến đến, Lý do', 'warning');
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Xác nhận gửi đề xuất đi trễ',
+                html: `
+                    <div class="text-start">
+                        <p><strong>Ngày:</strong> ${new Date(requestDate).toLocaleDateString('vi-VN')}</p>
+                        <p><strong>Dự kiến đến lúc:</strong> ${expectedTime}</p>
+                        <p><strong>Lý do:</strong> ${reason}</p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Gửi đề xuất',
+                cancelButtonText: 'Hủy'
+            });
+
+            if (!result.isConfirmed) return;
+
+            const data = { RequestDate: requestDate, ExpectedArrivalTime: expectedTime + ':00', Reason: reason, ProofDocument: proof };
+
+            try {
+                Swal.fire({ title: 'Đang xử lý...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+                const response = await fetch('/Staff/CreateLateRequest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+
+                if (res.success) {
+                    Swal.fire('Thành công!', res.message, 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('lateModal')).hide();
+                    document.getElementById('lateForm').reset();
+                } else {
+                    Swal.fire('Lỗi', res.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Lỗi', error.message, 'error');
+            }
+        }
+
+        // ========== INIT ON LOAD ==========
+        window.onload = async function() {
+            console.log('🚀 Initializing Staff Dashboard...');
+            await initCamera();
+            await getLocation();
+            await checkAttendanceStatus();
+            await loadMyTasks();
+            console.log('✅ Dashboard initialized');
+        };
+
+        // ========== CLEANUP ==========
+        window.onbeforeunload = function() {
+            if (stream) stream.getTracks().forEach(track => track.stop());
+        };
+    </script>
+}

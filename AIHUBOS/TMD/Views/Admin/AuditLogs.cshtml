@@ -1,0 +1,242 @@
+﻿@model List<AIHUBOS.Models.AuditLog>
+@{
+    ViewData["Title"] = "Nhật ký hoạt động";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/audit-logs.css" rel="stylesheet" />
+
+<div class="aihub-audit-container">
+    <!-- HEADER -->
+    <div class="aihub-audit-header">
+        <h2 class="aihub-audit-title">
+            <i class="fas fa-clipboard-list"></i> Nhật ký hoạt động hệ thống
+        </h2>
+        <p>Theo dõi tất cả hoạt động trong hệ thống - Tổng: <strong>@Model.Count</strong> bản ghi</p>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="aihub-audit-filters">
+        <form method="get" action="/Admin/AuditLogs">
+            <div class="aihub-audit-form-row">
+                <div class="aihub-audit-form-col">
+                    <label class="aihub-audit-form-label">Loại hành động</label>
+                    <select name="action" class="aihub-audit-form-select">
+                        <option value="">Tất cả</option>
+                        @foreach (var act in ViewBag.Actions as List<string>)
+                        {
+                            <option value="@act" selected="@(act == ViewBag.SelectedAction)">@act</option>
+                        }
+                    </select>
+                </div>
+                <div class="aihub-audit-form-col">
+                    <label class="aihub-audit-form-label">Từ ngày</label>
+                    <input type="date" name="fromDate" class="aihub-audit-form-control" value="@ViewBag.FromDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="aihub-audit-form-col">
+                    <label class="aihub-audit-form-label">Đến ngày</label>
+                    <input type="date" name="toDate" class="aihub-audit-form-control" value="@ViewBag.ToDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="aihub-audit-form-col-auto">
+                    <button type="submit" class="aihub-audit-btn aihub-audit-btn-primary">
+                        <i class="fas fa-filter"></i> Lọc
+                    </button>
+                    <a href="/Admin/AuditLogs" class="aihub-audit-btn aihub-audit-btn-outline">
+                        <i class="fas fa-redo"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- AUDIT TABLE -->
+    <div class="aihub-audit-table">
+        <div class="aihub-audit-table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 160px;">Thời gian</th>
+                        <th style="width: 180px;">Người thực hiện</th>
+                        <th style="width: 110px;">Hành động</th>
+                        <th style="width: 140px;">Đối tượng</th>
+                        <th>Mô tả</th>
+                        <th style="width: 120px;">IP Address</th>
+                        <th style="width: 70px;">Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="aihub-audit-timestamp">
+                                    <i class="far fa-clock"></i>
+                                    <div>
+                                        <div class="aihub-audit-timestamp-date">@log.Timestamp?.ToString("dd/MM/yyyy")</div>
+                                        <div class="aihub-audit-timestamp-time">@log.Timestamp?.ToString("HH:mm:ss")</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="aihub-audit-user-info">
+                                    <div class="aihub-audit-user-avatar">
+                                        @if (!string.IsNullOrEmpty(log.User?.Avatar) && log.User.Avatar != "/images/default-avatar.png")
+                                        {
+                                            <img src="@log.User.Avatar" alt="@log.User.FullName"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <div class="aihub-audit-user-avatar-placeholder" style="display:none;">@(log.User?.FullName?.Substring(0, 1) ?? "?")</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="aihub-audit-user-avatar-placeholder">@(log.User?.FullName?.Substring(0, 1) ?? "?")</div>
+                                        }
+                                    </div>
+                                    <div>
+                                        <div class="aihub-audit-user-name">@(log.User?.FullName ?? "System")</div>
+                                        <div class="aihub-audit-user-username">@(log.User?.Username ?? "-")</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="aihub-audit-action-badge aihub-audit-action-badge--@(log.Action?.ToLower().Replace("_", "-") ?? "unknown")">
+                                    <i class="fas fa-@(GetActionIcon(log.Action))"></i>
+                                    @log.Action
+                                </span>
+                            </td>
+                            <td>
+                                <div class="aihub-audit-entity-info">
+                                    <div class="aihub-audit-entity-name">@log.EntityName</div>
+                                    @if (log.EntityId.HasValue)
+                                    {
+                                        <div class="aihub-audit-entity-id">ID: @log.EntityId</div>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="aihub-audit-description">@log.Description</div>
+                            </td>
+                            <td>
+                                <div class="aihub-audit-ip">@(log.Ipaddress ?? "-")</div>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(log.OldValue) || !string.IsNullOrEmpty(log.NewValue))
+                                {
+                                    <button class="aihub-audit-btn-icon"
+                                            onclick='viewDetails(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
+                                                id = log.AuditLogId,
+                                                oldValue = log.OldValue,
+                                                newValue = log.NewValue,
+                                                action = log.Action,
+                                                entity = log.EntityName,
+                                                timestamp = log.Timestamp?.ToString("dd/MM/yyyy HH:mm:ss"),
+                                                user = log.User?.FullName ?? "System"
+                                            })))'
+                                            title="Xem chi tiết">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="aihub-audit-no-data">-</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="aihub-audit-empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <h4>Không có dữ liệu</h4>
+            <p>Không tìm thấy nhật ký hoạt động nào</p>
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetActionIcon(string action)
+    {
+        return action?.ToUpper() switch
+        {
+            "CREATE" => "plus",
+            "UPDATE" => "edit",
+            "DELETE" => "trash",
+            "LOGIN" => "sign-in-alt",
+            "LOGIN_FAILED" => "times-circle",
+            "LOGOUT" => "sign-out-alt",
+            "PASSWORD_RESET" => "key",
+            "PASSWORD_CHANGE" => "key",
+            "CHECK_IN" => "sign-in-alt",
+            "CHECK_OUT" => "sign-out-alt",
+            "TASK_REPORT" => "clipboard-check",
+            _ => "eye"
+        };
+    }
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function viewDetails(data) {
+            try {
+                let oldValueHtml = '<p class="text-muted"><em>Không có dữ liệu cũ</em></p>';
+                let newValueHtml = '<p class="text-muted"><em>Không có dữ liệu mới</em></p>';
+
+                if (data.oldValue) {
+                    try {
+                        const oldObj = JSON.parse(data.oldValue);
+                        oldValueHtml = '<pre style="background:#f7fafc;padding:15px;border-radius:8px;font-size:12px;max-height:300px;overflow:auto;text-align:left;">' +
+                                      JSON.stringify(oldObj, null, 2) + '</pre>';
+                    } catch {
+                        oldValueHtml = '<pre style="background:#f7fafc;padding:15px;border-radius:8px;font-size:12px;text-align:left;">' + data.oldValue + '</pre>';
+                    }
+                }
+
+                if (data.newValue) {
+                    try {
+                        const newObj = JSON.parse(data.newValue);
+                        newValueHtml = '<pre style="background:#f7fafc;padding:15px;border-radius:8px;font-size:12px;max-height:300px;overflow:auto;text-align:left;">' +
+                                      JSON.stringify(newObj, null, 2) + '</pre>';
+                    } catch {
+                        newValueHtml = '<pre style="background:#f7fafc;padding:15px;border-radius:8px;font-size:12px;text-align:left;">' + data.newValue + '</pre>';
+                    }
+                }
+
+                Swal.fire({
+                    title: '<strong>Chi tiết Log #' + data.id + '</strong>',
+                    html: `
+                        <div style="text-align:left;">
+                            <div style="margin-bottom:20px;padding:15px;background:#f7fafc;border-radius:8px;">
+                                <p><strong>Hành động:</strong> <span class="badge bg-primary">${data.action}</span></p>
+                                <p><strong>Đối tượng:</strong> ${data.entity}</p>
+                                <p><strong>Người thực hiện:</strong> ${data.user}</p>
+                                <p><strong>Thời gian:</strong> ${data.timestamp}</p>
+                            </div>
+                            <div style="margin-bottom:15px;">
+                                <h6><i class="fas fa-arrow-left text-danger"></i> Giá trị cũ:</h6>
+                                ${oldValueHtml}
+                            </div>
+                            <div>
+                                <h6><i class="fas fa-arrow-right text-success"></i> Giá trị mới:</h6>
+                                ${newValueHtml}
+                            </div>
+                        </div>
+                    `,
+                    width: '800px',
+                    confirmButtonColor: '#7A3F30',
+                    confirmButtonText: '<i class="fas fa-times"></i> Đóng'
+                });
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Không thể hiển thị chi tiết log',
+                    confirmButtonColor: '#7A3F30'
+                });
+            }
+        }
+    </script>
+}

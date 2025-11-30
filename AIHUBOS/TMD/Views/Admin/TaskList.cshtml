@@ -1,0 +1,545 @@
+﻿@model List<AIHUBOS.Models.Task>
+@{
+    ViewData["Title"] = "Quản lý Task";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/tasklist-ad.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+
+<div class="tl-container">
+    <!-- Header Section -->
+    <div class="tl-page-header">
+        <div class="tl-d-flex tl-justify-between tl-align-center">
+            <div>
+                <h1 class="tl-page-title">
+                    <i class="fas fa-tasks"></i> Quản lý Task
+                </h1>
+                <p class="tl-page-subtitle">Theo dõi và quản lý tất cả các task của hệ thống</p>
+            </div>
+            <a asp-action="CreateTask" class="tl-btn-create">
+                <i class="fas fa-plus"></i> Tạo Task mới
+            </a>
+        </div>
+    </div>
+
+    <!-- ✅ STATISTICS CARDS - CẬP NHẬT THEO TRẠNG THÁI MỚI -->
+    <div class="tl-stats-grid">
+        <div class="tl-stats-card tl-stats-secondary">
+            <div class="tl-stats-icon"><i class="fas fa-inbox"></i></div>
+            <div class="tl-stats-content">
+                <div class="tl-stats-label">TODO</div>
+                <div class="tl-stats-value">@ViewBag.TodoTasks</div>
+            </div>
+        </div>
+
+        <div class="tl-stats-card tl-stats-warning">
+            <div class="tl-stats-icon"><i class="fas fa-spinner"></i></div>
+            <div class="tl-stats-content">
+                <div class="tl-stats-label">Đang làm</div>
+                <div class="tl-stats-value">@ViewBag.InProgressTasks</div>
+            </div>
+        </div>
+
+        <div class="tl-stats-card tl-stats-info">
+            <div class="tl-stats-icon"><i class="fas fa-vial"></i></div>
+            <div class="tl-stats-content">
+                <div class="tl-stats-label">Chờ test</div>
+                <div class="tl-stats-value">@ViewBag.TestingTasks</div>
+            </div>
+        </div>
+
+        <div class="tl-stats-card tl-stats-success">
+            <div class="tl-stats-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="tl-stats-content">
+                <div class="tl-stats-label">Hoàn thành</div>
+                <div class="tl-stats-value">@ViewBag.CompletedTasks</div>
+            </div>
+            <div class="tl-stats-trend">
+                <span class="tl-completion-rate">@ViewBag.TaskCompletionRate%</span>
+            </div>
+        </div>
+
+        <div class="tl-stats-card tl-stats-danger">
+            <div class="tl-stats-icon"><i class="fas fa-redo"></i></div>
+            <div class="tl-stats-content">
+                <div class="tl-stats-label">Reopen</div>
+                <div class="tl-stats-value">@ViewBag.ReopenTasks</div>
+            </div>
+        </div>
+
+        <div class="tl-stats-card tl-stats-primary">
+            <div class="tl-stats-icon"><i class="fas fa-tasks"></i></div>
+            <div class="tl-stats-content">
+                <div class="tl-stats-label">Tổng tasks</div>
+                <div class="tl-stats-value">@ViewBag.TotalTasks</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Table Card -->
+    <div class="tl-card">
+        <div class="tl-card-header">
+            <h5 class="tl-mb-0"><i class="fas fa-list"></i> Danh sách Task</h5>
+        </div>
+        <div class="tl-card-body-table">
+            <div class="tl-table-wrapper">
+                <table class="tl-table" id="taskTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th width="5%">ID</th>
+                            <th width="20%">Tên Task</th>
+                            <th width="10%">Platform</th>
+                            <th width="12%">Deadline</th>
+                            <th width="8%">Priority</th>
+                            <th width="28%">Người làm & Trạng thái</th>
+                            <th width="7%">Active</th>
+                            <th width="10%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in Model)
+                        {
+                            var totalAssigned = task.UserTasks.Count;
+                            var completedCount = task.UserTasks.Count(ut => ut.Status == "Done");
+                            var isTaskCompleted = totalAssigned > 0 && completedCount == totalAssigned;
+                            var isOverdue = task.Deadline.HasValue && !isTaskCompleted && DateTime.Now > task.Deadline.Value;
+                            var rowClass = isOverdue ? "tl-row-overdue" : "";
+
+                            <tr class="@rowClass" data-task-id="@task.TaskId">
+                                <td class="tl-text-center">
+                                    <span class="tl-task-id">@task.TaskId</span>
+                                </td>
+                                <td>
+                                    <div class="tl-task-info">
+                                        <div class="tl-task-icon">
+                                            <i class="fas fa-clipboard-list"></i>
+                                        </div>
+                                        <div class="tl-task-details">
+                                            <div class="tl-task-name">@task.TaskName</div>
+                                            @if (!string.IsNullOrEmpty(task.Description))
+                                            {
+                                                <div class="tl-task-description">@task.Description</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(task.Platform))
+                                    {
+                                        <span class="tl-badge tl-badge-info">
+                                            <i class="fas fa-globe tl-me-1"></i>@task.Platform
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="tl-text-muted">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (task.Deadline.HasValue)
+                                    {
+                                        <div class="tl-deadline-wrapper @(isOverdue ? "is-overdue" : "")">
+                                            <div class="tl-deadline-date">
+                                                <i class="far fa-calendar-alt"></i>
+                                                @task.Deadline.Value.ToString("dd/MM/yyyy")
+                                            </div>
+                                            <div class="tl-deadline-time">@task.Deadline.Value.ToString("HH:mm")</div>
+                                            @if (isOverdue)
+                                            {
+                                                <span class="tl-badge tl-badge-danger tl-mt-1">
+                                                    <i class="fas fa-exclamation-circle tl-me-1"></i>Quá hạn
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="tl-text-muted">Không có</span>
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var priorityClass = task.Priority switch
+                                        {
+                                            "High" => "tl-badge-danger",
+                                            "Medium" => "tl-badge-warning",
+                                            "Low" => "tl-badge-success",
+                                            _ => "tl-badge-secondary"
+                                        };
+                                    }
+                                    <span class="tl-badge @priorityClass">
+                                        @task.Priority
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (totalAssigned > 0)
+                                    {
+                                        <div class="tl-user-status-list">
+                                            @foreach (var ut in task.UserTasks.Take(3))
+                                            {
+                                                var statusClass = ut.Status switch
+                                                {
+                                                    "TODO" => "secondary",
+                                                    "InProgress" => "warning",
+                                                    "Testing" => "info",
+                                                    "Done" => "success",
+                                                    "Reopen" => "danger",
+                                                    _ => "secondary"
+                                                };
+
+                                                var statusText = ut.Status switch
+                                                {
+                                                    "TODO" => "Chưa bắt đầu",
+                                                    "InProgress" => "Đang làm",
+                                                    "Testing" => "Chờ test",
+                                                    "Done" => "Hoàn thành",
+                                                    "Reopen" => "Reopen",
+                                                    _ => "Chưa bắt đầu"
+                                                };
+
+                                                <div class="tl-user-status-item">
+                                                    <div class="tl-user-avatar-wrapper">
+                                                        @if (!string.IsNullOrEmpty(ut.User.Avatar) && ut.User.Avatar != "/images/default-avatar.png")
+                                                        {
+                                                            <img src="@ut.User.Avatar"
+                                                                 alt="@ut.User.FullName"
+                                                                 class="tl-user-avatar-sm"
+                                                                 style="object-fit: cover;"
+                                                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                                            <div class="tl-user-avatar-sm"
+                                                                 style="display:none;background:linear-gradient(135deg,#667eea,#764ba2);color:white;align-items:center;justify-content:center;font-weight:700;font-size:12px;">
+                                                                @ut.User.FullName.Substring(0, 1).ToUpper()
+                                                            </div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="tl-user-avatar-sm"
+                                                                 style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">
+                                                                @ut.User.FullName.Substring(0, 1).ToUpper()
+                                                            </div>
+                                                        }
+                                                        <span class="tl-user-name">@ut.User.FullName</span>
+                                                    </div>
+                                                    <span class="tl-badge tl-badge-@statusClass tl-badge-sm">
+                                                        @statusText
+                                                    </span>
+                                                </div>
+                                            }
+                                            @if (task.UserTasks.Count > 3)
+                                            {
+                                                <div class="tl-text-muted tl-text-sm">
+                                                    +@(task.UserTasks.Count - 3) người khác
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="tl-text-muted">Chưa assign</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="tl-badge @(task.IsActive == true ? "tl-badge-success" : "tl-badge-secondary")">
+                                        @(task.IsActive == true ? "Có" : "Không")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="tl-action-buttons">
+                                        <button type="button" class="tl-btn-action tl-btn-action-info btn-view"
+                                                data-id="@task.TaskId" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        @if (task.IsActive == true)
+                                        {
+                                            <a asp-action="EditTask" asp-route-id="@task.TaskId"
+                                               class="tl-btn-action tl-btn-action-warning" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="tl-btn-action tl-btn-action-danger btn-delete"
+                                                    data-id="@task.TaskId" data-name="@task.TaskName" title="Ẩn">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="tl-btn-action tl-btn-action-success btn-restore"
+                                                    data-id="@task.TaskId" data-name="@task.TaskName" title="Khôi phục">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Task Detail Modal -->
+<div class="modal fade tl-modal" id="taskDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="tl-modal-header">
+                <h5 class="tl-modal-title">
+                    <i class="fas fa-info-circle"></i> Chi tiết Task
+                </h5>
+                <button type="button" class="tl-btn-close" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="tl-modal-body" id="taskDetailContent">
+                <div class="tl-loading">
+                    <div class="spinner-border" role="status"></div>
+                    <p class="tl-mt-3 tl-text-muted">Đang tải...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ✅ INIT DATATABLE
+            if (typeof $ !== 'undefined' && $.fn.DataTable) {
+                $('#taskTable').DataTable({
+                    language: { url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json' },
+                    order: [[0, 'desc']],
+                    pageLength: 25,
+                    responsive: true
+                });
+            }
+
+            // ✅ VIEW BUTTON
+            document.querySelectorAll('.btn-view').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    viewTaskDetail(this.dataset.id);
+                });
+            });
+
+            // ✅ DELETE & RESTORE BUTTONS
+            document.querySelectorAll('.btn-delete, .btn-restore').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isDelete = this.classList.contains('btn-delete');
+                    const taskId = this.dataset.id;
+                    const taskName = this.dataset.name;
+                    const msg = isDelete ? `Ẩn task "${taskName}"?` : `Khôi phục task "${taskName}"?`;
+
+                    if (confirm(`Bạn có chắc muốn ${msg}`)) {
+                        isDelete ? deleteTask(taskId) : restoreTask(taskId);
+                    }
+                });
+            });
+
+            function showToast(message, type = 'info') {
+                const toastClass = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+                const toast = document.createElement('div');
+                toast.className = toastClass;
+                toast.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+                toast.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => {
+                    toast.remove();
+                }, 4000);
+            }
+
+            // ✅ HÀM viewTaskDetail FIXED - BỎ CompletedThisWeek & TargetPerWeek
+            function viewTaskDetail(taskId) {
+                const modal = new bootstrap.Modal(document.getElementById('taskDetailModal'));
+                const content = document.getElementById('taskDetailContent');
+                modal.show();
+
+                fetch(`/Admin/GetTaskDetails?id=${taskId}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (!data || !data.success) {
+                            content.innerHTML = `<div class="alert alert-danger">Lỗi: ${data?.message || 'Không thể tải dữ liệu'}</div>`;
+                            return;
+                        }
+
+                        const t = data.task || {};
+
+                        const priorityBg = t.Priority === 'High' ? 'danger' : t.Priority === 'Medium' ? 'warning' : 'success';
+                        const statusBg = t.IsActive ? 'success' : 'secondary';
+
+                        let usersHTML = '';
+                        if (t.AssignedUsers && t.AssignedUsers.length > 0) {
+                            usersHTML = t.AssignedUsers.map(u => {
+                                const statusBg = u.StatusClass === 'success' ? 'bg-success' :
+                                                 u.StatusClass === 'warning' ? 'bg-warning' :
+                                                 u.StatusClass === 'info' ? 'bg-info' :
+                                                 u.StatusClass === 'danger' ? 'bg-danger' : 'bg-secondary';
+
+                                let avatarHTML = '';
+                                if (u.Avatar && u.Avatar !== '/images/default-avatar.png') {
+                                    avatarHTML = `
+                                        <img src="${u.Avatar}"
+                                             alt="${u.FullName}"
+                                             class="avatar-img"
+                                             style="width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:10px;display:block;"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                        <div class="avatar-placeholder"
+                                             style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:none;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;flex-shrink:0;">
+                                            ${(u.FullName || 'U').substring(0,1).toUpperCase()}
+                                        </div>
+                                    `;
+                                } else {
+                                    avatarHTML = `
+                                        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;flex-shrink:0;">
+                                            ${(u.FullName || 'U').substring(0,1).toUpperCase()}
+                                        </div>
+                                    `;
+                                }
+
+                                return `
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                ${avatarHTML}
+                                                <div>
+                                                    <div class="fw-bold">${u.FullName || 'N/A'}</div>
+                                                    <small class="text-muted">${u.DepartmentName || 'N/A'}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge ${statusBg}">${u.StatusText || 'N/A'}</span>
+                                        </td>
+                                        <td>
+                                            ${u.ReportLink ? `<a href="${u.ReportLink}" target="_blank" class="link-primary text-decoration-none"><i class="fas fa-external-link-alt"></i> Xem</a>` : '<span class="text-muted">—</span>'}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">${u.UpdatedAtStr || 'N/A'}</small>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('');
+                        } else {
+                            usersHTML = '<tr><td colspan="4" class="text-center text-muted py-3">Chưa có người được giao</td></tr>';
+                        }
+
+                        content.innerHTML = `
+                            <div class="p-3">
+                                <div class="mb-4 pb-3 border-bottom">
+                                    <h5 class="mb-2">${t.TaskName || 'Không có tên'}</h5>
+                                    <p class="text-muted mb-3">${t.Description || 'Không có mô tả'}</p>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div>
+                                                <small class="text-muted d-block mb-1"><i class="fas fa-globe me-1"></i>Platform</small>
+                                                <strong>${t.Platform || '—'}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <small class="text-muted d-block mb-1"><i class="fas fa-flag me-1"></i>Priority</small>
+                                                <span class="badge bg-${priorityBg}">${t.Priority || 'Medium'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <small class="text-muted d-block mb-1"><i class="far fa-calendar me-1"></i>Deadline</small>
+                                                <strong>${t.DeadlineStr || '<span class="text-muted">—</span>'}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <small class="text-muted d-block mb-1"><i class="fas fa-toggle-on me-1"></i>Status</small>
+                                                <span class="badge bg-${statusBg}">${t.IsActive ? 'Hoạt động' : 'Ẩn'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <small class="text-muted d-block mb-1"><i class="fas fa-info-circle me-1"></i>Thời gian</small>
+                                                <small class="text-muted">
+                                                    Tạo: ${t.CreatedAtStr || 'N/A'}<br>
+                                                    Cập nhật: ${t.UpdatedAtStr || 'N/A'}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <small class="text-muted d-block mb-1"><i class="fas fa-chart-pie me-1"></i>Statistics</small>
+                                                <small>
+                                                    TODO: ${t.TodoCount || 0} |
+                                                    Đang làm: ${t.InProgressCount || 0} |
+                                                    Testing: ${t.TestingCount || 0}<br>
+                                                    Done: ${t.DoneCount || 0} |
+                                                    Reopen: ${t.ReopenCount || 0}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h6 class="mb-3"><i class="fas fa-users me-2"></i>Danh sách người làm (${t.AssignedUsers?.length || 0})</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Người làm</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Báo cáo</th>
+                                                    <th>Cập nhật</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${usersHTML}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    })
+                    .catch(err => {
+                        content.innerHTML = '<div class="alert alert-danger">Lỗi tải dữ liệu</div>';
+                        console.error(err);
+                    });
+            }
+
+            function deleteTask(taskId) {
+                fetch('@Url.Action("DeleteTask", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ taskId: parseInt(taskId) })
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        showToast(data.message, data.success ? 'success' : 'danger');
+                        if (data.success) setTimeout(() => location.reload(), 1000);
+                    })
+                    .catch(() => showToast('Lỗi xảy ra!', 'danger'));
+            }
+
+            function restoreTask(taskId) {
+                fetch('@Url.Action("ToggleTaskStatus", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ taskId: parseInt(taskId) })
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        showToast(data.message, data.success ? 'success' : 'danger');
+                        if (data.success) setTimeout(() => location.reload(), 1000);
+                    })
+                    .catch(() => showToast('Lỗi xảy ra!', 'danger'));
+            }
+        });
+    </script>
+}

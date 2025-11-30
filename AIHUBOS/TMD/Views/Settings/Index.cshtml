@@ -1,0 +1,1449 @@
+﻿@model List<AIHUBOS.Models.SystemSetting>
+@{
+    ViewData["Title"] = "Cấu Hình Hệ Thống";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/setting.css" rel="stylesheet" />
+<div class="settings-page">
+    <div class="container-fluid px-4">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="mb-2">
+                        <i class="fas fa-cog text-primary"></i> 
+                        Quản Lý Cấu Hình Hệ Thống
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Tùy chỉnh cấu hình lương, chấm công và các thiết lập khác
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <button class="btn btn-custom btn-save-all" id="btnSaveAll">
+                        <i class="fas fa-save"></i> Lưu Tất Cả
+                        <span class="badge bg-white text-success ms-2" id="modifiedCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="color: var(--primary);">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="text-muted mb-1">Tổng Cấu Hình</div>
+                <h3 class="mb-0" style="color: var(--primary);">@Model.Count</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="color: var(--success);">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="text-muted mb-1">Lương</div>
+                <h3 class="mb-0" style="color: var(--success);">@Model.Count(s => s.Category == "Salary")</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="color: var(--info);">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="text-muted mb-1">Chấm Công</div>
+                <h3 class="mb-0" style="color: var(--info);">@Model.Count(s => s.Category == "Attendance")</h3>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="color: var(--warning);">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="text-muted mb-1">Đang Bật</div>
+                <h3 class="mb-0" style="color: var(--warning);">@Model.Count(s => s.IsEnabled)</h3>
+            </div>
+        </div>
+
+        <!-- Save Indicator -->
+        <div class="save-indicator" id="saveIndicator">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Bạn có thay đổi chưa lưu!</strong>
+        </div>
+
+        <!-- Tabs Container -->
+        <div class="tabs-container">
+            <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#salary-tab">
+                        <i class="fas fa-money-bill-wave"></i> Lương
+                        <span class="badge bg-success ms-1">@Model.Count(s => s.Category == "Salary")</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#attendance-tab">
+                        <i class="fas fa-clock"></i> Chấm Công
+                        <span class="badge bg-info ms-1">@Model.Count(s => s.Category == "Attendance")</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#layout-tab">
+                        <i class="fas fa-code"></i> Layout Editor
+                        <span class="badge bg-warning ms-1">2</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content tab-content-custom">
+                <!-- SALARY TAB -->
+                <div class="tab-pane fade show active" id="salary-tab">
+                    <div class="settings-toolbar">
+                        <div>
+                            <button class="btn btn-custom btn-add" onclick="openCreateModal('Salary')">
+                                <i class="fas fa-plus"></i> Thêm Cấu Hình
+                            </button>
+                            <button class="btn btn-custom btn-trash" onclick="openTrashModal()">
+                                <i class="fas fa-trash"></i> Thùng Rác
+                                <span class="badge bg-white text-warning ms-1" id="trashCount">0</span>
+                            </button>
+                        </div>
+                        <div>
+                            <input type="text" class="form-control-custom" id="searchSalary" 
+                                   placeholder="🔍 Tìm kiếm cấu hình..." 
+                                   style="width: 300px;">
+                        </div>
+                    </div>
+
+                    <div id="salarySettingsList">
+                        @if (!Model.Any(s => s.Category == "Salary"))
+                        {
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-inbox"></i>
+                                </div>
+                                <h5>Chưa có cấu hình lương nào</h5>
+                                <p>Nhấn "Thêm Cấu Hình" để bắt đầu</p>
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var setting in Model.Where(s => s.Category == "Salary").OrderBy(s => s.SettingKey))
+                            {
+                                <div class="setting-card @(setting.IsEnabled ? "" : "disabled")" 
+                                     id="setting-card-@setting.SettingId"
+                                     data-key="@setting.SettingKey">
+                                    <div class="setting-header">
+                                        <div>
+                                            <div class="setting-title">
+                                                <i class="fas fa-money-bill-wave text-success"></i>
+                                                @setting.Description
+                                            </div>
+                                            <span class="setting-key">@setting.SettingKey</span>
+                                        </div>
+                                        <div>
+                                            <span class="status-badge @(setting.IsEnabled ? "status-enabled" : "status-disabled")">
+                                                <i class="fas @(setting.IsEnabled ? "fa-check-circle" : "fa-ban")"></i>
+                                                @(setting.IsEnabled ? "BẬT" : "TẮT")
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-description">
+                                        @if (!string.IsNullOrEmpty(setting.ApplyMethod))
+                                        {
+                                            <i class="fas fa-info-circle"></i>
+                                            <strong>Cách áp dụng:</strong> @GetApplyMethodText(setting.ApplyMethod)
+                                        }
+                                    </div>
+
+                                    <div class="setting-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-database"></i>
+                                            <span class="meta-badge">@setting.DataType</span>
+                                        </div>
+                                        @if (setting.Unit != null)
+                                        {
+                                            <div class="meta-item">
+                                                <i class="fas fa-tag"></i>
+                                                <span class="meta-badge">@setting.Unit</span>
+                                            </div>
+                                        }
+                                        @if (setting.UpdatedAt.HasValue)
+                                        {
+                                            <div class="meta-item">
+                                                <i class="fas fa-clock"></i>
+                                                @setting.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="input-group-custom">
+                                        @if (setting.DataType == "Number" || setting.DataType == "Decimal")
+                                        {
+                                            <input type="number" class="input-custom setting-input"
+                                                   data-key="@setting.SettingKey"
+                                                   data-id="@setting.SettingId"
+                                                   data-original="@setting.SettingValue"
+                                                   value="@setting.SettingValue"
+                                                   step="@(setting.DataType == "Decimal" ? "0.01" : "1")"
+                                                   @(setting.IsEnabled ? "" : "disabled")
+                                                   placeholder="Nhập giá trị..." />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="input-custom setting-input"
+                                                   data-key="@setting.SettingKey"
+                                                   data-id="@setting.SettingId"
+                                                   data-original="@setting.SettingValue"
+                                                   value="@setting.SettingValue"
+                                                   @(setting.IsEnabled ? "" : "disabled")
+                                                   placeholder="Nhập giá trị..." />
+                                        }
+                                    </div>
+
+                                    <div class="btn-group-actions">
+                                        <button class="btn-custom btn-toggle @(setting.IsEnabled ? "enabled" : "disabled")"
+                                                onclick="toggleSettingStatus(@setting.SettingId, '@setting.SettingKey')">
+                                            <i class="fas @(setting.IsEnabled ? "fa-toggle-on" : "fa-toggle-off")"></i>
+                                            @(setting.IsEnabled ? "Đang Bật" : "Đang Tắt")
+                                        </button>
+                                        <button class="btn-custom btn-edit" 
+                                                onclick='openEditModal(@setting.SettingId, "@setting.SettingKey", "@setting.SettingValue", "@setting.Description", "@setting.DataType", "@setting.Category", "@setting.ApplyMethod")'>
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </button>
+                                        <button class="btn-custom btn-delete" 
+                                                onclick="moveToTrash(@setting.SettingId)">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <!-- ATTENDANCE TAB -->
+                <div class="tab-pane fade" id="attendance-tab">
+                    <div class="settings-toolbar">
+                        <div>
+                            <button class="btn btn-custom btn-add" onclick="openCreateModal('Attendance')">
+                                <i class="fas fa-plus"></i> Thêm Cấu Hình
+                            </button>
+                        </div>
+                        <div>
+                            <input type="text" class="form-control-custom" id="searchAttendance" 
+                                   placeholder="🔍 Tìm kiếm cấu hình..." 
+                                   style="width: 300px;">
+                        </div>
+                    </div>
+
+                    <div id="attendanceSettingsList">
+                        @if (!Model.Any(s => s.Category == "Attendance"))
+                        {
+                            <div class="empty-state">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-inbox"></i>
+                                </div>
+                                <h5>Chưa có cấu hình chấm công nào</h5>
+                                <p>Nhấn "Thêm Cấu Hình" để bắt đầu</p>
+                            </div>
+                        }
+                        else
+                        {
+                            @foreach (var setting in Model.Where(s => s.Category == "Attendance").OrderBy(s => s.SettingKey))
+                            {
+                                <div class="setting-card @(setting.IsEnabled ? "" : "disabled")" 
+                                     id="setting-card-@setting.SettingId"
+                                     data-key="@setting.SettingKey">
+                                    <div class="setting-header">
+                                        <div>
+                                            <div class="setting-title">
+                                                <i class="fas fa-clock text-info"></i>
+                                                @setting.Description
+                                            </div>
+                                            <span class="setting-key">@setting.SettingKey</span>
+                                        </div>
+                                        <div>
+                                            <span class="status-badge @(setting.IsEnabled ? "status-enabled" : "status-disabled")">
+                                                <i class="fas @(setting.IsEnabled ? "fa-check-circle" : "fa-ban")"></i>
+                                                @(setting.IsEnabled ? "BẬT" : "TẮT")
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="setting-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-database"></i>
+                                            <span class="meta-badge">@setting.DataType</span>
+                                        </div>
+                                        @if (setting.UpdatedAt.HasValue)
+                                        {
+                                            <div class="meta-item">
+                                                <i class="fas fa-clock"></i>
+                                                @setting.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="input-group-custom">
+                                        @if (setting.DataType == "Number" || setting.DataType == "Decimal")
+                                        {
+                                            <input type="number" class="input-custom setting-input"
+                                                   data-key="@setting.SettingKey"
+                                                   data-id="@setting.SettingId"
+                                                   data-original="@setting.SettingValue"
+                                                   value="@setting.SettingValue"
+                                                   step="@(setting.DataType == "Decimal" ? "0.01" : "1")"
+                                                   @(setting.IsEnabled ? "" : "disabled")
+                                                   placeholder="Nhập giá trị..." />
+                                        }
+                                        else if (setting.SettingKey.Contains("TIME"))
+                                        {
+                                            <input type="time" class="input-custom setting-input"
+                                                   data-key="@setting.SettingKey"
+                                                   data-id="@setting.SettingId"
+                                                   data-original="@setting.SettingValue"
+                                                   value="@setting.SettingValue"
+                                                   @(setting.IsEnabled ? "" : "disabled")
+                                                   placeholder="Nhập giá trị..." />
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="input-custom setting-input"
+                                                   data-key="@setting.SettingKey"
+                                                   data-id="@setting.SettingId"
+                                                   data-original="@setting.SettingValue"
+                                                   value="@setting.SettingValue"
+                                                   @(setting.IsEnabled ? "" : "disabled")
+                                                   placeholder="Nhập giá trị..." />
+                                        }
+                                    </div>
+
+                                    <div class="btn-group-actions">
+                                        <button class="btn-custom btn-toggle @(setting.IsEnabled ? "enabled" : "disabled")"
+                                                onclick="toggleSettingStatus(@setting.SettingId, '@setting.SettingKey')">
+                                            <i class="fas @(setting.IsEnabled ? "fa-toggle-on" : "fa-toggle-off")"></i>
+                                            @(setting.IsEnabled ? "Đang Bật" : "Đang Tắt")
+                                        </button>
+                                        <button class="btn-custom btn-edit" 
+                                                onclick='openEditModal(@setting.SettingId, "@setting.SettingKey", "@setting.SettingValue", "@setting.Description", "@setting.DataType", "@setting.Category", "")'>
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </button>
+                                        <button class="btn-custom btn-delete" 
+                                                onclick="moveToTrash(@setting.SettingId)">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <!-- LAYOUT EDITOR TAB -->
+                <div class="tab-pane fade" id="layout-tab">
+                    <div class="settings-toolbar">
+                        <div>
+                            <button class="btn btn-custom btn-edit" onclick="loadLayout('admin')">
+                                <i class="fas fa-desktop"></i> Load Admin Layout
+                            </button>
+                            <button class="btn btn-custom btn-edit" onclick="loadLayout('staff')">
+                                <i class="fas fa-user"></i> Load Staff Layout
+                            </button>
+                        </div>
+                        <div>
+                            <button class="btn btn-custom btn-add" onclick="saveLayout()">
+                                <i class="fas fa-save"></i> Lưu Layout
+                            </button>
+                            <button class="btn btn-custom btn-trash" onclick="openBackupModal()">
+                                <i class="fas fa-history"></i> Backup Files
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-file-code"></i>
+                                    <span id="currentLayoutName">Chọn layout để chỉnh sửa</span>
+                                </label>
+                                <textarea id="layoutEditor" class="form-control-custom"
+                                          rows="25"
+                                          style="font-family: 'Courier New', monospace; font-size: 14px;"
+                                          placeholder="Nhấn Load Admin Layout hoặc Load Staff Layout để bắt đầu..."></textarea>
+                                <div class="form-help-text mt-2">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Lưu ý:</strong> Backup tự động được tạo trước khi lưu
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="layoutInfo" class="alert alert-info mt-3" style="display: none;">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>File:</strong> <span id="fileName"></span> |
+                        <strong>Sửa lần cuối:</strong> <span id="lastModified"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetApplyMethodText(string method)
+    {
+        return method switch
+        {
+            "BASE" => "Lương cơ bản",
+            "FIXED_MONTHLY" => "Cộng cố định mỗi tháng",
+            "PER_WORKDAY" => "Cộng theo số ngày làm việc",
+            "MULTIPLIER" => "Hệ số nhân",
+            "PER_LATE_INSTANCE" => "Trừ theo số lần đi trễ",
+            "PERCENT_DEDUCTION" => "Trừ theo phần trăm",
+            "CONDITIONAL" => "Theo điều kiện đặc biệt",
+            _ => method ?? "Không xác định"
+        };
+    }
+}
+
+<!-- CREATE MODAL -->
+<div class="modal fade modal-custom" id="createModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus"></i> Thêm Cấu Hình Mới
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm">
+                    <input type="hidden" id="createCategoryHidden">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-file-signature"></i> 
+                                    Tên Cấu Hình <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control-custom" id="createDescription"
+                                       placeholder="VD: Phụ cấp ăn trưa"
+                                       onblur="autoGenerateKey()">
+                                <div class="form-help-text">
+                                    <i class="fas fa-info-circle"></i> Nhập tên mô tả cho cấu hình
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-layer-group"></i> Danh Mục
+                                </label>
+                                <select class="form-control-custom" id="createCategory">
+                                    <option value="Salary">💰 Lương</option>
+                                    <option value="Attendance">🕐 Chấm Công</option>
+                                    <option value="General">⚙️ Chung</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-key"></i> Key (Tự Động Tạo)
+                        </label>
+                        <div class="input-group">
+                            <input type="text" class="form-control-custom" id="createKey"
+                                   readonly style="background-color: #f3f4f6; font-family: 'Courier New', monospace; font-weight: bold;">
+                            <button class="btn btn-custom btn-edit" type="button" onclick="autoGenerateKey()" style="margin-left: 10px;">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                        </div>
+                        <div class="form-help-text" id="keyStatus"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-money-bill"></i> 
+                                    Giá Trị <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control-custom" id="createValue"
+                                       placeholder="VD: 500000" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-database"></i> Loại Dữ Liệu
+                                </label>
+                                <select class="form-control-custom" id="createDataType">
+                                    <option value="String">Text</option>
+                                    <option value="Number">Số Nguyên</option>
+                                    <option value="Decimal" selected>Số Thập Phân</option>
+                                    <option value="Boolean">Boolean</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom" id="applyMethodGroup">
+                        <label class="form-label-custom">
+                            <i class="fas fa-cogs"></i> Cách Áp Dụng (Cho Lương)
+                        </label>
+                        
+                        <div class="apply-method-selector">
+                            <label class="method-option">
+                                <input type="radio" name="applyMethod" value="FIXED_MONTHLY">
+                                <div>
+                                    <div class="method-title">💰 Cố định mỗi tháng</div>
+                                    <div class="method-description">Cộng số tiền cố định vào lương mỗi tháng (VD: Phụ cấp đi lại 300,000₫/tháng)</div>
+                                </div>
+                            </label>
+
+                            <label class="method-option">
+                                <input type="radio" name="applyMethod" value="PER_WORKDAY">
+                                <div>
+                                    <div class="method-title">📅 Theo ngày làm việc</div>
+                                    <div class="method-description">Cộng theo số ngày đi làm thực tế (VD: Phụ cấp ăn trưa 30,000₫ × số ngày)</div>
+                                </div>
+                            </label>
+
+                            <label class="method-option">
+                                <input type="radio" name="applyMethod" value="MULTIPLIER">
+                                <div>
+                                    <div class="method-title">✖️ Hệ số nhân</div>
+                                    <div class="method-description">Nhân với lương cơ bản (VD: Thưởng 10% = nhập 10)</div>
+                                </div>
+                            </label>
+
+                            <label class="method-option">
+                                <input type="radio" name="applyMethod" value="PER_LATE_INSTANCE">
+                                <div>
+                                    <div class="method-title">⚠️ Trừ theo lần đi trễ</div>
+                                    <div class="method-description">Trừ tiền theo số lần đi muộn (VD: 20,000₫ × số lần trễ)</div>
+                                </div>
+                            </label>
+
+                            <label class="method-option">
+                                <input type="radio" name="applyMethod" value="PERCENT_DEDUCTION">
+                                <div>
+                                    <div class="method-title">📉 Trừ theo phần trăm</div>
+                                    <div class="method-description">Trừ % lương cơ bản (VD: Bảo hiểm 8%)</div>
+                                </div>
+                            </label>
+
+                            <label class="method-option">
+                                <input type="radio" name="applyMethod" value="CONDITIONAL">
+                                <div>
+                                    <div class="method-title">🎯 Theo điều kiện</div>
+                                    <div class="method-description">Áp dụng khi đủ điều kiện (VD: Thưởng chuyên cần khi đủ 26 ngày)</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom" id="conditionalDescGroup" style="display: none;">
+                        <label class="form-label-custom">
+                            <i class="fas fa-file-alt"></i> Mô tả điều kiện
+                        </label>
+                        <textarea class="form-control-custom" id="createConditionalDesc" rows="3"
+                                  placeholder="VD: Áp dụng khi đi làm đủ 26 ngày và không đi trễ lần nào"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-custom btn-add" onclick="createSetting()">
+                    <i class="fas fa-save"></i> Tạo Cấu Hình
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade modal-custom" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit"></i> Chỉnh Sửa Cấu Hình
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editId">
+                    
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-key"></i> Setting Key <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control-custom" id="editKey" required>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-file-signature"></i> Tên Cấu Hình
+                        </label>
+                        <input type="text" class="form-control-custom" id="editDescription">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-money-bill"></i> Giá Trị
+                                </label>
+                                <input type="text" class="form-control-custom" id="editValue">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">
+                                    <i class="fas fa-database"></i> Loại Dữ Liệu
+                                </label>
+                                <select class="form-control-custom" id="editDataType">
+                                    <option value="String">String</option>
+                                    <option value="Number">Number</option>
+                                    <option value="Decimal">Decimal</option>
+                                    <option value="Boolean">Boolean</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-layer-group"></i> Danh Mục
+                        </label>
+                        <select class="form-control-custom" id="editCategory">
+                            <option value="Salary">Salary</option>
+                            <option value="Attendance">Attendance</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fas fa-cogs"></i> Cách Áp Dụng
+                        </label>
+                        <select class="form-control-custom" id="editApplyMethod">
+                            <option value="">-- Không áp dụng --</option>
+                            <option value="BASE">BASE - Lương cơ bản</option>
+                            <option value="FIXED_MONTHLY">FIXED_MONTHLY - Cố định mỗi tháng</option>
+                            <option value="PER_WORKDAY">PER_WORKDAY - Theo ngày làm việc</option>
+                            <option value="MULTIPLIER">MULTIPLIER - Hệ số nhân</option>
+                            <option value="PER_LATE_INSTANCE">PER_LATE_INSTANCE - Trừ theo lần trễ</option>
+                            <option value="PERCENT_DEDUCTION">PERCENT_DEDUCTION - Trừ theo %</option>
+                            <option value="CONDITIONAL">CONDITIONAL - Theo điều kiện</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-custom btn-edit" onclick="editSetting()">
+                    <i class="fas fa-save"></i> Cập Nhật
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TRASH MODAL -->
+<div class="modal fade modal-custom" id="trashModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header" style="background: var(--warning);">
+                <h5 class="modal-title">
+                    <i class="fas fa-trash"></i> Thùng Rác
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead style="background: #f9fafb;">
+                            <tr>
+                                <th>Key</th>
+                                <th>Tên</th>
+                                <th>Giá Trị</th>
+                                <th>Danh Mục</th>
+                                <th width="200">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trashTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BACKUP FILES MODAL -->
+    <div class="modal fade modal-custom" id="backupModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header" style="background: var(--info);">
+                    <h5 class="modal-title">
+                        <i class="fas fa-history"></i> Backup Files
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead style="background: #f9fafb;">
+                                <tr>
+                                    <th>File Name</th>
+                                    <th>Size</th>
+                                    <th>Created</th>
+                                    <th width="200">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="backupTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let modifiedSettings = new Set();
+        let originalValues = {};
+        let currentLayoutType = '';
+
+        $(document).ready(function() {
+            initializeInputs();
+            loadTrashCount();
+            initializeSearch();
+            initializeApplyMethodToggle();
+        });
+
+        // ============================================
+        // 📝 LAYOUT EDITOR - ĐÃ SỬA
+        // ============================================
+        function loadLayout(type) {
+            fetch(`/Settings/GetLayoutContent?layoutType=${type}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#layoutEditor').val(data.content);
+                        currentLayoutType = type;
+
+                        $('#currentLayoutName').html(`
+                            <i class="fas fa-file-code text-success"></i>
+                            ${data.fileName}
+                        `);
+
+                        $('#layoutInfo').html(`
+                            <i class="fas fa-info-circle"></i>
+                            <strong>File:</strong> <span id="fileName">${data.fileName}</span> |
+                            <strong>Sửa lần cuối:</strong> <span id="lastModified">${data.lastModified}</span>
+                        `).show();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã load!',
+                            text: data.fileName,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire('Lỗi', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('Lỗi', 'Không thể load layout: ' + err.message, 'error');
+                });
+        }
+
+        function saveLayout() {
+            if (!currentLayoutType) {
+                Swal.fire('Lỗi', 'Vui lòng load layout trước!', 'error');
+                return;
+            }
+
+            const content = $('#layoutEditor').val();
+
+            Swal.fire({
+                title: 'Xác nhận lưu?',
+                html: `Lưu <strong>${currentLayoutType === 'admin' ? '_Layout.cshtml' : '_LayoutStaff.cshtml'}</strong>?<br><small class="text-warning">⚠️ Backup sẽ được tạo tự động</small>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-save"></i> Lưu',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: 'var(--success)'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Đang lưu...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    fetch('/Settings/SaveLayoutFile', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            LayoutType: currentLayoutType,
+                            Content: content
+                        })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đã lưu!',
+                                text: data.message,
+                                timer: 2000
+                            });
+                            loadBackupFiles(); // Refresh backup list
+                        } else {
+                            Swal.fire('Lỗi', data.message, 'error');
+                        }
+                    })
+                    .catch(err => Swal.fire('Lỗi', 'Không thể lưu layout!', 'error'));
+                }
+            });
+        }
+
+        function openBackupModal() {
+            loadBackupFiles();
+            $('#backupModal').modal('show');
+        }
+
+        function loadBackupFiles() {
+            fetch('/Settings/GetBackupFiles')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const tbody = $('#backupTableBody');
+                    tbody.empty();
+
+                    if (!data.backups || data.backups.length === 0) {
+                        tbody.append(`
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Chưa có backup nào</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `);
+                    } else {
+                        data.backups.forEach(item => {
+                            tbody.append(`
+                                <tr>
+                                    <td><code>${item.fileName}</code></td>
+                                    <td>${formatFileSize(item.size)}</td>
+                                    <td>${item.created}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-custom btn-edit"
+                                                onclick="restoreBackup('${item.fileName}')"
+                                                style="padding: 6px 12px;">
+                                            <i class="fas fa-undo"></i> Restore
+                                        </button>
+                                        <button class="btn btn-sm btn-custom btn-delete"
+                                                onclick="deleteBackup('${item.fileName}')"
+                                                style="padding: 6px 12px;">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    }
+                }
+            })
+            .catch(err => console.error('Lỗi load backup:', err));
+        }
+
+        function formatFileSize(bytes) {
+            if (!bytes || bytes === 0) return '0 KB';
+            return (bytes / 1024).toFixed(2) + ' KB';
+        }
+
+        function restoreBackup(fileName) {
+            Swal.fire({
+                title: 'Khôi phục backup?',
+                html: `File: <code>${fileName}</code>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Khôi phục',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                Swal.fire({
+                    title: 'Đang khôi phục...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                fetch('/Settings/RestoreFromBackup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ BackupFileName: fileName })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã khôi phục!',
+                            timer: 1500
+                        }).then(() => {
+                            if (currentLayoutType) {
+                                loadLayout(currentLayoutType);
+                            }
+                            loadBackupFiles();
+                        });
+                    } else {
+                        Swal.fire('Lỗi', data.message, 'error');
+                    }
+                })
+                .catch(err => Swal.fire('Lỗi', 'Không thể khôi phục!', 'error'));
+            });
+        }
+
+        function deleteBackup(fileName) {
+            Swal.fire({
+                title: 'Xóa backup?',
+                html: `File: <code>${fileName}</code>`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#dc3545'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                fetch('/Settings/DeleteBackup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ BackupFileName: fileName })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã xóa!',
+                            timer: 1500
+                        }).then(() => loadBackupFiles());
+                    } else {
+                        Swal.fire('Lỗi', data.message, 'error');
+                    }
+                })
+                .catch(err => Swal.fire('Lỗi', 'Không thể xóa!', 'error'));
+            });
+        }
+
+        // ============================================
+        // CÁC FUNCTION CŨ CỦA BẠN (GIỮ NGUYÊN)
+        // ============================================
+        function initializeInputs() {
+            $('[data-key]').each(function() {
+                const key = $(this).data('key');
+                originalValues[key] = $(this).val();
+            });
+
+            $('[data-key]').on('change input', function() {
+                const key = $(this).data('key');
+                const newValue = $(this).val();
+
+                if (newValue !== originalValues[key]) {
+                    modifiedSettings.add(key);
+                    $(this).addClass('modified');
+                    $(this).closest('.setting-card').addClass('modified');
+                } else {
+                    modifiedSettings.delete(key);
+                    $(this).removeClass('modified');
+                    if (modifiedSettings.size === 0) {
+                        $(this).closest('.setting-card').removeClass('modified');
+                    }
+                }
+                updateModifiedCount();
+            });
+        }
+
+        function initializeSearch() {
+            $('#searchSalary').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                filterSettings('#salarySettingsList', query);
+            });
+
+            $('#searchAttendance').on('input', function() {
+                const query = $(this).val().toLowerCase();
+                filterSettings('#attendanceSettingsList', query);
+            });
+        }
+
+        function filterSettings(container, query) {
+            $(container + ' .setting-card').each(function() {
+                const key = $(this).data('key').toLowerCase();
+                const text = $(this).text().toLowerCase();
+
+                if (key.includes(query) || text.includes(query)) {
+                    $(this).fadeIn();
+                } else {
+                    $(this).fadeOut();
+                }
+            });
+        }
+
+        function initializeApplyMethodToggle() {
+            $('input[name="applyMethod"]').on('change', function() {
+                $('.method-option').removeClass('selected');
+                $(this).closest('.method-option').addClass('selected');
+
+                if ($(this).val() === 'CONDITIONAL') {
+                    $('#conditionalDescGroup').slideDown();
+                } else {
+                    $('#conditionalDescGroup').slideUp();
+                }
+            });
+
+            $('#createCategory').on('change', function() {
+                if ($(this).val() === 'Salary') {
+                    $('#applyMethodGroup').slideDown();
+                } else {
+                    $('#applyMethodGroup').slideUp();
+                    $('input[name="applyMethod"]').prop('checked', false);
+                    $('.method-option').removeClass('selected');
+                }
+            });
+        }
+
+        function updateModifiedCount() {
+            const count = modifiedSettings.size;
+            $('#modifiedCount').text(count);
+
+            if (count > 0) {
+                $('#saveIndicator').fadeIn();
+                $('#btnSaveAll').removeClass('btn-save-all').addClass('btn-custom').css({
+                    'background': 'var(--warning)',
+                    'animation': 'pulse 2s infinite'
+                });
+            } else {
+                $('#saveIndicator').fadeOut();
+                $('#btnSaveAll').removeClass('btn-custom').addClass('btn-save-all').css({
+                    'background': 'var(--success)',
+                    'animation': 'none'
+                });
+            }
+        }
+
+        $('#btnSaveAll').click(function() {
+            if (modifiedSettings.size === 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Không có thay đổi',
+                    text: 'Bạn chưa thay đổi cấu hình nào!',
+                    timer: 1500
+                });
+                return;
+            }
+
+            const settings = [];
+            modifiedSettings.forEach(key => {
+                const element = $(`[data-key="${key}"]`);
+                settings.push({
+                    SettingKey: key,
+                    SettingValue: element.val()
+                });
+            });
+
+            Swal.fire({
+                title: 'Xác nhận lưu',
+                html: `Lưu <strong>${settings.length}</strong> cấu hình đã thay đổi?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-save"></i> Lưu',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: 'var(--success)'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    saveSettings(settings);
+                }
+            });
+        });
+
+        function saveSettings(settings) {
+            Swal.fire({
+                title: 'Đang lưu...',
+                html: 'Vui lòng đợi trong giây lát',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            fetch('/Settings/BatchUpdateSettings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: data.message,
+                        timer: 1500
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            })
+            .catch(() => Swal.fire('Lỗi', 'Không thể kết nối server!', 'error'));
+        }
+
+        function autoGenerateKey() {
+            const description = $('#createDescription').val();
+            if (!description) {
+                $('#keyStatus').html('');
+                return;
+            }
+
+            const category = $('#createCategory').val();
+            const applyMethod = $('input[name="applyMethod"]:checked').val();
+
+            fetch('/Settings/GenerateKey', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    description: description,
+                    applyMethod: applyMethod
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    $('#createKey').val(data.key);
+                    if (data.exists) {
+                        $('#keyStatus').html('<i class="fas fa-exclamation-triangle text-warning"></i> Key này đã tồn tại!');
+                    } else {
+                        $('#keyStatus').html('<i class="fas fa-check-circle text-success"></i> Key sẵn sàng');
+                    }
+                }
+            });
+        }
+
+        function openCreateModal(category = 'Salary') {
+            $('#createForm')[0].reset();
+            $('#createCategoryHidden').val(category);
+            $('#createCategory').val(category);
+            $('#keyStatus').html('');
+            $('.method-option').removeClass('selected');
+            $('input[name="applyMethod"]').prop('checked', false);
+            $('#conditionalDescGroup').hide();
+
+            if (category === 'Salary') {
+                $('#applyMethodGroup').show();
+            } else {
+                $('#applyMethodGroup').hide();
+            }
+
+            $('#createModal').modal('show');
+        }
+
+        function createSetting() {
+            const key = $('#createKey').val();
+            const value = $('#createValue').val();
+            const description = $('#createDescription').val();
+            const dataType = $('#createDataType').val();
+            const category = $('#createCategory').val();
+            const applyMethod = $('input[name="applyMethod"]:checked').val() || null;
+
+            if (!key || !value || !description) {
+                Swal.fire('Lỗi', 'Vui lòng điền đầy đủ thông tin!', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Xác nhận tạo?',
+                html: `<strong>${description}</strong><br><code>${key}</code>`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Tạo',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Đang tạo...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    fetch('/Settings/CreateSetting', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            SettingKey: key,
+                            SettingValue: value,
+                            Description: description,
+                            DataType: dataType,
+                            Category: category,
+                            ApplyMethod: applyMethod
+                        })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Thành công!',
+                                timer: 1500
+                            }).then(() => location.reload());
+                        } else {
+                            Swal.fire('Lỗi', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        function toggleSettingStatus(settingId, settingKey) {
+            Swal.fire({
+                title: 'Thay đổi trạng thái?',
+                text: `Thiết lập: ${settingKey}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Thay đổi',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Đang cập nhật...',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+
+                    fetch('/Settings/ToggleSettingStatus', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ SettingId: settingId })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message,
+                                timer: 1500
+                            }).then(() => location.reload());
+                        } else {
+                            Swal.fire('Lỗi', data.message, 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        function openEditModal(id, key, value, desc, dataType, category, applyMethod) {
+            $('#editId').val(id);
+            $('#editKey').val(key);
+            $('#editValue').val(value);
+            $('#editDescription').val(desc);
+            $('#editDataType').val(dataType);
+            $('#editCategory').val(category);
+            $('#editApplyMethod').val(applyMethod || '');
+            $('#editModal').modal('show');
+        }
+
+        function editSetting() {
+            const data = {
+                SettingId: parseInt($('#editId').val()),
+                SettingKey: $('#editKey').val(),
+                SettingValue: $('#editValue').val(),
+                Description: $('#editDescription').val(),
+                DataType: $('#editDataType').val(),
+                Category: $('#editCategory').val(),
+                ApplyMethod: $('#editApplyMethod').val()
+            };
+
+            Swal.fire({
+                title: 'Đang cập nhật...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            fetch('/Settings/EditSetting', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đã cập nhật!',
+                        timer: 1500
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            });
+        }
+
+        function moveToTrash(id) {
+            Swal.fire({
+                title: 'Chuyển vào thùng rác?',
+                text: 'Bạn có thể khôi phục sau!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: 'var(--danger)'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                fetch('/Settings/MoveToTrash', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${id}`
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã xóa!',
+                            timer: 1500
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi', data.message, 'error');
+                    }
+                });
+            });
+        }
+
+        function openTrashModal() {
+            fetch('/Settings/GetTrashList')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const tbody = $('#trashTableBody');
+                    tbody.empty();
+
+                    if (!data.data || data.data.length === 0) {
+                        tbody.append(`
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Thùng rác trống</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `);
+                    } else {
+                        data.data.forEach(item => {
+                            tbody.append(`
+                                <tr>
+                                    <td><code>${item.settingKey}</code></td>
+                                    <td>${item.description || '-'}</td>
+                                    <td>${item.settingValue || '-'}</td>
+                                    <td><span class="badge bg-secondary">${item.category}</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-custom btn-edit" onclick="restoreSetting(${item.settingId})" style="padding: 6px 12px;">
+                                            <i class="fas fa-undo"></i> Khôi phục
+                                        </button>
+                                        <button class="btn btn-sm btn-custom btn-delete" onclick="permanentDelete(${item.settingId})" style="padding: 6px 12px;">
+                                            <i class="fas fa-times"></i> Xóa vĩnh viễn
+                                        </button>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    }
+                    $('#trashModal').modal('show');
+                }
+            });
+        }
+
+        function restoreSetting(id) {
+            Swal.fire({
+                title: 'Khôi phục?',
+                text: 'Cấu hình sẽ được khôi phục!',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Khôi phục',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                fetch('/Settings/RestoreSetting', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${id}`
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã khôi phục!',
+                            timer: 1500
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi', data.message, 'error');
+                    }
+                });
+            });
+        }
+
+        function permanentDelete(id) {
+            Swal.fire({
+                title: 'XÓA VĨNH VIỄN?',
+                html: '<strong>CẢNH BÁO:</strong> Không thể khôi phục sau khi xóa!',
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-trash"></i> Xóa vĩnh viễn',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#dc3545'
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                fetch('/Settings/PermanentDelete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${id}`
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã xóa vĩnh viễn!',
+                            timer: 1500
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi', data.message, 'error');
+                    }
+                });
+            });
+        }
+
+        function loadTrashCount() {
+            fetch('/Settings/GetTrashList')
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const count = data.data.length;
+                    $('#trashCount').text(count);
+                }
+            })
+            .catch(() => console.log('Error loading trash count'));
+        }
+    </script>
+}

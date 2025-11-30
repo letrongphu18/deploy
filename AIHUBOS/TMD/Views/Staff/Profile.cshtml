@@ -1,0 +1,514 @@
+﻿@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    var user = ViewBag.User as AIHUBOS.Models.User;
+
+    // Tự động chọn Layout dựa trên Role
+    Layout = user?.Role?.RoleName?.ToLower() == "admin"
+        ? "~/Views/Shared/_Layout.cshtml"
+        : "~/Views/Shared/_LayoutStaff.cshtml";
+}
+<link href="~/css/profile.css" rel="stylesheet" />
+<div class="profile-container">
+    <div class="row g-4">
+        <!-- LEFT SIDEBAR - Profile Card -->
+        <div class="col-lg-4">
+            <div class="profile-card">
+                <div class="profile-card__header">
+                    <!-- ✅ AVATAR WITH PREVIEW -->
+                    <div class="profile-avatar-wrapper">
+                        @if (!string.IsNullOrEmpty(user.Avatar) && user.Avatar != "/images/default-avatar.png")
+                        {
+                            <img src="@user.Avatar"
+                                 alt="@user.FullName"
+                                 class="profile-avatar-img"
+                                 id="profileAvatarImg"
+                                 onerror="this.style.display='none'; document.getElementById('profileAvatarPlaceholder').style.display='flex';" />
+                            <div class="profile-avatar-placeholder" id="profileAvatarPlaceholder" style="display:none;">
+                                @user.FullName?.Substring(0, 1).ToUpper()
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="profile-avatar-placeholder" id="profileAvatarPlaceholder">
+                                @user.FullName?.Substring(0, 1).ToUpper()
+                            </div>
+                            <img src=""
+                                 alt="@user.FullName"
+                                 class="profile-avatar-img"
+                                 id="profileAvatarImg"
+                                 style="display:none;" />
+                        }
+
+                        <!-- Upload Button Overlay -->
+                        <label for="avatarUpload" class="avatar-upload-btn" title="Đổi ảnh đại diện">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file"
+                               id="avatarUpload"
+                               accept="image/jpeg,image/jpg,image/png"
+                               style="display:none;" />
+                    </div>
+
+                    <h4 id="displayFullName">@user.FullName</h4>
+                    <p class="text-muted">@@@user.Username</p>
+                    <div class="profile-badges">
+                        <span class="badge badge-role">
+                            <i class="fas fa-user-tag"></i> @user.Role?.RoleName
+                        </span>
+                        @if (user.IsActive == true)
+                        {
+                            <span class="badge badge-status">
+                                <i class="fas fa-check-circle"></i> Hoạt động
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="profile-card__body">
+                    <div class="profile-info">
+                        <div class="profile-info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <span class="label">Email</span>
+                                <span class="value" id="displayEmail">@(user.Email ?? "Chưa cập nhật")</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <span class="label">Số điện thoại</span>
+                                <span class="value" id="displayPhone">@(user.PhoneNumber ?? "Chưa cập nhật")</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-item">
+                            <i class="fas fa-building"></i>
+                            <div>
+                                <span class="label">Phòng ban</span>
+                                <span class="value">@(user.Department?.DepartmentName ?? "Chưa phân công")</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <div>
+                                <span class="label">Ngày tham gia</span>
+                                <span class="value">@user.CreatedAt?.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                        <div class="profile-info-item">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <div>
+                                <span class="label">Đăng nhập lần cuối</span>
+                                <span class="value">@(user.LastLoginAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa có")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT CONTENT - Edit Forms -->
+        <div class="col-lg-8">
+            <!-- UPDATE PROFILE FORM -->
+            <div class="content-card mb-4">
+                <div class="content-card__header">
+                    <h5><i class="fas fa-user-edit"></i> Cập nhật thông tin</h5>
+                </div>
+                <div class="content-card__body">
+                    <form id="updateProfileForm">
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                            <input type="text" id="fullName" class="form-control" value="@user.FullName" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="email" class="form-control" value="@user.Email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" id="phoneNumber" class="form-control" value="@user.PhoneNumber" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Lưu thay đổi
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- CHANGE PASSWORD FORM -->
+            <div class="content-card">
+                <div class="content-card__header">
+                    <h5><i class="fas fa-key"></i> Đổi mật khẩu</h5>
+                </div>
+                <div class="content-card__body">
+                    <form id="changePasswordForm">
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                            <input type="password" id="currentPassword" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu mới <span class="text-danger">*</span></label>
+                            <input type="password" id="newPassword" class="form-control" required />
+                            <small class="text-muted">Tối thiểu 6 ký tự</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+                            <input type="password" id="confirmPassword" class="form-control" required />
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Lưu ý:</strong> Sau khi đổi mật khẩu, bạn sẽ cần đăng nhập lại.
+                        </div>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-key"></i> Đổi mật khẩu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        let pendingAvatarFile = null;
+        let originalAvatarSrc = document.getElementById('profileAvatarImg').src;
+
+        // ============================================
+        // AVATAR UPLOAD WITH PREVIEW & CONFIRMATION
+        // ============================================
+        document.getElementById('avatarUpload').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            // ✅ Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi định dạng',
+                    text: 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG, PNG',
+                    confirmButtonColor: '#667eea'
+                });
+                e.target.value = '';
+                return;
+            }
+
+            // ✅ Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kích thước quá lớn',
+                    text: 'Kích thước ảnh không được vượt quá 5MB',
+                    confirmButtonColor: '#667eea'
+                });
+                e.target.value = '';
+                return;
+            }
+
+            // ✅ Create high-quality preview
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const imageData = event.target.result;
+
+                // ✅ SHOW PREVIEW WITH CONFIRMATION
+                const result = await Swal.fire({
+                    title: 'Xem trước ảnh đại diện',
+                    html: `
+                        <div style="margin: 20px 0;">
+                            <img src="${imageData}"
+                                 style="width: 300px; height: 300px; object-fit: cover; border-radius: 15px; border: 3px solid #667eea; image-rendering: -webkit-optimize-contrast;"
+                                 alt="Preview" />
+                        </div>
+                        <p style="color: #718096; margin-top: 15px;">
+                            <i class="fas fa-info-circle"></i>
+                            Kích thước: ${(file.size / 1024).toFixed(2)} KB
+                        </p>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-save"></i> Lưu ảnh này',
+                    cancelButtonText: '<i class="fas fa-times"></i> Hủy',
+                    confirmButtonColor: '#667eea',
+                    cancelButtonColor: '#f56565',
+                    width: '450px',
+                    customClass: {
+                        popup: 'avatar-preview-popup'
+                    }
+                });
+
+                if (result.isConfirmed) {
+                    // ✅ User confirmed, upload to server
+                    await uploadAvatarToServer(file, imageData);
+                } else {
+                    // ✅ User cancelled
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Đã hủy',
+                        text: 'Ảnh đại diện chưa được thay đổi',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }
+
+                // Reset input
+                e.target.value = '';
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        // ============================================
+        // UPLOAD AVATAR TO SERVER
+        // ============================================
+        async function uploadAvatarToServer(file, previewData) {
+            Swal.fire({
+                title: 'Đang tải lên...',
+                html: '<div class="spinner-border text-primary" role="status"></div>',
+                allowOutsideClick: false,
+                showConfirmButton: false
+            });
+
+            const formData = new FormData();
+            formData.append('avatar', file);
+
+            try {
+                const response = await fetch('/Staff/UploadAvatar', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // ✅ Update UI
+                    const avatarImg = document.getElementById('profileAvatarImg');
+                    const avatarPlaceholder = document.getElementById('profileAvatarPlaceholder');
+
+                    avatarImg.src = data.avatarUrl + '?t=' + new Date().getTime(); // Cache buster
+                    avatarImg.style.display = 'block';
+                    avatarPlaceholder.style.display = 'none';
+
+                    // ✅ Update navbar avatar if exists
+                    const navbarAvatar = document.querySelector('.navbar .user-avatar');
+                    const navbarPlaceholder = document.querySelector('.navbar .user-avatar-placeholder');
+
+                    if (navbarAvatar && data.avatarUrl) {
+                        navbarAvatar.src = data.avatarUrl + '?t=' + new Date().getTime();
+                        navbarAvatar.style.display = 'block';
+                        if (navbarPlaceholder) {
+                            navbarPlaceholder.style.display = 'none';
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: data.message,
+                        confirmButtonColor: '#667eea',
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất bại',
+                        text: data.message,
+                        confirmButtonColor: '#667eea'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi kết nối',
+                    text: 'Có lỗi xảy ra khi tải lên ảnh',
+                    confirmButtonColor: '#667eea'
+                });
+            }
+        }
+
+        // ============================================
+        // UPDATE PROFILE WITH CONFIRMATION
+        // ============================================
+        document.getElementById('updateProfileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+
+            // ✅ Show confirmation with preview
+            const result = await Swal.fire({
+                title: 'Xác nhận cập nhật',
+                html: `
+                    <div style="text-align: left; padding: 10px 20px;">
+                        <p><strong>Họ tên:</strong> ${fullName}</p>
+                        <p><strong>Email:</strong> ${email || 'Chưa cập nhật'}</p>
+                        <p><strong>Số điện thoại:</strong> ${phoneNumber || 'Chưa cập nhật'}</p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-save"></i> Xác nhận lưu',
+                cancelButtonText: '<i class="fas fa-times"></i> Hủy',
+                confirmButtonColor: '#667eea',
+                cancelButtonColor: '#a0aec0'
+            });
+
+            if (!result.isConfirmed) return;
+
+            Swal.fire({
+                title: 'Đang cập nhật...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            const formData = { fullName, email, phoneNumber };
+
+            try {
+                const response = await fetch('/Staff/UpdateProfileJson', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // ✅ Update display info
+                    document.getElementById('displayFullName').textContent = fullName;
+                    document.getElementById('displayEmail').textContent = email || 'Chưa cập nhật';
+                    document.getElementById('displayPhone').textContent = phoneNumber || 'Chưa cập nhật';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: data.message,
+                        confirmButtonColor: '#667eea'
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất bại',
+                        text: data.message,
+                        confirmButtonColor: '#667eea'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra',
+                    confirmButtonColor: '#667eea'
+                });
+            }
+        });
+
+        // ============================================
+        // CHANGE PASSWORD WITH CONFIRMATION
+        // ============================================
+        document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // ✅ Validate
+            if (newPassword !== confirmPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Mật khẩu xác nhận không khớp',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Mật khẩu phải có ít nhất 6 ký tự',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+
+            // ✅ Confirmation
+            const result = await Swal.fire({
+                title: 'Xác nhận đổi mật khẩu?',
+                html: `
+                    <div style="text-align: left; padding: 10px 20px;">
+                        <p style="color: #e53e3e;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Lưu ý quan trọng:</strong>
+                        </p>
+                        <ul style="text-align: left; color: #718096;">
+                            <li>Bạn sẽ cần đăng nhập lại sau khi đổi mật khẩu</li>
+                            <li>Mật khẩu mới phải khác mật khẩu cũ</li>
+                            <li>Không thể hoàn tác thao tác này</li>
+                        </ul>
+                    </div>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-key"></i> Đồng ý đổi',
+                cancelButtonText: '<i class="fas fa-times"></i> Hủy',
+                confirmButtonColor: '#f56565',
+                cancelButtonColor: '#a0aec0'
+            });
+
+            if (!result.isConfirmed) return;
+
+            Swal.fire({
+                title: 'Đang xử lý...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            try {
+                const response = await fetch('/Staff/ChangePasswordJson', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        currentPassword,
+                        newPassword,
+                        confirmPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: data.message,
+                        confirmButtonColor: '#667eea'
+                    }).then(() => {
+                        window.location.href = '/Account/Login';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất bại',
+                        text: data.message,
+                        confirmButtonColor: '#667eea'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra',
+                    confirmButtonColor: '#667eea'
+                });
+            }
+        });
+    </script>
+}

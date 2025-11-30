@@ -1,0 +1,198 @@
+﻿@model AIHUBOS.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Tạo tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/user-management.css" rel="stylesheet" />
+<div class="reg-container">
+    <div class="reg-form-wrapper">
+        <div class="reg-form-card">
+            <div class="reg-form-header">
+                <h4><i class="fas fa-user-plus"></i> Tạo tài khoản mới</h4>
+                <p class="reg-mb-0">Nhập thông tin để tạo tài khoản nhân viên</p>
+            </div>
+
+            <div class="reg-form-body">
+                <form id="registerForm">
+                    <div class="reg-row">
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Tên đăng nhập <span class="reg-text-danger">*</span></label>
+                                <input type="text" id="username" class="reg-form-control" placeholder="Tên đăng nhập" required />
+                            </div>
+                        </div>
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Họ và tên <span class="reg-text-danger">*</span></label>
+                                <input type="text" id="fullName" class="reg-form-control" placeholder="Họ và tên đầy đủ" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reg-row">
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Mật khẩu <span class="reg-text-danger">*</span></label>
+                                <input type="password" id="password" class="reg-form-control" placeholder="Mật khẩu (tối thiểu 6 ký tự)" required />
+                            </div>
+                        </div>
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Xác nhận mật khẩu <span class="reg-text-danger">*</span></label>
+                                <input type="password" id="confirmPassword" class="reg-form-control" placeholder="Nhập lại mật khẩu" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reg-row">
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Email</label>
+                                <input type="email" id="email" class="reg-form-control" placeholder="email@example.com" />
+                            </div>
+                        </div>
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Số điện thoại</label>
+                                <input type="tel" id="phoneNumber" class="reg-form-control" placeholder="0123456789" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reg-row">
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Phòng ban <span class="reg-text-danger">*</span></label>
+                                <select id="departmentId" class="reg-form-select" required>
+                                    <option value="">-- Chọn phòng ban --</option>
+                                    @foreach (var dept in ViewBag.Departments)
+                                    {
+                                        <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="reg-col-half">
+                            <div class="reg-form-group">
+                                <label class="reg-form-label">Vai trò <span class="reg-text-danger">*</span></label>
+                                <select id="roleId" class="reg-form-select" required>
+                                    <option value="">-- Chọn vai trò --</option>
+                                    @foreach (var role in ViewBag.Roles)
+                                    {
+                                        <option value="@role.RoleId">@role.RoleName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reg-btn-group">
+                        <button type="submit" class="reg-btn reg-btn-primary">
+                            <i class="fas fa-save"></i> Tạo tài khoản
+                        </button>
+                        <a href="/Admin/UserList" class="reg-btn reg-btn-secondary">
+                            <i class="fas fa-times"></i> Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                username: document.getElementById('username').value,
+                fullName: document.getElementById('fullName').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                email: document.getElementById('email').value,
+                phoneNumber: document.getElementById('phoneNumber').value,
+                departmentId: parseInt(document.getElementById('departmentId').value),
+                roleId: parseInt(document.getElementById('roleId').value)
+            };
+
+            // Validate
+            if (formData.password !== formData.confirmPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Mật khẩu xác nhận không khớp',
+                    confirmButtonColor: '#7A3F30'
+                });
+                return;
+            }
+
+            if (formData.password.length < 6) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Mật khẩu phải có ít nhất 6 ký tự',
+                    confirmButtonColor: '#7A3F30'
+                });
+                return;
+            }
+
+            // Show loading
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            Swal.fire({
+                title: 'Đang xử lý...',
+                text: 'Vui lòng đợi',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            try {
+                const response = await fetch('/Account/RegisterJson', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: result.message,
+                        confirmButtonColor: '#7A3F30'
+                    }).then(() => {
+                        window.location.href = result.redirectUrl;
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Thất bại',
+                        text: result.message,
+                        confirmButtonColor: '#7A3F30'
+                    });
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra. Vui lòng thử lại.',
+                    confirmButtonColor: '#7A3F30'
+                });
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+}

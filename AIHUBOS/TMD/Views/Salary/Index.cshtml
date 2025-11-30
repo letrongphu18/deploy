@@ -1,0 +1,735 @@
+﻿@{
+    ViewData["Title"] = "Quản Lý Lương";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="~/css/salary.css" rel="stylesheet" />
+<div class="salary-container">
+    <div class="container-fluid px-4">
+        <!-- Header -->
+        <div class="main-header-card">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="mb-2">
+                        <i class="fas fa-file-invoice-dollar text-primary"></i>
+                        Quản Lý & Xuất Bảng Lương
+                    </h2>
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-info-circle"></i>
+                        Tính toán lương tự động từ dữ liệu chấm công, tăng ca và các khoản phụ cấp
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                    <button class="btn btn-outline-primary" onclick="window.location.href='/Settings'">
+                        <i class="fas fa-cog"></i> Cấu Hình Hệ Thống
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon text-success">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="info-label">Lương Cơ Bản</div>
+                <div class="info-value text-success">
+                    @String.Format("{0:N0}", ViewBag.BaseSalary) ₫
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon text-info">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="info-label">Hệ Số Tăng Ca</div>
+                <div class="info-value text-info">
+                    x@(ViewBag.OvertimeRate ?? 1.5m)
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon text-warning">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="info-label">Ngày Công/Tháng</div>
+                <div class="info-value text-warning">
+                    @(ViewBag.WorkDaysPerMonth ?? 26) ngày
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon text-danger">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="info-label">Giờ Chuẩn/Ngày</div>
+                <div class="info-value text-danger">
+                    @(ViewBag.StandardHoursPerDay ?? 8) giờ
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <h5>
+                <i class="fas fa-filter"></i> Bộ Lọc & Xuất Báo Cáo
+            </h5>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                        <i class="far fa-calendar-alt"></i> Từ Ngày
+                    </label>
+                    <input type="date" class="form-control" id="fromDate" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                        <i class="far fa-calendar-check"></i> Đến Ngày
+                    </label>
+                    <input type="date" class="form-control" id="toDate" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-building"></i> Phòng Ban
+                    </label>
+                    <select class="form-select" id="departmentId">
+                        <option value="">-- Tất cả --</option>
+                        @foreach (var dept in ViewBag.Departments)
+                        {
+                            <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                        <i class="fas fa-user"></i> Nhân Viên
+                    </label>
+                    <select class="form-select" id="userId">
+                        <option value="">-- Tất cả --</option>
+                        @foreach (var user in ViewBag.Users)
+                        {
+                            <option value="@user.UserId">@user.FullName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                <button class="btn btn-action btn-export" onclick="exportSalaryExcel()">
+                    <i class="fas fa-file-download"></i> Xuất Excel
+                </button>
+                <button class="btn btn-action btn-preview" onclick="previewSalary()">
+                    <i class="fas fa-eye"></i> Xem Trước
+                </button>
+                <button class="btn btn-action btn-month" onclick="setCurrentMonth()">
+                    <i class="fas fa-calendar"></i> Tháng Này
+                </button>
+                <button class="btn btn-action btn-month" onclick="setLastMonth()">
+                    <i class="fas fa-calendar-minus"></i> Tháng Trước
+                </button>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewArea" style="display: none;">
+            <div class="preview-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-table"></i> Bảng Lương Chi Tiết
+                    </h5>
+                    <button class="btn btn-light btn-sm" onclick="$('#previewArea').fadeOut()">
+                        <i class="fas fa-times"></i> Đóng
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table preview-table mb-0">
+                    <thead>
+                        <tr>
+                            <th width="5%">STT</th>
+                            <th width="8%">Mã NV</th>
+                            <th width="15%">Họ Tên</th>
+                            <th width="12%">Phòng Ban</th>
+                            <th width="8%">Ngày Công</th>
+                            <th width="8%">Đi Muộn</th>
+                            <th width="10%">Giờ Làm</th>
+                            <th width="10%">Tăng Ca</th>
+                            <th width="12%">Lương CB</th>
+                            <th width="12%">Tổng Lương</th>
+                        </tr>
+                    </thead>
+                    <tbody id="previewTableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <strong class="text-muted">
+                            <i class="fas fa-users"></i>
+                            Tổng: <span id="totalEmployees">0</span> nhân viên
+                        </strong>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="salary-amount salary-total">
+                            TỔNG LƯƠNG: <span id="totalSalary">0 ₫</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Salary Detail Modal -->
+<div class="modal fade modal-custom" id="salaryDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Chi Tiết Lương - <strong id="detailUserName"></strong>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- User Info -->
+                <div class="detail-card">
+                    <h6><i class="fas fa-user"></i> Thông Tin Nhân Viên</h6>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Mã NV</div>
+                            <div class="info-value" id="detailUserId">---</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value" id="detailUserEmail" style="font-size: 0.9rem;">---</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phòng Ban</div>
+                            <div class="info-value" id="detailDepartment">---</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Kỳ Lương</div>
+                            <div class="info-value" id="detailPeriod" style="font-size: 0.85rem;">---</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="detail-card">
+                    <h6><i class="fas fa-chart-bar"></i> Tổng Kết Công Việc</h6>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Tổng Ngày</div>
+                            <div class="info-value" id="detailTotalDays">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Ngày Làm</div>
+                            <div class="info-value text-success" id="detailWorkedDays">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Đi Muộn</div>
+                            <div class="info-value text-danger" id="detailLateDays">0</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Tổng Giờ</div>
+                            <div class="info-value" id="detailTotalWorkHours">0h</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Tăng Ca</div>
+                            <div class="info-value text-success" id="detailOvertimeHours">0h</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Lương CB/Tháng</div>
+                            <div class="info-value text-info" id="detailBaseSalaryConfig">---</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Salary Breakdown -->
+                <div class="detail-card">
+                    <h6><i class="fas fa-calculator"></i> Chi Tiết Tính Lương</h6>
+                    <ul class="breakdown-list" id="salaryBreakdownContent"></ul>
+                </div>
+
+                <!-- Total Salary -->
+                <div class="total-salary-card">
+                    <div class="total-salary-label">TỔNG LƯƠNG THỰC NHẬN</div>
+                    <h2 class="total-salary-amount" id="detailFinalSalary">0₫</h2>
+                </div>
+
+                <!-- Daily Details -->
+                <div class="detail-card mt-4">
+                    <h6><i class="fas fa-calendar-day"></i> Chi Tiết Từng Ngày</h6>
+                    <div class="table-responsive">
+                        <table class="daily-table">
+                            <thead>
+                                <tr>
+                                    <th>Ngày</th>
+                                    <th>Thứ</th>
+                                    <th>Giờ Vào</th>
+                                    <th>Giờ Ra</th>
+                                    <th>Giờ Làm</th>
+                                    <th>Tăng Ca</th>
+                                    <th>Hệ Số</th>
+                                    <th>Lương</th>
+                                    <th>Ghi Chú</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dailyDetailsBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Đóng
+                </button>
+                <button type="button" class="btn btn-primary" onclick="printSalaryDetail()">
+                    <i class="fas fa-print"></i> In Chi Tiết
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay" style="display: none;">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <h5 class="text-primary">Đang xử lý...</h5>
+        <p class="text-muted mb-0">Vui lòng đợi trong giây lát</p>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Initialize
+        window.onload = () => setCurrentMonth();
+
+        function setCurrentMonth() {
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            document.getElementById('fromDate').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('toDate').value = lastDay.toISOString().split('T')[0];
+        }
+
+        function setLastMonth() {
+            const now = new Date();
+            const firstDay = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+            const lastDay = new Date(now.getFullYear(), now.getMonth(), 0);
+            document.getElementById('fromDate').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('toDate').value = lastDay.toISOString().split('T')[0];
+        }
+
+        function showLoading(show = true) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('vi-VN').format(Math.round(value));
+        }
+
+        function formatHours(h) {
+            if (!h || h === 0) return '0h';
+            const hrs = Math.floor(h);
+            const mins = Math.round((h - hrs) * 60);
+            return mins === 0 ? `${hrs}h` : `${hrs}h${mins}p`;
+        }
+
+        function previewSalary() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (!fromDate || !toDate) {
+                Swal.fire('Cảnh báo', 'Vui lòng chọn khoảng thời gian!', 'warning');
+                return;
+            }
+
+            if (new Date(fromDate) > new Date(toDate)) {
+                Swal.fire('Lỗi', 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc!', 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            fetch('/Salary/PreviewSalary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    FromDate: fromDate,
+                    ToDate: toDate,
+                    UserId: document.getElementById('userId').value || null,
+                    DepartmentId: document.getElementById('departmentId').value || null
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    displayPreview(data.salaryData);
+                } else {
+                    Swal.fire('Lỗi', data.message || 'Không thể tải dữ liệu!', 'error');
+                }
+            })
+            .catch(e => {
+                showLoading(false);
+                Swal.fire('Lỗi', 'Có lỗi xảy ra khi tải dữ liệu!', 'error');
+            });
+        }
+
+        function displayPreview(data) {
+            const tbody = $('#previewTableBody');
+            tbody.empty();
+
+            if (!data || data.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="10" class="text-center py-5">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Không có dữ liệu lương trong khoảng thời gian này</p>
+                        </td>
+                    </tr>
+                `);
+                $('#previewArea').fadeIn();
+                return;
+            }
+
+            let total = 0;
+            let stt = 1;
+
+            data.forEach(item => {
+                total += item.totalSalary;
+                const salary = item.baseSalary + item.overtimeSalary;
+
+                const row = `
+                    <tr onclick="viewUserDetail(${item.userId})" title="Click để xem chi tiết">
+                        <td class="text-center">${stt++}</td>
+                        <td><strong>NV${String(item.userId).padStart(4, '0')}</strong></td>
+                        <td>${item.fullName}</td>
+                        <td><span class="badge badge-custom badge-dept">${item.departmentName}</span></td>
+                        <td class="text-center"><strong>${item.workedDays}</strong></td>
+                        <td class="text-center">
+                            ${item.lateDays > 0 ? `<span class="badge badge-custom badge-late">${item.lateDays}</span>` : '-'}
+                        </td>
+                        <td class="text-center">${formatHours(item.totalHours)}</td>
+                        <td class="text-center">
+                            ${item.overtimeHours > 0 ? `<span class="badge badge-custom badge-overtime">${formatHours(item.overtimeHours)}</span>` : '-'}
+                        </td>
+                        <td class="text-end salary-amount salary-positive">${formatCurrency(salary)}₫</td>
+                        <td class="text-end salary-amount salary-total">${formatCurrency(item.totalSalary)}₫</td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+
+            $('#totalEmployees').text(data.length);
+            $('#totalSalary').html(formatCurrency(total) + ' ₫');
+            $('#previewArea').fadeIn();
+        }
+
+        function viewUserDetail(userId) {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (!fromDate || !toDate) {
+                Swal.fire('Cảnh báo', 'Vui lòng chọn khoảng thời gian!', 'warning');
+                return;
+            }
+
+            showLoading(true);
+
+            fetch('/Salary/GetUserSalaryDetail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    UserId: userId,
+                    FromDate: fromDate,
+                    ToDate: toDate
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    displayUserDetail(data);
+                    $('#salaryDetailModal').modal('show');
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            })
+            .catch(e => {
+                showLoading(false);
+                Swal.fire('Lỗi', 'Có lỗi xảy ra!', 'error');
+            });
+        }
+
+        function displayUserDetail(data) {
+            // User Info
+            $('#detailUserName').text(data.userInfo.fullName);
+            $('#detailUserId').text('NV' + String(data.userInfo.userId).padStart(4, '0'));
+            $('#detailUserEmail').text(data.userInfo.email);
+            $('#detailDepartment').text(data.userInfo.departmentName);
+            $('#detailBaseSalaryConfig').text(formatCurrency(data.userInfo.baseSalaryConfig) + '₫');
+            $('#detailPeriod').text(data.summary.fromDate + ' → ' + data.summary.toDate);
+
+            // Summary
+            $('#detailTotalDays').text(data.summary.totalDays);
+            $('#detailWorkedDays').text(data.summary.workedDays);
+            $('#detailLateDays').text(data.summary.lateDays);
+            $('#detailTotalWorkHours').text(formatHours(data.summary.totalActualWorkHours));
+            $('#detailOvertimeHours').text(formatHours(data.summary.totalOvertimeHours));
+            $('#detailFinalSalary').text(formatCurrency(data.summary.totalSalary) + '₫');
+
+            // Salary Breakdown
+            let breakdown = '';
+
+            // Base Salary
+            breakdown += `
+                <li class="breakdown-item">
+                    <span class="breakdown-label">
+                        <i class="fas fa-money-bill-wave text-info"></i> Lương Cơ Bản (Cấu hình)
+                    </span>
+                    <span class="breakdown-value value-neutral">${formatCurrency(data.userInfo.baseSalaryConfig)}₫</span>
+                </li>
+            `;
+
+            breakdown += `
+                <li class="breakdown-item">
+                    <span class="breakdown-label" style="padding-left: 20px;">
+                        → Lương theo ngày công (${data.summary.workedDays} ngày)
+                    </span>
+                    <span class="breakdown-value value-neutral">${formatCurrency(data.summary.baseSalaryByWorkedDays)}₫</span>
+                </li>
+            `;
+
+            // Allowances
+            if (data.allowances && data.allowances.length > 0) {
+                data.allowances.forEach(item => {
+                    breakdown += `
+                        <li class="breakdown-item">
+                            <span class="breakdown-label" style="padding-left: 20px;">
+                                <i class="fas fa-plus-circle text-success"></i> ${item.name}
+                            </span>
+                            <span class="breakdown-value value-positive">+${formatCurrency(item.value)}₫</span>
+                        </li>
+                    `;
+                });
+            }
+
+            // Bonuses
+            if (data.bonuses && data.bonuses.length > 0) {
+                data.bonuses.forEach(item => {
+                    breakdown += `
+                        <li class="breakdown-item">
+                            <span class="breakdown-label" style="padding-left: 20px;">
+                                <i class="fas fa-gift text-warning"></i> ${item.name}
+                                ${item.note ? `<small class="text-muted">${item.note}</small>` : ''}
+                            </span>
+                            <span class="breakdown-value ${item.value > 0 ? 'value-positive' : 'text-muted'}">
+                                ${item.value > 0 ? '+' : ''}${formatCurrency(item.value)}₫
+                            </span>
+                        </li>
+                    `;
+                });
+            }
+
+            // Overtime
+            if (data.summary.totalOvertimeHours > 0) {
+                breakdown += `
+                    <li class="breakdown-item">
+                        <span class="breakdown-label">
+                            <i class="fas fa-clock text-success"></i> Lương Tăng Ca (${formatHours(data.summary.totalOvertimeHours)})
+                        </span>
+                        <span class="breakdown-value value-positive">+${formatCurrency(data.summary.totalOvertimeSalary)}₫</span>
+                    </li>
+                `;
+            }
+
+            // Deductions
+            if (data.deductions && data.deductions.length > 0) {
+                data.deductions.forEach(item => {
+                    breakdown += `
+                        <li class="breakdown-item">
+                            <span class="breakdown-label" style="padding-left: 20px;">
+                                <i class="fas fa-minus-circle text-danger"></i> ${item.name}
+                            </span>
+                            <span class="breakdown-value value-negative">-${formatCurrency(item.value)}₫</span>
+                        </li>
+                    `;
+                });
+            } else if (data.summary.totalDeduction > 0) {
+                breakdown += `
+                    <li class="breakdown-item">
+                        <span class="breakdown-label">
+                            <i class="fas fa-exclamation-triangle text-danger"></i> Khấu Trừ
+                        </span>
+                        <span class="breakdown-value value-negative">-${formatCurrency(data.summary.totalDeduction)}₫</span>
+                    </li>
+                `;
+            }
+
+            $('#salaryBreakdownContent').html(breakdown);
+
+            // Daily Details
+            const dailyBody = $('#dailyDetailsBody');
+            dailyBody.empty();
+
+            if (data.dailyDetails && data.dailyDetails.length > 0) {
+                data.dailyDetails.forEach(day => {
+                    const isWeekend = day.dayOfWeek === 'Saturday' || day.dayOfWeek === 'Sunday';
+                    const rowClass = day.isLate ? 'day-late' : (day.overtimeHours > 0 ? 'day-overtime' : (isWeekend ? 'day-weekend' : ''));
+
+                    let notes = '';
+                    if (day.isLate && day.lateMinutes > 0) {
+                        const lateText = day.lateDisplay || formatMinutes(day.lateMinutes);
+                        const approvedBadge = day.hasLateRequest ? `<span class="note-badge note-approved">✓ Có phép</span>` : '';
+                        notes += `<span class="note-badge note-late">Muộn ${lateText}</span>${approvedBadge}`;
+                    }
+                    if (day.overtimeHours > 0) {
+                        notes += `<span class="note-badge note-overtime">TC ${formatHours(day.overtimeHours)}</span>`;
+                    }
+
+                    const row = `
+                        <tr class="${rowClass}">
+                            <td>${day.date}</td>
+                            <td class="text-center">${translateDayOfWeek(day.dayOfWeek)}</td>
+                            <td class="text-center">${day.checkInTime}</td>
+                            <td class="text-center">${day.checkOutTime}</td>
+                            <td class="text-center"><strong>${formatHours(day.actualWorkHours)}</strong></td>
+                            <td class="text-center">${day.overtimeHours > 0 ? formatHours(day.overtimeHours) : '-'}</td>
+                            <td class="text-center"><span class="badge bg-info">${day.salaryMultiplier.toFixed(1)}</span></td>
+                            <td class="text-end"><strong>${formatCurrency(day.totalDaySalary)}₫</strong></td>
+                            <td class="text-center">${notes || '-'}</td>
+                        </tr>
+                    `;
+                    dailyBody.append(row);
+                });
+            }
+        }
+
+        function translateDayOfWeek(day) {
+            const days = {
+                'Monday': 'T2',
+                'Tuesday': 'T3',
+                'Wednesday': 'T4',
+                'Thursday': 'T5',
+                'Friday': 'T6',
+                'Saturday': 'T7',
+                'Sunday': 'CN'
+            };
+            return days[day] || day;
+        }
+
+        function formatMinutes(totalMinutes) {
+            if (totalMinutes === 0) return '0p';
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            if (hours > 0 && minutes > 0) return `${hours}h${minutes}p`;
+            if (hours > 0) return `${hours}h`;
+            return `${minutes}p`;
+        }
+
+        function printSalaryDetail() {
+            window.print();
+        }
+
+        function exportSalaryExcel() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (!fromDate || !toDate) {
+                Swal.fire('Cảnh báo', 'Vui lòng chọn khoảng thời gian!', 'warning');
+                return;
+            }
+
+            if (new Date(fromDate) > new Date(toDate)) {
+                Swal.fire('Lỗi', 'Ngày bắt đầu phải nhỏ hơn ngày kết thúc!', 'error');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Xác nhận xuất file',
+                html: `
+                    <p class="mb-2">Bạn có chắc muốn xuất bảng lương?</p>
+                    <div class="text-start mt-3 p-3" style="background: #f3f4f6; border-radius: 10px;">
+                        <p class="mb-1"><strong>Từ:</strong> ${fromDate}</p>
+                        <p class="mb-0"><strong>Đến:</strong> ${toDate}</p>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-download"></i> Xuất Excel',
+                cancelButtonText: 'Hủy',
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6b7280'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    showLoading(true);
+
+                    fetch('/Salary/ExportSalaryExcel', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            FromDate: fromDate,
+                            ToDate: toDate,
+                            UserId: document.getElementById('userId').value || null,
+                            DepartmentId: document.getElementById('departmentId').value || null
+                        })
+                    })
+                    .then(response => {
+                        showLoading(false);
+                        if (!response.ok) throw new Error('Export failed');
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `BangLuong_${fromDate}_${toDate}.xlsx`;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(url);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: 'Đã tải xuống file Excel',
+                            timer: 2000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                    })
+                    .catch(error => {
+                        showLoading(false);
+                        Swal.fire('Lỗi', 'Có lỗi xảy ra khi xuất file!', 'error');
+                    });
+                }
+            });
+        }
+
+        // Print styles
+        window.addEventListener('beforeprint', () => {
+            document.getElementById('salaryDetailModal').style.display = 'block';
+            document.querySelector('.modal-backdrop')?.remove();
+        });
+
+        window.addEventListener('afterprint', () => {
+            document.getElementById('salaryDetailModal').style.display = '';
+        });
+    </script>
+
+    
+}

@@ -1,0 +1,610 @@
+﻿/* =====================================================
+   ATTENDANCE MANAGEMENT STYLES
+   Custom CSS for AttendanceHistory.cshtml, leveraging 
+   variables from user-management.css
+   ===================================================== */
+
+/* ========== LAYOUT & PAGE HEADER (att-page-header) ========== */
+.att-container {
+    padding: 2rem;
+    min-height: calc(100vh - 70px);
+}
+
+.att-page-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px var(--shadow);
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+    /* Thêm hiệu ứng hình học trang trí như um-page-header */
+    .att-page-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+        pointer-events: none;
+    }
+
+/* Lấy keyframes 'float' từ user-management.css (cần đảm bảo có trong file user-management.css) */
+
+.att-page-title {
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== BUTTONS (att-btn-export, att-btn-filter) ========== */
+.att-btn-export,
+.att-btn-filter {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+}
+
+.att-btn-export {
+    background: white;
+    color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+    .att-btn-export:hover {
+        background: var(--light);
+    }
+
+.att-btn-filter {
+    /* Dùng style primary/secondary như um-btn-primary */
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    width: 100%;
+}
+
+    .att-btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+    }
+
+/* ========== STATISTICS CARDS (att-stats-grid) ========== */
+.att-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.att-stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.3s ease;
+    border-left: 4px solid;
+}
+
+body.staff-dark-mode .att-stat-card {
+    background: var(--light);
+}
+
+.att-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--shadow);
+}
+
+/* Đảm bảo màu thẻ thống kê nhất quán */
+.att-stat-primary {
+    border-left-color: var(--secondary);
+}
+
+.att-stat-success {
+    border-left-color: var(--success);
+}
+
+.att-stat-warning {
+    border-left-color: var(--warning);
+}
+
+.att-stat-danger {
+    border-left-color: var(--danger);
+}
+
+.att-stat-info {
+    border-left-color: var(--info);
+}
+
+.att-stat-secondary {
+    border-left-color: var(--text-muted);
+}
+
+.att-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+/* Màu Icon */
+.att-stat-primary .att-stat-icon {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--secondary);
+}
+
+.att-stat-success .att-stat-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.att-stat-warning .att-stat-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+.att-stat-danger .att-stat-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.att-stat-info .att-stat-icon {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--info);
+}
+
+.att-stat-secondary .att-stat-icon {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--text-muted);
+}
+
+.att-stat-label {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.att-stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+/* ========== FILTERS/FORMS (att-form-control) ========== */
+.att-filters {
+    margin-bottom: 2rem;
+}
+
+.att-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+.att-form-control,
+.att-form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    background: white;
+    color: var(--text);
+    transition: all 0.3s ease;
+    /* Dành cho select */
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em 1em;
+}
+
+body.staff-dark-mode .att-form-control,
+body.staff-dark-mode .att-form-select {
+    background: var(--dark);
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.att-form-control:focus,
+.att-form-select:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    outline: none;
+}
+
+/* ========== CARD/TABLE (att-card, att-table) ========== */
+.att-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px var(--shadow);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+body.staff-dark-mode .att-card {
+    background: var(--light);
+}
+
+.att-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    .att-table thead th {
+        background: var(--light);
+        color: var(--text);
+        font-weight: 700;
+        text-align: left;
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+        border-bottom: 1px solid var(--border);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+body.staff-dark-mode .att-table thead th {
+    background: var(--dark);
+}
+
+.att-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+    .att-table tbody tr:hover {
+        background-color: var(--light);
+    }
+
+body.staff-dark-mode .att-table tbody tr:hover {
+    background-color: var(--dark);
+}
+
+.att-table td {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.att-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Work Date cell */
+.att-work-date {
+    display: flex;
+    flex-direction: column;
+}
+
+    .att-work-date strong {
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .att-work-date small {
+        color: var(--text-muted);
+        font-size: 0.75rem;
+    }
+
+/* User Info cell (att-user-info) */
+.att-user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.att-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .att-user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .att-user-avatar span {
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        text-transform: uppercase;
+    }
+
+.att-user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.att-user-name {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.1rem;
+    line-height: 1.2;
+}
+
+.att-user-username {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Time Badges for Check-in/Check-out */
+.att-time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+    .att-time-badge.checkin {
+        background-color: rgba(16, 185, 129, 0.1); /* success */
+        color: var(--success);
+    }
+
+    .att-time-badge.checkout {
+        background-color: rgba(239, 68, 68, 0.1); /* danger */
+        color: var(--danger);
+    }
+
+/* Photo Thumbnails */
+.att-photo-thumbnails {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.att-photo-thumbnail {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .att-photo-thumbnail:hover {
+        border-color: var(--secondary);
+        transform: scale(1.05);
+    }
+
+/* Action Button (View Detail) */
+.att-btn-action {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--border);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .att-btn-action:hover {
+        background: var(--secondary);
+        color: white;
+        border-color: var(--secondary);
+    }
+
+/* Text Utilities for Table */
+.att-text-muted {
+    color: var(--text-muted);
+}
+
+.att-text-primary {
+    color: var(--secondary); /* Use secondary color for primary text emphasis */
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+/* ========== BADGES & STATUS (att-badge) - Đã nhất quán màu */
+.att-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    gap: 0.3rem;
+    margin-bottom: 0.25rem; /* Để dùng trong d-flex flex-column */
+}
+
+.att-badge-department {
+    background: rgba(59, 130, 246, 0.1); /* info */
+    color: var(--info);
+}
+
+.att-badge-completed {
+    background: rgba(16, 185, 129, 0.1); /* success */
+    color: var(--success);
+}
+
+.att-badge-partial {
+    background: rgba(99, 102, 241, 0.1); /* secondary/primary */
+    color: var(--secondary);
+}
+
+.att-badge-late {
+    background: rgba(245, 158, 11, 0.1); /* warning */
+    color: var(--warning);
+}
+
+.att-badge-ontime {
+    background: rgba(16, 185, 129, 0.1); /* success */
+    color: var(--success);
+}
+
+.att-badge-outside {
+    background: rgba(239, 68, 68, 0.1); /* danger */
+    color: var(--danger);
+}
+
+/* ========== EMPTY STATE ========== */
+.att-empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+}
+
+    .att-empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--border);
+    }
+
+    .att-empty-state h5 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .att-empty-state p {
+        margin: 0;
+        font-size: 1rem;
+    }
+
+/* ========== MEDIA QUERIES (Responsive Design) ========== */
+
+@media (max-width: 1200px) {
+    .att-container {
+        padding: 1.5rem;
+    }
+
+    .att-page-header {
+        padding: 2rem 1.5rem;
+    }
+
+    .att-table thead th,
+    .att-table td {
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .att-container {
+        padding: 1rem;
+    }
+
+    .att-page-header {
+        padding: 1.5rem;
+    }
+
+    .att-page-title {
+        font-size: 1.5rem;
+    }
+
+    .att-btn-export,
+    .att-btn-filter {
+        padding: 0.625rem 1rem;
+        font-size: 0.8125rem;
+    }
+
+    .att-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+
+    .att-stat-card {
+        padding: 1rem;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .att-stat-icon {
+        margin-bottom: 0.5rem;
+    }
+
+    .att-stat-value {
+        font-size: 1.5rem;
+    }
+
+    .att-table {
+        /* Đảm bảo bảng có thể cuộn ngang trên màn hình nhỏ */
+        min-width: 800px;
+    }
+
+        .att-table thead th,
+        .att-table td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+    .att-user-info {
+        gap: 0.5rem;
+    }
+
+    .att-user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.875rem;
+    }
+
+    .att-time-badge {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .att-badge {
+        font-size: 0.6875rem;
+    }
+
+    .att-photo-thumbnail {
+        width: 30px;
+        height: 30px;
+    }
+}

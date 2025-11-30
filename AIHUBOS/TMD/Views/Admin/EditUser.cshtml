@@ -1,0 +1,279 @@
+﻿@model AIHUBOS.Models.User
+@{
+    ViewData["Title"] = "Chỉnh sửa nhân viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/user-management.css" rel="stylesheet" />
+
+<div class="tm-container">
+    <div class="tm-page-header">
+        <h2 class="tm-page-title">
+            <i class="fas fa-user-edit me-2"></i> Chỉnh sửa nhân viên
+        </h2>
+        <p class="tm-page-subtitle">Cập nhật thông tin và phân quyền cho @Model.FullName</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="tm-card">
+                <div class="tm-card-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="userId" value="@Model.UserId">
+
+                        <!-- Thông tin cơ bản -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-user me-2"></i> Thông tin cơ bản
+                            </h5>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="tm-form-label">
+                                        <i class="fas fa-id-badge me-1"></i> Tên đăng nhập
+                                    </label>
+                                    <input type="text" class="tm-form-control" value="@Model.Username" disabled>
+                                    <small class="text-muted">Không thể thay đổi username</small>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="fullName" class="tm-form-label required">
+                                        <i class="fas fa-user me-1"></i> Họ và tên
+                                    </label>
+                                    <input type="text" id="fullName" class="tm-form-control"
+                                           value="@Model.FullName" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="email" class="tm-form-label">
+                                        <i class="fas fa-envelope me-1"></i> Email
+                                    </label>
+                                    <input type="email" id="email" class="tm-form-control"
+                                           value="@Model.Email">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="phoneNumber" class="tm-form-label">
+                                        <i class="fas fa-phone me-1"></i> Số điện thoại
+                                    </label>
+                                    <input type="tel" id="phoneNumber" class="tm-form-control"
+                                           value="@Model.PhoneNumber">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Phân công & Quyền -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-briefcase me-2"></i> Phân công & Quyền hạn
+                            </h5>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="departmentId" class="tm-form-label">
+                                        <i class="fas fa-building me-1"></i> Phòng ban
+                                    </label>
+                                    <select id="departmentId" class="tm-form-control">
+                                        <option value="">-- Chọn phòng ban --</option>
+                                        @foreach (var dept in ViewBag.Departments)
+                                        {
+                                            var isSelected = dept.DepartmentId == Model.DepartmentId;
+                                            <option value="@dept.DepartmentId" selected="@isSelected">
+                                                @dept.DepartmentName
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="roleId" class="tm-form-label required">
+                                        <i class="fas fa-user-tag me-1"></i> Vai trò
+                                    </label>
+                                    <select id="roleId" class="tm-form-control" required onchange="handleRoleChange()">
+                                        @foreach (var role in ViewBag.Roles)
+                                        {
+                                            var isSelected = role.RoleId == Model.RoleId;
+                                            <option value="@role.RoleId"
+                                                    data-role-name="@role.RoleName"
+                                                    selected="@isSelected">
+                                                @role.RoleName
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quyền Tester (chỉ hiện khi role = Staff) -->
+                        <div class="mb-4" id="testerPermissionSection" style="display: none;">
+                            <div class="alert alert-info">
+                                <div class="form-check form-switch">
+                                    @{
+                                        var isTesterChecked = Model.IsTester;
+                                    }
+                                    <input class="form-check-input" type="checkbox"
+                                           id="isTester" checked="@isTesterChecked">
+                                    <label class="form-check-label" for="isTester">
+                                        <strong>
+                                            <i class="fas fa-flask me-2"></i> Cấp quyền Tester
+                                        </strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            Nhân viên này sẽ có thể test và approve/reopen task của dev
+                                        </small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trạng thái -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="fas fa-toggle-on me-2"></i> Trạng thái tài khoản
+                            </h5>
+
+                            <div class="form-check form-switch">
+                                @{
+                                    var isActiveChecked = Model.IsActive == true;
+                                }
+                                <input class="form-check-input" type="checkbox"
+                                       id="isActive" checked="@isActiveChecked">
+                                <label class="form-check-label" for="isActive">
+                                    <strong>Tài khoản hoạt động</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        Tắt để vô hiệu hóa tài khoản này
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2 justify-content-end">
+                            <a href="/Admin/UserList" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Kiểm tra và hiển thị quyền Tester khi load trang
+        document.addEventListener('DOMContentLoaded', function() {
+            handleRoleChange();
+        });
+
+        function handleRoleChange() {
+            const roleSelect = document.getElementById('roleId');
+            const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+            const roleName = selectedOption.getAttribute('data-role-name');
+            const testerSection = document.getElementById('testerPermissionSection');
+
+            // ✅ CHỈ HIỂN THỊ CHECKBOX TESTER KHI ROLE = Staff
+            if (roleName === 'Staff') {
+                testerSection.style.display = 'block';
+            } else {
+                testerSection.style.display = 'none';
+                // Nếu là Tester → tự động check
+                if (roleName === 'Tester') {
+                    document.getElementById('isTester').checked = true;
+                }
+            }
+        }
+
+        document.getElementById('editUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const roleSelect = document.getElementById('roleId');
+            const selectedOption = roleSelect.options[roleSelect.selectedIndex];
+            const roleName = selectedOption.getAttribute('data-role-name');
+
+            const data = {
+                userId: parseInt(document.getElementById('userId').value),
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim() || null,
+                phoneNumber: document.getElementById('phoneNumber').value.trim() || null,
+                departmentId: document.getElementById('departmentId').value
+                    ? parseInt(document.getElementById('departmentId').value)
+                    : null,
+                roleId: parseInt(document.getElementById('roleId').value),
+                isTester: roleName === 'Staff'
+                    ? document.getElementById('isTester').checked
+                    : (roleName === 'Tester' ? true : false),
+                isActive: document.getElementById('isActive').checked
+            };
+
+            if (!data.fullName) {
+                Swal.fire('Cảnh báo', 'Vui lòng nhập họ tên', 'warning');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Đang cập nhật...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            try {
+                const response = await fetch('/Admin/UpdateUserJson', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: result.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = '/Admin/UserList';
+                    });
+                } else {
+                    Swal.fire('Lỗi', result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Lỗi', 'Có lỗi xảy ra: ' + error.message, 'error');
+            }
+        });
+    </script>
+}
+
+<style>
+    .required::after {
+        content: " *";
+        color: var(--tm-danger);
+    }
+
+    .tm-card {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .form-check-input:checked {
+        background-color: var(--tm-primary);
+        border-color: var(--tm-primary);
+    }
+
+    .alert-info {
+        background: rgba(13, 110, 253, 0.1);
+        border-left: 4px solid var(--tm-primary);
+    }
+
+    .border-bottom {
+        border-color: var(--tm-gray-200) !important;
+    }
+</style>

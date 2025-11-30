@@ -1,0 +1,610 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Duyệt Đề Xuất";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/pending-requests.css" rel="stylesheet" />
+
+<div class="pr-page-container">
+    <!-- PAGE HEADER -->
+    <div class="pr-page-header">
+        <div class="pr-page-header-content">
+            <h2><i class="fas fa-clipboard-check"></i>Duyệt Đề Xuất</h2>
+            <p>Xem và phê duyệt các đề xuất từ nhân viên</p>
+        </div>
+        <div>
+            <button class="pr-refresh-btn" onclick="refreshData()">
+                <i class="fas fa-sync-alt"></i> Làm mới
+            </button>
+        </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="pr-stats-row">
+        <div class="pr-stat-card pr-stat-pending">
+            <div class="pr-stat-card-icon">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="pr-stat-card-content">
+                <h3 id="totalPending">0</h3>
+                <p>Chờ duyệt</p>
+            </div>
+        </div>
+        <div class="pr-stat-card pr-stat-approved">
+            <div class="pr-stat-card-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="pr-stat-card-content">
+                <h3 id="totalApproved">0</h3>
+                <p>Đã duyệt</p>
+            </div>
+        </div>
+        <div class="pr-stat-card pr-stat-rejected">
+            <div class="pr-stat-card-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="pr-stat-card-content">
+                <h3 id="totalRejected">0</h3>
+                <p>Từ chối</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTERS CARD -->
+    <div class="pr-filters-card">
+        <!-- Quick Filters -->
+        <div class="pr-quick-filters">
+            <button class="pr-quick-filter active" data-status="">
+                <i class="fas fa-list"></i> Tất cả
+            </button>
+            <button class="pr-quick-filter" data-status="Pending">
+                <i class="fas fa-clock"></i> Chờ duyệt
+            </button>
+            <button class="pr-quick-filter" data-status="Approved">
+                <i class="fas fa-check"></i> Đã duyệt
+            </button>
+            <button class="pr-quick-filter" data-status="Rejected">
+                <i class="fas fa-times"></i> Từ chối
+            </button>
+        </div>
+
+        <!-- Detailed Filters -->
+        <div class="pr-detailed-filters">
+            <div>
+                <label class="pr-form-label">Loại đề xuất</label>
+                <select id="filterType" class="pr-form-select">
+                    <option value="">Tất cả loại</option>
+                    <option value="Overtime">Tăng ca</option>
+                    <option value="Leave">Nghỉ phép</option>
+                    <option value="Late">Đi trễ</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="pr-form-label">Trạng thái</label>
+                <select id="filterStatus" class="pr-form-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Pending">Chờ duyệt</option>
+                    <option value="Approved">Đã duyệt</option>
+                    <option value="Rejected">Từ chối</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="pr-form-label">Từ ngày</label>
+                <input type="date" id="filterFrom" class="pr-form-control">
+            </div>
+
+            <div>
+                <label class="pr-form-label">Đến ngày</label>
+                <input type="date" id="filterTo" class="pr-form-control">
+            </div>
+
+            <div>
+                <label class="pr-form-label">Tìm kiếm</label>
+                <input type="text" id="filterKeyword" class="pr-form-control" placeholder="Nhân viên, lý do...">
+            </div>
+
+            <div>
+                <label class="pr-form-label">&nbsp;</label>
+                <button class="pr-btn pr-btn-primary" id="applyFiltersBtn">
+                    <i class="fas fa-filter"></i> Lọc
+                </button>
+            </div>
+
+            <div>
+                <label class="pr-form-label">&nbsp;</label>
+                <button class="pr-btn pr-btn-secondary" id="clearFiltersBtn">
+                    <i class="fas fa-eraser"></i> Xóa bộ lọc
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTER TABS -->
+    <ul class="pr-nav-tabs">
+        <li class="pr-nav-item">
+            <button class="pr-nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button">
+                <i class="fas fa-list"></i> Tất cả
+                <span class="badge pr-bg-primary" id="allCount">0</span>
+            </button>
+        </li>
+        <li class="pr-nav-item">
+            <button class="pr-nav-link" id="overtime-tab" data-bs-toggle="tab" data-bs-target="#overtime" type="button">
+                <i class="fas fa-clock"></i> Tăng ca
+                <span class="badge pr-bg-info" id="overtimeCount">0</span>
+            </button>
+        </li>
+        <li class="pr-nav-item">
+            <button class="pr-nav-link" id="leave-tab" data-bs-toggle="tab" data-bs-target="#leave" type="button">
+                <i class="fas fa-umbrella-beach"></i> Nghỉ phép
+                <span class="badge pr-bg-primary" id="leaveCount">0</span>
+            </button>
+        </li>
+        <li class="pr-nav-item">
+            <button class="pr-nav-link" id="late-tab" data-bs-toggle="tab" data-bs-target="#late" type="button">
+                <i class="fas fa-user-clock"></i> Đi trễ
+                <span class="badge pr-bg-danger" id="lateCount">0</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- TAB CONTENT -->
+    <div class="tab-content" id="requestTabContent">
+        <div class="tab-pane fade show active" id="all">
+            <div id="allList" class="pr-requests-grid"></div>
+        </div>
+        <div class="tab-pane fade" id="overtime">
+            <div id="overtimeList" class="pr-requests-grid"></div>
+        </div>
+        <div class="tab-pane fade" id="leave">
+            <div id="leaveList" class="pr-requests-grid"></div>
+        </div>
+        <div class="tab-pane fade" id="late">
+            <div id="lateList" class="pr-requests-grid"></div>
+        </div>
+    </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalTitle">Duyệt đề xuất</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="reviewDetails"></div>
+                <div class="mb-3 mt-4">
+                    <label class="pr-form-label fw-bold">Ghi chú (tùy chọn)</label>
+                    <textarea id="reviewNote" class="pr-form-control" rows="3" placeholder="Nhập lý do hoặc ghi chú..." style="resize: vertical; min-height: 90px;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="pr-btn pr-btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button type="button" class="pr-btn pr-btn-danger" onclick="reviewRequest('Reject')">
+                    <i class="fas fa-ban"></i> Từ chối
+                </button>
+                <button type="button" class="pr-btn pr-btn-success" onclick="reviewRequest('Approve')">
+                    <i class="fas fa-check"></i> Phê duyệt
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        let allRequests = { overtime: [], leave: [], late: [] };
+        let currentFilters = { type: '', status: '', from: '', to: '', keyword: '' };
+        let currentRequestId = null;
+        let currentRequestType = null;
+
+        function buildQuery() {
+            const q = new URLSearchParams();
+            if (currentFilters.type) q.append('type', currentFilters.type);
+            if (currentFilters.status) q.append('status', currentFilters.status);
+            if (currentFilters.from) q.append('from', currentFilters.from);
+            if (currentFilters.to) q.append('to', currentFilters.to);
+            if (currentFilters.keyword) q.append('keyword', currentFilters.keyword);
+            return q.toString() ? '?' + q.toString() : '';
+        }
+
+        async function loadPendingRequests() {
+            try {
+                const qs = buildQuery();
+                const response = await fetch('/Admin/GetPendingRequests' + qs);
+                const data = await response.json();
+
+                if (data.success) {
+                    allRequests.overtime = data.overtime || [];
+                    allRequests.leave = data.leave || [];
+                    allRequests.late = data.late || [];
+
+                    updateStatistics();
+                    renderRequests();
+                } else {
+                    Swal.fire('Lỗi', data.message || 'Lỗi khi tải dữ liệu', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire('Lỗi', 'Không thể tải danh sách đề xuất', 'error');
+            }
+        }
+
+        function updateStatistics() {
+            const all = [...allRequests.overtime, ...allRequests.leave, ...allRequests.late];
+
+            document.getElementById('totalPending').textContent = all.filter(r => r.status === 'Pending').length;
+            document.getElementById('totalApproved').textContent = all.filter(r => r.status === 'Approved').length;
+            document.getElementById('totalRejected').textContent = all.filter(r => r.status === 'Rejected').length;
+
+            document.getElementById('allCount').textContent = all.length;
+            document.getElementById('overtimeCount').textContent = allRequests.overtime.length;
+            document.getElementById('leaveCount').textContent = allRequests.leave.length;
+            document.getElementById('lateCount').textContent = allRequests.late.length;
+        }
+
+        function renderRequests() {
+            renderAllRequests();
+            renderOvertimeRequests();
+            renderLeaveRequests();
+            renderLateRequests();
+        }
+
+        function renderAllRequests() {
+            const container = document.getElementById('allList');
+            const all = [...allRequests.overtime, ...allRequests.leave, ...allRequests.late];
+
+            if (all.length === 0) {
+                container.innerHTML = `
+                    <div class="pr-empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h5>Không có đề xuất nào phù hợp</h5>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = all.map(req => generateRequestCard(req)).join('');
+        }
+
+        function renderOvertimeRequests() {
+            const container = document.getElementById('overtimeList');
+            if (allRequests.overtime.length === 0) {
+                container.innerHTML = `
+                    <div class="pr-empty-state">
+                        <i class="fas fa-clock"></i>
+                        <h5>Không có đề xuất tăng ca</h5>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allRequests.overtime.map(req => generateRequestCard(req)).join('');
+        }
+
+        function renderLeaveRequests() {
+            const container = document.getElementById('leaveList');
+            if (allRequests.leave.length === 0) {
+                container.innerHTML = `
+                    <div class="pr-empty-state">
+                        <i class="fas fa-umbrella-beach"></i>
+                        <h5>Không có đề xuất nghỉ phép</h5>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allRequests.leave.map(req => generateRequestCard(req)).join('');
+        }
+
+        function renderLateRequests() {
+            const container = document.getElementById('lateList');
+            if (allRequests.late.length === 0) {
+                container.innerHTML = `
+                    <div class="pr-empty-state">
+                        <i class="fas fa-user-clock"></i>
+                        <h5>Không có đề xuất đi trễ</h5>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = allRequests.late.map(req => generateRequestCard(req)).join('');
+        }
+
+        function generateRequestCard(req) {
+            let typeLabel = '', typeClass = '', requestId = '', details = '', requestType = '';
+
+            if (req.overtimeRequestId) {
+                typeLabel = 'Tăng ca';
+                typeClass = 'pr-request-type-overtime';
+                requestId = req.overtimeRequestId;
+                requestType = 'Overtime';
+                details = `
+                    <p><strong>Ngày:</strong> <span>${formatDate(req.workDate)}</span></p>
+                    <p><strong>Số giờ:</strong> <span>${req.overtimeHours}h</span></p>
+                    <p><strong>Lý do:</strong> <span>${req.reason || 'N/A'}</span></p>
+                `;
+            } else if (req.leaveRequestId) {
+                typeLabel = req.leaveType || 'Nghỉ phép';
+                typeClass = 'pr-request-type-leave';
+                requestId = req.leaveRequestId;
+                requestType = 'Leave';
+                details = `
+                    <p><strong>Từ ngày:</strong> <span>${formatDate(req.startDate)}</span></p>
+                    <p><strong>Đến ngày:</strong> <span>${formatDate(req.endDate)}</span></p>
+                    <p><strong>Số ngày:</strong> <span>${req.totalDays} ngày</span></p>
+                `;
+            } else if (req.lateRequestId) {
+                typeLabel = 'Đi trễ';
+                typeClass = 'pr-request-type-late';
+                requestId = req.lateRequestId;
+                requestType = 'Late';
+                details = `
+                    <p><strong>Ngày:</strong> <span>${formatDate(req.requestDate)}</span></p>
+                    <p><strong>Dự kiến đến:</strong> <span>${req.expectedArrivalTime}</span></p>
+                    <p><strong>Lý do:</strong> <span>${req.reason || 'N/A'}</span></p>
+                `;
+            }
+
+            const statusClass = getStatusClass(req.status);
+            const statusText = getStatusText(req.status);
+
+            return `
+                <div class="pr-request-card pr-fade-in">
+                    <div class="pr-request-card-header">
+                        <span class="pr-request-type-badge ${typeClass}">${typeLabel}</span>
+                        <span class="pr-badge ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="pr-user-info">
+                        <div class="pr-user-details">
+                            <strong>${req.employeeName || 'N/A'}</strong>
+                            <small>${req.employeeId || 'N/A'}</small>
+                        </div>
+                    </div>
+                    <div class="pr-request-details">
+                        ${details}
+                    </div>
+                    <div class="pr-request-meta">
+                        <small><i class="far fa-clock me-1"></i>Tạo lúc: ${formatDateTime(req.createdAt)}</small>
+                    </div>
+                    <div class="pr-request-actions">
+                        <button class="pr-btn pr-btn-info pr-btn-sm" onclick="viewRequestDetail('${requestType}', ${requestId})">
+                            <i class="fas fa-eye"></i> Chi tiết
+                        </button>
+                        <button class="pr-btn pr-btn-primary pr-btn-sm" onclick="openReviewModal(${requestId}, '${requestType}')">
+                            <i class="fas fa-clipboard-check"></i> Duyệt
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openReviewModal(requestId, requestType) {
+            currentRequestId = requestId;
+            currentRequestType = requestType;
+
+            const typeLabel = requestType === 'Overtime' ? 'tăng ca' :
+                            requestType === 'Leave' ? 'nghỉ phép' : 'đi trễ';
+
+            document.getElementById('reviewModalTitle').textContent = `Duyệt đề xuất ${typeLabel}`;
+            document.getElementById('reviewNote').value = '';
+
+            viewRequestDetail(requestType, requestId, true);
+
+            new bootstrap.Modal(document.getElementById('reviewModal')).show();
+        }
+
+        async function viewRequestDetail(type, id, inModal = false) {
+            try {
+                const response = await fetch(`/Admin/GetRequestDetail?type=${type}&id=${id}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const req = data.request;
+                    let html = '<div class="pr-request-detail-grid">';
+
+                    html += `
+                        <div class="pr-detail-row">
+                            <strong>Trạng thái:</strong>
+                            <span class="pr-badge ${getStatusClass(req.status)}">${getStatusText(req.status)}</span>
+                        </div>
+                        <div class="pr-detail-row">
+                            <strong>Nhân viên:</strong>
+                            <span>${req.employeeName || 'N/A'}</span>
+                        </div>
+                    `;
+
+                    if (type === 'Overtime') {
+                        html += `
+                            <div class="pr-detail-row"><strong>Ngày:</strong><span>${req.workDate || 'N/A'}</span></div>
+                            <div class="pr-detail-row"><strong>Giờ check-out:</strong><span>${req.actualCheckOutTime || 'N/A'}</span></div>
+                            <div class="pr-detail-row"><strong>Số giờ:</strong><span>${req.overtimeHours}h</span></div>
+                            <div class="pr-detail-row"><strong>Lý do:</strong><span>${req.reason || 'N/A'}</span></div>
+                        `;
+                    } else if (type === 'Leave') {
+                        html += `
+                            <div class="pr-detail-row"><strong>Loại:</strong><span>${req.leaveType}</span></div>
+                            <div class="pr-detail-row"><strong>Từ ngày:</strong><span>${req.startDate || 'N/A'}</span></div>
+                            <div class="pr-detail-row"><strong>Đến ngày:</strong><span>${req.endDate || 'N/A'}</span></div>
+                            <div class="pr-detail-row"><strong>Số ngày:</strong><span>${req.totalDays} ngày</span></div>
+                            <div class="pr-detail-row"><strong>Lý do:</strong><span>${req.reason || 'N/A'}</span></div>
+                        `;
+                    } else if (type === 'Late') {
+                        html += `
+                            <div class="pr-detail-row"><strong>Ngày:</strong><span>${req.requestDate || 'N/A'}</span></div>
+                            <div class="pr-detail-row"><strong>Dự kiến đến:</strong><span>${req.expectedArrivalTime}</span></div>
+                            <div class="pr-detail-row"><strong>Lý do:</strong><span>${req.reason || 'N/A'}</span></div>
+                        `;
+                    }
+
+                    if (req.reviewedAt && req.reviewedAt !== '') {
+                        html += `
+                            <div class="pr-detail-row"><strong>Người duyệt:</strong><span>${req.reviewedBy || 'N/A'}</span></div>
+                            <div class="pr-detail-row"><strong>Thời gian duyệt:</strong><span>${req.reviewedAt}</span></div>
+                        `;
+                        if (req.reviewNote) {
+                            html += `<div class="pr-detail-row"><strong>Ghi chú:</strong><span>${req.reviewNote}</span></div>`;
+                        }
+                    }
+
+                    html += `<div class="pr-detail-row"><strong>Tạo lúc:</strong><span>${req.createdAt}</span></div>`;
+                    html += '</div>';
+
+                    if (inModal) {
+                        document.getElementById('reviewDetails').innerHTML = html;
+                    } else {
+                        Swal.fire({
+                            title: `Chi tiết ${type === 'Overtime' ? 'Tăng ca' : type === 'Leave' ? 'Nghỉ phép' : 'Đi trễ'}`,
+                            html: html,
+                            width: 700,
+                            showCloseButton: true
+                        });
+                    }
+                } else {
+                    if (!inModal) {
+                        Swal.fire('Lỗi', data.message || 'Không tìm thấy request', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                if (!inModal) {
+                    Swal.fire('Lỗi', 'Không thể tải chi tiết: ' + error.message, 'error');
+                }
+            }
+        }
+
+        async function reviewRequest(action) {
+            const note = document.getElementById('reviewNote').value;
+
+            Swal.fire({
+                title: 'Đang xử lý...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            try {
+                const response = await fetch('/Admin/ReviewRequest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        RequestId: currentRequestId,
+                        RequestType: currentRequestType,
+                        Action: action,
+                        Note: note
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: data.message,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('reviewModal')).hide();
+                        loadPendingRequests();
+                    });
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Lỗi', 'Có lỗi xảy ra: ' + error.message, 'error');
+            }
+        }
+
+        function refreshData() {
+            loadPendingRequests();
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Pending': return 'pr-bg-warning';
+                case 'Approved': return 'pr-bg-success';
+                case 'Rejected': return 'pr-bg-danger';
+                default: return 'pr-bg-secondary';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'Pending': return 'Chờ duyệt';
+                case 'Approved': return 'Đã duyệt';
+                case 'Rejected': return 'Từ chối';
+                default: return status;
+            }
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('vi-VN');
+        }
+
+        function formatDateTime(dateStr) {
+            if (!dateStr) return 'N/A';
+            const d = new Date(dateStr);
+            return d.toLocaleString('vi-VN');
+        }
+
+        // Filter handlers
+        document.getElementById('applyFiltersBtn').addEventListener('click', () => {
+            currentFilters.type = document.getElementById('filterType').value;
+            currentFilters.status = document.getElementById('filterStatus').value;
+            currentFilters.from = document.getElementById('filterFrom').value;
+            currentFilters.to = document.getElementById('filterTo').value;
+            currentFilters.keyword = document.getElementById('filterKeyword').value.trim();
+            loadPendingRequests();
+        });
+
+        document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterFrom').value = '';
+            document.getElementById('filterTo').value = '';
+            document.getElementById('filterKeyword').value = '';
+            currentFilters = { type: '', status: '', from: '', to: '', keyword: '' };
+            document.querySelectorAll('.pr-quick-filter').forEach(b => b.classList.remove('active'));
+            document.querySelector('.pr-quick-filter[data-status=""]').classList.add('active');
+            loadPendingRequests();
+        });
+
+        document.querySelectorAll('.pr-quick-filter').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.pr-quick-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilters.status = btn.dataset.status || '';
+                currentFilters.type = '';
+                currentFilters.from = '';
+                currentFilters.to = '';
+                currentFilters.keyword = '';
+                document.getElementById('filterStatus').value = currentFilters.status;
+                document.getElementById('filterType').value = '';
+                document.getElementById('filterFrom').value = '';
+                document.getElementById('filterTo').value = '';
+                document.getElementById('filterKeyword').value = '';
+                loadPendingRequests();
+            });
+        });
+
+        document.getElementById('filterKeyword').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('applyFiltersBtn').click();
+            }
+        });
+
+        // Init on page load
+        window.onload = function() {
+            loadPendingRequests();
+        };
+    </script>
+}
