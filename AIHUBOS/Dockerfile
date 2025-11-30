@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
 WORKDIR /src
 
 # Copy csproj
-COPY aihubos_system/AIHUBOS/TMD/AIHUBOS.csproj ./TMD/
+COPY TMD/AIHUBOS.csproj ./TMD/
 RUN dotnet restore "./TMD/AIHUBOS.csproj"
 
 # Copy full source
-COPY aihubos_system/AIHUBOS/TMD/. ./TMD/
+COPY TMD/. ./TMD/
 WORKDIR /src/TMD
 
 # Publish
