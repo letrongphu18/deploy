@@ -6054,11 +6054,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\AIHUBOS.csproj",
+      "projectUniqueName": "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\AIHUBOS.csproj",
       "projectName": "AIHUBOS",
-      "projectPath": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\AIHUBOS.csproj",
+      "projectPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\AIHUBOS.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "E:\\AIHUB TASK\\AIHUBSYSTEM\\aihubos_system\\AIHUBOS\\TMD\\obj\\",
+      "outputPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\AIHUBOS\\TMD\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
