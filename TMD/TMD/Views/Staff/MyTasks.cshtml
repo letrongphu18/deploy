@@ -1,10 +1,11 @@
-﻿@model List<AIHUBOS.Models.UserTask>
+﻿@model List<TMD.Models.UserTask>
 @{
     ViewData["Title"] = "Công việc của tôi";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
 }
 
 <style>
+    /* ==================== ROOT VARIABLES ==================== */
     :root {
         --primary: #1a1f4a;
         --secondary: #6366f1;
@@ -12,23 +13,35 @@
         --warning: #f59e0b;
         --danger: #ef4444;
         --info: #3b82f6;
-        --light: #f8fafc;
-        --dark: #0f172a;
-        --border: #e2e8f0;
-        --shadow: rgba(15, 23, 42, 0.08);
-        --text: #334155;
-        --text-muted: #64748b;
+        --light-bg: #f8fafc;
+        --dark-bg: #0f172a;
+        --border-color: #e2e8f0;
+        --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+        --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+        --shadow-lg: 0 8px 32px rgba(15, 23, 42, 0.12);
+        --text-primary: #0f172a;
+        --text-secondary: #64748b;
+        --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        --radius-sm: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.5rem;
     }
 
+    /* ==================== DARK MODE ==================== */
     body.staff-dark-mode {
-        --light: #1e293b;
-        --dark: #0f172a;
-        --border: #334155;
-        --shadow: rgba(0, 0, 0, 0.3);
-        --text: #e2e8f0;
-        --text-muted: #94a3b8;
+        --light-bg: #1e293b;
+        --dark-bg: #0f172a;
+        --border-color: #334155;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
     }
 
+    /* ==================== RESET & BASE ==================== */
     * {
         margin: 0;
         padding: 0;
@@ -37,17 +50,30 @@
 
     .task-page {
         padding: 2rem;
-        background: var(--light);
+        background: var(--light-bg);
         min-height: calc(100vh - 70px);
+        animation: fadeIn 0.3s ease-out;
     }
 
-    /* ========== HEADER ========== */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ==================== HEADER SECTION ==================== */
     .task-header {
         background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        border-radius: 1.5rem;
+        border-radius: var(--radius-xl);
         padding: 2.5rem;
         margin-bottom: 2rem;
-        box-shadow: 0 8px 24px var(--shadow);
+        box-shadow: var(--shadow-lg);
         position: relative;
         overflow: hidden;
     }
@@ -59,21 +85,18 @@
             right: -10%;
             width: 400px;
             height: 400px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
             animation: float 6s ease-in-out infinite;
         }
 
-    keyframes float {
-        0%, 100%
+    @@keyframes float {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
 
-    {
-        transform: translateY(0) rotate(0deg);
-    }
-
-    50% {
-        transform: translateY(-20px) rotate(5px);
-    }
-
+        50% {
+            transform: translateY(-20px) rotate(5deg);
+        }
     }
 
     .task-header-content {
@@ -82,8 +105,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        flex-wrap: wrap;
         gap: 1.5rem;
+        flex-wrap: wrap;
     }
 
     .task-header-left h1 {
@@ -97,8 +120,9 @@
     }
 
     .task-header-left p {
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(255, 255, 255, 0.85);
         font-size: 1rem;
+        font-weight: 500;
     }
 
     .task-stats {
@@ -106,110 +130,117 @@
         gap: 1.5rem;
     }
 
-    .task-stat-item {
+    .stat-card {
         text-align: center;
         padding: 1rem 1.5rem;
         background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border-radius: 1rem;
+        backdrop-filter: blur(12px);
+        border-radius: var(--radius-lg);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        min-width: 100px;
+        min-width: 110px;
+        transition: transform var(--transition-fast);
     }
 
-        .task-stat-item .number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 0.25rem;
+        .stat-card:hover {
+            transform: translateY(-2px);
         }
 
-        .task-stat-item .label {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: white;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
 
-    /* ========== FILTERS ========== */
-    .task-filters {
+    .stat-label {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+    }
+
+    /* ==================== FILTERS ==================== */
+    .filters-container {
         background: white;
-        border-radius: 1rem;
+        border-radius: var(--radius-lg);
         padding: 1.5rem;
         margin-bottom: 1.5rem;
-        box-shadow: 0 2px 12px var(--shadow);
+        box-shadow: var(--shadow-sm);
     }
 
-    body.staff-dark-mode .task-filters {
-        background: var(--light);
+    body.staff-dark-mode .filters-container {
+        background: var(--light-bg);
     }
 
-    .filter-row {
+    .filters-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 1rem;
     }
 
-    .filter-group label {
+    .filter-item label {
         display: block;
         font-size: 0.875rem;
         font-weight: 600;
-        color: var(--text);
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .filter-group select,
-    .filter-group input {
+    .filter-input,
+    .filter-select {
         width: 100%;
         padding: 0.75rem 1rem;
-        border: 2px solid var(--border);
-        border-radius: 0.75rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
         font-size: 0.875rem;
         background: white;
-        color: var(--text);
-        transition: all 0.3s ease;
+        color: var(--text-primary);
+        transition: all var(--transition-fast);
         font-family: inherit;
-    }
-
-    body.staff-dark-mode .filter-group select,
-    body.staff-dark-mode .filter-group input {
-        background: var(--dark);
-        color: var(--text);
-    }
-
-    .filter-group select:focus,
-    .filter-group input:focus {
         outline: none;
+    }
+
+    body.staff-dark-mode .filter-input,
+    body.staff-dark-mode .filter-select {
+        background: var(--dark-bg);
+        color: var(--text-primary);
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
         border-color: var(--secondary);
         box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
     }
 
-    /* ========== TASK LIST ========== */
-    .task-list-container {
+    /* ==================== TASK LIST ==================== */
+    .tasks-container {
         background: white;
-        border-radius: 1rem;
+        border-radius: var(--radius-lg);
         overflow: hidden;
-        box-shadow: 0 2px 12px var(--shadow);
+        box-shadow: var(--shadow-sm);
     }
 
-    body.staff-dark-mode .task-list-container {
-        background: var(--light);
+    body.staff-dark-mode .tasks-container {
+        background: var(--light-bg);
     }
 
-    .task-list-item {
+    .task-item {
         display: flex;
         align-items: center;
         gap: 1.25rem;
         padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid var(--border);
-        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--border-color);
+        transition: all var(--transition-normal);
         position: relative;
         cursor: pointer;
     }
 
-        .task-list-item::before {
+        .task-item::before {
             content: '';
             position: absolute;
             left: 0;
@@ -218,32 +249,34 @@
             height: 100%;
             background: var(--secondary);
             transform: scaleY(0);
-            transition: transform 0.3s ease;
+            transition: transform var(--transition-normal);
         }
 
-        .task-list-item:hover {
-            background: rgba(99, 102, 241, 0.05);
+        .task-item:hover {
+            background: rgba(99, 102, 241, 0.04);
         }
 
-            .task-list-item:hover::before {
+            .task-item:hover::before {
                 transform: scaleY(1);
             }
 
-        .task-list-item:last-child {
+        .task-item:last-child {
             border-bottom: none;
         }
 
-    .task-priority-badge {
+    /* Priority Badge */
+    .priority-badge {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.5rem 1rem;
-        border-radius: 0.75rem;
+        border-radius: var(--radius-md);
         font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .priority-high {
@@ -261,15 +294,16 @@
         color: var(--success);
     }
 
-    .task-list-content {
+    /* Task Content */
+    .task-content {
         flex: 1;
         min-width: 0;
     }
 
-    .task-list-title {
+    .task-title {
         font-size: 1rem;
         font-weight: 700;
-        color: var(--text);
+        color: var(--text-primary);
         margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
@@ -277,54 +311,63 @@
         flex-wrap: wrap;
     }
 
-    .overdue-badge {
+    .badge-overdue {
         background: var(--danger);
         color: white;
         padding: 0.25rem 0.75rem;
-        border-radius: 0.5rem;
+        border-radius: var(--radius-sm);
         font-size: 0.625rem;
         font-weight: 700;
         animation: pulse 2s ease-in-out infinite;
         white-space: nowrap;
     }
 
-    keyframes pulse {
-        0%, 100%
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
 
-    {
-        opacity: 1;
+        50% {
+            opacity: 0.7;
+        }
     }
 
-    50% {
-        opacity: 0.7;
+    .badge-late {
+        background: var(--warning);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.625rem;
+        font-weight: 700;
+        white-space: nowrap;
     }
 
-    }
-
-    .task-list-meta {
+    .task-meta {
         display: flex;
         align-items: center;
         gap: 1rem;
         flex-wrap: wrap;
         font-size: 0.875rem;
-        color: var(--text-muted);
+        color: var(--text-secondary);
     }
 
-        .task-list-meta span {
+        .task-meta span {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-    .task-status-badge {
+    /* Status Badge */
+    .status-badge {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
         padding: 0.625rem 1rem;
-        border-radius: 0.75rem;
+        border-radius: var(--radius-md);
         font-size: 0.875rem;
         font-weight: 600;
         white-space: nowrap;
+        flex-shrink: 0;
     }
 
     .status-todo {
@@ -352,153 +395,49 @@
         color: var(--danger);
     }
 
-    /* ========== BUTTONS ========== */
-    .task-list-actions {
+    /* Action Buttons */
+    .task-actions {
         display: flex;
         gap: 0.5rem;
+        flex-shrink: 0;
     }
 
-    .task-action-btn {
+    .action-btn {
         width: 2.5rem;
         height: 2.5rem;
         border: none;
-        border-radius: 0.75rem;
+        border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: all var(--transition-fast);
         font-size: 0.875rem;
     }
 
-    .task-action-btn-primary {
+    .action-btn-view {
+        background: var(--light-bg);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+    }
+
+        .action-btn-view:hover {
+            border-color: var(--secondary);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-2px);
+        }
+
+    .action-btn-edit {
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         color: white;
     }
 
-        .task-action-btn-primary:hover {
+        .action-btn-edit:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
         }
 
-    .task-action-btn-secondary {
-        background: var(--light);
-        color: var(--text);
-        border: 2px solid var(--border);
-    }
-
-        .task-action-btn-secondary:hover {
-            border-color: var(--secondary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-
-    /* ========== MODAL ========== */
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(4px);
-    }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-    .modal-dialog {
-        background: white;
-        border-radius: 1.5rem;
-        box-shadow: 0 20px 60px var(--shadow);
-        width: 90%;
-        max-width: 600px;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    body.staff-dark-mode .modal-dialog {
-        background: var(--light);
-    }
-
-    .modal-header {
-        padding: 1.5rem 2rem;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-        .modal-header h5 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text);
-            margin: 0;
-        }
-
-    .modal-close {
-        width: 2.25rem;
-        height: 2.25rem;
-        border: none;
-        background: var(--light);
-        border-radius: 0.5rem;
-        cursor: pointer;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-        transition: all 0.2s ease;
-    }
-
-        .modal-close:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-    .modal-body {
-        padding: 2rem;
-        color: var(--text);
-    }
-
-    .modal-footer {
-        padding: 1.5rem 2rem;
-        border-top: 1px solid var(--border);
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-        display: block;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .form-text {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        margin-top: 0.25rem;
-        display: block;
-    }
-
-    .required {
-        color: var(--danger);
-    }
-
-    /* Empty State */
+    /* ==================== EMPTY STATE ==================== */
     .empty-state {
         display: flex;
         flex-direction: column;
@@ -506,14 +445,13 @@
         justify-content: center;
         text-align: center;
         padding: 4rem 2rem;
-        border-radius: 1rem;
+        border-radius: var(--radius-lg);
         background: white;
-        box-shadow: 0 2px 12px var(--shadow);
-        margin-top: 1.5rem;
+        box-shadow: var(--shadow-sm);
     }
 
     body.staff-dark-mode .empty-state {
-        background: var(--light);
+        background: var(--light-bg);
     }
 
     .empty-state i {
@@ -526,16 +464,203 @@
     .empty-state h3 {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--text);
+        color: var(--text-primary);
         margin-bottom: 0.75rem;
     }
 
     .empty-state p {
         font-size: 1rem;
-        color: var(--text-muted);
+        color: var(--text-secondary);
     }
 
-    /* ========== RESPONSIVE ========== */
+    /* ==================== MODAL ==================== */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+        animation: fadeIn 0.2s ease-out;
+    }
+
+        .modal.active {
+            display: flex;
+        }
+
+    .modal-content {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    body.staff-dark-mode .modal-content {
+        background: var(--light-bg);
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .modal-close {
+        width: 2.25rem;
+        height: 2.25rem;
+        border: none;
+        background: var(--light-bg);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all var(--transition-fast);
+    }
+
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+    .modal-body {
+        padding: 2rem;
+        color: var(--text-primary);
+    }
+
+    .modal-footer {
+        padding: 1.5rem 2rem;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    /* Form Elements */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        background: white;
+        color: var(--text-primary);
+        transition: all var(--transition-fast);
+        font-family: inherit;
+        outline: none;
+    }
+
+    body.staff-dark-mode .form-control {
+        background: var(--dark-bg);
+        color: var(--text-primary);
+    }
+
+    .form-control:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .form-control:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .form-text {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .required {
+        color: var(--danger);
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.625rem 1.25rem;
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+    .btn-secondary {
+        background: var(--light-bg);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+    }
+
+        .btn-secondary:hover {
+            border-color: var(--secondary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+    /* ==================== RESPONSIVE ==================== */
     @@media (max-width: 768px) {
         .task-page {
             padding: 1rem;
@@ -555,277 +680,302 @@
             justify-content: space-between;
         }
 
-        .task-stat-item {
+        .stat-card {
             padding: 0.75rem 1rem;
             min-width: auto;
         }
 
-        .task-list-item {
+        .task-item {
             flex-direction: column;
             align-items: flex-start;
             gap: 0.75rem;
             padding: 1rem;
         }
 
-        .task-list-actions {
+        .task-actions {
             width: 100%;
             justify-content: flex-end;
         }
 
-        .filter-row {
+        .filters-grid {
             grid-template-columns: 1fr;
+        }
+
+        .modal-content {
+            width: 95%;
+            max-height: 95vh;
         }
     }
 
-    /* Fix z-index cho select dropdown trong modal */
-    .modal-overlay {
-        z-index: 9998 !important;
+    /* ==================== LOADING STATE ==================== */
+    .loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
     }
 
-    .modal-dialog {
-        z-index: 9999 !important;
-        position: relative;
+    .spinner {
+        width: 3rem;
+        height: 3rem;
+        border: 4px solid var(--border-color);
+        border-top-color: var(--secondary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
     }
 
-    .modal-body {
-        z-index: 10000 !important;
-        position: relative;
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
     }
 
-    .form-control, .form-control select, select.form-control {
-        position: relative;
-        z-index: 10001 !important;
+    /* ==================== UTILITIES ==================== */
+    .hidden {
+        display: none !important;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .mt-2 {
+        margin-top: 0.5rem;
+    }
+
+    /* ==================== FIX SWEETALERT Z-INDEX ==================== */
+    /* Đảm bảo thông báo luôn nằm trên Modal (9999) */
+    .swal2-container {
+        z-index: 20000 !important;
     }
 </style>
 
 <div class="task-page">
-    <div class="container-fluid">
-        <div class="task-header">
-            <div class="task-header-content">
-                <div class="task-header-left">
-                    <h1><i class="fas fa-tasks"></i> Công việc của tôi</h1>
-                    <p>Quản lý các công việc đã được giao và cập nhật tiến độ.</p>
+    <div class="task-header">
+        <div class="task-header-content">
+            <div class="task-header-left">
+                <h1><i class="fas fa-tasks"></i> Công việc của tôi</h1>
+                <p>Quản lý các công việc đã được giao và cập nhật tiến độ.</p>
+            </div>
+            <div class="task-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="statDone">0</div>
+                    <div class="stat-label">Hoàn thành</div>
                 </div>
-                <div class="task-stats">
-                    <div class="task-stat-item">
-                        <div class="number text-success" id="statDone">0</div>
-                        <div class="label">Hoàn thành</div>
-                    </div>
-                    <div class="task-stat-item">
-                        <div class="number text-warning" id="statInProgress">0</div>
-                        <div class="label">Đang làm</div>
-                    </div>
-                    <div class="task-stat-item">
-                        <div class="number text-danger" id="statTotal">0</div>
-                        <div class="label">Tổng cộng</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statInProgress">0</div>
+                    <div class="stat-label">Đang làm</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="statTotal">0</div>
+                    <div class="stat-label">Tổng cộng</div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="task-filters">
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label><i class="fas fa-list"></i> Trạng thái</label>
-                    <select id="filterStatus" onchange="filterTasks()">
-                        <option value="">Tất cả</option>
-                        <option value="TODO">Chưa bắt đầu</option>
-                        <option value="InProgress">Đang làm</option>
-                        <option value="Testing">Chờ test</option>
-                        <option value="Done">Hoàn thành</option>
-                        <option value="Reopen">Cần sửa lại</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-flag"></i> Mức độ ưu tiên</label>
-                    <select id="filterPriority" onchange="filterTasks()">
-                        <option value="">Tất cả</option>
-                        <option value="High">Cao</option>
-                        <option value="Medium">Trung bình</option>
-                        <option value="Low">Thấp</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-search"></i> Tìm kiếm</label>
-                    <input type="text" id="searchTask" placeholder="Tìm tên công việc..." oninput="filterTasks()">
-                </div>
+    <div class="filters-container">
+        <div class="filters-grid">
+            <div class="filter-item">
+                <label><i class="fas fa-list"></i> Trạng thái</label>
+                <select class="filter-select" id="filterStatus">
+                    <option value="">Tất cả</option>
+                    <option value="TODO">Chưa bắt đầu</option>
+                    <option value="InProgress">Đang làm</option>
+                    <option value="Testing">Chờ test</option>
+                    <option value="Done">Hoàn thành</option>
+                    <option value="Reopen">Cần sửa lại</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label><i class="fas fa-flag"></i> Mức độ ưu tiên</label>
+                <select class="filter-select" id="filterPriority">
+                    <option value="">Tất cả</option>
+                    <option value="High">Cao</option>
+                    <option value="Medium">Trung bình</option>
+                    <option value="Low">Thấp</option>
+                </select>
+            </div>
+            <div class="filter-item">
+                <label><i class="fas fa-search"></i> Tìm kiếm</label>
+                <input type="text" class="filter-input" id="searchTask" placeholder="Tìm tên công việc...">
             </div>
         </div>
+    </div>
 
-        @if (!Model.Any())
-        {
-            <div class="empty-state" id="emptyStateInitial">
-                <i class="fas fa-inbox"></i>
-                <h3>Chưa có công việc nào</h3>
-                <p>Bạn chưa được giao công việc nào. Hãy liên hệ quản lý để được phân công.</p>
-            </div>
-        }
-        else
-        {
-            <div class="task-list-container" id="taskListContainer">
-                @foreach (var userTask in Model)
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h3>Chưa có công việc nào</h3>
+            <p>Bạn chưa được giao công việc nào. Hãy liên hệ quản lý để được phân công.</p>
+        </div>
+    }
+    else
+    {
+        <div class="tasks-container" id="taskList">
+            @foreach (var userTask in Model)
+            {
+                var task = userTask.Task;
+                var priorityClass = (task.Priority ?? "Medium").ToLower();
+                var statusClass = (userTask.Status ?? "TODO").ToLower();
+                var statusText = userTask.Status switch
                 {
-                    var task = userTask.Task;
-                    var priorityClass = (task.Priority ?? "Medium").ToLower();
-                    var statusClass = (userTask.Status ?? "TODO").ToLower();
-                    var statusText = userTask.Status switch
-                    {
-                        "TODO" => "Chưa bắt đầu",
-                        "InProgress" => "Đang làm",
-                        "Testing" => "Chờ test",
-                        "Done" => "Hoàn thành",
-                        "Reopen" => "Cần sửa lại",
-                        _ => "Chưa bắt đầu"
-                    };
-                    var statusIcon = userTask.Status switch
-                    {
-                        "TODO" => "inbox",
-                        "InProgress" => "spinner fa-spin",
-                        "Testing" => "vial",
-                        "Done" => "check-circle",
-                        "Reopen" => "redo",
-                        _ => "inbox"
-                    };
+                    "TODO" => "Chưa bắt đầu",
+                    "InProgress" => "Đang làm",
+                    "Testing" => "Chờ test",
+                    "Done" => "Hoàn thành",
+                    "Reopen" => "Cần sửa lại",
+                    _ => "Chưa bắt đầu"
+                };
+                var statusIcon = userTask.Status switch
+                {
+                    "TODO" => "inbox",
+                    "InProgress" => "spinner fa-spin",
+                    "Testing" => "vial",
+                    "Done" => "check-circle",
+                    "Reopen" => "redo",
+                    _ => "inbox"
+                };
+                var isOverdue = task.Deadline.HasValue && DateTime.Now > task.Deadline.Value && userTask.Status != "Done";
+                var isCompletedLate = false; // Cần logic từ backend
 
-                    // FIX: Sử dụng task.CreatedAt (Ngày tạo) thay cho AssignedDate.
-                    var taskAssignedDate = task.CreatedAt;
+                <div class="task-item"
+                     data-id="@userTask.UserTaskId"
+                     data-status="@userTask.Status"
+                     data-priority="@(task.Priority ?? "Medium")"
+                     data-name="@task.TaskName">
 
-                    // FIX: Sử dụng navigation property userTask.Tester?.FullName thay cho userTask.TesterName.
-                    var testerName = userTask.Tester?.FullName;
+                    <div class="priority-badge priority-@priorityClass">
+                        <i class="fas fa-flag"></i> @(task.Priority ?? "Medium")
+                    </div>
 
-                    // FIX TẠM THỜI: Vô hiệu hóa isCompletedLate để biên dịch, vì cần Task.CompletedAt/UserTask.CompletedAt.
-                    var isCompletedLate = false;
-
-                    var isOverdue = task.Deadline.HasValue && DateTime.Now > task.Deadline.Value && userTask.Status != "Done";
-
-                    <div class="task-list-item"
-                         data-user-task-id="@userTask.UserTaskId"
-                         data-status="@userTask.Status"
-                         data-priority="@(task.Priority ?? "Medium")"
-                         data-taskname="@task.TaskName">
-
-                        <div class="task-list-priority">
-                            <div class="task-priority-badge priority-@priorityClass">
-                                <i class="fas fa-flag"></i> @(task.Priority ?? "Medium")
-                            </div>
-                        </div>
-
-                        <div class="task-list-content">
-                            <div class="task-list-title">
-                                <strong>@task.TaskName</strong>
-                                @if (isOverdue)
-                                {
-                                    <span class="overdue-badge">
-                                        <i class="fas fa-exclamation-triangle"></i> QUÁ HẠN
-                                    </span>
-                                }
-                                @if (isCompletedLate)
-                                {
-                                    <span class="overdue-badge" style="background: var(--warning);">
-                                        <i class="fas fa-clock"></i> HOÀN THÀNH MUỘN
-                                    </span>
-                                }
-                            </div>
-                            <div class="task-list-meta">
-                                <span>
-                                    <i class="fas fa-calendar-alt"></i> Ngày giao: @taskAssignedDate?.ToString("dd/MM/yyyy")
-                                </span>
-                                @if (task.Deadline.HasValue)
-                                {
-                                    <span>
-                                        <i class="fas fa-hourglass-half"></i> Hạn chót: @task.Deadline.Value.ToString("dd/MM/yyyy")
-                                    </span>
-                                }
-                                @if (!string.IsNullOrEmpty(testerName))
-                                {
-                                    <span>
-                                        <i class="fas fa-user-check"></i> Tester: @testerName
-                                    </span>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="task-status-badge status-@statusClass">
-                            <i class="fas fa-@statusIcon"></i> <span>@statusText</span>
-                        </div>
-
-                        <div class="task-list-actions">
-                            <button class="task-action-btn task-action-btn-secondary" onclick="viewTaskDetail(@userTask.UserTaskId)" title="Xem chi tiết">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            @if (userTask.Status != "Done")
+                    <div class="task-content">
+                        <div class="task-title">
+                            <strong>@task.TaskName</strong>
+                            @if (isOverdue)
                             {
-                                <button class="task-action-btn task-action-btn-primary" onclick="updateTaskProgress(@userTask.UserTaskId)" title="Cập nhật tiến độ">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </button>
+                                <span class="badge-overdue">
+                                    <i class="fas fa-exclamation-triangle"></i> QUÁ HẠN
+                                </span>
+                            }
+                            @if (isCompletedLate)
+                            {
+                                <span class="badge-late">
+                                    <i class="fas fa-clock"></i> HOÀN THÀNH MUỘN
+                                </span>
+                            }
+                        </div>
+                        <div class="task-meta">
+                            <span>
+                                <i class="fas fa-calendar-alt"></i>
+                                Ngày giao: @task.CreatedAt?.ToString("dd/MM/yyyy")
+                            </span>
+                            @if (task.Deadline.HasValue)
+                            {
+                                <span>
+                                    <i class="fas fa-hourglass-half"></i>
+                                    Hạn: @task.Deadline.Value.ToString("dd/MM/yyyy")
+                                </span>
                             }
                         </div>
                     </div>
-                }
 
-                <div class="empty-state" id="emptyStateFilter" style="display:none;">
-                    <i class="fas fa-search"></i>
-                    <h3>Không tìm thấy công việc</h3>
-                    <p>Hãy thử thay đổi tiêu chí tìm kiếm hoặc bộ lọc.</p>
+                    <div class="status-badge status-@statusClass">
+                        <i class="fas fa-@statusIcon"></i> <span>@statusText</span>
+                    </div>
+
+                    <div class="task-actions">
+                        <button class="action-btn action-btn-view" onclick="viewTask(@userTask.UserTaskId)" title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        @if (userTask.Status != "Done")
+                        {
+                            <button class="action-btn action-btn-edit" onclick="updateTask(@userTask.UserTaskId)" title="Cập nhật">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                        }
+                    </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+
+        <div class="empty-state hidden" id="emptyFilter">
+            <i class="fas fa-search"></i>
+            <h3>Không tìm thấy công việc</h3>
+            <p>Hãy thử thay đổi tiêu chí tìm kiếm hoặc bộ lọc.</p>
+        </div>
+    }
 </div>
 
-<div class="modal-overlay" id="taskDetailModal">
-    <div class="modal-dialog">
+<div class="modal" id="detailModal">
+    <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title"><i class="fas fa-info-circle"></i> Chi Tiết Công Việc</h5>
-            <button class="modal-close" onclick="closeModal('taskDetailModal')"><i class="fas fa-times"></i></button>
+            <button class="modal-close" onclick="closeModal('detailModal')">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div class="modal-body" id="taskDetailContent">
-            <div class="text-center">
-                <i class="fas fa-spinner fa-spin fa-2x"></i>
+        <div class="modal-body" id="detailContent">
+            <div class="loading">
+                <div class="spinner"></div>
                 <p class="mt-2">Đang tải...</p>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('taskDetailModal')">Đóng</button>
+            <button class="btn btn-secondary" onclick="closeModal('detailModal')">Đóng</button>
         </div>
     </div>
 </div>
 
-<div class="modal-overlay" id="updateProgressModal">
-    <div class="modal-dialog">
+<div class="modal" id="updateModal">
+    <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title"><i class="fas fa-history"></i> Cập Nhật Tiến Độ</h5>
-            <button class="modal-close" onclick="closeModal('updateProgressModal')"><i class="fas fa-times"></i></button>
+            <button class="modal-close" onclick="closeModal('updateModal')">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         <div class="modal-body">
-            <input type="hidden" id="updateUserTaskId" />
-            <input type="hidden" id="currentTaskStatus" />
+            <input type="hidden" id="updateTaskId">
+            <input type="hidden" id="currentStatus">
+
             <div class="form-group">
                 <label class="form-label">Trạng thái hiện tại</label>
-                <input type="text" class="form-control" id="currentStatusDisplay" readonly />
+                <input type="text" class="form-control" id="currentStatusText" disabled>
             </div>
+
             <div class="form-group">
-                <label class="form-label">Cập nhật thành <span class="required">*</span></label>
-                <select class="form-control" id="updateStatus">
+                <label class="form-label">
+                    Cập nhật thành <span class="required">*</span>
+                </label>
+                <select class="form-control" id="newStatus">
                     <option value="">-- Chọn trạng thái --</option>
                 </select>
             </div>
-            <div class="form-group" id="reportLinkGroup" style="display:none;">
+
+            <div class="form-group hidden" id="reportLinkGroup">
                 <label class="form-label">Link báo cáo</label>
-                <input type="text" class="form-control" id="updateReportLink" placeholder="https://...">
+                <input type="text" class="form-control" id="reportLink" placeholder="https://...">
                 <small class="form-text">Tùy chọn - Link đến báo cáo hoặc tài liệu liên quan</small>
             </div>
-            <div class="form-group" id="testerSelectGroup" style="display:none;">
-                <label class="form-label">Chọn Tester <span class="required">*</span></label>
-                <select class="form-control" id="selectTester">
+
+            <div class="form-group hidden" id="testerGroup">
+                <label class="form-label">
+                    Chọn Tester <span class="required">*</span>
+                </label>
+                <select class="form-control" id="testerId">
                     <option value="">-- Chọn Tester --</option>
                 </select>
                 <small class="form-text">Bắt buộc khi gửi test</small>
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeModal('updateProgressModal')">Đóng</button>
-            <button class="btn btn-primary" onclick="submitUpdateProgress()">Cập nhật</button>
+            <button class="btn btn-secondary" onclick="closeModal('updateModal')">Hủy</button>
+            <button class="btn btn-primary" onclick="submitUpdate()">
+                <i class="fas fa-check"></i> Cập nhật
+            </button>
         </div>
     </div>
 </div>
@@ -833,266 +983,267 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // ✅ BIẾN TOÀN CỤC
+        // ==================== GLOBAL STATE ====================
         let userPermissions = null;
         let allTesters = [];
 
-        // ========== LOAD PERMISSIONS AT START ==========
-        async function loadUserPermissions() {
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadPermissions();
+            calculateStats();
+            setupFilters();
+            setupModalClose();
+        });
+
+        // ==================== LOAD PERMISSIONS ====================
+        async function loadPermissions() {
             try {
-                const response = await fetch('/Staff/GetUserPermissions');
-                const data = await response.json();
+                const res = await fetch('/Staff/GetUserPermissions');
+                const data = await res.json();
                 if (data.success) {
                     userPermissions = data.permissions;
-                    console.log('👤 User Permissions:', userPermissions);
-                    // ✅ NẾU LÀ DEV THÌ LOAD TESTERS LUÔN
+                    console.log('✅ Permissions loaded:', userPermissions);
+
                     if (userPermissions.canSendToTesting) {
                         await loadTesters();
                     }
                 } else {
-                    alert('Không thể tải thông tin quyền: ' + data.message);
+                    showError('Không thể tải thông tin quyền: ' + data.message);
                 }
-            } catch (error) {
-                console.error('Error loading permissions:', error);
-                alert('Lỗi khi tải thông tin quyền');
+            } catch (err) {
+                console.error('Error loading permissions:', err);
+                showError('Lỗi khi tải thông tin quyền');
             }
         }
 
-        // ========== STATS & FILTER INIT ==========
-        function calculateStats() {
-            const taskItems = document.querySelectorAll('.task-list-item');
-            let doneCount = 0;
-            let inProgressCount = 0;
-
-            taskItems.forEach(item => {
-                const status = (item.getAttribute('data-status') || '').toLowerCase();
-                if (status === 'done') {
-                    doneCount++;
-                } else if (status === 'inprogress' || status === 'testing' || status === 'reopen') {
-                    inProgressCount++;
+        // ==================== LOAD TESTERS ====================
+        async function loadTesters() {
+            try {
+                const res = await fetch('/Staff/GetTesters');
+                const data = await res.json();
+                if (data.success && data.testers) {
+                    allTesters = data.testers;
+                    const select = document.getElementById('testerId');
+                    select.innerHTML = '<option value="">-- Chọn Tester --</option>';
+                    data.testers.forEach(t => {
+                        const opt = document.createElement('option');
+                        opt.value = t.userId;
+                        opt.textContent = `${t.fullName} (${t.departmentName})`;
+                        select.appendChild(opt);
+                    });
                 }
-            });
-
-            document.getElementById('statDone').textContent = doneCount;
-            document.getElementById('statInProgress').textContent = inProgressCount;
-            document.getElementById('statTotal').textContent = taskItems.length;
+            } catch (err) {
+                console.error('Error loading testers:', err);
+            }
         }
 
-        // ========== FILTER - ĐÃ SỬA LỖI LOGIC ==========
+        // ==================== STATS ====================
+        function calculateStats() {
+            const items = document.querySelectorAll('.task-item');
+            let done = 0, inProgress = 0;
+
+            items.forEach(item => {
+                const status = (item.dataset.status || '').toLowerCase();
+                if (status === 'done') done++;
+                else if (['inprogress', 'testing', 'reopen'].includes(status)) inProgress++;
+            });
+            document.getElementById('statDone').textContent = done;
+            document.getElementById('statInProgress').textContent = inProgress;
+            document.getElementById('statTotal').textContent = items.length;
+        }
+
+        // ==================== FILTERS ====================
+        function setupFilters() {
+            document.getElementById('filterStatus').addEventListener('change', filterTasks);
+            document.getElementById('filterPriority').addEventListener('change', filterTasks);
+            document.getElementById('searchTask').addEventListener('input', filterTasks);
+        }
+
         function filterTasks() {
             const status = document.getElementById('filterStatus').value.toLowerCase();
             const priority = document.getElementById('filterPriority').value.toLowerCase();
-            const searchTerm = document.getElementById('searchTask').value.toLowerCase().trim();
+            const search = document.getElementById('searchTask').value.toLowerCase().trim();
 
-            const taskItems = document.querySelectorAll('.task-list-item');
-            const emptyStateFilter = document.getElementById('emptyStateFilter');
+            const items = document.querySelectorAll('.task-item');
+            const emptyFilter = document.getElementById('emptyFilter');
+            let visible = 0;
 
-            let visibleCount = 0;
+            items.forEach(item => {
+                const itemStatus = (item.dataset.status || '').toLowerCase();
+                const itemPriority = (item.dataset.priority || '').toLowerCase();
+                const itemName = (item.dataset.name || '').toLowerCase();
 
-            taskItems.forEach(item => {
-                // Lấy giá trị từ data attribute. Dùng || '' để tránh null.
-                const itemStatus = item.getAttribute('data-status').toLowerCase() || '';
-                const itemPriority = item.getAttribute('data-priority').toLowerCase() || '';
-                const itemName = item.getAttribute('data-taskname').toLowerCase() || '';
+                const match = (!status || itemStatus === status) &&
+                              (!priority || itemPriority === priority) &&
+                              (!search || itemName.includes(search));
 
-                // Kiểm tra điều kiện lọc
-                const statusMatch = !status || itemStatus === status;
-                const priorityMatch = !priority || itemPriority === priority;
-                const searchMatch = !searchTerm || itemName.includes(searchTerm);
-
-                if (statusMatch && priorityMatch && searchMatch) {
-                    item.style.display = 'flex'; // Hiển thị task
-                    visibleCount++;
+                if (match) {
+                    item.style.display = 'flex';
+                    visible++;
                 } else {
-                    item.style.display = 'none'; // Ẩn task
+                    item.style.display = 'none';
                 }
             });
 
-            // Xử lý thông báo không tìm thấy (chỉ áp dụng khi ban đầu có task)
-            if (emptyStateFilter) {
-                if (visibleCount === 0) {
-                    emptyStateFilter.style.display = 'flex'; // Hiện thông báo lọc
-                } else {
-                    emptyStateFilter.style.display = 'none'; // Ẩn thông báo lọc
-                }
+            if (emptyFilter) {
+                emptyFilter.classList.toggle('hidden', visible === 0);
             }
         }
 
-        // ========== MODAL ==========
-        function showModal(id) {
-            document.getElementById(id).classList.add('show');
+        // ==================== MODAL ====================
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = '';
         }
 
-        // ========== VIEW TASK DETAIL ==========
-        async function viewTaskDetail(userTaskId) {
-            showModal('taskDetailModal');
-            document.getElementById('taskDetailContent').innerHTML = `
-                <div class="text-center">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+        function setupModalClose() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+        }
+
+        // ==================== VIEW TASK ====================
+        async function viewTask(id) {
+            openModal('detailModal');
+            const content = document.getElementById('detailContent');
+            content.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
                     <p class="mt-2">Đang tải chi tiết...</p>
                 </div>
             `;
             try {
-                const response = await fetch(`/Staff/GetTaskDetail?userTaskId=${userTaskId}`);
-                const data = await response.json();
-                if (data.success) {
-                    const task = data.task;
-                    const statusBadgeClass = `status-${(task.status || 'todo').toLowerCase()}`;
-                    const priorityBadgeClass = `priority-${(task.priority || 'medium').toLowerCase()}`;
+                const res = await fetch(`/Staff/GetTaskDetail?taskId=${id}`);
+                const data = await res.json();
 
-                    document.getElementById('taskDetailContent').innerHTML = `
+                if (data.success) {
+                    const t = data.task;
+                    const statusClass = `status-${(t.status || 'todo').toLowerCase()}`;
+                    const priorityClass = `priority-${(t.priority || 'medium').toLowerCase()}`;
+
+                    content.innerHTML = `
                         <div style="margin-bottom: 1.5rem;">
-                            <h4 style="font-size: 1.375rem; font-weight: 700; color: var(--text); margin-bottom: 1rem;">
-                                ${task.taskName}
+                            <h4 style="font-size: 1.375rem; font-weight: 700; margin-bottom: 1rem;">
+                                ${t.taskName}
                             </h4>
                             <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem;">
-                                <div class="task-status-badge ${statusBadgeClass}">
-                                    <i class="fas fa-${task.statusIcon}"></i> <span>${task.statusText}</span>
+                                <div class="status-badge ${statusClass}">
+                                    <i class="fas fa-circle"></i> ${getStatusText(t.status)}
                                 </div>
-                                <div class="task-priority-badge ${priorityBadgeClass}">
-                                    <i class="fas fa-flag"></i> ${task.priority}
+                                <div class="priority-badge ${priorityClass}">
+                                    <i class="fas fa-flag"></i> ${t.priority}
                                 </div>
-                                ${task.isOverdue ?
-                                    '<span class="overdue-badge"><i class="fas fa-exclamation-triangle"></i> QUÁ HẠN</span>' : ''}
-                                ${task.isCompletedLate ? // Lưu ý: 'isCompletedLate' cần được cung cấp trong JSON response từ Controller
-                                    '<span class="overdue-badge" style="background: var(--warning);"><i class="fas fa-clock"></i> HOÀN THÀNH MUỘN</span>' : ''}
+                                ${t.isOverdue ? '<span class="badge-overdue"><i class="fas fa-exclamation-triangle"></i> QUÁ HẠN</span>' : ''}
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-align-left"></i> Mô tả</label>
-                            <div style="padding: 1rem; background: var(--light); border-radius: 0.75rem; color: var(--text); line-height: 1.6;">
-                                ${task.description || '<em style="color: var(--text-muted);">Không có mô tả</em>'}
+                            <div style="padding: 1rem; background: var(--light-bg); border-radius: var(--radius-md); line-height: 1.6;">
+                                ${t.description || '<em style="color: var(--text-secondary);">Không có mô tả</em>'}
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-laptop-code"></i> Nền tảng</label>
-                            <div style="padding: 0.75rem 1rem; background: white; border: 1px solid var(--border); border-radius: 0.75rem; color: var(--text); font-weight: 600;">
-                                ${task.platform || '<em style="color: var(--text-muted);">Không rõ</em>'}
-                            </div>
+                            <input type="text" class="form-control" value="${t.platform || 'N/A'}" disabled>
                         </div>
 
-                        ${task.reportLink ? `
+                        ${t.reportLink ? `
                         <div class="form-group">
-                            <label class="form-label"><i class="fas fa-link"></i> Link báo cáo gần nhất</label>
-                            <a href="${task.reportLink}" target="_blank" class="btn btn-sm btn-outline-primary" style="display: block; text-align: left; padding: 0.5rem 1rem; border-radius: 0.5rem;">
-                                <i class="fas fa-external-link-alt me-2"></i> Mở Link báo cáo
+                            <label class="form-label"><i class="fas fa-link"></i> Link báo cáo</label>
+                            <a href="${t.reportLink}" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                                <i class="fas fa-external-link-alt"></i> Mở Link
                             </a>
                         </div>
                         ` : ''}
 
-                        <div class="row">
-                            <div class="col-md-6 form-group">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div class="form-group">
                                 <label class="form-label"><i class="fas fa-calendar-alt"></i> Ngày giao</label>
-                                <input type="text" class="form-control" value="${new Date(task.assignedDate).toLocaleDateString('vi-VN')}" readonly />
+                                <input type="text" class="form-control" value="${t.createdAt || 'N/A'}" disabled>
                             </div>
-                            <div class="col-md-6 form-group">
+                            <div class="form-group">
                                 <label class="form-label"><i class="fas fa-hourglass-half"></i> Hạn chót</label>
-                                <input type="text" class="form-control" value="${task.deadline ? new Date(task.deadline).toLocaleDateString('vi-VN') : 'Không có'}" readonly />
+                                <input type="text" class="form-control" value="${t.deadlineStr || 'Không có'}" disabled>
                             </div>
                         </div>
-
-                        ${task.completedAt ? `
-                        <div class="form-group">
-                            <label class="form-label"><i class="fas fa-check-circle"></i> Ngày hoàn thành</label>
-                            <input type="text" class="form-control" value="${new Date(task.completedAt).toLocaleDateString('vi-VN')}" readonly />
-                        </div>
-                        ` : ''}
                     `;
-
                 } else {
-                    document.getElementById('taskDetailContent').innerHTML = `<p class="alert alert-danger">${data.message}</p>`;
+                    content.innerHTML = `<p style="color: var(--danger); text-align: center;">${data.message}</p>`;
                 }
-            } catch (error) {
-                console.error('Error fetching task detail:', error);
-                document.getElementById('taskDetailContent').innerHTML = `<p class="alert alert-danger">Lỗi kết nối: ${error.message}</p>`;
+            } catch (err) {
+                console.error('Error:', err);
+                content.innerHTML = `<p style="color: var(--danger); text-align: center;">Lỗi kết nối: ${err.message}</p>`;
             }
         }
 
-        // ========== LOAD TESTERS ==========
-        async function loadTesters() {
-            try {
-                const response = await fetch('/Staff/GetAllTesters');
-                const data = await response.json();
-                if (data.success && data.testers) {
-                    allTesters = data.testers;
-                    const select = document.getElementById('selectTester');
-                    select.innerHTML = '<option value="">-- Chọn Tester --</option>'; // Reset
-                    data.testers.forEach(tester => {
-                        const option = document.createElement('option');
-                        option.value = tester.userId;
-                        option.textContent = `${tester.fullName} (${tester.departmentName})`;
-                        select.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading testers:', error);
-            }
-        }
-
-        // ========== UPDATE TASK PROGRESS - FIXED VERSION ==========
-        async function updateTaskProgress(userTaskId) {
+        // ==================== UPDATE TASK ====================
+        async function updateTask(id) {
             if (!userPermissions) {
-                Swal.fire('Lỗi', 'Vui lòng đợi hệ thống tải thông tin quyền...', 'warning');
+                showWarning('Vui lòng đợi hệ thống tải thông tin quyền...');
                 return;
             }
 
             try {
-                // ✅ LẤY TRẠNG THÁI HIỆN TẠI TỪ DOM
-                const currentTaskItem = document.querySelector(`.task-list-item[data-user-task-id="${userTaskId}"]`);
-                let currentStatus = (currentTaskItem ? currentTaskItem.getAttribute('data-status') : 'TODO') || 'TODO';
+                const item = document.querySelector(`.task-item[data-id="${id}"]`);
+                const currentStatus = item ? item.dataset.status : 'TODO';
+                const currentStatusText = item ? item.querySelector('.status-badge span').textContent : '';
 
-                // Lấy Text hiển thị cho Current Status
-                const currentStatusText = currentTaskItem.querySelector('.task-status-badge span').textContent;
+                document.getElementById('updateTaskId').value = id;
+                document.getElementById('currentStatus').value = currentStatus;
+                document.getElementById('currentStatusText').value = currentStatusText;
+                document.getElementById('reportLink').value = '';
+                document.getElementById('reportLinkGroup').classList.add('hidden');
+                document.getElementById('testerGroup').classList.add('hidden');
+                document.getElementById('testerId').value = '';
 
-                document.getElementById('updateUserTaskId').value = userTaskId;
-                document.getElementById('currentTaskStatus').value = currentStatus;
-                document.getElementById('currentStatusDisplay').value = currentStatusText;
-                document.getElementById('updateReportLink').value = '';
-                document.getElementById('reportLinkGroup').style.display = 'none';
-                document.getElementById('testerSelectGroup').style.display = 'none';
-                document.getElementById('selectTester').value = '';
-
-                // ✅ POPULATE STATUS SELECT DỰA VÀO QUYỀN
-                const statusSelect = document.getElementById('updateStatus');
-                statusSelect.innerHTML = '<option value="">-- Chọn trạng thái --</option>';
+                // Populate status options
+                const select = document.getElementById('newStatus');
+                select.innerHTML = '<option value="">-- Chọn trạng thái --</option>';
 
                 let options = [];
+                const isDev = userPermissions.canSendToTesting; // Giả định đây là quyền Dev/phòng ban Dev
 
-                // Logic cho Developer/Người có quyền chuyển sang Testing
-                if (userPermissions.canSendToTesting) {
-                    if (currentStatus === 'TODO') {
-                        options = ['InProgress', 'Testing'];
-                    } else if (currentStatus === 'InProgress' || currentStatus === 'Reopen') {
-                        options = ['Testing'];
-                    } else if (currentStatus === 'Testing') {
-                        // Testing không được chuyển trạng thái tiếp (chờ Tester xử lý)
-                        Swal.fire('Thông báo', 'Công việc đang ở trạng thái Chờ test. Vui lòng đợi Tester phản hồi.', 'info');
-                        return;
+                // Logic kiểm tra trạng thái cuối cùng
+                if (currentStatus === 'Testing' || currentStatus === 'Done') {
+                    if (currentStatus === 'Testing') {
+                        showInfo('Công việc đang ở trạng thái **Chờ test**. Vui lòng đợi Tester phản hồi.');
+                    } else {
+                        showInfo('Công việc đã **Hoàn thành** và không thể thay đổi trạng thái.');
+                    }
+                    return;
+                }
+
+                // Logic cập nhật trạng thái
+                if (currentStatus === 'TODO') {
+                    options.push('InProgress'); // TẤT CẢ ROLE: TODO -> Đang làm
+                    if (isDev) {
+                        options.push('Testing'); // DEV: Thêm tùy chọn gửi test trực tiếp
                     }
                 }
-
-                // Logic cho Tester/Người có quyền hoàn thành (luôn có thể hoàn thành nếu là dev)
-                if (userPermissions.canMarkDone || userPermissions.canSendToTesting) {
-                    if (currentStatus === 'InProgress' || currentStatus === 'Reopen') {
-                        // Thêm Done cho dev/staff
-                        options.push('Done');
+                else if (currentStatus === 'InProgress') {
+                    if (isDev) {
+                        options.push('Testing'); // DEV: Đang làm -> Chờ test
                     }
+                    // TẤT CẢ ROLE: Có thể chuyển từ InProgress sang Done
+                    options.push('Done');
+                }
+                else if (currentStatus === 'Reopen') {
+                    // TẤT CẢ ROLE: Cần sửa lại -> Đang làm để sửa
+                    options.push('InProgress');
                 }
 
-                // Logic cho Tester/Người có quyền Reopen (khi đang Testing)
-                if (currentStatus === 'Testing' && userPermissions.canReopen) {
-                    options.push('Reopen');
-                }
-
-                // Loại bỏ các trạng thái trùng lặp và thêm vào select
-                const uniqueOptions = [...new Set(options)];
-
+                // Loại bỏ trùng lặp và thêm vào select box
                 const statusMap = {
                     'InProgress': 'Đang làm',
                     'Testing': 'Chờ test',
@@ -1100,134 +1251,158 @@
                     'Reopen': 'Cần sửa lại'
                 };
 
-                uniqueOptions.forEach(status => {
-                    const option = document.createElement('option');
-                    option.value = status;
-                    option.textContent = statusMap[status] || status;
-                    statusSelect.appendChild(option);
+                [...new Set(options)].forEach(status => {
+                    const opt = document.createElement('option');
+                    opt.value = status;
+                    opt.textContent = statusMap[status] || status;
+                    select.appendChild(opt);
                 });
 
-                if (statusSelect.options.length <= 1) {
-                    Swal.fire('Thông báo', 'Không có trạng thái nào hợp lệ để chuyển tiếp công việc này.', 'info');
+                if (select.options.length <= 1) {
+                    showInfo('Không có trạng thái nào hợp lệ để chuyển tiếp công việc này.');
                     return;
                 }
 
-                showModal('updateProgressModal');
-
-            } catch (error) {
-                console.error('Error in updateTaskProgress:', error);
-                Swal.fire('Lỗi', 'Đã xảy ra lỗi khi chuẩn bị cập nhật tiến độ.', 'error');
+                openModal('updateModal');
+            } catch (err) {
+                console.error('Error:', err);
+                showError('Đã xảy ra lỗi khi chuẩn bị cập nhật tiến độ.');
             }
         }
 
-        // ========== HANDLE STATUS CHANGE IN MODAL ==========
-        document.getElementById('updateStatus').addEventListener('change', function() {
+        // Handle status change
+        document.getElementById('newStatus').addEventListener('change', function() {
             const status = this.value;
             const reportLinkGroup = document.getElementById('reportLinkGroup');
-            const testerSelectGroup = document.getElementById('testerSelectGroup');
+            const testerGroup = document.getElementById('testerGroup');
 
-            // Hiện/ẩn report link
-            if (status === 'InProgress' || status === 'Done') { // Bỏ 'Testing' vì testing không bắt buộc link
-                reportLinkGroup.style.display = 'block';
+            if (['InProgress', 'Done'].includes(status)) {
+                reportLinkGroup.classList.remove('hidden');
             } else {
-                reportLinkGroup.style.display = 'none';
+                reportLinkGroup.classList.add('hidden');
             }
 
-            // Hiện/ẩn tester select
-            if (userPermissions && userPermissions.canSendToTesting && status === 'Testing') {
-                testerSelectGroup.style.display = 'block';
+            if (userPermissions?.canSendToTesting && status === 'Testing') {
+                testerGroup.classList.remove('hidden');
             } else {
-                testerSelectGroup.style.display = 'none';
+                testerGroup.classList.add('hidden');
             }
         });
 
-        // ========== SUBMIT UPDATE ==========
-        async function submitUpdateProgress() {
-            const userTaskId = document.getElementById('updateUserTaskId').value;
-            const status = document.getElementById('updateStatus').value;
-            const reportLink = document.getElementById('updateReportLink').value.trim();
-            const selectTester = document.getElementById('selectTester').value;
+        // ==================== SUBMIT UPDATE ====================
+        async function submitUpdate() {
+            const taskId = document.getElementById('updateTaskId').value;
+            const status = document.getElementById('newStatus').value;
+            const reportLink = document.getElementById('reportLink').value.trim();
+            const testerId = document.getElementById('testerId').value;
 
             if (!status) {
-                Swal.fire('Cảnh báo', 'Vui lòng chọn trạng thái mới.', 'warning');
+                showWarning('Vui lòng chọn trạng thái mới.');
                 return;
             }
 
-            if (status === 'Testing' && userPermissions.canSendToTesting && !selectTester) {
-                 Swal.fire('Cảnh báo', 'Vui lòng chọn Tester khi chuyển sang trạng thái "Chờ test".', 'warning');
-                 return;
+            if (status === 'Testing' && userPermissions.canSendToTesting && !testerId) {
+                showWarning('Vui lòng chọn Tester khi chuyển sang trạng thái "Chờ test".');
+                return;
             }
 
-            // Cập nhật ReportLink cho trường hợp đang là InProgress hoặc Done
-            if ((status === 'InProgress' || status === 'Done') && !reportLink) {
-                 Swal.fire('Cảnh báo', 'Vui lòng cung cấp Link báo cáo/tài liệu liên quan.', 'warning');
-                 return;
-            }
+            // Theo yêu cầu, báo cáo là tùy chọn (mặc dù tôi thấy bạn có code cũ là bắt buộc)
+            // Tạm thời tôi để lại yêu cầu bắt buộc (showWarning) nếu không có link, bạn có thể xóa dòng này nếu muốn tùy chọn hoàn toàn
+            // if (['InProgress', 'Done'].includes(status) && !reportLink) {
+            //     showWarning('Vui lòng cung cấp Link báo cáo/tài liệu liên quan.');
+            //     return;
+            // }
 
-            const requestData = {
-                UserTaskId: userTaskId,
+            const payload = {
+                UserTaskId: parseInt(taskId),
                 Status: status,
-                ReportLink: reportLink,
-                TesterId: status === 'Testing' ? (selectTester || null) : null
+                ReportLink: reportLink || null,
+                TesterId: status === 'Testing' ? (testerId ? parseInt(testerId) : null) : null
             };
 
-            Swal.fire({ title: 'Đang cập nhật...', text: 'Vui lòng đợi giây lát', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            showLoading('Đang cập nhật...');
 
             try {
-                const response = await fetch('/Staff/UpdateTaskProgress', {
+                const res = await fetch('/Staff/UpdateTaskProgress', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestData)
+                    body: JSON.stringify(payload)
                 });
 
-                const data = await response.json();
+                const data = await res.json();
                 if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cập nhật thành công!',
-                        text: data.message
-                    }).then(() => location.reload());
+                    await showSuccess('Cập nhật thành công!', data.message);
+                    location.reload();
                 } else {
-                    Swal.fire('Lỗi', data.message, 'error');
+                    showError(data.message);
                 }
-
             } catch (err) {
-                Swal.fire('Lỗi kết nối', err.message, 'error');
+                console.error('Error:', err);
+                showError('Lỗi kết nối: ' + err.message);
             }
         }
 
-        // ========== CLOSE ON OUTSIDE CLICK - FIXED ==========
-        function setupModalCloseBehavior() {
-            // ✅ XỬ LÝ ĐÓNG MODAL KHI CLICK VÀO OVERLAY
-            document.querySelectorAll('.modal-overlay').forEach(overlay => {
-                overlay.addEventListener('mousedown', function(e) {
-                    // Chỉ đóng khi click TRỰC TIẾP vào overlay (background đen mờ)
-                    if (e.target === this) {
-                        console.log('🚪 Closing modal by overlay click');
-                        this.classList.remove('show');
-                    }
-                });
-            });
-
-            // ✅ NGĂN MODAL ĐÓNG KHI CLICK VÀO NỘI DUNG BÊN TRONG
-            document.querySelectorAll('.modal-dialog').forEach(dialog => {
-                dialog.addEventListener('mousedown', function(e) {
-                    e.stopPropagation(); // Ngăn event bubble lên overlay
-                });
-            });
-
-            console.log('✅ Modal close behavior setup complete');
+        // ==================== UTILITIES ====================
+        function getStatusText(status) {
+            const map = {
+                'TODO': 'Chưa bắt đầu',
+                'InProgress': 'Đang làm',
+                'Testing': 'Chờ test',
+                'Done': 'Hoàn thành',
+                'Reopen': 'Cần sửa lại'
+            };
+            return map[status] || status;
         }
 
-        // ========== INIT ==========\
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('🚀 Initializing...');
-            await loadUserPermissions();
-            calculateStats(); // Tính toán và hiển thị thống kê
-            console.log('✅ Initialization complete');
+        // ==================== SWEETALERT2 HELPERS ====================
+        function showLoading(title = 'Đang xử lý...') {
+            Swal.fire({
+                title: title,
+                text: 'Vui lòng đợi giây lát',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => Swal.showLoading()
+            });
+        }
 
-            // ✅ SETUP MODAL CLOSE BEHAVIOR - SAU KHI DOM LOADED
-            setupModalCloseBehavior();
-        });
+        async function showSuccess(title, text) {
+            return Swal.fire({
+                icon: 'success',
+                title: title,
+                text: text,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#10b981'
+            });
+        }
+
+        function showError(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: message,
+                confirmButtonText: 'Đóng',
+                confirmButtonColor: '#ef4444'
+            });
+        }
+
+        function showWarning(message) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cảnh báo',
+                text: message,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#f59e0b'
+            });
+        }
+
+        function showInfo(message) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Thông báo',
+                html: message, // Dùng html để hỗ trợ bold
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3b82f6'
+            });
+        }
     </script>
 }

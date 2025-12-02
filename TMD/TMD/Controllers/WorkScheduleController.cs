@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AIHUBOS.Helpers;
-using AIHUBOS.Models;
+using TMD.Models;
 
 namespace TMDSystem.Controllers
 {

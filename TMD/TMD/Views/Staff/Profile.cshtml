@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Hồ sơ cá nhân";
-    var user = ViewBag.User as AIHUBOS.Models.User;
+    var user = ViewBag.User as TMD.Models.User;
 
     // Tự động chọn Layout dựa trên Role
     Layout = user?.Role?.RoleName?.ToLower() == "admin"

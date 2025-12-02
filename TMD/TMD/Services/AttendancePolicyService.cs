@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using AIHUBOS.Models;
+using TMD.Models;
 
 namespace AIHUBOS.Services
 {

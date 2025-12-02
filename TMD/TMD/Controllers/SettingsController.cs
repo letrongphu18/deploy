@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AIHUBOS.Helpers;
-using AIHUBOS.Models;
+using TMD.Models;
 using Task = System.Threading.Tasks.Task;
 using System.Text.RegularExpressions;
 
-namespace AIHUBOS.Controllers
+namespace TMD.Controllers
 {
 	public class SettingsController : Controller
 	{

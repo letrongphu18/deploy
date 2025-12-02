@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AIHUBOS.Models;
+using TMD.Models;
 using AIHUBOS.Helpers;
 using AIHUBOS.Services;
 
-namespace AIHUBOS.Controllers
+namespace TMD.Controllers
 {
 	public class TesterController : Controller
 	{
@@ -64,16 +64,18 @@ namespace AIHUBOS.Controllers
 
 			var testerId = HttpContext.Session.GetInt32("UserId");
 
-			// ✅ LẤY TẤT CẢ TASK ĐANG Ở TRẠNG THÁI "Testing"
+			// ✅ CHỈ LẤY TASK ĐƯỢC ASSIGN CHO TESTER NÀY
 			var tasksToTest = await _context.UserTasks
 				.Include(ut => ut.Task)
 				.Include(ut => ut.User)
 					.ThenInclude(u => u.Department)
-				.Where(ut => ut.Status == "Testing" && ut.Task.IsActive == true)
+				.Where(ut => ut.Status == "Testing"
+						  && ut.Task.IsActive == true
+						  && ut.TesterId == testerId)  // ✅ CHỈ LẤY TASK CỦA TESTER NÀY
 				.OrderByDescending(ut => ut.UpdatedAt)
 				.ToListAsync();
 
-			// ✅ STATISTICS
+			// STATISTICS
 			ViewBag.TotalTesting = tasksToTest.Count;
 			ViewBag.OverdueTasks = tasksToTest.Count(ut =>
 				ut.Task.Deadline.HasValue &&
@@ -218,7 +220,7 @@ namespace AIHUBOS.Controllers
 					await _notificationService.SendToUserAsync(
 						userTask.UserId,
 						"Task đã hoàn thành",
-						$"Task '{userTask.Task.TaskName}' đã được Tester approve ✅",
+						$"Task '{userTask.Task.TaskName}' đã được Tester approve ",
 						"success",
 						"/Staff/MyTasks"
 					);
@@ -237,7 +239,7 @@ namespace AIHUBOS.Controllers
 					await _notificationService.SendToUserAsync(
 						userTask.UserId,
 						"Task bị reopen",
-						$"Task '{userTask.Task.TaskName}' cần sửa lại.\n\n📝 Lý do: {request.Note}",
+						$"Task '{userTask.Task.TaskName}' cần sửa lại.\n\n Lý do: {request.Note}",
 						"warning",
 						"/Staff/MyTasks"
 					);
@@ -255,8 +257,8 @@ namespace AIHUBOS.Controllers
 				{
 					success = true,
 					message = request.Action == "Done"
-						? "✅ Task đã được approve và hoàn thành"
-						: "⚠️ Task đã được reopen. Dev sẽ nhận được thông báo."
+						? " Task đã được approve và hoàn thành"
+						: " Task đã được reopen. Dev sẽ nhận được thông báo."
 				});
 			}
 			catch (Exception ex)
@@ -287,22 +289,28 @@ namespace AIHUBOS.Controllers
 
 			try
 			{
+				var testerId = HttpContext.Session.GetInt32("UserId").Value;
 				var today = DateOnly.FromDateTime(DateTime.Now);
 				var thisWeekStart = today.AddDays(-(int)DateTime.Now.DayOfWeek);
 
 				var stats = new
 				{
-					totalTesting = await _context.UserTasks.CountAsync(ut => ut.Status == "Testing"),
+					// ✅ CHỈ THỐNG KÊ TASK CỦA TESTER NÀY
+					totalTesting = await _context.UserTasks
+						.CountAsync(ut => ut.Status == "Testing" && ut.TesterId == testerId),
 					reviewedToday = await _context.UserTasks
 						.CountAsync(ut => (ut.Status == "Done" || ut.Status == "Reopen")
+							&& ut.TesterId == testerId
 							&& ut.UpdatedAt.HasValue
 							&& DateOnly.FromDateTime(ut.UpdatedAt.Value) == today),
 					reviewedThisWeek = await _context.UserTasks
 						.CountAsync(ut => (ut.Status == "Done" || ut.Status == "Reopen")
+							&& ut.TesterId == testerId
 							&& ut.UpdatedAt.HasValue
 							&& DateOnly.FromDateTime(ut.UpdatedAt.Value) >= thisWeekStart),
 					overdueCount = await _context.UserTasks
 						.CountAsync(ut => ut.Status == "Testing"
+							&& ut.TesterId == testerId
 							&& ut.Task.Deadline.HasValue
 							&& DateTime.Now > ut.Task.Deadline.Value)
 				};

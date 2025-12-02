@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System.Drawing;
-using AIHUBOS.Models;
+using TMD.Models;
 
-namespace AIHUBOS.Controllers
+namespace TMD.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]

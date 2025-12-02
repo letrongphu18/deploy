@@ -1,6 +1,6 @@
 [
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "GetAllDepartmentsForKPI",
     "RelativePath": "api/departments",
     "HttpMethod": "GET",
@@ -10,7 +10,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "GetDepartmentKPI",
     "RelativePath": "api/KPI/department/{departmentId}",
     "HttpMethod": "GET",
@@ -36,7 +36,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "ExportDepartmentKPIToExcel",
     "RelativePath": "api/KPI/export/department/{departmentId}",
     "HttpMethod": "GET",
@@ -62,7 +62,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "ExportUserKPIToExcel",
     "RelativePath": "api/KPI/export/user/{userId}",
     "HttpMethod": "GET",
@@ -88,7 +88,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "GetSystemOverview",
     "RelativePath": "api/KPI/overview",
     "HttpMethod": "GET",
@@ -104,7 +104,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "GetTimelineKPI",
     "RelativePath": "api/KPI/timeline",
     "HttpMethod": "GET",
@@ -130,7 +130,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "GetUserKPI",
     "RelativePath": "api/KPI/user/{userId}",
     "HttpMethod": "GET",
@@ -156,7 +156,7 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "AIHUBOS.Controllers.KPIController",
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "GetAllUsersForKPI",
     "RelativePath": "api/users",
     "HttpMethod": "GET",

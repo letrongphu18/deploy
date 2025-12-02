@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using AIHUBOS.Models;
+using TMD.Models;
 using AIHUBOS.Helpers;
 
 namespace AIHUBOS.Services

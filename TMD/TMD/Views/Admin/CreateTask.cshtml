@@ -1,4 +1,4 @@
-﻿@model AIHUBOS.Models.Task
+﻿@model TMD.Models.Task
 @{
     ViewData["Title"] = "Tạo Task mới";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -118,7 +118,7 @@
                                     <div class="aihub-tm-user-list" id="userList">
                                         @if (ViewBag.Users != null)
                                         {
-                                            var usersByDept = ((List<AIHUBOS.Models.User>)ViewBag.Users)
+                                            var usersByDept = ((List<TMD.Models.User>)ViewBag.Users)
                                             .GroupBy(u => u.Department?.DepartmentName ?? "Chưa có phòng ban")
                                             .OrderBy(g => g.Key);
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using AIHUBOS.Models;
+using TMD.Models;
 
-namespace AIHUBOS.ViewModels
+namespace TMD.ViewModels
 {
 	public class UserListViewModel
 	{

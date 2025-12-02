@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using AIHUBOS.Models;
+using TMD.Models;
 
-namespace AIHUBOS.Models.ViewModels
+namespace TMD.Models.ViewModels
 {
 	public class PendingRequestsViewModel
 	{

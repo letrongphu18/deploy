@@ -1,4 +1,4 @@
-@inject AIHUBOS.Models.AihubSystemContext _dbContext
+@inject TMD.Models.AihubSystemContext _dbContext
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -363,7 +363,7 @@
         var customCss = "";
         try
         {
-            customCss = AIHUBOS.Controllers.SettingsController.GetSettingValue(_dbContext, "CUSTOM_CSS");
+            customCss = TMD.Controllers.SettingsController.GetSettingValue(_dbContext, "CUSTOM_CSS");
         }
         catch { }
     }
@@ -543,7 +543,7 @@
         var customJs = "";
         try
         {
-            customJs = AIHUBOS.Controllers.SettingsController.GetSettingValue(_dbContext, "CUSTOM_JS");
+            customJs = TMD.Controllers.SettingsController.GetSettingValue(_dbContext, "CUSTOM_JS");
         }
         catch { }
     }

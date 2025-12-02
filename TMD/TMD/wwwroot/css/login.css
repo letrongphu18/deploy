@@ -13,18 +13,6 @@
     --text-muted: #64748b;
 }
 
-body.staff-dark-mode {
-    --light: #1e293b;
-    --dark: #0f172a;
-    --border: #334155;
-    --shadow: rgba(0, 0, 0, 0.3);
-    --text: #e2e8f0;
-    --text-muted: #94a3b8;
-}
-
-/* ===== LOGIN PAGE - STYLES (uses :root palette above) ===== */
-/* Using prefix: .lgn- (login) to avoid conflicts */
-
 * {
     margin: 0;
     padding: 0;
@@ -36,17 +24,15 @@ body {
     background: var(--light);
     color: var(--text);
     overflow-x: hidden;
-    transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Layout */
 .lgn-container {
     display: flex;
     min-height: 100vh;
     width: 100%;
 }
 
-/* ===== LEFT SIDE - BRANDING ===== */
+/* LEFT SIDE - BRANDING */
 .lgn-branding {
     flex: 1;
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -130,7 +116,6 @@ body {
     font-weight: 400;
 }
 
-/* Features */
 .lgn-features {
     display: flex;
     flex-direction: column;
@@ -178,7 +163,7 @@ body {
     line-height: 1.6;
 }
 
-/* ===== RIGHT SIDE - LOGIN FORM ===== */
+/* RIGHT SIDE - LOGIN FORM */
 .lgn-form-section {
     flex: 1;
     padding: 60px 50px;
@@ -187,11 +172,6 @@ body {
     justify-content: center;
     background: white;
     overflow-y: auto;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-body.staff-dark-mode .lgn-form-section {
-    background: var(--light);
 }
 
 .lgn-form-wrapper {
@@ -200,7 +180,6 @@ body.staff-dark-mode .lgn-form-section {
     width: 100%;
 }
 
-/* Header */
 .lgn-form-header {
     margin-bottom: 36px;
     text-align: center;
@@ -219,7 +198,6 @@ body.staff-dark-mode .lgn-form-section {
         color: var(--text-muted);
     }
 
-/* Form groups */
 .lgn-form-group {
     margin-bottom: 18px;
 }
@@ -260,27 +238,21 @@ body.staff-dark-mode .lgn-form-section {
     font-family: inherit;
 }
 
-body.staff-dark-mode .lgn-form-control {
-    background: var(--dark);
-    color: var(--text);
-}
-
-.lgn-form-control::placeholder {
-    color: var(--text-muted);
-    opacity: 0.9;
-}
-
-.lgn-form-control:focus {
-    border-color: var(--secondary);
-    box-shadow: 0 0 0 6px rgba(99,102,241,0.06);
-}
-
-    .lgn-form-control:focus ~ .lgn-input-icon,
-    .lgn-form-control:focus + .lgn-input-icon {
-        color: var(--secondary);
+    .lgn-form-control::placeholder {
+        color: var(--text-muted);
+        opacity: 0.9;
     }
 
-/* Password toggle */
+    .lgn-form-control:focus {
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 6px rgba(99,102,241,0.06);
+    }
+
+        .lgn-form-control:focus ~ .lgn-input-icon,
+        .lgn-form-control:focus + .lgn-input-icon {
+            color: var(--secondary);
+        }
+
 .lgn-password-toggle {
     position: absolute;
     right: 14px;
@@ -298,7 +270,6 @@ body.staff-dark-mode .lgn-form-control {
         transform: translateY(-1px);
     }
 
-/* Options row */
 .lgn-form-options {
     display: flex;
     justify-content: space-between;
@@ -321,7 +292,6 @@ body.staff-dark-mode .lgn-form-control {
         accent-color: var(--secondary);
     }
 
-/* Forgot link */
 .lgn-forgot-password {
     font-size: 14px;
     color: var(--secondary);
@@ -335,7 +305,6 @@ body.staff-dark-mode .lgn-form-control {
         transform: translateY(-1px);
     }
 
-/* Login button */
 .lgn-btn-login {
     width: 100%;
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -386,7 +355,21 @@ body.staff-dark-mode .lgn-form-control {
         pointer-events: none;
     }
 
-/* Divider */
+/* ANIMATION CHO SPINNER - ĐÂY LÀ PHẦN FIX */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
 .lgn-divider {
     text-align: center;
     margin: 28px 0;
@@ -420,7 +403,6 @@ body.staff-dark-mode .lgn-form-control {
         font-weight: 600;
     }
 
-/* Social buttons */
 .lgn-social-login {
     display: flex;
     gap: 12px;
@@ -450,7 +432,6 @@ body.staff-dark-mode .lgn-form-control {
         box-shadow: 0 10px 24px var(--shadow);
     }
 
-/* Footer */
 .lgn-footer-text {
     text-align: center;
     font-size: 13px;
@@ -458,7 +439,6 @@ body.staff-dark-mode .lgn-form-control {
     margin-top: 18px;
 }
 
-/* Responsive */
 @media (max-width: 991px) {
     .lgn-branding {
         display: none;
@@ -498,28 +478,4 @@ body.staff-dark-mode .lgn-form-control {
         flex-direction: column;
         gap: 10px;
     }
-}
-
-/* SweetAlert2 overrides (use palette variables) */
-.swal2-popup {
-    border-radius: 12px !important;
-    font-family: 'Inter', 'Segoe UI', sans-serif !important;
-}
-
-.swal2-title {
-    font-weight: 700 !important;
-    font-size: 20px !important;
-    color: var(--text) !important;
-}
-
-.swal2-html-container {
-    color: var(--text-muted) !important;
-}
-
-.swal2-confirm {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%) !important;
-    border-radius: 8px !important;
-    padding: 8px 22px !important;
-    font-weight: 700 !important;
-    box-shadow: 0 6px 18px var(--shadow) !important;
 }

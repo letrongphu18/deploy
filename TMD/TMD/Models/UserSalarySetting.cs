@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AIHUBOS.Models;
+namespace TMD.Models;
 
 public partial class UserSalarySetting
 {

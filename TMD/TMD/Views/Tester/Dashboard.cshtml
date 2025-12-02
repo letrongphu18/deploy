@@ -1,4 +1,4 @@
-﻿@model List<AIHUBOS.Models.UserTask>
+﻿@model List<TMD.Models.UserTask>
 @{
     ViewData["Title"] = "Task cần test";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
@@ -301,37 +301,92 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        let detailModal, reviewModal;
-        let currentPage = 1;
-        let itemsPerPage = 10;
-        let filteredItems = [];
+        // ============================================
+        // 🔧 FIXED - GLOBAL SCOPE
+        // ============================================
 
-        document.addEventListener('DOMContentLoaded', function() {
-            detailModal = new bootstrap.Modal(document.getElementById('taskDetailModal'));
-            reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
+        // ✅ KHAI BÁO GLOBAL VARIABLES
+        window.detailModal = null;
+        window.reviewModal = null;
+        window.currentPage = 1;
+        window.itemsPerPage = 10;
+        window.filteredItems = [];
+        window.connection = null;
 
-            // Initialize pagination
-            filterTasks();
-        });
+        // ✅ FIX: Đưa tất cả functions ra GLOBAL SCOPE
+        window.viewTaskDetail = function(userTaskId) {
+            console.log('👁️ View task detail:', userTaskId);
 
-        function resetFilters() {
+            if (!window.detailModal) {
+                console.error('❌ Detail modal not initialized');
+                Swal.fire('Lỗi', 'Modal chưa sẵn sàng. Vui lòng tải lại trang.', 'error');
+                return;
+            }
+
+            window.detailModal.show();
+
+            document.getElementById('taskDetailContent').innerHTML = `
+                <div class="tm-loading">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-2 tm-text-muted">Đang tải...</p>
+                </div>
+            `;
+
+            loadTaskDetail(userTaskId);
+        };
+
+        window.reviewTask = function(userTaskId, taskName, action) {
+            console.log('📝 Review task:', { userTaskId, taskName, action });
+
+            if (!window.reviewModal) {
+                console.error('❌ Review modal not initialized');
+                Swal.fire('Lỗi', 'Modal chưa sẵn sàng. Vui lòng tải lại trang.', 'error');
+                return;
+            }
+
+            document.getElementById('reviewUserTaskId').value = userTaskId;
+            document.getElementById('reviewAction').value = action;
+            document.getElementById('reviewTaskName').textContent = taskName;
+            document.getElementById('reviewNote').value = '';
+
+            const noteContainer = document.getElementById('reviewNoteContainer');
+            const btnSubmit = document.getElementById('btnSubmitReview');
+
+            if (action === 'Done') {
+                document.getElementById('reviewModalTitle').innerHTML =
+                    '<i class="fas fa-check me-2"></i> Approve task';
+                noteContainer.style.display = 'none';
+                btnSubmit.className = 'tm-btn tm-btn-success';
+                btnSubmit.innerHTML = '<i class="fas fa-check"></i> Approve';
+            } else {
+                document.getElementById('reviewModalTitle').innerHTML =
+                    '<i class="fas fa-redo me-2"></i> Reopen task';
+                noteContainer.style.display = 'block';
+                btnSubmit.className = 'tm-btn tm-btn-warning';
+                btnSubmit.innerHTML = '<i class="fas fa-redo"></i> Reopen';
+            }
+
+            window.reviewModal.show();
+        };
+
+        window.resetFilters = function() {
             document.getElementById('searchInput').value = '';
             document.getElementById('priorityFilter').value = '';
             document.getElementById('statusFilter').value = '';
             document.getElementById('itemsPerPage').value = '10';
-            itemsPerPage = 10;
-            currentPage = 1;
-            filterTasks();
-        }
+            window.itemsPerPage = 10;
+            window.currentPage = 1;
+            window.filterTasks();
+        };
 
-        function filterTasks() {
+        window.filterTasks = function() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const priority = document.getElementById('priorityFilter').value;
             const status = document.getElementById('statusFilter').value;
 
             const allItems = Array.from(document.querySelectorAll('.task-list-item'));
 
-            filteredItems = allItems.filter(item => {
+            window.filteredItems = allItems.filter(item => {
                 const name = item.getAttribute('data-name');
                 const assignee = item.getAttribute('data-assignee');
                 const itemPriority = item.getAttribute('data-priority');
@@ -344,28 +399,22 @@
                 return matchSearch && matchPriority && matchStatus;
             });
 
-            // Reset to page 1 when filtering
-            currentPage = 1;
-            displayPage();
-        }
+            window.currentPage = 1;
+            window.displayPage();
+        };
 
-        function displayPage() {
+        window.displayPage = function() {
             const allItems = document.querySelectorAll('.task-list-item');
-
-            // Hide all items first
             allItems.forEach(item => item.style.display = 'none');
 
-            // Calculate start and end index
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
+            const startIndex = (window.currentPage - 1) * window.itemsPerPage;
+            const endIndex = startIndex + window.itemsPerPage;
 
-            // Show items for current page
-            filteredItems.slice(startIndex, endIndex).forEach(item => {
+            window.filteredItems.slice(startIndex, endIndex).forEach(item => {
                 item.style.display = 'block';
             });
 
-            // Update pagination info
-            const totalItems = filteredItems.length;
+            const totalItems = window.filteredItems.length;
             const displayStart = totalItems === 0 ? 0 : startIndex + 1;
             const displayEnd = Math.min(endIndex, totalItems);
 
@@ -373,12 +422,11 @@
             document.getElementById('endItem').textContent = displayEnd;
             document.getElementById('totalItems').textContent = totalItems;
 
-            // Render pagination buttons
-            renderPagination();
-        }
+            window.renderPagination();
+        };
 
-        function renderPagination() {
-            const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+        window.renderPagination = function() {
+            const totalPages = Math.ceil(window.filteredItems.length / window.itemsPerPage);
             const paginationEl = document.getElementById('pagination');
 
             if (totalPages <= 1) {
@@ -388,18 +436,16 @@
 
             let html = '';
 
-            // Previous button
             html += `
-                <button class="tm-page-btn ${currentPage === 1 ? 'disabled' : ''}"
-                        onclick="changePage(${currentPage - 1})"
-                        ${currentPage === 1 ? 'disabled' : ''}>
+                <button class="tm-page-btn ${window.currentPage === 1 ? 'disabled' : ''}"
+                        onclick="changePage(${window.currentPage - 1})"
+                        ${window.currentPage === 1 ? 'disabled' : ''}>
                     <i class="fas fa-chevron-left"></i>
                 </button>
             `;
 
-            // Page numbers
             const maxButtons = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+            let startPage = Math.max(1, window.currentPage - Math.floor(maxButtons / 2));
             let endPage = Math.min(totalPages, startPage + maxButtons - 1);
 
             if (endPage - startPage < maxButtons - 1) {
@@ -415,7 +461,7 @@
 
             for (let i = startPage; i <= endPage; i++) {
                 html += `
-                    <button class="tm-page-btn ${i === currentPage ? 'active' : ''}"
+                    <button class="tm-page-btn ${i === window.currentPage ? 'active' : ''}"
                             onclick="changePage(${i})">
                         ${i}
                     </button>
@@ -429,48 +475,35 @@
                 html += `<button class="tm-page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
             }
 
-            // Next button
             html += `
-                <button class="tm-page-btn ${currentPage === totalPages ? 'disabled' : ''}"
-                        onclick="changePage(${currentPage + 1})"
-                        ${currentPage === totalPages ? 'disabled' : ''}>
+                <button class="tm-page-btn ${window.currentPage === totalPages ? 'disabled' : ''}"
+                        onclick="changePage(${window.currentPage + 1})"
+                        ${window.currentPage === totalPages ? 'disabled' : ''}>
                     <i class="fas fa-chevron-right"></i>
                 </button>
             `;
 
             paginationEl.innerHTML = html;
-        }
+        };
 
-        function changePage(page) {
-            const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+        window.changePage = function(page) {
+            const totalPages = Math.ceil(window.filteredItems.length / window.itemsPerPage);
             if (page < 1 || page > totalPages) return;
 
-            currentPage = page;
-            displayPage();
+            window.currentPage = page;
+            window.displayPage();
 
-            // Scroll to top of task list
-            document.querySelector('.task-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+            const taskList = document.querySelector('.task-list');
+            if (taskList) {
+                taskList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
 
-        // Event listeners
-        document.getElementById('searchInput')?.addEventListener('input', filterTasks);
-        document.getElementById('priorityFilter')?.addEventListener('change', filterTasks);
-        document.getElementById('statusFilter')?.addEventListener('change', filterTasks);
-        document.getElementById('itemsPerPage')?.addEventListener('change', function() {
-            itemsPerPage = parseInt(this.value);
-            currentPage = 1;
-            displayPage();
-        });
+        // ============================================
+        // INTERNAL FUNCTIONS (không cần global)
+        // ============================================
 
-        async function viewTaskDetail(userTaskId) {
-            detailModal.show();
-            document.getElementById('taskDetailContent').innerHTML = `
-                <div class="tm-loading">
-                    <div class="spinner-border text-primary"></div>
-                    <p class="mt-2 tm-text-muted">Đang tải...</p>
-                </div>
-            `;
-
+        async function loadTaskDetail(userTaskId) {
             try {
                 const response = await fetch(`/Tester/GetTaskDetail?userTaskId=${userTaskId}`);
                 const data = await response.json();
@@ -548,7 +581,7 @@
                     `;
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error loading task detail:', error);
                 document.getElementById('taskDetailContent').innerHTML = `
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-circle me-2"></i>Có lỗi xảy ra: ${error.message}
@@ -557,33 +590,7 @@
             }
         }
 
-        function reviewTask(userTaskId, taskName, action) {
-            document.getElementById('reviewUserTaskId').value = userTaskId;
-            document.getElementById('reviewAction').value = action;
-            document.getElementById('reviewTaskName').textContent = taskName;
-            document.getElementById('reviewNote').value = '';
-
-            const noteContainer = document.getElementById('reviewNoteContainer');
-            const btnSubmit = document.getElementById('btnSubmitReview');
-
-            if (action === 'Done') {
-                document.getElementById('reviewModalTitle').innerHTML =
-                    '<i class="fas fa-check me-2"></i> Approve task';
-                noteContainer.style.display = 'none';
-                btnSubmit.className = 'tm-btn tm-btn-success';
-                btnSubmit.innerHTML = '<i class="fas fa-check"></i> Approve';
-            } else {
-                document.getElementById('reviewModalTitle').innerHTML =
-                    '<i class="fas fa-redo me-2"></i> Reopen task';
-                noteContainer.style.display = 'block';
-                btnSubmit.className = 'tm-btn tm-btn-warning';
-                btnSubmit.innerHTML = '<i class="fas fa-redo"></i> Reopen';
-            }
-
-            reviewModal.show();
-        }
-
-        document.getElementById('btnSubmitReview').addEventListener('click', async function() {
+        async function submitReview() {
             const userTaskId = parseInt(document.getElementById('reviewUserTaskId').value);
             const action = document.getElementById('reviewAction').value;
             const note = document.getElementById('reviewNote').value.trim();
@@ -613,7 +620,7 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    reviewModal.hide();
+                    window.reviewModal.hide();
                     Swal.fire({
                         icon: 'success',
                         title: 'Thành công!',
@@ -625,9 +632,103 @@
                     Swal.fire('Lỗi', data.message, 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error submitting review:', error);
                 Swal.fire('Lỗi', 'Có lỗi xảy ra: ' + error.message, 'error');
             }
+        }
+
+        function attachEventListeners() {
+            const searchInput = document.getElementById('searchInput');
+            const priorityFilter = document.getElementById('priorityFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const itemsPerPageSelect = document.getElementById('itemsPerPage');
+            const btnSubmitReview = document.getElementById('btnSubmitReview');
+
+            if (searchInput) searchInput.addEventListener('input', window.filterTasks);
+            if (priorityFilter) priorityFilter.addEventListener('change', window.filterTasks);
+            if (statusFilter) statusFilter.addEventListener('change', window.filterTasks);
+
+            if (itemsPerPageSelect) {
+                itemsPerPageSelect.addEventListener('change', function() {
+                    window.itemsPerPage = parseInt(this.value);
+                    window.currentPage = 1;
+                    window.displayPage();
+                });
+            }
+
+            if (btnSubmitReview) {
+                btnSubmitReview.addEventListener('click', submitReview);
+            }
+        }
+
+        async function initSignalR() {
+            try {
+                window.connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/notificationHub")
+                    .withAutomaticReconnect()
+                    .build();
+
+                window.connection.on("ReceiveMessage", (title, message, type, link) => {
+                    console.log('📩 Notification received:', { title, message, type });
+
+                    Swal.fire({
+                        icon: type === 'success' ? 'success' : type === 'error' ? 'error' : 'info',
+                        title: title,
+                        html: message.replace(/\n/g, '<br>'),
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 7000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('click', () => {
+                                if (link) window.location.href = link;
+                            });
+                        }
+                    });
+
+                    if (title.includes('Task mới cần test')) {
+                        setTimeout(() => location.reload(), 2000);
+                    }
+                });
+
+                await window.connection.start();
+                console.log('✅ SignalR Connected');
+            } catch (err) {
+                console.error('❌ SignalR Error:', err);
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing Tester Dashboard...');
+
+            const detailModalEl = document.getElementById('taskDetailModal');
+            const reviewModalEl = document.getElementById('reviewModal');
+
+            if (detailModalEl) {
+                window.detailModal = new bootstrap.Modal(detailModalEl);
+                console.log('✅ Detail Modal initialized');
+            } else {
+                console.error('❌ taskDetailModal element not found');
+            }
+
+            if (reviewModalEl) {
+                window.reviewModal = new bootstrap.Modal(reviewModalEl);
+                console.log('✅ Review Modal initialized');
+            } else {
+                console.error('❌ reviewModal element not found');
+            }
+
+            initSignalR().catch(err => console.error('SignalR init failed:', err));
+            window.filterTasks();
+            attachEventListeners();
+
+            console.log('✅ Dashboard initialized successfully');
+            console.log('✅ viewTaskDetail:', typeof window.viewTaskDetail);
+            console.log('✅ reviewTask:', typeof window.reviewTask);
         });
     </script>
 }

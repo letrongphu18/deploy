@@ -1,4 +1,4 @@
-﻿@model List<AIHUBOS.Models.Task>
+﻿@model List<TMD.Models.Task>
 @{
     ViewData["Title"] = "Quản lý Task";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -308,38 +308,73 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // ✅ INIT DATATABLE
+            // ✅ INIT DATATABLE VỚI CONFIG ĐẦY ĐỦ
             if (typeof $ !== 'undefined' && $.fn.DataTable) {
-                $('#taskTable').DataTable({
-                    language: { url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json' },
+                const table = $('#taskTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json',
+                        paginate: {
+                            first: "Đầu",
+                            last: "Cuối",
+                            next: "Sau",
+                            previous: "Trước"
+                        },
+                        info: "Hiển thị _START_ đến _END_ của _TOTAL_ task",
+                        infoEmpty: "Không có dữ liệu",
+                        emptyTable: "Chưa có task nào",
+                        search: "Tìm kiếm:",
+                        lengthMenu: "Hiển thị _MENU_ task"
+                    },
                     order: [[0, 'desc']],
-                    pageLength: 25,
-                    responsive: true
+                    pageLength: 10,
+                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Tất cả"]],
+                    responsive: true,
+                    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
+                    drawCallback: function() {
+                        // ✅ RE-ATTACH EVENT LISTENERS SAU KHI PHÂN TRANG
+                        attachEventListeners();
+                    }
+                });
+
+                console.log('✅ DataTable initialized:', table);
+            }
+
+            // ✅ HÀM ATTACH EVENTS (GỌI LẠI SAU MỖI LẦN PHÂN TRANG)
+            function attachEventListeners() {
+                // VIEW BUTTON
+                document.querySelectorAll('.btn-view').forEach(btn => {
+                    btn.removeEventListener('click', handleView); // Xóa listener cũ
+                    btn.addEventListener('click', handleView);
+                });
+
+                // DELETE & RESTORE BUTTONS
+                document.querySelectorAll('.btn-delete, .btn-restore').forEach(btn => {
+                    btn.removeEventListener('click', handleDeleteRestore);
+                    btn.addEventListener('click', handleDeleteRestore);
                 });
             }
 
-            // ✅ VIEW BUTTON
-            document.querySelectorAll('.btn-view').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    viewTaskDetail(this.dataset.id);
-                });
-            });
+            function handleView(e) {
+                e.preventDefault();
+                const taskId = this.dataset.id;
+                console.log('🔍 Viewing task:', taskId);
+                viewTaskDetail(taskId);
+            }
 
-            // ✅ DELETE & RESTORE BUTTONS
-            document.querySelectorAll('.btn-delete, .btn-restore').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const isDelete = this.classList.contains('btn-delete');
-                    const taskId = this.dataset.id;
-                    const taskName = this.dataset.name;
-                    const msg = isDelete ? `Ẩn task "${taskName}"?` : `Khôi phục task "${taskName}"?`;
+            function handleDeleteRestore(e) {
+                e.preventDefault();
+                const isDelete = this.classList.contains('btn-delete');
+                const taskId = this.dataset.id;
+                const taskName = this.dataset.name;
+                const msg = isDelete ? `Ẩn task "${taskName}"?` : `Khôi phục task "${taskName}"?`;
 
-                    if (confirm(`Bạn có chắc muốn ${msg}`)) {
-                        isDelete ? deleteTask(taskId) : restoreTask(taskId);
-                    }
-                });
-            });
+                if (confirm(`Bạn có chắc muốn ${msg}`)) {
+                    isDelete ? deleteTask(taskId) : restoreTask(taskId);
+                }
+            }
+
+            // ✅ ATTACH LẦN ĐẦU
+            attachEventListeners();
 
             function showToast(message, type = 'info') {
                 const toastClass = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
@@ -351,26 +386,41 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 `;
                 document.body.appendChild(toast);
-                setTimeout(() => {
-                    toast.remove();
-                }, 4000);
+                setTimeout(() => toast.remove(), 4000);
             }
 
-            // ✅ HÀM viewTaskDetail FIXED - BỎ CompletedThisWeek & TargetPerWeek
+            // ✅ VIEW TASK DETAIL - FIXED
             function viewTaskDetail(taskId) {
+                console.log('📋 Opening modal for task:', taskId);
+
                 const modal = new bootstrap.Modal(document.getElementById('taskDetailModal'));
                 const content = document.getElementById('taskDetailContent');
+
+                content.innerHTML = `
+                    <div class="tl-loading">
+                        <div class="spinner-border" role="status"></div>
+                        <p class="tl-mt-3 tl-text-muted">Đang tải...</p>
+                    </div>
+                `;
+
                 modal.show();
 
                 fetch(`/Admin/GetTaskDetails?id=${taskId}`)
-                    .then(r => r.json())
+                    .then(r => {
+                        console.log('📡 Response status:', r.status);
+                        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                        return r.json();
+                    })
                     .then(data => {
+                        console.log('📦 Response data:', data);
+
                         if (!data || !data.success) {
                             content.innerHTML = `<div class="alert alert-danger">Lỗi: ${data?.message || 'Không thể tải dữ liệu'}</div>`;
                             return;
                         }
 
                         const t = data.task || {};
+                        console.log('✅ Task data:', t);
 
                         const priorityBg = t.Priority === 'High' ? 'danger' : t.Priority === 'Medium' ? 'warning' : 'success';
                         const statusBg = t.IsActive ? 'success' : 'secondary';
@@ -383,26 +433,10 @@
                                                  u.StatusClass === 'info' ? 'bg-info' :
                                                  u.StatusClass === 'danger' ? 'bg-danger' : 'bg-secondary';
 
-                                let avatarHTML = '';
-                                if (u.Avatar && u.Avatar !== '/images/default-avatar.png') {
-                                    avatarHTML = `
-                                        <img src="${u.Avatar}"
-                                             alt="${u.FullName}"
-                                             class="avatar-img"
-                                             style="width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:10px;display:block;"
-                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                                        <div class="avatar-placeholder"
-                                             style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:none;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;flex-shrink:0;">
-                                            ${(u.FullName || 'U').substring(0,1).toUpperCase()}
-                                        </div>
-                                    `;
-                                } else {
-                                    avatarHTML = `
-                                        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;flex-shrink:0;">
-                                            ${(u.FullName || 'U').substring(0,1).toUpperCase()}
-                                        </div>
-                                    `;
-                                }
+                                let avatarHTML = u.Avatar ?
+                                    `<img src="${u.Avatar}" alt="${u.FullName}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:10px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                     <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:none;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;">${u.FullName.substring(0,1).toUpperCase()}</div>` :
+                                    `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;">${u.FullName.substring(0,1).toUpperCase()}</div>`;
 
                                 return `
                                     <tr>
@@ -410,20 +444,14 @@
                                             <div class="d-flex align-items-center">
                                                 ${avatarHTML}
                                                 <div>
-                                                    <div class="fw-bold">${u.FullName || 'N/A'}</div>
-                                                    <small class="text-muted">${u.DepartmentName || 'N/A'}</small>
+                                                    <div class="fw-bold">${u.FullName}</div>
+                                                    <small class="text-muted">${u.DepartmentName}</small>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>
-                                            <span class="badge ${statusBg}">${u.StatusText || 'N/A'}</span>
-                                        </td>
-                                        <td>
-                                            ${u.ReportLink ? `<a href="${u.ReportLink}" target="_blank" class="link-primary text-decoration-none"><i class="fas fa-external-link-alt"></i> Xem</a>` : '<span class="text-muted">—</span>'}
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">${u.UpdatedAtStr || 'N/A'}</small>
-                                        </td>
+                                        <td><span class="badge ${statusBg}">${u.StatusText}</span></td>
+                                        <td>${u.ReportLink ? `<a href="${u.ReportLink}" target="_blank" class="link-primary"><i class="fas fa-external-link-alt"></i> Xem</a>` : '<span class="text-muted">—</span>'}</td>
+                                        <td><small class="text-muted">${u.UpdatedAtStr}</small></td>
                                     </tr>
                                 `;
                             }).join('');
@@ -434,54 +462,33 @@
                         content.innerHTML = `
                             <div class="p-3">
                                 <div class="mb-4 pb-3 border-bottom">
-                                    <h5 class="mb-2">${t.TaskName || 'Không có tên'}</h5>
-                                    <p class="text-muted mb-3">${t.Description || 'Không có mô tả'}</p>
+                                    <h5 class="mb-2">${t.TaskName}</h5>
+                                    <p class="text-muted mb-3">${t.Description}</p>
 
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <div>
-                                                <small class="text-muted d-block mb-1"><i class="fas fa-globe me-1"></i>Platform</small>
-                                                <strong>${t.Platform || '—'}</strong>
-                                            </div>
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-globe me-1"></i>Platform</small>
+                                            <strong>${t.Platform}</strong>
                                         </div>
                                         <div class="col-md-6">
-                                            <div>
-                                                <small class="text-muted d-block mb-1"><i class="fas fa-flag me-1"></i>Priority</small>
-                                                <span class="badge bg-${priorityBg}">${t.Priority || 'Medium'}</span>
-                                            </div>
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-flag me-1"></i>Priority</small>
+                                            <span class="badge bg-${priorityBg}">${t.Priority}</span>
                                         </div>
                                         <div class="col-md-6">
-                                            <div>
-                                                <small class="text-muted d-block mb-1"><i class="far fa-calendar me-1"></i>Deadline</small>
-                                                <strong>${t.DeadlineStr || '<span class="text-muted">—</span>'}</strong>
-                                            </div>
+                                            <small class="text-muted d-block mb-1"><i class="far fa-calendar me-1"></i>Deadline</small>
+                                            <strong>${t.DeadlineStr || '<span class="text-muted">—</span>'}</strong>
                                         </div>
                                         <div class="col-md-6">
-                                            <div>
-                                                <small class="text-muted d-block mb-1"><i class="fas fa-toggle-on me-1"></i>Status</small>
-                                                <span class="badge bg-${statusBg}">${t.IsActive ? 'Hoạt động' : 'Ẩn'}</span>
-                                            </div>
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-toggle-on me-1"></i>Status</small>
+                                            <span class="badge bg-${statusBg}">${t.IsActive ? 'Hoạt động' : 'Ẩn'}</span>
                                         </div>
                                         <div class="col-md-6">
-                                            <div>
-                                                <small class="text-muted d-block mb-1"><i class="fas fa-info-circle me-1"></i>Thời gian</small>
-                                                <small class="text-muted">
-                                                    Tạo: ${t.CreatedAtStr || 'N/A'}<br>
-                                                    Cập nhật: ${t.UpdatedAtStr || 'N/A'}
-                                                </small>
-                                            </div>
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-info-circle me-1"></i>Thời gian</small>
+                                            <small class="text-muted">Tạo: ${t.CreatedAtStr}<br>Cập nhật: ${t.UpdatedAtStr}</small>
                                         </div>
                                         <div class="col-md-6">
-                                            <div>
-                                                <small class="text-muted d-block mb-1"><i class="fas fa-chart-pie me-1"></i>Statistics</small>
-                                                <small>
-                                                    TODO: ${t.TodoCount || 0} |
-                                                    Đang làm: ${t.InProgressCount || 0} |
-                                                    Testing: ${t.TestingCount || 0}<br>
-                                                    Done: ${t.DoneCount || 0} |
-                                                    Reopen: ${t.ReopenCount || 0}
-                                                </small>
-                                            </div>
+                                            <small class="text-muted d-block mb-1"><i class="fas fa-chart-pie me-1"></i>Statistics</small>
+                                            <small>TODO: ${t.TodoCount} | Đang làm: ${t.InProgressCount} | Testing: ${t.TestingCount}<br>Done: ${t.DoneCount} | Reopen: ${t.ReopenCount}</small>
                                         </div>
                                     </div>
                                 </div>
@@ -498,9 +505,7 @@
                                                     <th>Cập nhật</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                ${usersHTML}
-                                            </tbody>
+                                            <tbody>${usersHTML}</tbody>
                                         </table>
                                     </div>
                                 </div>
@@ -508,8 +513,8 @@
                         `;
                     })
                     .catch(err => {
-                        content.innerHTML = '<div class="alert alert-danger">Lỗi tải dữ liệu</div>';
-                        console.error(err);
+                        console.error('❌ Error:', err);
+                        content.innerHTML = `<div class="alert alert-danger">Lỗi tải dữ liệu: ${err.message}</div>`;
                     });
             }
 
@@ -519,12 +524,12 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ taskId: parseInt(taskId) })
                 })
-                    .then(r => r.json())
-                    .then(data => {
-                        showToast(data.message, data.success ? 'success' : 'danger');
-                        if (data.success) setTimeout(() => location.reload(), 1000);
-                    })
-                    .catch(() => showToast('Lỗi xảy ra!', 'danger'));
+                .then(r => r.json())
+                .then(data => {
+                    showToast(data.message, data.success ? 'success' : 'danger');
+                    if (data.success) setTimeout(() => location.reload(), 1000);
+                })
+                .catch(() => showToast('Lỗi xảy ra!', 'danger'));
             }
 
             function restoreTask(taskId) {
@@ -533,12 +538,12 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ taskId: parseInt(taskId) })
                 })
-                    .then(r => r.json())
-                    .then(data => {
-                        showToast(data.message, data.success ? 'success' : 'danger');
-                        if (data.success) setTimeout(() => location.reload(), 1000);
-                    })
-                    .catch(() => showToast('Lỗi xảy ra!', 'danger'));
+                .then(r => r.json())
+                .then(data => {
+                    showToast(data.message, data.success ? 'success' : 'danger');
+                    if (data.success) setTimeout(() => location.reload(), 1000);
+                })
+                .catch(() => showToast('Lỗi xảy ra!', 'danger'));
             }
         });
     </script>

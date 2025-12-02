@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AIHUBOS.Models.ViewModels
+namespace TMD.Models.ViewModels
 {
 	public class ChangePasswordViewModel
 	{

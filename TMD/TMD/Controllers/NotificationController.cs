@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AIHUBOS.Services;
 
-namespace AIHUBOS.Controllers
+namespace TMD.Controllers
 {
 	public class NotificationController : Controller
 	{

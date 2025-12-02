@@ -1,4 +1,4 @@
-@inject AIHUBOS.Models.AihubSystemContext _dbContext
+@inject TMD.Models.AihubSystemContext _dbContext
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -11,7 +11,7 @@
 
     @{
         var customStyles = "";
-        try { customStyles = AIHUBOS.Controllers.SettingsController.GetCustomStyles(_dbContext); } catch (Exception ex) { }
+        try { customStyles = TMD.Controllers.SettingsController.GetCustomStyles(_dbContext); } catch (Exception ex) { }
     }
     @if (!string.IsNullOrWhiteSpace(customStyles))
     {
@@ -35,7 +35,7 @@
             <a class="nav-link" href="/Admin/DepartmentList"><i class="fas fa-building"></i><span>Quản lý phòng ban</span></a>
             <a class="nav-link" href="/Admin/TaskList"><i class="fas fa-tasks"></i><span>Quản lý công việc</span></a>
             <a class="nav-link" href="/Admin/AttendanceHistory"><i class="fas fa-clock"></i><span>Check-in/Check-out</span></a>
-            <a class="nav-link" href="/Admin/PendingRequests">
+           @*  <a class="nav-link" href="/Admin/PendingRequests">
                 <i class="fas fa-clipboard-check"></i><span>Duyệt Đề Xuất</span>
                 @{
                     try
@@ -48,7 +48,7 @@
                     }
                     catch { }
                 }
-            </a>
+            </a> *@
             <li class="nav-item">
                 <a class="nav-link" href="@Url.Action("RoleList", "Admin")">
                     <i class="fas fa-user-tag me-2"></i>
@@ -59,8 +59,8 @@
             <a class="nav-link" href="/Admin/LoginHistory"><i class="fas fa-sign-in-alt"></i><span>Lịch sử đăng nhập</span></a>
             <a class="nav-link" href="/Admin/PasswordResetHistory"><i class="fas fa-key"></i><span>Lịch sử đổi mật khẩu</span></a>
             <a href="/Settings/Index" class="nav-link"><i class="fas fa-cog"></i><span>Cấu Hình</span></a>
-            <a href="/Salary/Index" class="nav-link"><i class="fas fa-money-bill"></i><span>Bảng Lương</span></a>
-        </nav>
+@*             <a href="/Salary/Index" class="nav-link"><i class="fas fa-money-bill"></i><span>Bảng Lương</span></a>
+ *@        </nav>
     </div>
 
     <div class="main-content">
@@ -148,7 +148,7 @@
 
     @{
         var customScripts = "";
-        try { customScripts = AIHUBOS.Controllers.SettingsController.GetCustomScripts(_dbContext); } catch { }
+        try { customScripts = TMD.Controllers.SettingsController.GetCustomScripts(_dbContext); } catch { }
     }
     @if (!string.IsNullOrWhiteSpace(customScripts))
     {

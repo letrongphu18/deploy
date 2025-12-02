@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AIHUBOS.Models.ViewModels;
+using TMD.Models.ViewModels;
 using AIHUBOS.Helpers;
 using BCrypt.Net;
-using AIHUBOS.Models;
+using TMD.Models;
 using Task = System.Threading.Tasks.Task;
 using AIHUBOS.Services;
 
-namespace AIHUBOS.Controllers
+namespace TMD.Controllers
 {
 	public class AccountController : Controller
 	{

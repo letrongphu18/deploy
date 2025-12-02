@@ -1,4 +1,4 @@
-﻿@model List<AIHUBOS.Models.Attendance>
+﻿@model List<TMD.Models.Attendance>
 @{
     ViewData["Title"] = "Lịch sử chấm công";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -114,7 +114,7 @@
                     <label class="att-form-label">Nhân viên</label>
                     <select name="userId" class="att-form-select">
                         <option value="">-- Tất cả nhân viên --</option>
-                        @foreach (var user in ViewBag.Users as List<AIHUBOS.Models.User>)
+                        @foreach (var user in ViewBag.Users as List<TMD.Models.User>)
                         {
                             var selectedUser = ViewBag.SelectedUserId == user.UserId;
                             <option value="@user.UserId" selected="@selectedUser">
@@ -128,7 +128,7 @@
                     <label class="att-form-label">Phòng ban</label>
                     <select name="departmentId" class="att-form-select">
                         <option value="">-- Tất cả phòng ban --</option>
-                        @foreach (var dept in ViewBag.Departments as List<AIHUBOS.Models.Department>)
+                        @foreach (var dept in ViewBag.Departments as List<TMD.Models.Department>)
                         {
                             var selectedDept = ViewBag.SelectedDepartmentId == dept.DepartmentId;
                             <option value="@dept.DepartmentId" selected="@selectedDept">

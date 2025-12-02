@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AIHUBOS.Models;
+using TMD.Models;
 using AIHUBOS.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace AIHUBOS.Controllers
+namespace TMD.Controllers
 {
 	public class SalaryController : Controller
 	{

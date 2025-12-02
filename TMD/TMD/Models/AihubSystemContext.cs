@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace AIHUBOS.Models;
+namespace TMD.Models;
 
 public partial class AihubSystemContext : DbContext
 {
@@ -18,6 +18,10 @@ public partial class AihubSystemContext : DbContext
     public virtual DbSet<Attendance> Attendances { get; set; }
 
     public virtual DbSet<AuditLog> AuditLogs { get; set; }
+
+    public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+
+    public virtual DbSet<Conversation> Conversations { get; set; }
 
     public virtual DbSet<Department> Departments { get; set; }
 
@@ -77,10 +81,6 @@ public partial class AihubSystemContext : DbContext
 
     public virtual DbSet<VwSalaryCalculation> VwSalaryCalculations { get; set; }
 
-    public virtual DbSet<VwTaskPerformance> VwTaskPerformances { get; set; }
-
-    public virtual DbSet<VwTasksWithDeadline> VwTasksWithDeadlines { get; set; }
-
     public virtual DbSet<VwTodayAttendance> VwTodayAttendances { get; set; }
 
     public virtual DbSet<VwUserDetail> VwUserDetails { get; set; }
@@ -95,7 +95,7 @@ public partial class AihubSystemContext : DbContext
     {
         modelBuilder.Entity<Attendance>(entity =>
         {
-            entity.HasKey(e => e.AttendanceId).HasName("PK__Attendan__8B69261CFC1A2038");
+            entity.HasKey(e => e.AttendanceId).HasName("PK__Attendan__8B69261C3E6D9DC0");
 
             entity.HasIndex(e => new { e.UserId, e.WorkDate }, "IX_Attendances_UserId_WorkDate");
 
@@ -145,12 +145,12 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Attendances)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Attendanc__UserI__2EDAF651");
+                .HasConstraintName("FK__Attendanc__UserI__00DF2177");
         });
 
         modelBuilder.Entity<AuditLog>(entity =>
         {
-            entity.HasKey(e => e.AuditLogId).HasName("PK__AuditLog__EB5F6CBD0A0604CC");
+            entity.HasKey(e => e.AuditLogId).HasName("PK__AuditLog__EB5F6CBDB3E108F7");
 
             entity.HasIndex(e => new { e.UserId, e.Timestamp }, "IX_AuditLogs_UserId_Timestamp");
 
@@ -166,12 +166,75 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.AuditLogs)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__AuditLogs__UserI__32AB8735");
+                .HasConstraintName("FK__AuditLogs__UserI__02C769E9");
+        });
+
+        modelBuilder.Entity<ChatMessage>(entity =>
+        {
+            entity.HasKey(e => e.MessageId).HasName("PK__ChatMess__C87C0C9C2856B10C");
+
+            entity.ToTable(tb => tb.HasTrigger("trg_UpdateLastMessageAt"));
+
+            entity.HasIndex(e => e.ConversationId, "IX_ChatMessages_ConversationId");
+
+            entity.HasIndex(e => e.IsRead, "IX_ChatMessages_IsRead").HasFilter("([IsRead]=(0))");
+
+            entity.HasIndex(e => e.SenderId, "IX_ChatMessages_SenderId");
+
+            entity.HasIndex(e => e.SentAt, "IX_ChatMessages_SentAt").IsDescending();
+
+            entity.Property(e => e.AttachmentType).HasMaxLength(50);
+            entity.Property(e => e.AttachmentUrl).HasMaxLength(500);
+            entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+            entity.Property(e => e.IsRead).HasDefaultValue(false);
+            entity.Property(e => e.MessageContent).HasMaxLength(4000);
+            entity.Property(e => e.ReadAt).HasColumnType("datetime");
+            entity.Property(e => e.SentAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Conversation).WithMany(p => p.ChatMessages)
+                .HasForeignKey(d => d.ConversationId)
+                .HasConstraintName("FK_ChatMessages_Conversation");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.ChatMessages)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ChatMessages_Sender");
+        });
+
+        modelBuilder.Entity<Conversation>(entity =>
+        {
+            entity.HasKey(e => e.ConversationId).HasName("PK__Conversa__C050D87758B9A498");
+
+            entity.HasIndex(e => e.LastMessageAt, "IX_Conversations_LastMessageAt").IsDescending();
+
+            entity.HasIndex(e => e.User1Id, "IX_Conversations_User1Id");
+
+            entity.HasIndex(e => e.User2Id, "IX_Conversations_User2Id");
+
+            entity.HasIndex(e => new { e.User1Id, e.User2Id }, "UQ_Conversations").IsUnique();
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.IsArchived).HasDefaultValue(false);
+            entity.Property(e => e.LastMessageAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.User1).WithMany(p => p.ConversationUser1s)
+                .HasForeignKey(d => d.User1Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Conversations_User1");
+
+            entity.HasOne(d => d.User2).WithMany(p => p.ConversationUser2s)
+                .HasForeignKey(d => d.User2Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Conversations_User2");
         });
 
         modelBuilder.Entity<Department>(entity =>
         {
-            entity.HasKey(e => e.DepartmentId).HasName("PK__Departme__B2079BED5523DA78");
+            entity.HasKey(e => e.DepartmentId).HasName("PK__Departme__B2079BED48851AA0");
 
             entity.HasIndex(e => e.LeaderId, "IX_Department_LeaderId").HasFilter("([LeaderId] IS NOT NULL)");
 
@@ -187,7 +250,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<Kpihistory>(entity =>
         {
-            entity.HasKey(e => e.KpihistoryId).HasName("PK__KPIHisto__846C1BB3604F2E59");
+            entity.HasKey(e => e.KpihistoryId).HasName("PK__KPIHisto__846C1BB3D5FB2AE8");
 
             entity.ToTable("KPIHistory");
 
@@ -211,7 +274,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<LateRequest>(entity =>
         {
-            entity.HasKey(e => e.LateRequestId).HasName("PK__LateRequ__6814EE074A02B0E7");
+            entity.HasKey(e => e.LateRequestId).HasName("PK__LateRequ__6814EE07A29D6B21");
 
             entity.HasIndex(e => e.Status, "IX_LateRequests_Status");
 
@@ -236,7 +299,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<LeaveRequest>(entity =>
         {
-            entity.HasKey(e => e.LeaveRequestId).HasName("PK__LeaveReq__609421EE91D0CDBF");
+            entity.HasKey(e => e.LeaveRequestId).HasName("PK__LeaveReq__609421EE960EC52E");
 
             entity.HasIndex(e => e.StartDate, "IX_LeaveRequests_StartDate");
 
@@ -263,7 +326,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<LoginHistory>(entity =>
         {
-            entity.HasKey(e => e.LoginHistoryId).HasName("PK__LoginHis__2773EA9F7FD6FE09");
+            entity.HasKey(e => e.LoginHistoryId).HasName("PK__LoginHis__2773EA9FE59C58D8");
 
             entity.ToTable("LoginHistory");
 
@@ -283,12 +346,12 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.LoginHistories)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__LoginHist__UserI__37703C52");
+                .HasConstraintName("FK__LoginHist__UserI__09746778");
         });
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E1248FF5E01");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E12229B0369");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysutcdatetime())");
             entity.Property(e => e.Link).HasMaxLength(500);
@@ -299,7 +362,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<OvertimeRequest>(entity =>
         {
-            entity.HasKey(e => e.OvertimeRequestId).HasName("PK__Overtime__F97D0DCAA9117636");
+            entity.HasKey(e => e.OvertimeRequestId).HasName("PK__Overtime__F97D0DCAB46A25AB");
 
             entity.HasIndex(e => e.ExpiryDate, "IX_OvertimeRequests_ExpiryDate");
 
@@ -328,7 +391,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<PasswordResetHistory>(entity =>
         {
-            entity.HasKey(e => e.ResetId).HasName("PK__Password__783CF04DAFAF33CE");
+            entity.HasKey(e => e.ResetId).HasName("PK__Password__783CF04DE6257ED0");
 
             entity.ToTable("PasswordResetHistory");
 
@@ -341,17 +404,17 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.ResetByUser).WithMany(p => p.PasswordResetHistoryResetByUsers)
                 .HasForeignKey(d => d.ResetByUserId)
-                .HasConstraintName("FK__PasswordR__Reset__3A4CA8FD");
+                .HasConstraintName("FK__PasswordR__Reset__0D44F85C");
 
             entity.HasOne(d => d.User).WithMany(p => p.PasswordResetHistoryUsers)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PasswordR__UserI__3B40CD36");
+                .HasConstraintName("FK__PasswordR__UserI__0C50D423");
         });
 
         modelBuilder.Entity<PasswordResetOtp>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Password__3214EC0763694607");
+            entity.HasKey(e => e.Id).HasName("PK__Password__3214EC07FD9B0141");
 
             entity.ToTable("PasswordResetOTPs");
 
@@ -376,7 +439,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<PasswordResetToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Password__3214EC0788EBB4ED");
+            entity.HasKey(e => e.Id).HasName("PK__Password__3214EC07FEB0E7FE");
 
             entity.ToTable("PasswordResetToken");
 
@@ -394,7 +457,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<PasswordResetToken1>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Password__3214EC0792472EA4");
+            entity.HasKey(e => e.Id).HasName("PK__Password__3214EC07B821CF83");
 
             entity.ToTable("PasswordResetTokens");
 
@@ -417,9 +480,9 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A6FFE762B");
+            entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A32FA3244");
 
-            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160EE09EB9D").IsUnique();
+            entity.HasIndex(e => e.RoleName, "UQ__Roles__8A2B6160077C5D61").IsUnique();
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.RoleName).HasMaxLength(50);
@@ -427,7 +490,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<SalaryAdjustment>(entity =>
         {
-            entity.HasKey(e => e.AdjustmentId).HasName("PK__SalaryAd__E60DB89397E1F75A");
+            entity.HasKey(e => e.AdjustmentId).HasName("PK__SalaryAd__E60DB893C534584D");
 
             entity.HasIndex(e => e.AdjustmentType, "IX_SalaryAdjustments_AdjustmentType");
 
@@ -449,26 +512,26 @@ public partial class AihubSystemContext : DbContext
             entity.HasOne(d => d.AdjustedByNavigation).WithMany(p => p.SalaryAdjustmentAdjustedByNavigations)
                 .HasForeignKey(d => d.AdjustedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__SalaryAdj__Adjus__3F115E1A");
+                .HasConstraintName("FK__SalaryAdj__Adjus__12FDD1B2");
 
             entity.HasOne(d => d.ApprovedByNavigation).WithMany(p => p.SalaryAdjustmentApprovedByNavigations)
                 .HasForeignKey(d => d.ApprovedBy)
-                .HasConstraintName("FK__SalaryAdj__Appro__40058253");
+                .HasConstraintName("FK__SalaryAdj__Appro__1209AD79");
 
             entity.HasOne(d => d.Attendance).WithMany(p => p.SalaryAdjustments)
                 .HasForeignKey(d => d.AttendanceId)
-                .HasConstraintName("FK__SalaryAdj__Atten__40F9A68C");
+                .HasConstraintName("FK__SalaryAdj__Atten__11158940");
 
             entity.HasOne(d => d.User).WithMany(p => p.SalaryAdjustmentUsers)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__SalaryAdj__UserI__41EDCAC5");
+                .HasConstraintName("FK__SalaryAdj__UserI__13F1F5EB");
         });
 
         modelBuilder.Entity<SalaryConfigCategory>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PK__SalaryCo__19093A0BB427FF54");
+            entity.HasKey(e => e.CategoryId).HasName("PK__SalaryCo__19093A0B73384BD9");
 
-            entity.HasIndex(e => e.CategoryCode, "UQ__SalaryCo__371BA9553FBE53F9").IsUnique();
+            entity.HasIndex(e => e.CategoryCode, "UQ__SalaryCo__371BA955635D701B").IsUnique();
 
             entity.Property(e => e.CategoryCode).HasMaxLength(50);
             entity.Property(e => e.CategoryName).HasMaxLength(100);
@@ -479,7 +542,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<SalaryConfigHistory>(entity =>
         {
-            entity.HasKey(e => e.HistoryId).HasName("PK__SalaryCo__4D7B4ABD356233AE");
+            entity.HasKey(e => e.HistoryId).HasName("PK__SalaryCo__4D7B4ABD4F36C860");
 
             entity.ToTable("SalaryConfigHistory");
 
@@ -495,22 +558,22 @@ public partial class AihubSystemContext : DbContext
             entity.HasOne(d => d.ChangedByNavigation).WithMany(p => p.SalaryConfigHistories)
                 .HasForeignKey(d => d.ChangedBy)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__SalaryCon__Chang__42E1EEFE");
+                .HasConstraintName("FK__SalaryCon__Chang__15DA3E5D");
 
             entity.HasOne(d => d.Config).WithMany(p => p.SalaryConfigHistories)
                 .HasForeignKey(d => d.ConfigId)
-                .HasConstraintName("FK__SalaryCon__Confi__43D61337");
+                .HasConstraintName("FK__SalaryCon__Confi__14E61A24");
         });
 
         modelBuilder.Entity<SalaryConfiguration>(entity =>
         {
-            entity.HasKey(e => e.ConfigId).HasName("PK__SalaryCo__C3BC335CAAA72430");
+            entity.HasKey(e => e.ConfigId).HasName("PK__SalaryCo__C3BC335CBD43BE58");
 
             entity.HasIndex(e => e.CategoryId, "IX_SalaryConfigurations_CategoryId");
 
             entity.HasIndex(e => e.IsActive, "IX_SalaryConfigurations_IsActive");
 
-            entity.HasIndex(e => e.ConfigCode, "UQ__SalaryCo__5488CE681A24F599").IsUnique();
+            entity.HasIndex(e => e.ConfigCode, "UQ__SalaryCo__5488CE684E5A1576").IsUnique();
 
             entity.Property(e => e.ConfigCode).HasMaxLength(100);
             entity.Property(e => e.ConfigName).HasMaxLength(200);
@@ -530,20 +593,20 @@ public partial class AihubSystemContext : DbContext
             entity.HasOne(d => d.Category).WithMany(p => p.SalaryConfigurations)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__SalaryCon__Categ__44CA3770");
+                .HasConstraintName("FK__SalaryCon__Categ__16CE6296");
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.SalaryConfigurationCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK__SalaryCon__Creat__45BE5BA9");
+                .HasConstraintName("FK__SalaryCon__Creat__17C286CF");
 
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.SalaryConfigurationUpdatedByNavigations)
                 .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK__SalaryCon__Updat__46B27FE2");
+                .HasConstraintName("FK__SalaryCon__Updat__18B6AB08");
         });
 
         modelBuilder.Entity<SystemSetting>(entity =>
         {
-            entity.HasKey(e => e.SettingId).HasName("PK__SystemSe__54372B1DB15485C8");
+            entity.HasKey(e => e.SettingId).HasName("PK__SystemSe__54372B1DC388C255");
 
             entity.HasIndex(e => e.Category, "IX_SystemSettings_Category");
 
@@ -557,7 +620,7 @@ public partial class AihubSystemContext : DbContext
                 .IsDescending()
                 .HasFilter("([IsActive]=(1) AND [IsEnabled]=(1))");
 
-            entity.HasIndex(e => e.SettingKey, "UQ__SystemSe__01E719ADD915F5B4").IsUnique();
+            entity.HasIndex(e => e.SettingKey, "UQ__SystemSe__01E719AD97EB829B").IsUnique();
 
             entity.Property(e => e.ApplyMethod)
                 .HasMaxLength(20)
@@ -578,7 +641,7 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.SystemSettings)
                 .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK__SystemSet__Updat__47A6A41B");
+                .HasConstraintName("FK__SystemSet__Updat__19AACF41");
         });
 
         modelBuilder.Entity<SystemSettingsBackup20251123>(entity =>
@@ -599,7 +662,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<Task>(entity =>
         {
-            entity.HasKey(e => e.TaskId).HasName("PK__Tasks__7C6949B1CD1A420C");
+            entity.HasKey(e => e.TaskId).HasName("PK__Tasks__7C6949B179A7C693");
 
             entity.HasIndex(e => e.Deadline, "IX_Tasks_Deadline").HasFilter("([Deadline] IS NOT NULL)");
 
@@ -622,7 +685,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<Team>(entity =>
         {
-            entity.HasKey(e => e.TeamId).HasName("PK__Teams__123AE7996987189A");
+            entity.HasKey(e => e.TeamId).HasName("PK__Teams__123AE799FB116721");
 
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -633,16 +696,16 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.Department).WithMany(p => p.Teams)
                 .HasForeignKey(d => d.DepartmentId)
-                .HasConstraintName("FK__Teams__Departmen__7C1A6C5A");
+                .HasConstraintName("FK__Teams__Departmen__1C873BEC");
 
             entity.HasOne(d => d.TeamLeadUser).WithMany(p => p.Teams)
                 .HasForeignKey(d => d.TeamLeadUserId)
-                .HasConstraintName("FK__Teams__TeamLeadU__7D0E9093");
+                .HasConstraintName("FK__Teams__TeamLeadU__1D7B6025");
         });
 
         modelBuilder.Entity<TeamMember>(entity =>
         {
-            entity.HasKey(e => e.TeamMemberId).HasName("PK__TeamMemb__C7C092E5827837B1");
+            entity.HasKey(e => e.TeamMemberId).HasName("PK__TeamMemb__C7C092E5F70D3D98");
 
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.JoinedAt)
@@ -652,17 +715,17 @@ public partial class AihubSystemContext : DbContext
             entity.HasOne(d => d.Team).WithMany(p => p.TeamMembers)
                 .HasForeignKey(d => d.TeamId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__TeamMembe__TeamI__01D345B0");
+                .HasConstraintName("FK__TeamMembe__TeamI__1A9EF37A");
 
             entity.HasOne(d => d.User).WithMany(p => p.TeamMembers)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__TeamMembe__UserI__02C769E9");
+                .HasConstraintName("FK__TeamMembe__UserI__1B9317B3");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C56E8178B");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CC4C97C7A690");
 
             entity.HasIndex(e => e.DepartmentId, "IX_Users_DepartmentId");
 
@@ -672,7 +735,7 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasIndex(e => e.Username, "IX_Users_Username");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E43FCBEE68").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E49D27A24A").IsUnique();
 
             entity.Property(e => e.Avatar).HasMaxLength(500);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
@@ -685,17 +748,17 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.Department).WithMany(p => p.Users)
                 .HasForeignKey(d => d.DepartmentId)
-                .HasConstraintName("FK__Users__Departmen__489AC854");
+                .HasConstraintName("FK__Users__Departmen__2057CCD0");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Users__RoleId__498EEC8D");
+                .HasConstraintName("FK__Users__RoleId__1F63A897");
         });
 
         modelBuilder.Entity<UserNotification>(entity =>
         {
-            entity.HasKey(e => e.UserNotificationId).HasName("PK__UserNoti__EB2986294F44D7A6");
+            entity.HasKey(e => e.UserNotificationId).HasName("PK__UserNoti__EB2986291E9E1394");
 
             entity.HasIndex(e => e.IsRead, "IX_UserNotifications_IsRead");
 
@@ -709,9 +772,9 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<UserSalarySetting>(entity =>
         {
-            entity.HasKey(e => e.UserSalaryId).HasName("PK__UserSala__528D2F42E4B5DCDC");
+            entity.HasKey(e => e.UserSalaryId).HasName("PK__UserSala__528D2F425D4CB598");
 
-            entity.HasIndex(e => e.UserId, "UQ__UserSala__1788CC4D793850F2").IsUnique();
+            entity.HasIndex(e => e.UserId, "UQ__UserSala__1788CC4D9CC479CC").IsUnique();
 
             entity.Property(e => e.AllowanceAmount)
                 .HasDefaultValue(0m)
@@ -731,50 +794,53 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.UserSalarySettingCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK__UserSalar__Creat__4A8310C6");
+                .HasConstraintName("FK__UserSalar__Creat__22401542");
 
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.UserSalarySettingUpdatedByNavigations)
                 .HasForeignKey(d => d.UpdatedBy)
-                .HasConstraintName("FK__UserSalar__Updat__4B7734FF");
+                .HasConstraintName("FK__UserSalar__Updat__214BF109");
 
             entity.HasOne(d => d.User).WithOne(p => p.UserSalarySettingUser)
                 .HasForeignKey<UserSalarySetting>(d => d.UserId)
-                .HasConstraintName("FK__UserSalar__UserI__4C6B5938");
+                .HasConstraintName("FK__UserSalar__UserI__2334397B");
         });
 
-        modelBuilder.Entity<UserTask>(entity =>
-        {
-            entity.HasKey(e => e.UserTaskId).HasName("PK__UserTask__4EF5961FDBDC8DD1");
+		modelBuilder.Entity<UserTask>(entity =>
+		{
+			entity.HasKey(e => e.UserTaskId).HasName("PK__UserTask__4EF5961F76B2B797");
 
-            entity.HasIndex(e => e.Status, "IX_UserTasks_Status");
+			entity.HasIndex(e => e.Status, "IX_UserTasks_Status");
 
-            entity.HasIndex(e => new { e.Status, e.TesterId }, "IX_UserTasks_Status_TesterId");
+			entity.HasIndex(e => new { e.Status, e.TesterId }, "IX_UserTasks_Status_TesterId");
 
-            entity.HasIndex(e => e.TesterId, "IX_UserTasks_TesterId");
+			entity.HasIndex(e => e.TesterId, "IX_UserTasks_TesterId");
 
-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-            entity.Property(e => e.ReportLink).HasMaxLength(500);
-            entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .HasDefaultValue("TODO");
+			entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+			entity.Property(e => e.ReportLink).HasMaxLength(500);
+			entity.Property(e => e.Status)
+				.HasMaxLength(20)
+				.HasDefaultValue("TODO");
 
-            entity.HasOne(d => d.Task).WithMany(p => p.UserTasks)
-                .HasForeignKey(d => d.TaskId)
-                .HasConstraintName("FK__UserTasks__TaskI__4D5F7D71");
+			entity.HasOne(d => d.Task).WithMany(p => p.UserTasks)
+				.HasForeignKey(d => d.TaskId)
+				.HasConstraintName("FK__UserTasks__TaskI__2610A626");
 
-            entity.HasOne(d => d.Tester).WithMany(p => p.UserTaskTesters)
-                .HasForeignKey(d => d.TesterId)
-                .HasConstraintName("FK_UserTasks_Tester");
+			// ✅ RELATIONSHIP CHO TESTER (TesterId)
+			entity.HasOne(d => d.Tester)
+				.WithMany(p => p.UserTaskTesters)
+				.HasForeignKey(d => d.TesterId)
+				.OnDelete(DeleteBehavior.NoAction) // ✅ QUAN TRỌNG: Tránh multiple cascade paths
+				.HasConstraintName("FK_UserTasks_Tester");
 
-			// ✅ SAU (ĐÚNG)
+			// ✅ RELATIONSHIP CHO USER (UserId)
 			entity.HasOne(d => d.User)
-				.WithMany(p => p.UserTasks)  // ✅ ĐỔI THÀNH UserTasks
+				.WithMany(p => p.UserTaskUsers)
 				.HasForeignKey(d => d.UserId)
-				.OnDelete(DeleteBehavior.Cascade)
-				.HasConstraintName("FK__UserTasks__UserId__...");
+				.OnDelete(DeleteBehavior.NoAction) // ✅ QUAN TRỌNG: Tránh multiple cascade paths
+				.HasConstraintName("FK__UserTasks__UserI__24285DB4");
 		});
 
-        modelBuilder.Entity<VwActiveSalarySetting>(entity =>
+		modelBuilder.Entity<VwActiveSalarySetting>(entity =>
         {
             entity
                 .HasNoKey()
@@ -836,36 +902,6 @@ public partial class AihubSystemContext : DbContext
             entity.Property(e => e.TotalWorkHours).HasColumnType("decimal(38, 2)");
         });
 
-        modelBuilder.Entity<VwTaskPerformance>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("vw_TaskPerformance");
-
-            entity.Property(e => e.Avatar).HasMaxLength(500);
-            entity.Property(e => e.DepartmentName).HasMaxLength(100);
-            entity.Property(e => e.FullName).HasMaxLength(100);
-            entity.Property(e => e.Platform).HasMaxLength(200);
-            entity.Property(e => e.ReportLink).HasMaxLength(500);
-            entity.Property(e => e.TaskName).HasMaxLength(200);
-        });
-
-        modelBuilder.Entity<VwTasksWithDeadline>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToView("vw_TasksWithDeadline");
-
-            entity.Property(e => e.DeadlineStatus)
-                .HasMaxLength(13)
-                .IsUnicode(false);
-            entity.Property(e => e.Description).HasMaxLength(500);
-            entity.Property(e => e.Platform).HasMaxLength(200);
-            entity.Property(e => e.Priority).HasMaxLength(20);
-            entity.Property(e => e.TaskId).ValueGeneratedOnAdd();
-            entity.Property(e => e.TaskName).HasMaxLength(200);
-        });
-
         modelBuilder.Entity<VwTodayAttendance>(entity =>
         {
             entity
@@ -897,7 +933,7 @@ public partial class AihubSystemContext : DbContext
 
         modelBuilder.Entity<WorkScheduleException>(entity =>
         {
-            entity.HasKey(e => e.ExceptionId).HasName("PK__WorkSche__26981D884334D51C");
+            entity.HasKey(e => e.ExceptionId).HasName("PK__WorkSche__26981D88485D7C8E");
 
             entity.HasIndex(e => e.UserId, "IX_WorkScheduleExceptions_UserId");
 
@@ -917,15 +953,15 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.WorkScheduleExceptionCreatedByNavigations)
                 .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK__WorkSched__Creat__4F47C5E3");
+                .HasConstraintName("FK__WorkSched__Creat__28ED12D1");
 
             entity.HasOne(d => d.Department).WithMany(p => p.WorkScheduleExceptions)
                 .HasForeignKey(d => d.DepartmentId)
-                .HasConstraintName("FK__WorkSched__Depar__503BEA1C");
+                .HasConstraintName("FK__WorkSched__Depar__27F8EE98");
 
             entity.HasOne(d => d.User).WithMany(p => p.WorkScheduleExceptionUsers)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__WorkSched__UserI__51300E55");
+                .HasConstraintName("FK__WorkSched__UserI__2704CA5F");
         });
 
         OnModelCreatingPartial(modelBuilder);

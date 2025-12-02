@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using AIHUBOS.Hubs;
-using AIHUBOS.Models;
+using TMD.Models;
 using System.Linq;
 using System.Collections.Generic;
-using TaskModel = AIHUBOS.Models.Task;
+using TaskModel = TMD.Models.Task;
 using SystemTask = System.Threading.Tasks.Task;
 
 namespace AIHUBOS.Services
@@ -26,6 +26,8 @@ namespace AIHUBOS.Services
 		System.Threading.Tasks.Task<int> GetUnreadCountAsync(int userId);
 		SystemTask MarkAsReadAsync(int userNotificationId);
 		SystemTask MarkAllAsReadAsync(int userId);
+		SystemTask SendToTesterAsync(int testerId, string title, string message, string type = "info", string? link = null);
+
 	}
 
 	public class NotificationService : INotificationService
@@ -64,7 +66,34 @@ namespace AIHUBOS.Services
 				});
 			}
 		}
+		public async System.Threading.Tasks.Task SendToTesterAsync(int testerId, string title, string message, string type = "info", string? link = null)
+		{
+			var notification = new Notification
+			{
+				Title = title,
+				Message = message,
+				Type = type,
+				Link = link,
+				CreatedAt = DateTime.UtcNow,
+				IsBroadcast = false
+			};
 
+			_context.Notifications.Add(notification);
+			await _context.SaveChangesAsync();
+
+			var userNotification = new UserNotification
+			{
+				NotificationId = notification.NotificationId,
+				UserId = testerId,
+				IsRead = false
+			};
+
+			_context.UserNotifications.Add(userNotification);
+			await _context.SaveChangesAsync();
+
+			// Gửi SignalR realtime cho tester cụ thể
+			await _hubContext.Clients.Group($"User_{testerId}").SendAsync("ReceiveMessage", title, message, type, link ?? "");
+		}
 		// ============================================
 		// ✅ DYNAMIC ROLE-BASED NOTIFICATION (single role)
 		// - đảm bảo Admin(s) cũng nhận

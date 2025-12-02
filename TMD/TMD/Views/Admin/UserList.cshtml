@@ -1,4 +1,4 @@
-﻿@model AIHUBOS.ViewModels.UserListViewModel
+﻿@model TMD.ViewModels.UserListViewModel
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -103,7 +103,7 @@
                     <select id="deptFilter" name="departmentId" class="um-form-control">
                         <option value="">Tất cả</option>
                         @{
-                            var depts = Model.Departments ?? new List<AIHUBOS.Models.Department>();
+                            var depts = Model.Departments ?? new List<TMD.Models.Department>();
                         }
                         @foreach (var dept in depts)
                         {
@@ -282,7 +282,9 @@
                                     <div class="um-action-buttons">
                                         <a href="/Admin/EditUser/@user.UserId" class="um-action-btn" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
                                         <button class="um-action-btn um-action-view" data-id="@user.UserId" data-name="@user.FullName" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
-                                        <button class="um-action-btn um-action-toggle" onclick="toggleUserStatus(@user.UserId, '@user.FullName', @(user.IsActive == true ? "true" : "false"))" title="@(user.IsActive == true ? "Vô hiệu hóa" : "Kích hoạt")">
+                                        <button class="um-action-btn um-action-toggle"
+                                                onclick="toggleUserStatus(@user.UserId, '@user.FullName', '@(user.IsActive == true ? "true" : "false")')"
+                                                title="@(user.IsActive == true ? "Vô hiệu hóa" : "Kích hoạt")">
                                             <i class="fas fa-@(user.IsActive == true ? "ban" : "check")"></i>
                                         </button>
                                         <a href="/Admin/ResetUserPassword/@user.UserId" class="um-action-btn" title="Reset mật khẩu"><i class="fas fa-key"></i></a>

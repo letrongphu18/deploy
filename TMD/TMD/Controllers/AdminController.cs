@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AIHUBOS.Helpers;
-using AIHUBOS.Models;
+using TMD.Models;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.SignalR;
 using AIHUBOS.Hubs;
 using AIHUBOS.Services;
-using AIHUBOS.ViewModels;
+using TMD.ViewModels;
 
 
-namespace AIHUBOS.Controllers
+namespace TMD.Controllers
 {
 	public class AdminController : Controller
 	{
@@ -66,9 +66,9 @@ namespace AIHUBOS.Controllers
 
 			// ========== TASK STATISTICS (DỰA VÀO STATUS MỚI) ==========
 			var allTasks = await _context.Tasks
-	.Include(t => t.UserTasks)  // ✅ GIỮ NGUYÊN (đây là collection, không có vấn đề)
-	.Where(t => t.IsActive == true)
-	.ToListAsync();
+				.Include(t => t.UserTasks)
+				.Where(t => t.IsActive == true)
+				.ToListAsync();
 
 			var allUserTasks = allTasks.SelectMany(t => t.UserTasks).ToList();
 
@@ -111,24 +111,24 @@ namespace AIHUBOS.Controllers
 				? Math.Round((double)ViewBag.OnTimeCount / monthlyAttendances.Count * 100, 1)
 				: 0;
 
+			// ✅ FIXED: Dùng query trực tiếp _context.UserTasks (KHÔNG cần sửa)
 			var topPerformers = await _context.Users
-	.Include(u => u.Department)
-	// ❌ BỎ .Include(u => u.UserTasks)
-	.Where(u => u.IsActive == true)
-	.Select(u => new
-	{
-		User = u,
-		TotalCompleted = _context.UserTasks
-			.Count(ut => ut.UserId == u.UserId && ut.Status == "Done" && ut.Task.IsActive == true),
-		TotalTasks = _context.UserTasks
-			.Count(ut => ut.UserId == u.UserId && ut.Task.IsActive == true),
-		Avatar = string.IsNullOrEmpty(u.Avatar) || u.Avatar == "/images/default-avatar.png" ? null : u.Avatar,
-		Initials = u.FullName != null ? u.FullName.Substring(0, 1).ToUpper() : "U",
-		HasAvatar = !string.IsNullOrEmpty(u.Avatar) && u.Avatar != "/images/default-avatar.png"
-	})
-	.OrderByDescending(x => x.TotalCompleted)
-	.Take(5)
-	.ToListAsync();
+				.Include(u => u.Department)
+				.Where(u => u.IsActive == true)
+				.Select(u => new
+				{
+					User = u,
+					TotalCompleted = _context.UserTasks
+						.Count(ut => ut.UserId == u.UserId && ut.Status == "Done" && ut.Task.IsActive == true),
+					TotalTasks = _context.UserTasks
+						.Count(ut => ut.UserId == u.UserId && ut.Task.IsActive == true),
+					Avatar = string.IsNullOrEmpty(u.Avatar) || u.Avatar == "/images/default-avatar.png" ? null : u.Avatar,
+					Initials = u.FullName != null ? u.FullName.Substring(0, 1).ToUpper() : "U",
+					HasAvatar = !string.IsNullOrEmpty(u.Avatar) && u.Avatar != "/images/default-avatar.png"
+				})
+				.OrderByDescending(x => x.TotalCompleted)
+				.Take(5)
+				.ToListAsync();
 
 			ViewBag.TopPerformers = topPerformers;
 
@@ -238,17 +238,17 @@ namespace AIHUBOS.Controllers
 		}
 			};
 
-			// ========== DEPARTMENT PERFORMANCE (CHO CHART) ==========
+			// ========== DEPARTMENT PERFORMANCE (CHO CHART) - ✅ FIXED ==========
 			var deptPerformance = await _context.Departments
 				.Where(d => d.IsActive == true)
 				.Select(d => new
 				{
 					DepartmentName = d.DepartmentName,
 					TotalTasks = d.Users
-						.SelectMany(u => u.UserTasks)
+						.SelectMany(u => u.UserTaskUsers)  // ✅ FIXED: UserTasks -> UserTaskUsers
 						.Count(ut => ut.Task.IsActive == true),
 					CompletedTasks = d.Users
-						.SelectMany(u => u.UserTasks)
+						.SelectMany(u => u.UserTaskUsers)  // ✅ FIXED: UserTasks -> UserTaskUsers
 						.Count(ut => ut.Status == "Done" && ut.Task.IsActive == true)
 				})
 				.Where(x => x.TotalTasks > 0)
@@ -268,6 +268,7 @@ namespace AIHUBOS.Controllers
 
 			return View();
 		}
+
 
 		// ============================================
 		// USER MANAGEMENT
@@ -436,15 +437,15 @@ namespace AIHUBOS.Controllers
 				var user = await _context.Users
 					.Include(u => u.Role)
 					.Include(u => u.Department)
-					.Include(u => u.UserTasks)
+					.Include(u => u.UserTaskUsers)  // ✅ FIXED: UserTasks -> UserTaskUsers
 						.ThenInclude(ut => ut.Task)
 					.FirstOrDefaultAsync(u => u.UserId == userId);
 
 				if (user == null)
 					return Json(new { success = false, message = "Không tìm thấy nhân viên" });
 
-				// 1. TASK STATISTICS
-				var tasks = user.UserTasks.Where(ut => ut.Task.IsActive == true).ToList();
+				// 1. TASK STATISTICS - ✅ FIXED
+				var tasks = user.UserTaskUsers.Where(ut => ut.Task.IsActive == true).ToList();
 				var totalTasks = tasks.Count;
 				var completedTasks = tasks.Count(ut => ut.Status == "Completed");
 				var inProgressTasks = tasks.Count(ut => ut.Status == "InProgress");
@@ -470,12 +471,11 @@ namespace AIHUBOS.Controllers
 				var onTimeDays = monthlyAttendances.Count(a => a.IsLate == false);
 				var lateDays = monthlyAttendances.Count(a => a.IsLate == true);
 
-				// ✅ FIX: Sử dụng GetValueOrDefault() cho nullable decimal
 				var totalWorkHours = monthlyAttendances.Sum(a => a.TotalHours.GetValueOrDefault());
 				var approvedOvertimeHours = monthlyAttendances.Sum(a => a.ApprovedOvertimeHours);
 				var totalDeduction = monthlyAttendances.Sum(a => a.DeductionAmount);
 
-				// 3. SALARY & BENEFITS (Current Month) - FIXED
+				// 3. SALARY & BENEFITS (Current Month)
 				var settings = await _context.SystemSettings
 					.Where(s => s.IsActive == true)
 					.ToListAsync();
@@ -1585,7 +1585,7 @@ namespace AIHUBOS.Controllers
 			{
 				var adminId = HttpContext.Session.GetInt32("UserId");
 
-				var task = new AIHUBOS.Models.Task
+				var task = new TMD.Models.Task
 				{
 					TaskName = request.TaskName.Trim(),
 					Description = request.Description?.Trim(),
@@ -2010,123 +2010,131 @@ namespace AIHUBOS.Controllers
 		// ============================================
 		// ✅ GET TASK DETAILS - ĐƠNGIẢN & ĐẦY ĐỦ
 		// ============================================
+		// Thêm action này vào AdminController.cs
+
+		// Thêm action này vào AdminController.cs
 		[HttpGet]
-		public async System.Threading.Tasks.Task<IActionResult> GetTaskDetail(int userTaskId)
+		public async Task<IActionResult> GetTaskDetails(int id)
 		{
-			var userId = HttpContext.Session.GetInt32("UserId");
-			if (!userId.HasValue)
-				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+			if (!IsAdmin())
+				return Json(new { success = false, message = "Không có quyền truy cập" });
 
 			try
 			{
-				var userTask = await _context.UserTasks
-					.Include(ut => ut.Task)
-					.Include(ut => ut.User)
-						.ThenInclude(u => u.Department)
-					.FirstOrDefaultAsync(ut => ut.UserTaskId == userTaskId && ut.UserId == userId.Value);
+				// ✅ CRITICAL: Include đầy đủ
+				var task = await _context.Tasks
+					.Include(t => t.UserTasks)
+						.ThenInclude(ut => ut.User)
+							.ThenInclude(u => u.Department)
+					.FirstOrDefaultAsync(t => t.TaskId == id);
 
-				if (userTask == null)
-				{
-					return Json(new { success = false, message = "Không tìm thấy công việc" });
-				}
+				if (task == null)
+					return Json(new { success = false, message = "Không tìm thấy task" });
+
+				// ✅ ENSURE UserTasks is never null
+				if (task.UserTasks == null)
+					task.UserTasks = new List<UserTask>();
+
+				// ✅ Log để debug
+				System.Diagnostics.Debug.WriteLine($"[GetTaskDetails] TaskId={id}, Name={task.TaskName}, UserTasks={task.UserTasks.Count}");
 
 				await _auditHelper.LogViewAsync(
-					userId.Value,
-					"UserTask",
-					userTaskId,
-					$"Xem chi tiết: {userTask.Task.TaskName}"
+					HttpContext.Session.GetInt32("UserId").Value,
+					"Task",
+					id,
+					$"Xem chi tiết task: {task.TaskName}"
 				);
 
-				var task = userTask.Task;
+				// ✅ STATISTICS - với null-safe
+				var todoCount = task.UserTasks.Count(ut => ut.Status == "TODO");
+				var inProgressCount = task.UserTasks.Count(ut => ut.Status == "InProgress");
+				var testingCount = task.UserTasks.Count(ut => ut.Status == "Testing");
+				var doneCount = task.UserTasks.Count(ut => ut.Status == "Done");
+				var reopenCount = task.UserTasks.Count(ut => ut.Status == "Reopen");
 
-				string statusText = userTask.Status switch
-				{
-					"TODO" => "Chưa bắt đầu",
-					"InProgress" => "Đang làm",
-					"Testing" => "Chờ test",
-					"Done" => "Hoàn thành",
-					"Reopen" => "Reopen",
-					_ => "Chưa bắt đầu"
-				};
-
-				string statusClass = userTask.Status switch
-				{
-					"TODO" => "secondary",
-					"InProgress" => "warning",
-					"Testing" => "info",
-					"Done" => "success",
-					"Reopen" => "danger",
-					_ => "secondary"
-				};
-
-				string statusIcon = userTask.Status switch
-				{
-					"TODO" => "inbox",
-					"InProgress" => "spinner fa-spin",
-					"Testing" => "vial",
-					"Done" => "check-circle",
-					"Reopen" => "redo",
-					_ => "inbox"
-				};
-
-				bool isOverdue = false;
-				bool isCompletedLate = false;
-
-				if (task.Deadline.HasValue)
-				{
-					if (userTask.Status == "Done")
+				// ✅ ASSIGNED USERS
+				var assignedUsers = task.UserTasks.Select(ut => {
+					string statusClass = ut.Status switch
 					{
-						if (userTask.UpdatedAt.HasValue && userTask.UpdatedAt.Value > task.Deadline.Value)
-						{
-							isCompletedLate = true;
-							statusText = "Hoàn thành muộn";
-							statusClass = "warning";
-						}
-					}
-					else
-					{
-						if (DateTime.Now > task.Deadline.Value)
-						{
-							isOverdue = true;
-						}
-					}
-				}
+						"TODO" => "secondary",
+						"InProgress" => "warning",
+						"Testing" => "info",
+						"Done" => "success",
+						"Reopen" => "danger",
+						_ => "secondary"
+					};
 
-				return Json(new
+					string statusText = ut.Status switch
+					{
+						"TODO" => "Chưa bắt đầu",
+						"InProgress" => "Đang làm",
+						"Testing" => "Chờ test",
+						"Done" => "Hoàn thành",
+						"Reopen" => "Reopen",
+						_ => "Chưa bắt đầu"
+					};
+
+					bool hasAvatar = !string.IsNullOrEmpty(ut.User?.Avatar) &&
+								   ut.User.Avatar != "/images/default-avatar.png";
+
+					return new
+					{
+						UserId = ut.UserId,
+						FullName = ut.User?.FullName ?? "N/A",
+						DepartmentName = ut.User?.Department?.DepartmentName ?? "N/A",
+						Avatar = hasAvatar ? ut.User.Avatar : (string)null,
+						Status = ut.Status ?? "TODO",
+						StatusClass = statusClass,
+						StatusText = statusText,
+						ReportLink = ut.ReportLink ?? "",
+						UpdatedAtStr = ut.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa cập nhật"
+					};
+				}).OrderBy(u => u.FullName).ToList();
+
+				var result = new
 				{
 					success = true,
 					task = new
 					{
-						userTaskId = userTask.UserTaskId,
-						taskId = task.TaskId,
-						taskName = task.TaskName,
-						description = task.Description ?? "Không có mô tả",
-						platform = task.Platform ?? "N/A",
-						reportLink = userTask.ReportLink ?? "",
-						deadline = task.Deadline.HasValue ? task.Deadline.Value.ToString("dd/MM/yyyy HH:mm") : "Không có deadline",
-						priority = task.Priority ?? "Medium",
-						status = userTask.Status,
-						statusText = statusText,
-						statusClass = statusClass,
-						statusIcon = statusIcon,
-						isOverdue = isOverdue,
-						isCompletedLate = isCompletedLate,
-						createdAt = userTask.CreatedAt.HasValue ? userTask.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "",
-						updatedAt = userTask.UpdatedAt.HasValue ? userTask.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa cập nhật"
+						TaskId = task.TaskId,
+						TaskName = task.TaskName ?? "Không có tên",
+						Description = task.Description ?? "Không có mô tả",
+						Platform = task.Platform ?? "N/A",
+						Priority = task.Priority ?? "Medium",
+						DeadlineStr = task.Deadline?.ToString("dd/MM/yyyy HH:mm") ?? "",
+						IsActive = task.IsActive ?? false,
+						CreatedAtStr = task.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A",
+						UpdatedAtStr = task.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A",
+
+						TodoCount = todoCount,
+						InProgressCount = inProgressCount,
+						TestingCount = testingCount,
+						DoneCount = doneCount,
+						ReopenCount = reopenCount,
+
+						AssignedUsers = assignedUsers
 					}
-				});
+				};
+
+				// ✅ Log response
+				var jsonResponse = System.Text.Json.JsonSerializer.Serialize(result);
+				System.Diagnostics.Debug.WriteLine($"[GetTaskDetails] Response: {jsonResponse}");
+
+				return Json(result);
 			}
 			catch (Exception ex)
 			{
+				System.Diagnostics.Debug.WriteLine($"[GetTaskDetails] ERROR: {ex.Message}\n{ex.StackTrace}");
+
 				await _auditHelper.LogFailedAttemptAsync(
-					userId,
+					HttpContext.Session.GetInt32("UserId"),
 					"VIEW",
-					"UserTask",
+					"Task",
 					$"Exception: {ex.Message}",
-					new { UserTaskId = userTaskId, Error = ex.ToString() }
+					new { TaskId = id, Error = ex.ToString() }
 				);
 
-				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+				return Json(new { success = false, message = $"Lỗi: {ex.Message}" });
 			}
 		}
 		// ============================================
@@ -2456,7 +2464,7 @@ namespace AIHUBOS.Controllers
 			var from = fromDate ?? DateTime.Today.AddMonths(-1);
 			var to = toDate ?? DateTime.Today.AddDays(1);
 
-			var vm = new AIHUBOS.Models.ViewModels.PendingRequestsViewModel
+			var vm = new TMD.Models.ViewModels.PendingRequestsViewModel
 			{
 				SelectedType = type
 			};
