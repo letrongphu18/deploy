@@ -45,6 +45,10 @@ public partial class AihubSystemContext : DbContext
 
     public virtual DbSet<PasswordResetToken1> PasswordResetTokens1 { get; set; }
 
+    public virtual DbSet<Project> Projects { get; set; }
+
+    public virtual DbSet<ProjectMember> ProjectMembers { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<SalaryAdjustment> SalaryAdjustments { get; set; }
@@ -78,6 +82,8 @@ public partial class AihubSystemContext : DbContext
     public virtual DbSet<VwKpidashboard> VwKpidashboards { get; set; }
 
     public virtual DbSet<VwPendingRequestsSummary> VwPendingRequestsSummaries { get; set; }
+
+    public virtual DbSet<VwProjectOverview> VwProjectOverviews { get; set; }
 
     public virtual DbSet<VwSalaryCalculation> VwSalaryCalculations { get; set; }
 
@@ -478,6 +484,62 @@ public partial class AihubSystemContext : DbContext
                 .HasConstraintName("FK_PasswordResetTokens_Users");
         });
 
+        modelBuilder.Entity<Project>(entity =>
+        {
+            entity.HasIndex(e => e.LeaderId, "IX_Projects_LeaderId");
+
+            entity.HasIndex(e => e.Status, "IX_Projects_Status");
+
+            entity.HasIndex(e => e.ProjectCode, "UQ_Projects_ProjectCode").IsUnique();
+
+            entity.Property(e => e.Budget).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Priority)
+                .HasMaxLength(20)
+                .HasDefaultValue("Medium");
+            entity.Property(e => e.Progress)
+                .HasDefaultValue(0m)
+                .HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.ProjectCode).HasMaxLength(50);
+            entity.Property(e => e.ProjectName).HasMaxLength(200);
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasDefaultValue("Planning");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProjectCreatedByNavigations)
+                .HasForeignKey(d => d.CreatedBy)
+                .HasConstraintName("FK_Projects_Creator");
+
+            entity.HasOne(d => d.Department).WithMany(p => p.Projects)
+                .HasForeignKey(d => d.DepartmentId)
+                .HasConstraintName("FK_Projects_Department");
+
+            entity.HasOne(d => d.Leader).WithMany(p => p.ProjectLeaders)
+                .HasForeignKey(d => d.LeaderId)
+                .HasConstraintName("FK_Projects_Leader");
+        });
+
+        modelBuilder.Entity<ProjectMember>(entity =>
+        {
+            entity.HasIndex(e => e.ProjectId, "IX_ProjectMembers_ProjectId");
+
+            entity.HasIndex(e => new { e.ProjectId, e.UserId }, "UQ_ProjectMember").IsUnique();
+
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.JoinedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Role).HasMaxLength(50);
+
+            entity.HasOne(d => d.Project).WithMany(p => p.ProjectMembers)
+                .HasForeignKey(d => d.ProjectId)
+                .HasConstraintName("FK_ProjectMembers_Project");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ProjectMembers)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProjectMembers_User");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.RoleId).HasName("PK__Roles__8AFACE1A32FA3244");
@@ -670,6 +732,10 @@ public partial class AihubSystemContext : DbContext
 
             entity.HasIndex(e => e.Priority, "IX_Tasks_Priority");
 
+            entity.HasIndex(e => e.ProjectId, "IX_Tasks_ProjectId");
+
+            entity.HasIndex(e => e.TaskType, "IX_Tasks_TaskType");
+
             entity.HasIndex(e => e.UpdatedAt, "IX_Tasks_UpdatedAt");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
@@ -680,7 +746,19 @@ public partial class AihubSystemContext : DbContext
                 .HasMaxLength(20)
                 .HasDefaultValue("Medium");
             entity.Property(e => e.TaskName).HasMaxLength(200);
+            entity.Property(e => e.TaskType)
+                .HasMaxLength(20)
+                .HasDefaultValue("Standalone");
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.ParentTask).WithMany(p => p.InverseParentTask)
+                .HasForeignKey(d => d.ParentTaskId)
+                .HasConstraintName("FK_Tasks_ParentTask");
+
+            entity.HasOne(d => d.Project).WithMany(p => p.Tasks)
+                .HasForeignKey(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Tasks_Projects");
         });
 
         modelBuilder.Entity<Team>(entity =>
@@ -805,42 +883,38 @@ public partial class AihubSystemContext : DbContext
                 .HasConstraintName("FK__UserSalar__UserI__2334397B");
         });
 
-		modelBuilder.Entity<UserTask>(entity =>
-		{
-			entity.HasKey(e => e.UserTaskId).HasName("PK__UserTask__4EF5961F76B2B797");
+        modelBuilder.Entity<UserTask>(entity =>
+        {
+            entity.HasKey(e => e.UserTaskId).HasName("PK__UserTask__4EF5961F76B2B797");
 
-			entity.HasIndex(e => e.Status, "IX_UserTasks_Status");
+            entity.ToTable(tb => tb.HasTrigger("trg_UserTask_UpdateProjectProgress"));
 
-			entity.HasIndex(e => new { e.Status, e.TesterId }, "IX_UserTasks_Status_TesterId");
+            entity.HasIndex(e => e.Status, "IX_UserTasks_Status");
 
-			entity.HasIndex(e => e.TesterId, "IX_UserTasks_TesterId");
+            entity.HasIndex(e => new { e.Status, e.TesterId }, "IX_UserTasks_Status_TesterId");
 
-			entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-			entity.Property(e => e.ReportLink).HasMaxLength(500);
-			entity.Property(e => e.Status)
-				.HasMaxLength(20)
-				.HasDefaultValue("TODO");
+            entity.HasIndex(e => e.TesterId, "IX_UserTasks_TesterId");
 
-			entity.HasOne(d => d.Task).WithMany(p => p.UserTasks)
-				.HasForeignKey(d => d.TaskId)
-				.HasConstraintName("FK__UserTasks__TaskI__2610A626");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.ReportLink).HasMaxLength(500);
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasDefaultValue("TODO");
 
-			// ✅ RELATIONSHIP CHO TESTER (TesterId)
-			entity.HasOne(d => d.Tester)
-				.WithMany(p => p.UserTaskTesters)
-				.HasForeignKey(d => d.TesterId)
-				.OnDelete(DeleteBehavior.NoAction) // ✅ QUAN TRỌNG: Tránh multiple cascade paths
-				.HasConstraintName("FK_UserTasks_Tester");
+            entity.HasOne(d => d.Task).WithMany(p => p.UserTasks)
+                .HasForeignKey(d => d.TaskId)
+                .HasConstraintName("FK__UserTasks__TaskI__2610A626");
 
-			// ✅ RELATIONSHIP CHO USER (UserId)
-			entity.HasOne(d => d.User)
-				.WithMany(p => p.UserTaskUsers)
-				.HasForeignKey(d => d.UserId)
-				.OnDelete(DeleteBehavior.NoAction) // ✅ QUAN TRỌNG: Tránh multiple cascade paths
-				.HasConstraintName("FK__UserTasks__UserI__24285DB4");
-		});
+            entity.HasOne(d => d.Tester).WithMany(p => p.UserTaskTesters)
+                .HasForeignKey(d => d.TesterId)
+                .HasConstraintName("FK_UserTasks_Tester");
 
-		modelBuilder.Entity<VwActiveSalarySetting>(entity =>
+            entity.HasOne(d => d.User).WithMany(p => p.UserTaskUsers)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__UserTasks__UserI__24285DB4");
+        });
+
+        modelBuilder.Entity<VwActiveSalarySetting>(entity =>
         {
             entity
                 .HasNoKey()
@@ -881,6 +955,21 @@ public partial class AihubSystemContext : DbContext
             entity.Property(e => e.RequestType)
                 .HasMaxLength(15)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<VwProjectOverview>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vw_ProjectOverview");
+
+            entity.Property(e => e.DepartmentName).HasMaxLength(100);
+            entity.Property(e => e.LeaderName).HasMaxLength(100);
+            entity.Property(e => e.Priority).HasMaxLength(20);
+            entity.Property(e => e.Progress).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.ProjectCode).HasMaxLength(50);
+            entity.Property(e => e.ProjectName).HasMaxLength(200);
+            entity.Property(e => e.Status).HasMaxLength(20);
         });
 
         modelBuilder.Entity<VwSalaryCalculation>(entity =>

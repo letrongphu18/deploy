@@ -1,0 +1,656 @@
+﻿@model TMD.Models.Project
+
+@{
+    ViewData["Title"] = $"Chi tiết dự án - {Model.ProjectName}";
+}
+
+<link rel="stylesheet" href="~/css/project-management.css" />
+
+<div class="pm-container">
+    <!-- DETAIL HEADER -->
+    <div class="pm-detail-header">
+        <div class="pm-detail-title-row">
+            <div>
+                <div class="pm-detail-code">@Model.ProjectCode</div>
+                <h1 class="pm-detail-title">@Model.ProjectName</h1>
+            </div>
+            <div class="pm-detail-badges">
+                @{
+                    var statusClass = Model.Status switch
+                    {
+                        "Planning" => "pm-badge-planning",
+                        "InProgress" => "pm-badge-progress",
+                        "Completed" => "pm-badge-completed",
+                        "OnHold" => "pm-badge-onhold",
+                        _ => "pm-badge-progress"
+                    };
+                    var statusText = Model.Status switch
+                    {
+                        "Planning" => "Lên kế hoạch",
+                        "InProgress" => "Đang triển khai",
+                        "Completed" => "Hoàn thành",
+                        "OnHold" => "Tạm dừng",
+                        _ => Model.Status
+                    };
+                    var priorityClass = Model.Priority switch
+                    {
+                        "High" => "pm-badge-high",
+                        "Medium" => "pm-badge-medium",
+                        "Low" => "pm-badge-low",
+                        _ => "pm-badge-medium"
+                    };
+                }
+                <span class="pm-badge @statusClass" style="color: white;">
+                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                    @statusText
+                </span>
+                <span class="pm-badge @priorityClass" style="color: white;">
+                    <i class="fas fa-flag"></i>
+                    @(Model.Priority == "High" ? "Cao" : Model.Priority == "Medium" ? "Trung bình" : "Thấp")
+                </span>
+            </div>
+        </div>
+
+        <div class="pm-detail-meta-grid">
+            <div class="pm-detail-meta-item">
+                <div class="pm-detail-meta-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="pm-detail-meta-content">
+                    <div class="pm-detail-meta-label">Leader</div>
+                    <div class="pm-detail-meta-value">@(Model.Leader?.FullName ?? "Chưa chỉ định")</div>
+                </div>
+            </div>
+
+            <div class="pm-detail-meta-item">
+                <div class="pm-detail-meta-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="pm-detail-meta-content">
+                    <div class="pm-detail-meta-label">Thành viên</div>
+                    <div class="pm-detail-meta-value">@(Model.ProjectMembers?.Count(pm => pm.IsActive) ?? 0) người</div>
+                </div>
+            </div>
+
+            <div class="pm-detail-meta-item">
+                <div class="pm-detail-meta-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="pm-detail-meta-content">
+                    <div class="pm-detail-meta-label">Tasks</div>
+                    <div class="pm-detail-meta-value">@(Model.Tasks?.Count ?? 0) tasks</div>
+                </div>
+            </div>
+
+            <div class="pm-detail-meta-item">
+                <div class="pm-detail-meta-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="pm-detail-meta-content">
+                    <div class="pm-detail-meta-label">Tiến độ</div>
+                    <div class="pm-detail-meta-value">@((Model.Progress ?? 0).ToString("F1"))%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="pm-d-flex pm-gap-2 pm-mb-3">
+        <a href="@Url.Action("ProjectList", "Admin")" class="pm-btn pm-btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            Quay lại
+        </a>
+        <a href="@Url.Action("EditProject", "Admin", new { id = Model.ProjectId })" class="pm-btn pm-btn-primary">
+            <i class="fas fa-edit"></i>
+            Chỉnh sửa dự án
+        </a>
+        <button type="button" class="pm-btn pm-btn-success" onclick="openAddTaskModal()">
+            <i class="fas fa-plus"></i>
+            Thêm task
+        </button>
+        <button type="button" class="pm-btn pm-btn-primary" onclick="openAddMemberModal()">
+            <i class="fas fa-user-plus"></i>
+            Thêm thành viên
+        </button>
+    </div>
+
+    <!-- TABS -->
+    <div class="pm-tabs">
+        <button class="pm-tab active" data-tab="overview">
+            <i class="fas fa-info-circle"></i>
+            Tổng quan
+        </button>
+        <button class="pm-tab" data-tab="tasks">
+            <i class="fas fa-tasks"></i>
+            Tasks (@(Model.Tasks?.Count ?? 0))
+        </button>
+        <button class="pm-tab" data-tab="members">
+            <i class="fas fa-users"></i>
+            Thành viên (@(Model.ProjectMembers?.Count(pm => pm.IsActive) ?? 0))
+        </button>
+    </div>
+
+    <!-- TAB CONTENT: OVERVIEW -->
+    <div class="pm-tab-content active" id="overview">
+        <div class="pm-card">
+            <div class="pm-card-header">
+                <h5 class="pm-card-title">
+                    <i class="fas fa-align-left"></i>
+                    Mô tả dự án
+                </h5>
+            </div>
+            <div class="pm-card-body">
+                <p style="color: var(--text); line-height: 1.6;">
+                    @(Model.Description ?? "Chưa có mô tả cho dự án này.")
+                </p>
+            </div>
+        </div>
+
+        <div class="pm-form-row">
+            <div class="pm-card">
+                <div class="pm-card-header">
+                    <h5 class="pm-card-title">
+                        <i class="fas fa-calendar"></i>
+                        Thông tin thời gian
+                    </h5>
+                </div>
+                <div class="pm-card-body">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <strong style="color: var(--text-muted);">Ngày bắt đầu:</strong>
+                            <div style="color: var(--text); font-weight: 600;">
+                                @(Model.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")
+                            </div>
+                        </div>
+                        <div>
+                            <strong style="color: var(--text-muted);">Ngày kết thúc:</strong>
+                            <div style="color: var(--text); font-weight: 600;">
+                                @(Model.EndDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")
+                            </div>
+                        </div>
+                        @if (Model.CompletedAt.HasValue)
+                        {
+                            <div>
+                                <strong style="color: var(--text-muted);">Hoàn thành vào:</strong>
+                                <div style="color: var(--success); font-weight: 600;">
+                                    @Model.CompletedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="pm-card">
+                <div class="pm-card-header">
+                    <h5 class="pm-card-title">
+                        <i class="fas fa-info"></i>
+                        Thông tin bổ sung
+                    </h5>
+                </div>
+                <div class="pm-card-body">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <strong style="color: var(--text-muted);">Phòng ban:</strong>
+                            <div style="color: var(--text); font-weight: 600;">
+                                @(Model.Department?.DepartmentName ?? "N/A")
+                            </div>
+                        </div>
+                        @if (Model.Budget.HasValue && Model.Budget > 0)
+                        {
+                            <div>
+                                <strong style="color: var(--text-muted);">Ngân sách:</strong>
+                                <div style="color: var(--text); font-weight: 600;">
+                                    @Model.Budget.Value.ToString("N0") VNĐ
+                                </div>
+                            </div>
+                        }
+                        <div>
+                            <strong style="color: var(--text-muted);">Người tạo:</strong>
+                            <div style="color: var(--text); font-weight: 600;">
+                                Admin
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB CONTENT: TASKS -->
+    <div class="pm-tab-content" id="tasks">
+        <div class="pm-card">
+            <div class="pm-card-body">
+                <div class="pm-tasks-list" id="tasksList">
+                    @if (Model.Tasks != null && Model.Tasks.Any())
+                    {
+                        @foreach (var task in Model.Tasks.OrderByDescending(t => t.Priority == "High" ? 1 : t.Priority == "Medium" ? 2 : 3))
+                        {
+                            var totalAssigned = task.UserTasks?.Count ?? 0;
+                            var completed = task.UserTasks?.Count(ut => ut.Status == "Done") ?? 0;
+                            var progress = totalAssigned > 0 ? Math.Round((double)completed / totalAssigned * 100, 1) : 0;
+
+                            <div class="pm-task-card status-@(task.UserTasks?.FirstOrDefault()?.Status ?? "TODO")">
+                                <div class="pm-task-header">
+                                    <div>
+                                        <h4 class="pm-task-title">@task.TaskName</h4>
+                                        <div class="pm-task-meta">
+                                            <span class="pm-task-meta-item">
+                                                <i class="fas fa-users"></i>
+                                                @totalAssigned người
+                                            </span>
+                                            @if (task.Deadline.HasValue)
+                                            {
+                                                <span class="pm-task-meta-item">
+                                                    <i class="fas fa-calendar"></i>
+                                                    @task.Deadline.Value.ToString("dd/MM/yyyy")
+                                                </span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(task.Platform))
+                                            {
+                                                <span class="pm-task-meta-item">
+                                                    <i class="fas fa-code"></i>
+                                                    @task.Platform
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="pm-project-badges">
+                                        @{
+                                            var taskPriorityClass = task.Priority switch
+                                            {
+                                                "High" => "pm-badge-high",
+                                                "Medium" => "pm-badge-medium",
+                                                "Low" => "pm-badge-low",
+                                                _ => "pm-badge-medium"
+                                            };
+                                        }
+                                        <span class="pm-badge @taskPriorityClass">
+                                            <i class="fas fa-flag"></i>
+                                            @(task.Priority ?? "Medium")
+                                        </span>
+                                    </div>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(task.Description))
+                                {
+                                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">
+                                        @task.Description
+                                    </p>
+                                }
+
+                                <div class="pm-project-progress" style="margin-top: 1rem;">
+                                    <div class="pm-progress-label">
+                                        <span class="pm-progress-text">Tiến độ</span>
+                                        <span class="pm-progress-value">@completed/@totalAssigned (@progress.ToString("F1")%)</span>
+                                    </div>
+                                    <div class="pm-progress-bar">
+                                        <div class="pm-progress-fill" style="width: @progress.ToString("F1")%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="pm-empty-state">
+                            <div class="pm-empty-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <h3 class="pm-empty-title">Chưa có task nào</h3>
+                            <p class="pm-empty-text">Thêm task đầu tiên cho dự án này</p>
+                            <button type="button" class="pm-btn pm-btn-primary" onclick="openAddTaskModal()">
+                                <i class="fas fa-plus"></i>
+                                Thêm task
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB CONTENT: MEMBERS -->
+    <div class="pm-tab-content" id="members">
+        <div class="pm-card">
+            <div class="pm-card-body">
+                <div class="pm-members-grid" id="membersList">
+                    @if (Model.ProjectMembers != null && Model.ProjectMembers.Any(pm => pm.IsActive))
+                    {
+                        @foreach (var member in Model.ProjectMembers.Where(pm => pm.IsActive).OrderBy(pm => pm.Role == "Leader" ? 0 : 1))
+                        {
+                            var hasAvatar = !string.IsNullOrEmpty(member.User?.Avatar) &&
+                            member.User.Avatar != "/images/default-avatar.png";
+                            var initials = member.User?.FullName?.Substring(0, 1).ToUpper() ?? "?";
+
+                            <div class="pm-member-card" data-member-id="@member.UserId">
+                                <div class="pm-member-avatar">
+                                    @if (hasAvatar)
+                                    {
+                                        <img src="@member.User.Avatar" alt="@member.User.FullName">
+                                    }
+                                    else
+                                    {
+                                        <span>@initials</span>
+                                    }
+                                </div>
+                                <div class="pm-member-info">
+                                    <div class="pm-member-name">
+                                        @member.User?.FullName
+                                        @if (member.Role == "Leader")
+                                        {
+                                            <span class="pm-badge pm-badge-leader" style="font-size: 0.65rem; padding: 0.25rem 0.5rem;">
+                                                <i class="fas fa-crown"></i> Leader
+                                            </span>
+                                        }
+                                    </div>
+                                    <div class="pm-member-role">@member.User?.Email</div>
+                                    <div class="pm-member-dept">@(member.User?.Department?.DepartmentName ?? "N/A")</div>
+                                </div>
+                                @if (member.Role != "Leader")
+                                {
+                                    <button type="button" class="pm-action-btn"
+                                            onclick="removeMember(@member.UserId)"
+                                            title="Xóa khỏi dự án">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="pm-empty-state">
+                            <div class="pm-empty-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3 class="pm-empty-title">Chưa có thành viên</h3>
+                            <p class="pm-empty-text">Thêm thành viên vào dự án</p>
+                            <button type="button" class="pm-btn pm-btn-primary" onclick="openAddMemberModal()">
+                                <i class="fas fa-user-plus"></i>
+                                Thêm thành viên
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const projectId = @Model.ProjectId;
+        const currentMembers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        Model.ProjectMembers?.Where(pm => pm.IsActive).Select(pm => pm.UserId).ToList() ?? new List<int>()
+    ));
+
+        // ============================================
+        // TAB SWITCHING
+        // ============================================
+        document.querySelectorAll('.pm-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+
+                document.querySelectorAll('.pm-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.pm-tab-content').forEach(c => c.classList.remove('active'));
+
+                this.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // ============================================
+        // ADD MEMBER MODAL
+        // ============================================
+        async function openAddMemberModal() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Thêm thành viên vào dự án',
+                html: `
+                    <div style="text-align: left;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Chọn nhân viên</label>
+                        <select id="swal-user" class="swal2-input" style="width: 100%; padding: 0.75rem;">
+                            <option value="">-- Chọn nhân viên --</option>
+                            ${await getUserOptions()}
+                        </select>
+                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Vai trò</label>
+                        <select id="swal-role" class="swal2-input" style="width: 100%; padding: 0.75rem;">
+                            <option value="Member">Thành viên</option>
+                            <option value="Leader">Leader</option>
+                        </select>
+                    </div>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Thêm',
+                cancelButtonText: 'Hủy',
+                preConfirm: () => {
+                    const userId = document.getElementById('swal-user').value;
+                    const role = document.getElementById('swal-role').value;
+
+                    if (!userId) {
+                        Swal.showValidationMessage('Vui lòng chọn nhân viên');
+                        return false;
+                    }
+
+                    return { userId: parseInt(userId), role };
+                }
+            });
+
+            if (formValues) {
+                await addMember(formValues.userId, formValues.role);
+            }
+        }
+
+        async function getUserOptions() {
+            try {
+                const response = await fetch('@Url.Action("GetAllUsers", "Admin")');
+                const result = await response.json();
+
+                if (result.success) {
+                    return result.users
+                        .filter(u => !currentMembers.includes(u.userId))
+                        .map(u => `<option value="${u.userId}">${u.fullName} (${u.departmentName})</option>`)
+                        .join('');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            return '';
+        }
+
+        async function addMember(userId, role) {
+            try {
+                const response = await fetch('@Url.Action("ManageProjectMember", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        projectId: projectId,
+                        userId: userId,
+                        action: 'Add',
+                        role: role
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: result.message,
+                        timer: 2000
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Lỗi!', result.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
+            }
+        }
+
+        async function removeMember(userId) {
+            const result = await Swal.fire({
+                title: 'Xác nhận xóa',
+                text: 'Bạn có chắc muốn xóa thành viên này khỏi dự án?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch('@Url.Action("ManageProjectMember", "Admin")', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            projectId: projectId,
+                            userId: userId,
+                            action: 'Remove'
+                        })
+                    });
+
+                    const res = await response.json();
+
+                    if (res.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đã xóa!',
+                            text: res.message,
+                            timer: 2000
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi!', res.message, 'error');
+                    }
+                } catch (error) {
+                    Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // ============================================
+        // ADD TASK MODAL
+        // ============================================
+        async function openAddTaskModal() {
+            const members = await getProjectMembers();
+
+            const { value: formValues } = await Swal.fire({
+                title: 'Thêm Task mới',
+                html: `
+                    <div style="text-align: left;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Tên Task *</label>
+                        <input id="swal-taskname" class="swal2-input" style="width: 100%;" placeholder="Nhập tên task">
+
+                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Mô tả</label>
+                        <textarea id="swal-desc" class="swal2-textarea" style="width: 100%;" placeholder="Mô tả chi tiết"></textarea>
+
+                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Platform</label>
+                        <input id="swal-platform" class="swal2-input" style="width: 100%;" placeholder="Web, Mobile, API...">
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Deadline</label>
+                                <input type="date" id="swal-deadline" class="swal2-input" style="width: 100%;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Độ ưu tiên</label>
+                                <select id="swal-priority" class="swal2-input" style="width: 100%;">
+                                    <option value="Low">Thấp</option>
+                                    <option value="Medium" selected>Trung bình</option>
+                                    <option value="High">Cao</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Giao cho (giữ Ctrl để chọn nhiều)</label>
+                        <select id="swal-assignees" class="swal2-input" multiple style="width: 100%; height: 120px;">
+                            ${members}
+                        </select>
+                    </div>
+                `,
+                width: '600px',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Tạo Task',
+                cancelButtonText: 'Hủy',
+                preConfirm: () => {
+                    const taskName = document.getElementById('swal-taskname').value.trim();
+                    if (!taskName) {
+                        Swal.showValidationMessage('Vui lòng nhập tên task');
+                        return false;
+                    }
+
+                    const assignees = Array.from(document.getElementById('swal-assignees').selectedOptions)
+                        .map(opt => parseInt(opt.value));
+
+                    return {
+                        taskName,
+                        description: document.getElementById('swal-desc').value.trim(),
+                        platform: document.getElementById('swal-platform').value.trim(),
+                        deadline: document.getElementById('swal-deadline').value || null,
+                        priority: document.getElementById('swal-priority').value,
+                        assignedUserIds: assignees
+                    };
+                }
+            });
+
+            if (formValues) {
+                await createTask(formValues);
+            }
+        }
+
+        async function getProjectMembers() {
+            try {
+                const response = await fetch(`/Admin/GetAllUsers`);
+                const result = await response.json();
+
+                if (result.success) {
+                    return result.users
+                        .filter(u => currentMembers.includes(u.userId))
+                        .map(u => `<option value="${u.userId}">${u.fullName}</option>`)
+                        .join('');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+            return '';
+        }
+
+        async function createTask(data) {
+            try {
+                const response = await fetch('@Url.Action("CreateProjectTask", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...data,
+                        projectId: projectId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: result.message,
+                        timer: 2000
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Lỗi!', result.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
+            }
+        }
+
+        // Dark mode support
+        if (localStorage.getItem('dark-mode') === 'enabled') {
+            document.body.classList.add('staff-dark-mode');
+        }
+    </script>
+}

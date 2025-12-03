@@ -1,0 +1,260 @@
+﻿@model List<TMD.Models.Project>
+
+@{
+    ViewData["Title"] = "Dự án của tôi";
+}
+
+<link rel="stylesheet" href="~/css/project-management.css" />
+
+<div class="pm-container">
+    <!-- PAGE HEADER -->
+    <div class="pm-page-header">
+        <div class="pm-header-content">
+            <div>
+                <h1 class="pm-page-title">
+                    <i class="fas fa-briefcase"></i>
+                    Dự án của tôi
+                </h1>
+                <p class="pm-page-subtitle">Tất cả dự án mà bạn đang tham gia</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="pm-stats-grid">
+        <div class="pm-stats-card pm-stats-primary">
+            <div class="pm-stats-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Tổng dự án</div>
+                <div class="pm-stats-value">@ViewBag.TotalProjects</div>
+            </div>
+        </div>
+
+        <div class="pm-stats-card pm-stats-progress">
+            <div class="pm-stats-icon">
+                <i class="fas fa-spinner"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Đang triển khai</div>
+                <div class="pm-stats-value">@ViewBag.ActiveProjects</div>
+            </div>
+        </div>
+
+        <div class="pm-stats-card pm-stats-completed">
+            <div class="pm-stats-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Hoàn thành</div>
+                <div class="pm-stats-value">@ViewBag.CompletedProjects</div>
+            </div>
+        </div>
+
+        <div class="pm-stats-card pm-stats-planning">
+            <div class="pm-stats-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Làm leader</div>
+                <div class="pm-stats-value">@ViewBag.MyLeadProjects</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MY PROJECTS LIST -->
+    <div class="pm-card">
+        <div class="pm-card-header">
+            <h5 class="pm-card-title">
+                <i class="fas fa-list"></i>
+                Danh sách dự án của tôi
+            </h5>
+        </div>
+        <div class="pm-card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="pm-projects-grid">
+                    @foreach (var project in Model)
+                    {
+                        // ✅ BỎ @{ ... } - Không cần trong foreach
+                        var projectStatsDict = ViewBag.ProjectStats as Dictionary<int, dynamic>;
+                        var stats = projectStatsDict?.ContainsKey(project.ProjectId) == true
+                        ? projectStatsDict[project.ProjectId]
+                        : null;
+
+                        var statusClass = project.Status switch
+                        {
+                            "Planning" => "pm-badge-planning",
+                            "InProgress" => "pm-badge-progress",
+                            "Completed" => "pm-badge-completed",
+                            "OnHold" => "pm-badge-onhold",
+                            _ => "pm-badge-progress"
+                        };
+
+                        var priorityClass = project.Priority switch
+                        {
+                            "High" => "pm-badge-high",
+                            "Medium" => "pm-badge-medium",
+                            "Low" => "pm-badge-low",
+                            _ => "pm-badge-medium"
+                        };
+
+                        var statusText = project.Status switch
+                        {
+                            "Planning" => "Lên kế hoạch",
+                            "InProgress" => "Đang triển khai",
+                            "Completed" => "Hoàn thành",
+                            "OnHold" => "Tạm dừng",
+                            _ => project.Status
+                        };
+
+                        var priorityText = project.Priority switch
+                        {
+                            "High" => "Cao",
+                            "Medium" => "Trung bình",
+                            "Low" => "Thấp",
+                            _ => project.Priority
+                        };
+
+                        var myCompletionRate = stats?.MyTotalTasks > 0
+                        ? Math.Round((double)stats.MyCompletedTasks / stats.MyTotalTasks * 100, 1)
+                        : 0;
+
+                        <div class="pm-project-card status-@project.Status">
+                            <div class="pm-project-header">
+                                <div class="pm-project-code">@project.ProjectCode</div>
+                                <h3 class="pm-project-name">
+                                    <i class="fas fa-folder"></i>
+                                    @project.ProjectName
+                                    @if (stats?.IsLeader == true)
+                                    {
+                                        <span class="pm-badge pm-badge-leader" style="font-size: 0.75rem;">
+                                            <i class="fas fa-crown"></i> Leader
+                                        </span>
+                                    }
+                                </h3>
+                                <p class="pm-project-desc">@(project.Description ?? "Chưa có mô tả")</p>
+                            </div>
+
+                            <div class="pm-project-body">
+                                <div class="pm-project-meta">
+                                    <div class="pm-meta-item">
+                                        <i class="fas fa-user-tie pm-meta-icon"></i>
+                                        <span>@(project.Leader?.FullName ?? "Chưa chỉ định")</span>
+                                    </div>
+                                    <div class="pm-meta-item">
+                                        <i class="fas fa-tasks pm-meta-icon"></i>
+                                        <span>@(stats?.MyTotalTasks ?? 0) task của tôi</span>
+                                    </div>
+                                    @if (project.StartDate.HasValue)
+                                    {
+                                        <div class="pm-meta-item">
+                                            <i class="fas fa-calendar-start pm-meta-icon"></i>
+                                            <span>@project.StartDate.Value.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                    }
+                                    @if (project.EndDate.HasValue)
+                                    {
+                                        <div class="pm-meta-item">
+                                            <i class="fas fa-calendar-check pm-meta-icon"></i>
+                                            <span>@project.EndDate.Value.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- My Task Progress -->
+                                <div class="pm-project-progress">
+                                    <div class="pm-progress-label">
+                                        <span class="pm-progress-text">Tiến độ của tôi</span>
+                                        <span class="pm-progress-value">
+                                            @(stats?.MyCompletedTasks ?? 0)/@(stats?.MyTotalTasks ?? 0)
+                                            (@myCompletionRate.ToString("F1")%)
+                                        </span>
+                                    </div>
+                                    <div class="pm-progress-bar">
+                                        <div class="pm-progress-fill" style="width: @(myCompletionRate.ToString("F1"))%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Task Status Summary -->
+                                @if (stats?.MyTotalTasks > 0)
+                                {
+                                    <div class="pm-task-meta" style="margin-top: 1rem; justify-content: flex-start;">
+                                        @if (stats.MyTodoTasks > 0)
+                                        {
+                                            <span class="pm-badge" style="background: rgba(107, 114, 128, 0.1); color: #6b7280;">
+                                                <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                                                TODO: @stats.MyTodoTasks
+                                            </span>
+                                        }
+                                        @if (stats.MyInProgressTasks > 0)
+                                        {
+                                            <span class="pm-badge pm-badge-medium">
+                                                <i class="fas fa-spinner"></i>
+                                                Đang làm: @stats.MyInProgressTasks
+                                            </span>
+                                        }
+                                        @if (stats.MyCompletedTasks > 0)
+                                        {
+                                            <span class="pm-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                                <i class="fas fa-check"></i>
+                                                Hoàn thành: @stats.MyCompletedTasks
+                                            </span>
+                                        }
+                                    </div>
+                                }
+
+                                <div class="pm-project-footer">
+                                    <div class="pm-project-badges">
+                                        <span class="pm-badge @statusClass">
+                                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                                            @statusText
+                                        </span>
+                                        <span class="pm-badge @priorityClass">
+                                            <i class="fas fa-flag"></i>
+                                            @priorityText
+                                        </span>
+                                    </div>
+
+                                    <div class="pm-project-actions">
+                                        <a href="@Url.Action("MyProjectDetail", "Staff", new { id = project.ProjectId })"
+                                           class="pm-action-btn" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @if (stats?.IsLeader == true)
+                                        {
+                                            <a href="@Url.Action("ProjectDetail", "Admin", new { id = project.ProjectId })"
+                                               class="pm-action-btn" title="Quản lý dự án">
+                                                <i class="fas fa-cog"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="pm-empty-state">
+                    <div class="pm-empty-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h3 class="pm-empty-title">Chưa có dự án nào</h3>
+                    <p class="pm-empty-text">Bạn chưa được thêm vào dự án nào. Liên hệ Admin để được thêm vào dự án.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Dark mode support
+        if (localStorage.getItem('dark-mode') === 'enabled') {
+            document.body.classList.add('staff-dark-mode');
+        }
+    </script>
+}

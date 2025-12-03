@@ -1,0 +1,294 @@
+﻿@{
+    ViewData["Title"] = "Tạo dự án mới";
+}
+
+<link rel="stylesheet" href="~/css/project-management.css" />
+
+<div class="pm-container">
+    <!-- PAGE HEADER -->
+    <div class="pm-page-header">
+        <div class="pm-header-content">
+            <div>
+                <h1 class="pm-page-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Tạo dự án mới
+                </h1>
+                <p class="pm-page-subtitle">Điền thông tin để tạo dự án mới</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE FORM -->
+    <div class="pm-card">
+        <div class="pm-card-header">
+            <h5 class="pm-card-title">
+                <i class="fas fa-info-circle"></i>
+                Thông tin dự án
+            </h5>
+        </div>
+        <div class="pm-card-body">
+            <form id="createProjectForm">
+                <!-- Basic Info -->
+                <div class="pm-form-row">
+                    <div class="pm-form-group">
+                        <label class="pm-form-label required">Tên dự án</label>
+                        <input type="text" class="pm-form-control" id="projectName"
+                               placeholder="VD: Website bán hàng TMDT" required>
+                        <small class="pm-form-help">Tên ngắn gọn, dễ nhớ cho dự án</small>
+                    </div>
+
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Phòng ban</label>
+                        <select class="pm-form-select" id="departmentId">
+                            <option value="">-- Chọn phòng ban --</option>
+                            @foreach (var dept in ViewBag.Departments)
+                            {
+                                <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pm-form-row pm-form-row-full">
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Mô tả dự án</label>
+                        <textarea class="pm-form-textarea" id="description" rows="4"
+                                  placeholder="Mô tả chi tiết về mục tiêu, phạm vi và yêu cầu của dự án..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Dates & Priority -->
+                <div class="pm-form-row">
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Ngày bắt đầu</label>
+                        <input type="date" class="pm-form-control" id="startDate">
+                    </div>
+
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Ngày kết thúc dự kiến</label>
+                        <input type="date" class="pm-form-control" id="endDate">
+                    </div>
+                </div>
+
+                <div class="pm-form-row">
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Mức độ ưu tiên</label>
+                        <select class="pm-form-select" id="priority">
+                            <option value="Low">Thấp</option>
+                            <option value="Medium" selected>Trung bình</option>
+                            <option value="High">Cao</option>
+                        </select>
+                    </div>
+
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Ngân sách (VNĐ)</label>
+                        <input type="number" class="pm-form-control" id="budget"
+                               placeholder="VD: 100000000" min="0" step="1000000">
+                    </div>
+                </div>
+
+                <!-- Team Section -->
+                <div class="pm-form-row pm-form-row-full">
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Leader dự án</label>
+                        <select class="pm-form-select" id="leaderId">
+                            <option value="">-- Chọn leader --</option>
+                            @foreach (var user in ViewBag.Users)
+                            {
+                                <option value="@user.UserId">
+                                    @user.FullName (@(user.Department?.DepartmentName ?? "N/A"))
+                                </option>
+                            }
+                        </select>
+                        <small class="pm-form-help">Leader sẽ quản lý và điều phối dự án</small>
+                    </div>
+                </div>
+
+                <div class="pm-form-row pm-form-row-full">
+                    <div class="pm-form-group">
+                        <label class="pm-form-label">Thành viên tham gia</label>
+                        <div id="memberSelection" style="max-height: 300px; overflow-y: auto;
+                                                         border: 2px solid var(--border);
+                                                         border-radius: 0.75rem; padding: 1rem;">
+                            <div style="margin-bottom: 1rem;">
+                                <input type="text" class="pm-form-control" id="memberSearch"
+                                       placeholder="🔍 Tìm kiếm thành viên..."
+                                       style="margin-bottom: 0.5rem;">
+                            </div>
+                            <div id="memberList">
+                                @foreach (var user in ViewBag.Users)
+                                {
+                                    <div class="member-checkbox-item" data-name="@user.FullName.ToLower()"
+                                         data-dept="@(user.Department?.DepartmentName?.ToLower() ?? "")">
+                                        <label style="display: flex; align-items: center; gap: 0.75rem;
+                                                      padding: 0.75rem; cursor: pointer;
+                                                      border-radius: 0.5rem; transition: all 0.2s;"
+                                               onmouseover="this.style.background='var(--border)'"
+                                               onmouseout="this.style.background='transparent'">
+                                            <input type="checkbox" class="member-checkbox" value="@user.UserId"
+                                                   style="width: 18px; height: 18px; cursor: pointer;">
+                                            <div style="flex: 1;">
+                                                <div style="font-weight: 600; color: var(--text);">@user.FullName</div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                                    @(user.Department?.DepartmentName ?? "N/A") - @user.Email
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <small class="pm-form-help">
+                            <span id="selectedCount">0</span> thành viên được chọn
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="pm-d-flex pm-gap-2 pm-justify-end" style="margin-top: 2rem;">
+                    <a href="@Url.Action("ProjectList", "Admin")" class="pm-btn pm-btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Hủy
+                    </a>
+                    <button type="submit" class="pm-btn pm-btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Tạo dự án
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Member Search
+        document.getElementById('memberSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.member-checkbox-item');
+
+            items.forEach(item => {
+                const name = item.dataset.name;
+                const dept = item.dataset.dept;
+                const matches = name.includes(searchTerm) || dept.includes(searchTerm);
+                item.style.display = matches ? 'block' : 'none';
+            });
+        });
+
+        // Count selected members
+        document.querySelectorAll('.member-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+
+        function updateSelectedCount() {
+            const count = document.querySelectorAll('.member-checkbox:checked').length;
+            document.getElementById('selectedCount').textContent = count;
+        }
+
+        // Auto-select leader as member
+        document.getElementById('leaderId').addEventListener('change', function() {
+            const leaderId = this.value;
+            if (leaderId) {
+                const checkbox = document.querySelector(`.member-checkbox[value="${leaderId}"]`);
+                if (checkbox && !checkbox.checked) {
+                    checkbox.checked = true;
+                    updateSelectedCount();
+                }
+            }
+        });
+
+        // Form Submit
+        document.getElementById('createProjectForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const projectName = document.getElementById('projectName').value.trim();
+            if (!projectName) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Thiếu thông tin',
+                    text: 'Vui lòng nhập tên dự án',
+                    confirmButtonColor: '#6366f1'
+                });
+                return;
+            }
+
+            const selectedMembers = Array.from(document.querySelectorAll('.member-checkbox:checked'))
+                .map(cb => parseInt(cb.value));
+
+            const data = {
+                projectName: projectName,
+                description: document.getElementById('description').value.trim() || null,
+                startDate: document.getElementById('startDate').value || null,
+                endDate: document.getElementById('endDate').value || null,
+                priority: document.getElementById('priority').value,
+                budget: parseFloat(document.getElementById('budget').value) || null,
+                leaderId: parseInt(document.getElementById('leaderId').value) || null,
+                departmentId: parseInt(document.getElementById('departmentId').value) || null,
+                memberIds: selectedMembers
+            };
+
+            // Validate dates
+            if (data.startDate && data.endDate) {
+                if (new Date(data.endDate) < new Date(data.startDate)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Ngày không hợp lệ',
+                        text: 'Ngày kết thúc phải sau ngày bắt đầu',
+                        confirmButtonColor: '#6366f1'
+                    });
+                    return;
+                }
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tạo...';
+
+            try {
+                const response = await fetch('@Url.Action("CreateProjectPost", "Admin")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        html: `<p>${result.message}</p><p class="text-muted" style="margin-top: 0.5rem;">Mã dự án: <strong>${result.projectCode}</strong></p>`,
+                        confirmButtonColor: '#10b981',
+                        timer: 3000
+                    }).then(() => {
+                        window.location.href = '@Url.Action("ProjectList", "Admin")';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: result.message,
+                        confirmButtonColor: '#ef4444'
+                    });
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Tạo dự án';
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Có lỗi xảy ra khi tạo dự án: ' + error.message,
+                    confirmButtonColor: '#ef4444'
+                });
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Tạo dự án';
+            }
+        });
+
+        // Dark mode support
+        if (localStorage.getItem('dark-mode') === 'enabled') {
+            document.body.classList.add('staff-dark-mode');
+        }
+    </script>
+}

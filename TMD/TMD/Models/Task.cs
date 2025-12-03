@@ -23,5 +23,19 @@ public partial class Task
 
     public DateTime? UpdatedAt { get; set; }
 
+    public int? ProjectId { get; set; }
+
+    public string TaskType { get; set; } = null!;
+
+    public int? ParentTaskId { get; set; }
+
+    public int? OrderIndex { get; set; }
+
+    public virtual ICollection<Task> InverseParentTask { get; set; } = new List<Task>();
+
+    public virtual Task? ParentTask { get; set; }
+
+    public virtual Project? Project { get; set; }
+
     public virtual ICollection<UserTask> UserTasks { get; set; } = new List<UserTask>();
 }

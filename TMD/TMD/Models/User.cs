@@ -5,107 +5,113 @@ namespace TMD.Models;
 
 public partial class User
 {
-	public int UserId { get; set; }
+    public int UserId { get; set; }
 
-	public string Username { get; set; } = null!;
+    public string Username { get; set; } = null!;
 
-	public string PasswordHash { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
 
-	public string FullName { get; set; } = null!;
+    public string FullName { get; set; } = null!;
 
-	public string? Email { get; set; }
+    public string? Email { get; set; }
 
-	public string? PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
 
-	public string? Avatar { get; set; }
+    public string? Avatar { get; set; }
 
-	public int? DepartmentId { get; set; }
+    public int? DepartmentId { get; set; }
 
-	public int RoleId { get; set; }
+    public int RoleId { get; set; }
 
-	public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
-	public DateTime? LastLoginAt { get; set; }
+    public DateTime? LastLoginAt { get; set; }
 
-	public DateTime? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
-	public int? CreatedBy { get; set; }
+    public int? CreatedBy { get; set; }
 
-	public DateTime? UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 
-	public bool IsTester { get; set; }
+    public bool IsTester { get; set; }
 
-	public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
+    public virtual ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
 
-	public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
+    public virtual ICollection<AuditLog> AuditLogs { get; set; } = new List<AuditLog>();
 
-	public virtual ICollection<ChatMessage> ChatMessages { get; set; } = new List<ChatMessage>();
+    public virtual ICollection<ChatMessage> ChatMessages { get; set; } = new List<ChatMessage>();
 
-	// ✅ SỬA: ConversationUser1s và ConversationUser2s (đã được cấu hình trong DbContext)
-	public virtual ICollection<Conversation> ConversationUser1s { get; set; } = new List<Conversation>();
-	public virtual ICollection<Conversation> ConversationUser2s { get; set; } = new List<Conversation>();
+    public virtual ICollection<Conversation> ConversationUser1s { get; set; } = new List<Conversation>();
 
-	public virtual Department? Department { get; set; }
+    public virtual ICollection<Conversation> ConversationUser2s { get; set; } = new List<Conversation>();
 
-	public virtual ICollection<Department> Departments { get; set; } = new List<Department>();
+    public virtual Department? Department { get; set; }
 
-	public virtual ICollection<Kpihistory> Kpihistories { get; set; } = new List<Kpihistory>();
+    public virtual ICollection<Department> Departments { get; set; } = new List<Department>();
 
-	public virtual ICollection<LateRequest> LateRequestReviewedByNavigations { get; set; } = new List<LateRequest>();
+    public virtual ICollection<Kpihistory> Kpihistories { get; set; } = new List<Kpihistory>();
 
-	public virtual ICollection<LateRequest> LateRequestUsers { get; set; } = new List<LateRequest>();
+    public virtual ICollection<LateRequest> LateRequestReviewedByNavigations { get; set; } = new List<LateRequest>();
 
-	public virtual ICollection<LeaveRequest> LeaveRequestReviewedByNavigations { get; set; } = new List<LeaveRequest>();
+    public virtual ICollection<LateRequest> LateRequestUsers { get; set; } = new List<LateRequest>();
 
-	public virtual ICollection<LeaveRequest> LeaveRequestUsers { get; set; } = new List<LeaveRequest>();
+    public virtual ICollection<LeaveRequest> LeaveRequestReviewedByNavigations { get; set; } = new List<LeaveRequest>();
 
-	public virtual ICollection<LoginHistory> LoginHistories { get; set; } = new List<LoginHistory>();
+    public virtual ICollection<LeaveRequest> LeaveRequestUsers { get; set; } = new List<LeaveRequest>();
 
-	public virtual ICollection<OvertimeRequest> OvertimeRequestReviewedByNavigations { get; set; } = new List<OvertimeRequest>();
+    public virtual ICollection<LoginHistory> LoginHistories { get; set; } = new List<LoginHistory>();
 
-	public virtual ICollection<OvertimeRequest> OvertimeRequestUsers { get; set; } = new List<OvertimeRequest>();
+    public virtual ICollection<OvertimeRequest> OvertimeRequestReviewedByNavigations { get; set; } = new List<OvertimeRequest>();
 
-	public virtual ICollection<PasswordResetHistory> PasswordResetHistoryResetByUsers { get; set; } = new List<PasswordResetHistory>();
+    public virtual ICollection<OvertimeRequest> OvertimeRequestUsers { get; set; } = new List<OvertimeRequest>();
 
-	public virtual ICollection<PasswordResetHistory> PasswordResetHistoryUsers { get; set; } = new List<PasswordResetHistory>();
+    public virtual ICollection<PasswordResetHistory> PasswordResetHistoryResetByUsers { get; set; } = new List<PasswordResetHistory>();
 
-	public virtual ICollection<PasswordResetOtp> PasswordResetOtps { get; set; } = new List<PasswordResetOtp>();
+    public virtual ICollection<PasswordResetHistory> PasswordResetHistoryUsers { get; set; } = new List<PasswordResetHistory>();
 
-	public virtual ICollection<PasswordResetToken1> PasswordResetToken1s { get; set; } = new List<PasswordResetToken1>();
+    public virtual ICollection<PasswordResetOtp> PasswordResetOtps { get; set; } = new List<PasswordResetOtp>();
 
-	public virtual ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
+    public virtual ICollection<PasswordResetToken1> PasswordResetToken1s { get; set; } = new List<PasswordResetToken1>();
 
-	public virtual Role Role { get; set; } = null!;
+    public virtual ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
 
-	public virtual ICollection<SalaryAdjustment> SalaryAdjustmentAdjustedByNavigations { get; set; } = new List<SalaryAdjustment>();
+    public virtual ICollection<Project> ProjectCreatedByNavigations { get; set; } = new List<Project>();
 
-	public virtual ICollection<SalaryAdjustment> SalaryAdjustmentApprovedByNavigations { get; set; } = new List<SalaryAdjustment>();
+    public virtual ICollection<Project> ProjectLeaders { get; set; } = new List<Project>();
 
-	public virtual ICollection<SalaryAdjustment> SalaryAdjustmentUsers { get; set; } = new List<SalaryAdjustment>();
+    public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = new List<ProjectMember>();
 
-	public virtual ICollection<SalaryConfigHistory> SalaryConfigHistories { get; set; } = new List<SalaryConfigHistory>();
+    public virtual Role Role { get; set; } = null!;
 
-	public virtual ICollection<SalaryConfiguration> SalaryConfigurationCreatedByNavigations { get; set; } = new List<SalaryConfiguration>();
+    public virtual ICollection<SalaryAdjustment> SalaryAdjustmentAdjustedByNavigations { get; set; } = new List<SalaryAdjustment>();
 
-	public virtual ICollection<SalaryConfiguration> SalaryConfigurationUpdatedByNavigations { get; set; } = new List<SalaryConfiguration>();
+    public virtual ICollection<SalaryAdjustment> SalaryAdjustmentApprovedByNavigations { get; set; } = new List<SalaryAdjustment>();
 
-	public virtual ICollection<SystemSetting> SystemSettings { get; set; } = new List<SystemSetting>();
+    public virtual ICollection<SalaryAdjustment> SalaryAdjustmentUsers { get; set; } = new List<SalaryAdjustment>();
 
-	public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
+    public virtual ICollection<SalaryConfigHistory> SalaryConfigHistories { get; set; } = new List<SalaryConfigHistory>();
 
-	public virtual ICollection<Team> Teams { get; set; } = new List<Team>();
+    public virtual ICollection<SalaryConfiguration> SalaryConfigurationCreatedByNavigations { get; set; } = new List<SalaryConfiguration>();
 
-	public virtual ICollection<UserSalarySetting> UserSalarySettingCreatedByNavigations { get; set; } = new List<UserSalarySetting>();
+    public virtual ICollection<SalaryConfiguration> SalaryConfigurationUpdatedByNavigations { get; set; } = new List<SalaryConfiguration>();
 
-	public virtual ICollection<UserSalarySetting> UserSalarySettingUpdatedByNavigations { get; set; } = new List<UserSalarySetting>();
+    public virtual ICollection<SystemSetting> SystemSettings { get; set; } = new List<SystemSetting>();
 
-	public virtual UserSalarySetting? UserSalarySettingUser { get; set; }
+    public virtual ICollection<TeamMember> TeamMembers { get; set; } = new List<TeamMember>();
 
-	// ✅ USERTASK COLLECTIONS (đã được cấu hình trong DbContext với OnDelete(DeleteBehavior.NoAction))
-	public virtual ICollection<UserTask> UserTaskTesters { get; set; } = new List<UserTask>();
-	public virtual ICollection<UserTask> UserTaskUsers { get; set; } = new List<UserTask>();
+    public virtual ICollection<Team> Teams { get; set; } = new List<Team>();
 
-	public virtual ICollection<WorkScheduleException> WorkScheduleExceptionCreatedByNavigations { get; set; } = new List<WorkScheduleException>();
+    public virtual ICollection<UserSalarySetting> UserSalarySettingCreatedByNavigations { get; set; } = new List<UserSalarySetting>();
 
-	public virtual ICollection<WorkScheduleException> WorkScheduleExceptionUsers { get; set; } = new List<WorkScheduleException>();
+    public virtual ICollection<UserSalarySetting> UserSalarySettingUpdatedByNavigations { get; set; } = new List<UserSalarySetting>();
+
+    public virtual UserSalarySetting? UserSalarySettingUser { get; set; }
+
+    public virtual ICollection<UserTask> UserTaskTesters { get; set; } = new List<UserTask>();
+
+    public virtual ICollection<UserTask> UserTaskUsers { get; set; } = new List<UserTask>();
+
+    public virtual ICollection<WorkScheduleException> WorkScheduleExceptionCreatedByNavigations { get; set; } = new List<WorkScheduleException>();
+
+    public virtual ICollection<WorkScheduleException> WorkScheduleExceptionUsers { get; set; } = new List<WorkScheduleException>();
 }

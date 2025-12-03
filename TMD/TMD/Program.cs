@@ -98,7 +98,9 @@ if (!app.Environment.IsDevelopment())
 	app.UseExceptionHandler("/Home/Error");
 	app.UseHsts();
 }
+// Add this in Program.cs BEFORE app.Run()
 
+app.MapHub<TMD.Hubs.ChatHub>("/chatHub");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

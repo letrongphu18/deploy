@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\css\\auth-page.css"
     },
     {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\chat.css",
+      "PackagePath": "staticwebassets\\css\\chat.css"
+    },
+    {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\dashboard-management.css",
       "PackagePath": "staticwebassets\\css\\dashboard-management.css"
     },
@@ -83,6 +87,10 @@
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\profile.css",
       "PackagePath": "staticwebassets\\css\\profile.css"
+    },
+    {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\project-management.css",
+      "PackagePath": "staticwebassets\\css\\project-management.css"
     },
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\recycle-bin.css",
@@ -167,6 +175,10 @@
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
       "PackagePath": "staticwebassets\\js\\notification-hub.js"
+    },
+    {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\project-management.js",
+      "PackagePath": "staticwebassets\\js\\project-management.js"
     },
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\resetpass.js",
@@ -495,6 +507,10 @@
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251202_115530_checkin.jpg",
       "PackagePath": "staticwebassets\\uploads\\attendance\\3_20251202_115530_checkin.jpg"
+    },
+    {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251202_175426_checkout.jpg",
+      "PackagePath": "staticwebassets\\uploads\\attendance\\3_20251202_175426_checkout.jpg"
     },
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251129_134923_checkin.jpg",

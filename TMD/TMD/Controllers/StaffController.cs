@@ -2560,11 +2560,523 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = ex.Message });
 			}
 		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> MyProjects()
+		{
+			if (!IsAuthenticated())
+				return RedirectToAction("Login", "Account");
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			await _auditHelper.LogViewAsync(
+				userId,
+				"Project",
+				0,
+				"Xem danh sách dự án đang tham gia"
+			);
+
+			// Lấy tất cả dự án mà user là thành viên
+			var myProjects = await _context.ProjectMembers
+				.Include(pm => pm.Project)
+					.ThenInclude(p => p.Leader)
+				.Include(pm => pm.Project)
+					.ThenInclude(p => p.Department)
+				.Include(pm => pm.Project)
+					.ThenInclude(p => p.ProjectMembers)
+				.Include(pm => pm.Project)
+					.ThenInclude(p => p.Tasks)
+						.ThenInclude(t => t.UserTasks)
+				.Where(pm => pm.UserId == userId && pm.IsActive == true)
+				.OrderByDescending(pm => pm.JoinedAt)
+				.Select(pm => pm.Project)
+				.ToListAsync();
+
+			// Thống kê
+			ViewBag.TotalProjects = myProjects.Count;
+			ViewBag.ActiveProjects = myProjects.Count(p => p.Status == "InProgress");
+			ViewBag.CompletedProjects = myProjects.Count(p => p.Status == "Completed");
+			ViewBag.MyLeadProjects = myProjects.Count(p => p.LeaderId == userId);
+
+			// ✅ TÍNH TOÁN TRƯỚC TRONG CONTROLLER - Tránh lambda trong View
+			var projectStatsDict = new Dictionary<int, object>();
+
+			foreach (var p in myProjects)
+			{
+				var myTotalTasks = p.Tasks
+					.SelectMany(t => t.UserTasks)
+					.Count(ut => ut.UserId == userId);
+
+				var myCompletedTasks = p.Tasks
+					.SelectMany(t => t.UserTasks)
+					.Count(ut => ut.UserId == userId && ut.Status == "Done");
+
+				var myInProgressTasks = p.Tasks
+					.SelectMany(t => t.UserTasks)
+					.Count(ut => ut.UserId == userId && ut.Status == "InProgress");
+
+				var myTodoTasks = p.Tasks
+					.SelectMany(t => t.UserTasks)
+					.Count(ut => ut.UserId == userId && ut.Status == "TODO");
+
+				var isLeader = p.LeaderId == userId;
+
+				projectStatsDict.Add(p.ProjectId, new
+				{
+					Project = p,
+					MyTotalTasks = myTotalTasks,
+					MyCompletedTasks = myCompletedTasks,
+					MyInProgressTasks = myInProgressTasks,
+					MyTodoTasks = myTodoTasks,
+					IsLeader = isLeader
+				});
+			}
+
+			ViewBag.ProjectStats = projectStatsDict;
+
+			return View(myProjects);
+		}
+
+		// ============================================
+		// MY PROJECT DETAIL - Chi tiết dự án & task của mình
+		// ============================================
+		[HttpGet]
+		public async Task<IActionResult> MyProjectDetail(int id)
+		{
+			if (!IsAuthenticated())
+				return RedirectToAction("Login", "Account");
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			var membership = await _context.ProjectMembers
+				.Include(pm => pm.Project)
+					.ThenInclude(p => p.Leader)
+				.Include(pm => pm.Project)
+					.ThenInclude(p => p.Department)
+				.Include(pm => pm.Project)
+					.ThenInclude(p => p.ProjectMembers)
+						.ThenInclude(pm => pm.User)
+							.ThenInclude(u => u.Department)
+				.FirstOrDefaultAsync(pm => pm.ProjectId == id && pm.UserId == userId && pm.IsActive == true);
+
+			if (membership == null)
+			{
+				TempData["Error"] = "Bạn không phải thành viên của dự án này";
+				return RedirectToAction("MyProjects");
+			}
+
+			var project = membership.Project;
+
+			// Lấy tasks
+			var myTasks = await _context.UserTasks
+				.Include(ut => ut.Task)
+				.Include(ut => ut.Tester)
+				.Where(ut => ut.UserId == userId &&
+							ut.Task.ProjectId == id &&
+							ut.Task.IsActive == true)
+				.OrderBy(ut => ut.Status == "TODO" ? 1 : ut.Status == "InProgress" ? 2 : 3)
+				.ThenByDescending(ut => ut.Task.Priority == "High" ? 1 : ut.Task.Priority == "Medium" ? 2 : 3)
+				.ToListAsync();
+
+			// Tính toán task metadata
+			var myTasksWithMetadata = myTasks.Select(ut => new
+			{
+				UserTask = ut,
+				Task = ut.Task,
+				IsOverdue = ut.Task.Deadline.HasValue &&
+						   (ut.Status != "Done"
+							? DateTime.Now > ut.Task.Deadline.Value
+							: (ut.UpdatedAt.HasValue && ut.UpdatedAt.Value > ut.Task.Deadline.Value)),
+				StatusBadgeClass = ut.Status switch
+				{
+					"TODO" => "style='background: rgba(107, 114, 128, 0.1); color: #6b7280;'",
+					"InProgress" => "pm-badge-medium",
+					"Testing" => "style='background: rgba(59, 130, 246, 0.1); color: var(--info);'",
+					"Done" => "style='background: rgba(16, 185, 129, 0.1); color: var(--success);'",
+					"Reopen" => "pm-badge-high",
+					_ => ""
+				},
+				StatusText = ut.Status switch
+				{
+					"TODO" => "Chưa bắt đầu",
+					"InProgress" => "Đang làm",
+					"Testing" => "Chờ test",
+					"Done" => "Hoàn thành",
+					"Reopen" => "Cần sửa lại",
+					_ => "TODO"
+				},
+				PriorityClass = ut.Task.Priority switch
+				{
+					"High" => "pm-badge-high",
+					"Medium" => "pm-badge-medium",
+					"Low" => "pm-badge-low",
+					_ => "pm-badge-medium"
+				}
+			}).ToList();
+
+			// Thống kê
+			ViewBag.MyTotalTasks = myTasks.Count;
+			ViewBag.MyTodoTasks = myTasks.Count(ut => ut.Status == "TODO");
+			ViewBag.MyInProgressTasks = myTasks.Count(ut => ut.Status == "InProgress");
+			ViewBag.MyTestingTasks = myTasks.Count(ut => ut.Status == "Testing");
+			ViewBag.MyCompletedTasks = myTasks.Count(ut => ut.Status == "Done");
+			ViewBag.MyReopenTasks = myTasks.Count(ut => ut.Status == "Reopen");
+
+			ViewBag.MyCompletionRate = myTasks.Count > 0
+				? Math.Round((double)ViewBag.MyCompletedTasks / myTasks.Count * 100, 1)
+				: 0;
+
+			ViewBag.IsLeader = project.LeaderId == userId;
+			ViewBag.MyRole = membership.Role ?? "Member";
+			ViewBag.Project = project;
+			ViewBag.MyTasksWithMetadata = myTasksWithMetadata;
+
+			// ✅ CRITICAL FIX: Đảm bảo activeMembers luôn có giá trị
+			var activeMembers = new List<dynamic>(); // Khởi tạo empty list
+
+			if (project.ProjectMembers != null)
+			{
+				activeMembers = project.ProjectMembers
+					.Where(pm => pm.IsActive)
+					.OrderBy(pm => pm.Role == "Leader" ? 0 : 1)
+					.Select(pm => new
+					{
+						Member = pm,
+						HasAvatar = !string.IsNullOrEmpty(pm.User?.Avatar) &&
+								   pm.User.Avatar != "/images/default-avatar.png",
+						Initials = pm.User?.FullName?.Substring(0, 1).ToUpper() ?? "?"
+					})
+					.ToList<dynamic>();
+			}
+
+			ViewBag.ActiveMembers = activeMembers; // Luôn gán giá trị (có thể là empty list)
+
+			await _auditHelper.LogViewAsync(
+				userId,
+				"Project",
+				id,
+				$"Xem chi tiết dự án: {project.ProjectName}"
+			);
+
+			return View();
+		}
+
+		// ============================================
+		// GET MY PROJECTS (JSON)
+		// ============================================
+		[HttpGet]
+		public async Task<IActionResult> GetMyProjects()
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				var myProjects = await _context.ProjectMembers
+					.Include(pm => pm.Project)
+						.ThenInclude(p => p.Leader)
+					.Include(pm => pm.Project)
+						.ThenInclude(p => p.Department)
+					.Include(pm => pm.Project)
+						.ThenInclude(p => p.Tasks)
+							.ThenInclude(t => t.UserTasks)
+					.Where(pm => pm.UserId == userId && pm.IsActive == true)
+					.Select(pm => new
+					{
+						projectId = pm.Project.ProjectId,
+						projectCode = pm.Project.ProjectCode,
+						projectName = pm.Project.ProjectName,
+						description = pm.Project.Description ?? "",
+						status = pm.Project.Status,
+						priority = pm.Project.Priority ?? "Medium",
+						progress = pm.Project.Progress ?? 0,
+						startDate = pm.Project.StartDate.HasValue ? pm.Project.StartDate.Value.ToString("dd/MM/yyyy") : "",
+						endDate = pm.Project.EndDate.HasValue ? pm.Project.EndDate.Value.ToString("dd/MM/yyyy") : "",
+						leaderName = pm.Project.Leader != null ? pm.Project.Leader.FullName : "Chưa chỉ định",
+						departmentName = pm.Project.Department != null ? pm.Project.Department.DepartmentName : "N/A",
+						myRole = pm.Role ?? "Member",
+						isLeader = pm.Project.LeaderId == userId,
+
+						// Task stats của mình
+						myTotalTasks = pm.Project.Tasks
+							.SelectMany(t => t.UserTasks)
+							.Count(ut => ut.UserId == userId),
+						myCompletedTasks = pm.Project.Tasks
+							.SelectMany(t => t.UserTasks)
+							.Count(ut => ut.UserId == userId && ut.Status == "Done"),
+						myInProgressTasks = pm.Project.Tasks
+							.SelectMany(t => t.UserTasks)
+							.Count(ut => ut.UserId == userId && ut.Status == "InProgress"),
+						myTodoTasks = pm.Project.Tasks
+							.SelectMany(t => t.UserTasks)
+							.Count(ut => ut.UserId == userId && ut.Status == "TODO"),
+
+						joinedAt = pm.JoinedAt.ToString("dd/MM/yyyy HH:mm")
+					})
+					.OrderByDescending(p => p.joinedAt)
+					.ToListAsync();
+
+				return Json(new
+				{
+					success = true,
+					projects = myProjects,
+					totalProjects = myProjects.Count
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		// ============================================
+		// GET MY PROJECT TASKS (JSON)
+		// ============================================
+		[HttpGet]
+		public async Task<IActionResult> GetMyProjectTasks(int projectId)
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				// Kiểm tra user có phải member không
+				var isMember = await _context.ProjectMembers
+					.AnyAsync(pm => pm.ProjectId == projectId && pm.UserId == userId && pm.IsActive == true);
+
+				if (!isMember)
+					return Json(new { success = false, message = "Bạn không phải thành viên của dự án này" });
+
+				var myTasks = await _context.UserTasks
+					.Include(ut => ut.Task)
+					.Include(ut => ut.Tester)
+					.Where(ut => ut.UserId == userId &&
+								ut.Task.ProjectId == projectId &&
+								ut.Task.IsActive == true)
+					.OrderBy(ut => ut.Status == "TODO" ? 1 : ut.Status == "InProgress" ? 2 : 3)
+					.ThenByDescending(ut => ut.Task.Priority == "High" ? 1 : ut.Task.Priority == "Medium" ? 2 : 3)
+					.Select(ut => new
+					{
+						userTaskId = ut.UserTaskId,
+						taskId = ut.Task.TaskId,
+						taskName = ut.Task.TaskName,
+						description = ut.Task.Description ?? "",
+						platform = ut.Task.Platform ?? "",
+						reportLink = ut.ReportLink ?? "",
+						deadline = ut.Task.Deadline.HasValue ? ut.Task.Deadline.Value.ToString("dd/MM/yyyy HH:mm") : "",
+						priority = ut.Task.Priority ?? "Medium",
+						status = ut.Status ?? "TODO",
+						testerId = ut.TesterId,
+						testerName = ut.Tester != null ? ut.Tester.FullName : null,
+
+						isOverdue = ut.Task.Deadline.HasValue &&
+								   (ut.Status != "Done"
+									? DateTime.Now > ut.Task.Deadline.Value
+									: (ut.UpdatedAt.HasValue && ut.UpdatedAt.Value > ut.Task.Deadline.Value)),
+
+						updatedAt = ut.UpdatedAt.HasValue ? ut.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm") : ""
+					})
+					.ToListAsync();
+
+				return Json(new
+				{
+					success = true,
+					tasks = myTasks,
+					totalTasks = myTasks.Count,
+					todoTasks = myTasks.Count(t => t.status == "TODO"),
+					inProgressTasks = myTasks.Count(t => t.status == "InProgress"),
+					testingTasks = myTasks.Count(t => t.status == "Testing"),
+					completedTasks = myTasks.Count(t => t.status == "Done"),
+					overdueTasks = myTasks.Count(t => t.isOverdue)
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		// ============================================
+		// GET PROJECT MEMBERS (cho chat/collab)
+		// ============================================
+		[HttpGet]
+		public async Task<IActionResult> GetProjectMembers(int projectId)
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				// Kiểm tra user có phải member không
+				var isMember = await _context.ProjectMembers
+					.AnyAsync(pm => pm.ProjectId == projectId && pm.UserId == userId && pm.IsActive == true);
+
+				if (!isMember)
+					return Json(new { success = false, message = "Bạn không phải thành viên của dự án này" });
+
+				var members = await _context.ProjectMembers
+					.Include(pm => pm.User)
+						.ThenInclude(u => u.Department)
+					.Include(pm => pm.User)
+						.ThenInclude(u => u.Role)
+					.Where(pm => pm.ProjectId == projectId && pm.IsActive == true)
+					.OrderBy(pm => pm.Role == "Leader" ? 0 : 1)
+					.ThenBy(pm => pm.User.FullName)
+					.Select(pm => new
+					{
+						userId = pm.UserId,
+						fullName = pm.User.FullName,
+						email = pm.User.Email,
+						avatar = pm.User.Avatar,
+						departmentName = pm.User.Department != null ? pm.User.Department.DepartmentName : "N/A",
+						roleName = pm.User.Role.RoleName,
+						projectRole = pm.Role ?? "Member",
+						isLeader = pm.Role == "Leader",
+						joinedAt = pm.JoinedAt.ToString("dd/MM/yyyy"),
+						isCurrentUser = pm.UserId == userId
+					})
+					.ToListAsync();
+
+				return Json(new
+				{
+					success = true,
+					members = members,
+					totalMembers = members.Count
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		// ============================================
+		// MY PROJECT DASHBOARD (Statistics)
+		// ============================================
+		[HttpGet]
+		public async Task<IActionResult> GetMyProjectStats()
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				// Tất cả dự án đang tham gia
+				var myProjects = await _context.ProjectMembers
+					.Include(pm => pm.Project)
+						.ThenInclude(p => p.Tasks)
+							.ThenInclude(t => t.UserTasks)
+					.Where(pm => pm.UserId == userId && pm.IsActive == true)
+					.ToListAsync();
+
+				// Tổng số task của mình trong tất cả dự án
+				var allMyTasks = myProjects
+					.SelectMany(pm => pm.Project.Tasks)
+					.SelectMany(t => t.UserTasks)
+					.Where(ut => ut.UserId == userId)
+					.ToList();
+
+				return Json(new
+				{
+					success = true,
+					stats = new
+					{
+						totalProjects = myProjects.Count,
+						activeProjects = myProjects.Count(pm => pm.Project.Status == "InProgress"),
+						completedProjects = myProjects.Count(pm => pm.Project.Status == "Completed"),
+						leadingProjects = myProjects.Count(pm => pm.Project.LeaderId == userId),
+
+						totalTasks = allMyTasks.Count,
+						todoTasks = allMyTasks.Count(ut => ut.Status == "TODO"),
+						inProgressTasks = allMyTasks.Count(ut => ut.Status == "InProgress"),
+						testingTasks = allMyTasks.Count(ut => ut.Status == "Testing"),
+						completedTasks = allMyTasks.Count(ut => ut.Status == "Done"),
+
+						completionRate = allMyTasks.Count > 0
+							? Math.Round((double)allMyTasks.Count(ut => ut.Status == "Done") / allMyTasks.Count * 100, 1)
+							: 0
+					}
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		// ============================================
+		// LEAVE PROJECT (tự rời khỏi dự án)
+		// ============================================
+		[HttpPost]
+		public async Task<IActionResult> LeaveProject([FromBody] LeaveProjectRequest request)
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				var membership = await _context.ProjectMembers
+					.Include(pm => pm.Project)
+					.FirstOrDefaultAsync(pm => pm.ProjectId == request.ProjectId &&
+											  pm.UserId == userId &&
+											  pm.IsActive == true);
+
+				if (membership == null)
+					return Json(new { success = false, message = "Bạn không phải thành viên của dự án này" });
+
+				// Không cho phép Leader rời dự án
+				if (membership.Project.LeaderId == userId)
+					return Json(new { success = false, message = "Leader không thể rời dự án. Vui lòng liên hệ Admin." });
+
+				// Đánh dấu không còn active
+				membership.IsActive = false;
+				membership.LeftAt = DateTime.Now;
+
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					userId,
+					"LEAVE",
+					"ProjectMember",
+					membership.ProjectMemberId,
+					new { IsActive = true },
+					new { IsActive = false, LeftAt = DateTime.Now },
+					$"Rời khỏi dự án: {membership.Project.ProjectName}"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Bạn đã rời khỏi dự án '{membership.Project.ProjectName}'"
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
 		// ============================================
 		// REQUEST MODELS
 		// ============================================
 
-
+		// ============================================
+		// REQUEST MODELS
+		// ============================================
+		public class LeaveProjectRequest
+		{
+			public int ProjectId { get; set; }
+		}
 		public class CheckInRequest
 		{
 			public decimal Latitude { get; set; }

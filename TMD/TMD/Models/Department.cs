@@ -21,6 +21,8 @@ public partial class Department
 
     public virtual User? Leader { get; set; }
 
+    public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
+
     public virtual ICollection<Team> Teams { get; set; } = new List<Team>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();

@@ -1,0 +1,207 @@
+﻿@model List<TMD.Models.Project>
+
+@{
+    ViewData["Title"] = "Quản lý Dự án";
+}
+
+<link rel="stylesheet" href="~/css/project-management.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+<div class="pm-container">
+    <div class="pm-page-header">
+        <div class="pm-header-content">
+            <div>
+                <h1 class="pm-page-title">
+                    <i class="fas fa-project-diagram"></i>
+                    Quản lý Dự án
+                </h1>
+                <p class="pm-page-subtitle">Theo dõi và quản lý tất cả các dự án trong hệ thống</p>
+            </div>
+            <a href="@Url.Action("CreateProject", "Admin")" class="pm-btn pm-btn-primary">
+                <i class="fas fa-plus"></i>
+                Tạo dự án mới
+            </a>
+        </div>
+    </div>
+
+    <div class="pm-stats-grid">
+        <div class="pm-stats-card pm-stats-primary">
+            <div class="pm-stats-icon">
+                <i class="fas fa-project-diagram"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Tổng dự án</div>
+                <div class="pm-stats-value">@ViewBag.TotalProjects</div>
+            </div>
+        </div>
+
+        <div class="pm-stats-card pm-stats-success">
+            <div class="pm-stats-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Đã hoàn thành</div>
+                <div class="pm-stats-value">@ViewBag.CompletedProjects</div>
+            </div>
+        </div>
+
+        <div class="pm-stats-card pm-stats-warning">
+            <div class="pm-stats-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Tạm dừng</div>
+                <div class="pm-stats-value">@ViewBag.OnHoldProjects</div>
+            </div>
+        </div>
+
+        <div class="pm-stats-card pm-stats-info">
+            <div class="pm-stats-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="pm-stats-content">
+                <div class="pm-stats-label">Tổng thành viên</div>
+                <div class="pm-stats-value">@ViewBag.TotalMembers</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pm-list-container">
+        @if (Model != null && Model.Any())
+        {
+            <div class="pm-grid-container">
+                @foreach (var project in Model.OrderByDescending(p => p.CreatedAt))
+                {
+                    // Lấy Status và Priority class/text đồng bộ
+                    var statusClass = project.Status switch
+                    {
+                        "Planning" => "status-todo",
+                        "InProgress" => "status-inprogress",
+                        "Completed" => "status-done",
+                        "OnHold" => "status-testing",
+                        _ => "status-inprogress"
+                    };
+                    var statusText = project.Status switch
+                    {
+                        "Planning" => "Lên kế hoạch",
+                        "InProgress" => "Đang triển khai",
+                        "Completed" => "Hoàn thành",
+                        "OnHold" => "Tạm dừng",
+                        _ => project.Status
+                    };
+                    var priorityClass = project.Priority switch
+                    {
+                        "High" => "pm-badge-high",
+                        "Medium" => "pm-badge-medium",
+                        "Low" => "pm-badge-low",
+                        _ => "pm-badge-medium"
+                    };
+
+                    var iconClass = project.Status switch
+                    {
+                        "Completed" => "fa-check-circle",
+                        "InProgress" => "fa-spinner fa-spin",
+                        _ => "fa-circle"
+                    };
+
+                    <div class="pm-project-card">
+                        <div class="pm-card-header">
+                            <div class="pm-project-code">@project.ProjectCode</div>
+                            <span class="pm-badge @priorityClass"><i class="fas fa-flag"></i> @project.Priority</span>
+                        </div>
+                        <h4 class="pm-project-title">
+                            <a href="@Url.Action("ProjectDetail", "Admin", new { id = project.ProjectId })">@project.ProjectName</a>
+                        </h4>
+                        <div class="pm-project-meta">
+                            <span><i class="fas fa-user-tie"></i> @(project.Leader?.FullName ?? "N/A")</span>
+                            <span><i class="fas fa-users"></i> @(project.ProjectMembers?.Count(pm => pm.IsActive) ?? 0) thành viên</span>
+                            @if (project.EndDate.HasValue)
+                            {
+                                <span><i class="fas fa-calendar-alt"></i> @project.EndDate.Value.ToString("dd/MM/yyyy")</span>
+                            }
+                        </div>
+                        <p class="pm-project-description">@(project.Description != null && project.Description.Length > 100 ? project.Description.Substring(0, 100) + "..." : project.Description)</p>
+
+                        <div class="pm-project-footer">
+                            <span class="pm-status-badge @statusClass">
+                                <i class="fas @iconClass" style="font-size: 8px;"></i> @statusText
+                            </span>
+                            <div class="pm-actions">
+                                <a href="@Url.Action("EditProject", "Admin", new { id = project.ProjectId })" class="pm-btn-icon" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                <button onclick="deleteProject(@project.ProjectId, '@project.ProjectName')" class="pm-btn-icon pm-btn-danger" title="Xóa"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="pm-empty-state">
+                <div class="pm-empty-icon"><i class="fas fa-folder-open"></i></div>
+                <h3 class="pm-empty-title">Chưa có dự án nào</h3>
+                <p class="pm-empty-text">Hãy tạo dự án đầu tiên để bắt đầu quản lý công việc</p>
+                <a href="@Url.Action("CreateProject", "Admin")" class="pm-btn pm-btn-primary"><i class="fas fa-plus"></i> Tạo dự án mới</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function deleteProject(projectId, projectName) {
+            Swal.fire({
+                title: 'Xác nhận xóa?',
+                text: `Bạn có chắc muốn xóa dự án: ${projectName}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Xác nhận Xóa',
+                cancelButtonText: 'Hủy bỏ',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    return fetch('@Url.Action("DeleteProject", "Admin")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ projectId: projectId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            throw new Error(data.message || 'Có lỗi xảy ra');
+                        }
+                        return data;
+                    })
+                    .catch(error => {
+                        Swal.showValidationMessage(`Lỗi: ${error.message}`);
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: result.value.message,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        // Xóa card khỏi DOM thay vì reload để tối ưu tốc độ tải
+                        const card = document.querySelector(`.pm-project-card a[href$="id=${projectId}"]`).closest('.pm-project-card');
+                        if (card) card.remove();
+
+                        // Nếu không còn dự án nào, hiển thị empty state
+                        const grid = document.querySelector('.pm-grid-container');
+                        if (grid && grid.children.length === 0) {
+                            location.reload(); // Hoặc hiển thị lại empty state
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

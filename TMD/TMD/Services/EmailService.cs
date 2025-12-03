@@ -29,7 +29,7 @@ namespace AIHUBOS.Services
                 var smtpHost = _configuration["EmailSettings:SmtpHost"] ?? "smtp.gmail.com";
                 var smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"] ?? "587");
                 var senderEmail = _configuration["EmailSettings:SenderEmail"];
-                var senderName = _configuration["EmailSettings:SenderName"] ?? "TMD System";
+                var senderName = _configuration["EmailSettings:SenderName"] ?? "AIHUBOS System";
                 var appPassword = _configuration["EmailSettings:AppPassword"];
 
                 // Validate configuration
@@ -49,7 +49,7 @@ namespace AIHUBOS.Services
                     var mailMessage = new MailMessage
                     {
                         From = new MailAddress(senderEmail, senderName),
-                        Subject = "Mã OTP Đặt Lại Mật Khẩu - TMD System",
+                        Subject = "Mã OTP Đặt Lại Mật Khẩu - AIHUBOS System",
                         IsBodyHtml = true,
                         Body = GenerateOtpEmailBody(otpCode, userName)
                     };
