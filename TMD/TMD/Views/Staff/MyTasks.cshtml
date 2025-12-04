@@ -3,754 +3,7 @@
     ViewData["Title"] = "Công việc của tôi";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
 }
-
-<style>
-    /* ==================== ROOT VARIABLES ==================== */
-    :root {
-        --primary: #1a1f4a;
-        --secondary: #6366f1;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --info: #3b82f6;
-        --light-bg: #f8fafc;
-        --dark-bg: #0f172a;
-        --border-color: #e2e8f0;
-        --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
-        --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
-        --shadow-lg: 0 8px 32px rgba(15, 23, 42, 0.12);
-        --text-primary: #0f172a;
-        --text-secondary: #64748b;
-        --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-        --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-        --radius-sm: 0.5rem;
-        --radius-md: 0.75rem;
-        --radius-lg: 1rem;
-        --radius-xl: 1.5rem;
-    }
-
-    /* ==================== DARK MODE ==================== */
-    body.staff-dark-mode {
-        --light-bg: #1e293b;
-        --dark-bg: #0f172a;
-        --border-color: #334155;
-        --text-primary: #e2e8f0;
-        --text-secondary: #94a3b8;
-        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
-
-    /* ==================== RESET & BASE ==================== */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    .task-page {
-        padding: 2rem;
-        background: var(--light-bg);
-        min-height: calc(100vh - 70px);
-        animation: fadeIn 0.3s ease-out;
-    }
-
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* ==================== HEADER SECTION ==================== */
-    .task-header {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        border-radius: var(--radius-xl);
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        box-shadow: var(--shadow-lg);
-        position: relative;
-        overflow: hidden;
-    }
-
-        .task-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
-            animation: float 6s ease-in-out infinite;
-        }
-
-    @@keyframes float {
-        0%, 100% {
-            transform: translateY(0) rotate(0deg);
-        }
-
-        50% {
-            transform: translateY(-20px) rotate(5deg);
-        }
-    }
-
-    .task-header-content {
-        position: relative;
-        z-index: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-    }
-
-    .task-header-left h1 {
-        color: white;
-        font-size: 2rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .task-header-left p {
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 1rem;
-        font-weight: 500;
-    }
-
-    .task-stats {
-        display: flex;
-        gap: 1.5rem;
-    }
-
-    .stat-card {
-        text-align: center;
-        padding: 1rem 1.5rem;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(12px);
-        border-radius: var(--radius-lg);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        min-width: 110px;
-        transition: transform var(--transition-fast);
-    }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 800;
-        color: white;
-        line-height: 1;
-        margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-        font-size: 0.75rem;
-        color: rgba(255, 255, 255, 0.8);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-    }
-
-    /* ==================== FILTERS ==================== */
-    .filters-container {
-        background: white;
-        border-radius: var(--radius-lg);
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: var(--shadow-sm);
-    }
-
-    body.staff-dark-mode .filters-container {
-        background: var(--light-bg);
-    }
-
-    .filters-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1rem;
-    }
-
-    .filter-item label {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .filter-input,
-    .filter-select {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 2px solid var(--border-color);
-        border-radius: var(--radius-md);
-        font-size: 0.875rem;
-        background: white;
-        color: var(--text-primary);
-        transition: all var(--transition-fast);
-        font-family: inherit;
-        outline: none;
-    }
-
-    body.staff-dark-mode .filter-input,
-    body.staff-dark-mode .filter-select {
-        background: var(--dark-bg);
-        color: var(--text-primary);
-    }
-
-    .filter-input:focus,
-    .filter-select:focus {
-        border-color: var(--secondary);
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-
-    /* ==================== TASK LIST ==================== */
-    .tasks-container {
-        background: white;
-        border-radius: var(--radius-lg);
-        overflow: hidden;
-        box-shadow: var(--shadow-sm);
-    }
-
-    body.staff-dark-mode .tasks-container {
-        background: var(--light-bg);
-    }
-
-    .task-item {
-        display: flex;
-        align-items: center;
-        gap: 1.25rem;
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid var(--border-color);
-        transition: all var(--transition-normal);
-        position: relative;
-        cursor: pointer;
-    }
-
-        .task-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--secondary);
-            transform: scaleY(0);
-            transition: transform var(--transition-normal);
-        }
-
-        .task-item:hover {
-            background: rgba(99, 102, 241, 0.04);
-        }
-
-            .task-item:hover::before {
-                transform: scaleY(1);
-            }
-
-        .task-item:last-child {
-            border-bottom: none;
-        }
-
-    /* Priority Badge */
-    .priority-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius-md);
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-
-    .priority-high {
-        background: rgba(239, 68, 68, 0.1);
-        color: var(--danger);
-    }
-
-    .priority-medium {
-        background: rgba(245, 158, 11, 0.1);
-        color: var(--warning);
-    }
-
-    .priority-low {
-        background: rgba(16, 185, 129, 0.1);
-        color: var(--success);
-    }
-
-    /* Task Content */
-    .task-content {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .task-title {
-        font-size: 1rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-    }
-
-    .badge-overdue {
-        background: var(--danger);
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: var(--radius-sm);
-        font-size: 0.625rem;
-        font-weight: 700;
-        animation: pulse 2s ease-in-out infinite;
-        white-space: nowrap;
-    }
-
-    @@keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-        }
-
-        50% {
-            opacity: 0.7;
-        }
-    }
-
-    .badge-late {
-        background: var(--warning);
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: var(--radius-sm);
-        font-size: 0.625rem;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .task-meta {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-    }
-
-        .task-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-    /* Status Badge */
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.625rem 1rem;
-        border-radius: var(--radius-md);
-        font-size: 0.875rem;
-        font-weight: 600;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-
-    .status-todo {
-        background: rgba(107, 114, 128, 0.1);
-        color: #6b7280;
-    }
-
-    .status-inprogress {
-        background: rgba(245, 158, 11, 0.1);
-        color: var(--warning);
-    }
-
-    .status-testing {
-        background: rgba(59, 130, 246, 0.1);
-        color: var(--info);
-    }
-
-    .status-done {
-        background: rgba(16, 185, 129, 0.1);
-        color: var(--success);
-    }
-
-    .status-reopen {
-        background: rgba(239, 68, 68, 0.1);
-        color: var(--danger);
-    }
-
-    /* Action Buttons */
-    .task-actions {
-        display: flex;
-        gap: 0.5rem;
-        flex-shrink: 0;
-    }
-
-    .action-btn {
-        width: 2.5rem;
-        height: 2.5rem;
-        border: none;
-        border-radius: var(--radius-md);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all var(--transition-fast);
-        font-size: 0.875rem;
-    }
-
-    .action-btn-view {
-        background: var(--light-bg);
-        color: var(--text-primary);
-        border: 2px solid var(--border-color);
-    }
-
-        .action-btn-view:hover {
-            border-color: var(--secondary);
-            background: rgba(99, 102, 241, 0.05);
-            transform: translateY(-2px);
-        }
-
-    .action-btn-edit {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-    }
-
-        .action-btn-edit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-    /* ==================== EMPTY STATE ==================== */
-    .empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 4rem 2rem;
-        border-radius: var(--radius-lg);
-        background: white;
-        box-shadow: var(--shadow-sm);
-    }
-
-    body.staff-dark-mode .empty-state {
-        background: var(--light-bg);
-    }
-
-    .empty-state i {
-        font-size: 5rem;
-        color: var(--secondary);
-        opacity: 0.5;
-        margin-bottom: 1.5rem;
-    }
-
-    .empty-state h3 {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-bottom: 0.75rem;
-    }
-
-    .empty-state p {
-        font-size: 1rem;
-        color: var(--text-secondary);
-    }
-
-    /* ==================== MODAL ==================== */
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 9999;
-        align-items: center;
-        justify-content: center;
-        backdrop-filter: blur(4px);
-        animation: fadeIn 0.2s ease-out;
-    }
-
-        .modal.active {
-            display: flex;
-        }
-
-    .modal-content {
-        background: white;
-        border-radius: var(--radius-xl);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        width: 90%;
-        max-width: 600px;
-        max-height: 90vh;
-        overflow-y: auto;
-        animation: slideUp 0.3s ease-out;
-    }
-
-    body.staff-dark-mode .modal-content {
-        background: var(--light-bg);
-    }
-
-    @@keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .modal-header {
-        padding: 1.5rem 2rem;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .modal-title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .modal-close {
-        width: 2.25rem;
-        height: 2.25rem;
-        border: none;
-        background: var(--light-bg);
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-        transition: all var(--transition-fast);
-    }
-
-        .modal-close:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-    .modal-body {
-        padding: 2rem;
-        color: var(--text-primary);
-    }
-
-    .modal-footer {
-        padding: 1.5rem 2rem;
-        border-top: 1px solid var(--border-color);
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-    }
-
-    /* Form Elements */
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-        display: block;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 2px solid var(--border-color);
-        border-radius: var(--radius-md);
-        font-size: 0.875rem;
-        background: white;
-        color: var(--text-primary);
-        transition: all var(--transition-fast);
-        font-family: inherit;
-        outline: none;
-    }
-
-    body.staff-dark-mode .form-control {
-        background: var(--dark-bg);
-        color: var(--text-primary);
-    }
-
-    .form-control:focus {
-        border-color: var(--secondary);
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    }
-
-    .form-control:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .form-text {
-        font-size: 0.75rem;
-        color: var(--text-secondary);
-        margin-top: 0.25rem;
-        display: block;
-    }
-
-    .required {
-        color: var(--danger);
-    }
-
-    /* Buttons */
-    .btn {
-        padding: 0.625rem 1.25rem;
-        border: none;
-        border-radius: var(--radius-md);
-        font-size: 0.875rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all var(--transition-fast);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        white-space: nowrap;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        color: white;
-    }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
-    .btn-secondary {
-        background: var(--light-bg);
-        color: var(--text-primary);
-        border: 2px solid var(--border-color);
-    }
-
-        .btn-secondary:hover {
-            border-color: var(--secondary);
-            background: rgba(99, 102, 241, 0.05);
-        }
-
-    /* ==================== RESPONSIVE ==================== */
-    @@media (max-width: 768px) {
-        .task-page {
-            padding: 1rem;
-        }
-
-        .task-header {
-            padding: 1.5rem;
-        }
-
-        .task-header-content {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .task-stats {
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .stat-card {
-            padding: 0.75rem 1rem;
-            min-width: auto;
-        }
-
-        .task-item {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 1rem;
-        }
-
-        .task-actions {
-            width: 100%;
-            justify-content: flex-end;
-        }
-
-        .filters-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .modal-content {
-            width: 95%;
-            max-height: 95vh;
-        }
-    }
-
-    /* ==================== LOADING STATE ==================== */
-    .loading {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 3rem;
-    }
-
-    .spinner {
-        width: 3rem;
-        height: 3rem;
-        border: 4px solid var(--border-color);
-        border-top-color: var(--secondary);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-    }
-
-    @@keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    /* ==================== UTILITIES ==================== */
-    .hidden {
-        display: none !important;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .mt-2 {
-        margin-top: 0.5rem;
-    }
-
-    /* ==================== FIX SWEETALERT Z-INDEX ==================== */
-    /* Đảm bảo thông báo luôn nằm trên Modal (9999) */
-    .swal2-container {
-        z-index: 20000 !important;
-    }
-</style>
-
+<link href="~/css/tasklist-staff.css" rel="stylesheet" />
 <div class="task-page">
     <div class="task-header">
         <div class="task-header-content">
@@ -839,13 +92,14 @@
                     _ => "inbox"
                 };
                 var isOverdue = task.Deadline.HasValue && DateTime.Now > task.Deadline.Value && userTask.Status != "Done";
-                var isCompletedLate = false; // Cần logic từ backend
 
                 <div class="task-item"
                      data-id="@userTask.UserTaskId"
                      data-status="@userTask.Status"
                      data-priority="@(task.Priority ?? "Medium")"
-                     data-name="@task.TaskName">
+                     data-name="@task.TaskName"
+                     onclick="viewTask(@task.TaskId)"
+                     style="cursor: pointer;">
 
                     <div class="priority-badge priority-@priorityClass">
                         <i class="fas fa-flag"></i> @(task.Priority ?? "Medium")
@@ -858,12 +112,6 @@
                             {
                                 <span class="badge-overdue">
                                     <i class="fas fa-exclamation-triangle"></i> QUÁ HẠN
-                                </span>
-                            }
-                            @if (isCompletedLate)
-                            {
-                                <span class="badge-late">
-                                    <i class="fas fa-clock"></i> HOÀN THÀNH MUỘN
                                 </span>
                             }
                         </div>
@@ -880,17 +128,50 @@
                                 </span>
                             }
                         </div>
+
+                        @* ✅ FIX: CHỈ HIỂN THỊ KHI STATUS = REOPEN HOẶC INPROGRESS (SAU KHI REOPEN) *@
+                        @if (!string.IsNullOrEmpty(userTask.ReopenReason))
+                        {
+                            var isCurrentlyReopen = userTask.Status == "Reopen";
+                            var boxClass = isCurrentlyReopen ? "reopen-reason-box" : "reopen-reason-box-warning";
+                            var labelColor = isCurrentlyReopen ? "var(--danger)" : "var(--warning)";
+                            var borderColor = isCurrentlyReopen ? "var(--danger)" : "var(--warning)";
+                            var bgColor = isCurrentlyReopen ? "rgba(239, 68, 68, 0.05)" : "rgba(245, 158, 11, 0.05)";
+
+                            <div class="@boxClass" style="background: @bgColor; border-left-color: @borderColor;">
+                                <div class="reopen-reason-label" style="color: @labelColor;">
+                                    <i class="fas fa-exclamation-circle"></i> 
+                                    @if (isCurrentlyReopen)
+                                    {
+                                        <span>Lý do Reopen:</span>
+                                    }
+                                    else
+                                    {
+                                        <span>💡 Lưu ý từ lần Reopen trước:</span>
+                                    }
+                                </div>
+                                <p class="reopen-reason-text">
+                                    @userTask.ReopenReason
+                                    @if (!isCurrentlyReopen)
+                                    {
+                                        <br><small style="color: var(--text-secondary); font-style: italic;">
+                                            Hãy đảm bảo đã sửa đúng vấn đề này trước khi gửi test lại
+                                        </small>
+                                    }
+                                </p>
+                            </div>
+                        }
                     </div>
 
                     <div class="status-badge status-@statusClass">
                         <i class="fas fa-@statusIcon"></i> <span>@statusText</span>
                     </div>
 
-                    <div class="task-actions">
-                        <button class="action-btn action-btn-view" onclick="viewTask(@userTask.UserTaskId)" title="Xem chi tiết">
+                    <div class="task-actions" onclick="event.stopPropagation();">
+                        <button class="action-btn action-btn-view" onclick="viewTask(@task.TaskId)" title="Xem chi tiết">
                             <i class="fas fa-eye"></i>
                         </button>
-                        @if (userTask.Status != "Done")
+                        @if (userTask.Status != "Done" && userTask.Status != "Testing")
                         {
                             <button class="action-btn action-btn-edit" onclick="updateTask(@userTask.UserTaskId)" title="Cập nhật">
                                 <i class="fas fa-pencil-alt"></i>
@@ -900,7 +181,6 @@
                 </div>
             }
         </div>
-
         <div class="empty-state hidden" id="emptyFilter">
             <i class="fas fa-search"></i>
             <h3>Không tìm thấy công việc</h3>
@@ -909,6 +189,7 @@
     }
 </div>
 
+<!-- Modal: Chi Tiết Công Việc -->
 <div class="modal" id="detailModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -929,6 +210,7 @@
     </div>
 </div>
 
+<!-- Modal: Cập Nhật Tiến Độ -->
 <div class="modal" id="updateModal">
     <div class="modal-content">
         <div class="modal-header">
@@ -940,7 +222,6 @@
         <div class="modal-body">
             <input type="hidden" id="updateTaskId">
             <input type="hidden" id="currentStatus">
-
             <div class="form-group">
                 <label class="form-label">Trạng thái hiện tại</label>
                 <input type="text" class="form-control" id="currentStatusText" disabled>
@@ -983,11 +264,9 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // ==================== GLOBAL STATE ====================
         let userPermissions = null;
         let allTesters = [];
 
-        // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', async () => {
             await loadPermissions();
             calculateStats();
@@ -995,7 +274,6 @@
             setupModalClose();
         });
 
-        // ==================== LOAD PERMISSIONS ====================
         async function loadPermissions() {
             try {
                 const res = await fetch('/Staff/GetUserPermissions');
@@ -1016,7 +294,6 @@
             }
         }
 
-        // ==================== LOAD TESTERS ====================
         async function loadTesters() {
             try {
                 const res = await fetch('/Staff/GetTesters');
@@ -1037,7 +314,6 @@
             }
         }
 
-        // ==================== STATS ====================
         function calculateStats() {
             const items = document.querySelectorAll('.task-item');
             let done = 0, inProgress = 0;
@@ -1052,7 +328,6 @@
             document.getElementById('statTotal').textContent = items.length;
         }
 
-        // ==================== FILTERS ====================
         function setupFilters() {
             document.getElementById('filterStatus').addEventListener('change', filterTasks);
             document.getElementById('filterPriority').addEventListener('change', filterTasks);
@@ -1086,11 +361,10 @@
             });
 
             if (emptyFilter) {
-                emptyFilter.classList.toggle('hidden', visible === 0);
+                emptyFilter.classList.toggle('hidden', visible > 0);
             }
         }
 
-        // ==================== MODAL ====================
         function openModal(id) {
             document.getElementById(id).classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1111,8 +385,8 @@
             });
         }
 
-        // ==================== VIEW TASK ====================
-        async function viewTask(id) {
+        // ✅ FIX: Sử dụng taskId thay vì userTaskId
+        async function viewTask(taskId) {
             openModal('detailModal');
             const content = document.getElementById('detailContent');
             content.innerHTML = `
@@ -1122,13 +396,34 @@
                 </div>
             `;
             try {
-                const res = await fetch(`/Staff/GetTaskDetail?taskId=${id}`);
+                const res = await fetch(`/Staff/GetTaskDetail?taskId=${taskId}`);
                 const data = await res.json();
 
                 if (data.success) {
                     const t = data.task;
                     const statusClass = `status-${(t.status || 'todo').toLowerCase()}`;
                     const priorityClass = `priority-${(t.priority || 'medium').toLowerCase()}`;
+
+                    let reopenSection = '';
+                    if (t.reopenReason) {
+                        const isCurrentlyReopen = t.status === 'Reopen';
+                        const labelText = isCurrentlyReopen ? 'Lý do Reopen' : 'Lưu ý từ lần Reopen trước';
+                        const bgColor = isCurrentlyReopen ? 'rgba(239, 68, 68, 0.05)' : 'rgba(245, 158, 11, 0.05)';
+                        const borderColor = isCurrentlyReopen ? 'var(--danger)' : 'var(--warning)';
+                        const textColor = isCurrentlyReopen ? 'var(--danger)' : 'var(--warning)';
+                        
+                        reopenSection = `
+                            <div class="form-group">
+                                <label class="form-label" style="color: ${textColor};">
+                                    <i class="fas fa-exclamation-circle"></i> ${labelText}
+                                </label>
+                                <div style="padding: 1rem; background: ${bgColor}; border-left: 4px solid ${borderColor}; border-radius: var(--radius-md); line-height: 1.6;">
+                                    ${t.reopenReason}
+                                    ${!isCurrentlyReopen ? '<br><small style="color: var(--text-secondary); font-style: italic;">💡 Hãy đảm bảo đã sửa đúng vấn đề này trước khi gửi test lại</small>' : ''}
+                                </div>
+                            </div>
+                        `;
+                    }
 
                     content.innerHTML = `
                         <div style="margin-bottom: 1.5rem;">
@@ -1153,17 +448,26 @@
                             </div>
                         </div>
 
+                        ${reopenSection}
+
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-laptop-code"></i> Nền tảng</label>
-                            <input type="text" class="form-control" value="${t.platform || 'N/A'}" disabled>
+                            <input type="text" class="form-control" value="${t.platform}" disabled>
                         </div>
 
                         ${t.reportLink ? `
                         <div class="form-group">
                             <label class="form-label"><i class="fas fa-link"></i> Link báo cáo</label>
                             <a href="${t.reportLink}" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center;">
-                                <i class="fas fa-external-link-alt"></i> Mở Link
+                                <i class="fas fa-external-link-alt me-1"></i> Mở Link
                             </a>
+                        </div>
+                        ` : ''}
+
+                        ${t.testerName ? `
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-user-check"></i> Tester phụ trách</label>
+                            <input type="text" class="form-control" value="${t.testerName}" disabled>
                         </div>
                         ` : ''}
 
@@ -1174,8 +478,13 @@
                             </div>
                             <div class="form-group">
                                 <label class="form-label"><i class="fas fa-hourglass-half"></i> Hạn chót</label>
-                                <input type="text" class="form-control" value="${t.deadlineStr || 'Không có'}" disabled>
+                                <input type="text" class="form-control" value="${t.deadlineStr}" disabled>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-clock"></i> Cập nhật lần cuối</label>
+                            <input type="text" class="form-control" value="${t.updatedAt}" disabled>
                         </div>
                     `;
                 } else {
@@ -1187,7 +496,6 @@
             }
         }
 
-        // ==================== UPDATE TASK ====================
         async function updateTask(id) {
             if (!userPermissions) {
                 showWarning('Vui lòng đợi hệ thống tải thông tin quyền...');
@@ -1207,14 +515,12 @@
                 document.getElementById('testerGroup').classList.add('hidden');
                 document.getElementById('testerId').value = '';
 
-                // Populate status options
                 const select = document.getElementById('newStatus');
                 select.innerHTML = '<option value="">-- Chọn trạng thái --</option>';
 
                 let options = [];
-                const isDev = userPermissions.canSendToTesting; // Giả định đây là quyền Dev/phòng ban Dev
+                const isDev = userPermissions.canSendToTesting;
 
-                // Logic kiểm tra trạng thái cuối cùng
                 if (currentStatus === 'Testing' || currentStatus === 'Done') {
                     if (currentStatus === 'Testing') {
                         showInfo('Công việc đang ở trạng thái **Chờ test**. Vui lòng đợi Tester phản hồi.');
@@ -1224,26 +530,22 @@
                     return;
                 }
 
-                // Logic cập nhật trạng thái
                 if (currentStatus === 'TODO') {
-                    options.push('InProgress'); // TẤT CẢ ROLE: TODO -> Đang làm
+                    options.push('InProgress');
                     if (isDev) {
-                        options.push('Testing'); // DEV: Thêm tùy chọn gửi test trực tiếp
+                        options.push('Testing');
                     }
                 }
                 else if (currentStatus === 'InProgress') {
                     if (isDev) {
-                        options.push('Testing'); // DEV: Đang làm -> Chờ test
+                        options.push('Testing');
                     }
-                    // TẤT CẢ ROLE: Có thể chuyển từ InProgress sang Done
                     options.push('Done');
                 }
                 else if (currentStatus === 'Reopen') {
-                    // TẤT CẢ ROLE: Cần sửa lại -> Đang làm để sửa
                     options.push('InProgress');
                 }
 
-                // Loại bỏ trùng lặp và thêm vào select box
                 const statusMap = {
                     'InProgress': 'Đang làm',
                     'Testing': 'Chờ test',
@@ -1270,7 +572,6 @@
             }
         }
 
-        // Handle status change
         document.getElementById('newStatus').addEventListener('change', function() {
             const status = this.value;
             const reportLinkGroup = document.getElementById('reportLinkGroup');
@@ -1288,121 +589,109 @@
                 testerGroup.classList.add('hidden');
             }
         });
-
-        // ==================== SUBMIT UPDATE ====================
         async function submitUpdate() {
-            const taskId = document.getElementById('updateTaskId').value;
-            const status = document.getElementById('newStatus').value;
-            const reportLink = document.getElementById('reportLink').value.trim();
-            const testerId = document.getElementById('testerId').value;
-
-            if (!status) {
-                showWarning('Vui lòng chọn trạng thái mới.');
-                return;
-            }
-
-            if (status === 'Testing' && userPermissions.canSendToTesting && !testerId) {
-                showWarning('Vui lòng chọn Tester khi chuyển sang trạng thái "Chờ test".');
-                return;
-            }
-
-            // Theo yêu cầu, báo cáo là tùy chọn (mặc dù tôi thấy bạn có code cũ là bắt buộc)
-            // Tạm thời tôi để lại yêu cầu bắt buộc (showWarning) nếu không có link, bạn có thể xóa dòng này nếu muốn tùy chọn hoàn toàn
-            // if (['InProgress', 'Done'].includes(status) && !reportLink) {
-            //     showWarning('Vui lòng cung cấp Link báo cáo/tài liệu liên quan.');
-            //     return;
-            // }
-
-            const payload = {
-                UserTaskId: parseInt(taskId),
-                Status: status,
-                ReportLink: reportLink || null,
-                TesterId: status === 'Testing' ? (testerId ? parseInt(testerId) : null) : null
-            };
-
-            showLoading('Đang cập nhật...');
-
-            try {
-                const res = await fetch('/Staff/UpdateTaskProgress', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await res.json();
-                if (data.success) {
-                    await showSuccess('Cập nhật thành công!', data.message);
-                    location.reload();
-                } else {
-                    showError(data.message);
+        const taskId = document.getElementById('updateTaskId').value;
+        const status = document.getElementById('newStatus').value;
+        const reportLink = document.getElementById('reportLink').value.trim();
+        const testerId = document.getElementById('testerId').value;
+                if (!status) {
+                    showWarning('Vui lòng chọn trạng thái mới.');
+                    return;
                 }
-            } catch (err) {
-                console.error('Error:', err);
-                showError('Lỗi kết nối: ' + err.message);
+
+                if (status === 'Testing' && userPermissions.canSendToTesting && !testerId) {
+                    showWarning('Vui lòng chọn Tester khi chuyển sang trạng thái "Chờ test".');
+                    return;
+                }
+
+                const payload = {
+                    UserTaskId: parseInt(taskId),
+                    Status: status,
+                    ReportLink: reportLink || null,
+                    TesterId: status === 'Testing' ? (testerId ? parseInt(testerId) : null) : null
+                };
+
+                showLoading('Đang cập nhật...');
+
+                try {
+                    const res = await fetch('/Staff/UpdateTaskProgress', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await res.json();
+                    if (data.success) {
+                        await showSuccess('Cập nhật thành công!', data.message);
+                        location.reload();
+                    } else {
+                        showError(data.message);
+                    }
+                } catch (err) {
+                    console.error('Error:', err);
+                    showError('Lỗi kết nối: ' + err.message);
+                }
             }
-        }
 
-        // ==================== UTILITIES ====================
-        function getStatusText(status) {
-            const map = {
-                'TODO': 'Chưa bắt đầu',
-                'InProgress': 'Đang làm',
-                'Testing': 'Chờ test',
-                'Done': 'Hoàn thành',
-                'Reopen': 'Cần sửa lại'
-            };
-            return map[status] || status;
-        }
+            function getStatusText(status) {
+                const map = {
+                    'TODO': 'Chưa bắt đầu',
+                    'InProgress': 'Đang làm',
+                    'Testing': 'Chờ test',
+                    'Done': 'Hoàn thành',
+                    'Reopen': 'Cần sửa lại'
+                };
+                return map[status] || status;
+            }
 
-        // ==================== SWEETALERT2 HELPERS ====================
-        function showLoading(title = 'Đang xử lý...') {
-            Swal.fire({
-                title: title,
-                text: 'Vui lòng đợi giây lát',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => Swal.showLoading()
-            });
-        }
+            function showLoading(title = 'Đang xử lý...') {
+                Swal.fire({
+                    title: title,
+                    text: 'Vui lòng đợi giây lát',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            }
 
-        async function showSuccess(title, text) {
-            return Swal.fire({
-                icon: 'success',
-                title: title,
-                text: text,
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#10b981'
-            });
-        }
+            async function showSuccess(title, text) {
+                return Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: text,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#10b981'
+                });
+            }
 
-        function showError(message) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Lỗi',
-                text: message,
-                confirmButtonText: 'Đóng',
-                confirmButtonColor: '#ef4444'
-            });
-        }
+            function showError(message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: message,
+                    confirmButtonText: 'Đóng',
+                    confirmButtonColor: '#ef4444'
+                });
+            }
 
-        function showWarning(message) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Cảnh báo',
-                text: message,
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#f59e0b'
-            });
-        }
+            function showWarning(message) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cảnh báo',
+                    text: message,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#f59e0b'
+                });
+            }
 
-        function showInfo(message) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Thông báo',
-                html: message, // Dùng html để hỗ trợ bold
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#3b82f6'
-            });
-        }
+            function showInfo(message) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Thông báo',
+                    html: message,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3b82f6'
+                });
+            }
     </script>
 }

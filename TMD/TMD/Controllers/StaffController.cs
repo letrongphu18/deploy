@@ -1319,9 +1319,9 @@ namespace TMD.Controllers
 
 			try
 			{
-				// Tìm theo taskId và userId
 				var userTask = await _context.UserTasks
 					.Include(ut => ut.Task)
+					.Include(ut => ut.Tester)
 					.FirstOrDefaultAsync(ut => ut.Task.TaskId == taskId && ut.UserId == userId);
 
 				if (userTask == null)
@@ -1329,7 +1329,6 @@ namespace TMD.Controllers
 
 				var task = userTask.Task;
 
-				// Kiểm tra quá hạn
 				bool isOverdue = false;
 				if (task.Deadline.HasValue)
 				{
@@ -1360,7 +1359,10 @@ namespace TMD.Controllers
 						status = userTask.Status ?? "TODO",
 						isOverdue = isOverdue,
 						createdAt = userTask.CreatedAt.HasValue ? userTask.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "",
-						updatedAt = userTask.UpdatedAt.HasValue ? userTask.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa cập nhật"
+						updatedAt = userTask.UpdatedAt.HasValue ? userTask.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa cập nhật",
+						reopenReason = userTask.ReopenReason ?? "",
+						testerName = userTask.Tester != null ? userTask.Tester.FullName : null,
+						testerId = userTask.TesterId
 					}
 				});
 			}
@@ -1368,49 +1370,6 @@ namespace TMD.Controllers
 			{
 				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
 			}
-		}
-
-		// ============================================
-		// ATTENDANCE HISTORY
-		// ============================================
-		[HttpGet]
-		public async System.Threading.Tasks.Task<IActionResult> AttendanceHistory()
-		{
-			if (!IsAuthenticated())
-				return RedirectToAction("Login", "Account");
-
-			if (!IsStaffOrAdmin())
-				return RedirectToAction("Login", "Account");
-
-			var userId = HttpContext.Session.GetInt32("UserId");
-
-			await _auditHelper.LogViewAsync(
-				userId.Value,
-				"Attendance",
-				userId.Value,
-				"Xem lịch sử chấm công cá nhân (Staff)"
-			);
-
-			// ✅ FIX: Include đầy đủ User và Department như Admin version
-			var attendances = await _context.Attendances
-				.Include(a => a.User)
-					.ThenInclude(u => u.Department)
-				.Where(a => a.UserId == userId)
-				.OrderByDescending(a => a.WorkDate)
-				.ThenByDescending(a => a.CheckInTime)
-				.ToListAsync();
-
-			// ✅ TÍNH TOÁN STATISTICS GIỐNG ADMIN
-			ViewBag.TotalRecords = attendances.Count;
-			ViewBag.TotalCheckIns = attendances.Count(a => a.CheckInTime != null);
-			ViewBag.TotalCheckOuts = attendances.Count(a => a.CheckOutTime != null);
-			ViewBag.CompletedDays = attendances.Count(a => a.CheckInTime != null && a.CheckOutTime != null);
-			ViewBag.OnTimeCount = attendances.Count(a => a.IsLate == false);
-			ViewBag.LateCount = attendances.Count(a => a.IsLate == true);
-			ViewBag.TotalWorkHours = attendances.Sum(a => a.TotalHours ?? 0);
-			ViewBag.OutsideGeofence = attendances.Count(a => a.IsWithinGeofence == false);
-
-			return View(attendances);
 		}
 
 

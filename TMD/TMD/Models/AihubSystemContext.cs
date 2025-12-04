@@ -896,6 +896,7 @@ public partial class AihubSystemContext : DbContext
             entity.HasIndex(e => e.TesterId, "IX_UserTasks_TesterId");
 
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.ReopenReason).HasMaxLength(500);
             entity.Property(e => e.ReportLink).HasMaxLength(500);
             entity.Property(e => e.Status)
                 .HasMaxLength(20)

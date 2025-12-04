@@ -21,6 +21,8 @@ public partial class UserTask
 
     public int? TesterId { get; set; }
 
+    public string? ReopenReason { get; set; }
+
     public virtual Task Task { get; set; } = null!;
 
     public virtual User? Tester { get; set; }

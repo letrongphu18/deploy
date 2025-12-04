@@ -16,8 +16,8 @@
     {
         <style id="staff-custom-css">@Html.Raw(customCss)</style>
     }
+    <link href="~/css/layoutstaff.css" rel="stylesheet" />
 </head>
-<link href="~/css/layoutstaff.css" rel="stylesheet" />
 <body class="staff-body">
     <audio id="notifSound" src="~/sounds/notification.wav" preload="auto"></audio>
     <div id="toast-container"></div>
@@ -34,11 +34,8 @@
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="staff-nav-link" href="/Staff/Dashboard"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
                     <li class="nav-item"><a class="staff-nav-link" href="/Staff/MyTasks"><i class="fas fa-clipboard-list"></i><span>Công việc</span></a></li>
-
                     <li class="nav-item"><a class="staff-nav-link" href="/Staff/MyProjects"><i class="fas fa-folder-open"></i><span>Dự án của tôi</span></a></li>
 
-
-                    @* ✅ MENU TESTER - CHỈ HIỂN THỊ NẾU IsTester = "1" *@
                     @if (Context.Session.GetString("IsTester") == "1")
                     {
                         <li class="nav-item">
@@ -50,13 +47,9 @@
                         </li>
                     }
 
-
                     <li class="nav-item"><a class="staff-nav-link" href="/Staff/AttendanceHistory"><i class="fas fa-history"></i><span>Lịch sử chấm công</span></a></li>
-
-
                     <li class="nav-item"><a class="staff-nav-link" href="/Chat/Index"><i class="fas fa-comments"></i><span>Chat</span></a></li>
 
-                    <!-- Theme Toggle Button -->
                     <li class="nav-item ms-2">
                         <button class="staff-theme-toggle" id="staffThemeToggle" onclick="toggleStaffTheme()">
                             <i class="fas fa-moon"></i>
@@ -66,10 +59,10 @@
                     <li class="nav-item dropdown ms-2">
                         <a class="staff-notif-btn" href="#" id="notifDropdown" data-bs-toggle="dropdown">
                             <i class="fas fa-bell fa-lg"></i>
-                            <span class="staff-notif-badge" id="notifBadge">0</span>
+                            <span class="staff-notif-badge" id="notifBadge" style="display:none;">0</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end staff-notif-dropdown" aria-labelledby="notifDropdown">
-                            <div class="staff-notif-header">Thông báo mới</div>
+                            <div class="staff-notif-header"><i class="fas fa-bell me-2"></i>Thông báo mới</div>
                             <div id="notifList">
                                 <div class="p-3 text-center text-muted small">Không có thông báo nào</div>
                             </div>
@@ -88,7 +81,6 @@
                                 <div class="staff-user-name">@Context.Session.GetString("FullName")</div>
                                 <div class="staff-user-role">
                                     @Context.Session.GetString("RoleName")
-                                    @* ✅ BADGE TESTER - CHỈ HIỂN THỊ NẾU IsTester = "1" *@
                                     @if (Context.Session.GetString("IsTester") == "1")
                                     {
                                         <span class="badge bg-info ms-1" style="font-size:0.65rem;">Tester</span>
@@ -132,7 +124,6 @@
 
     <div class="staff-scroll-top" id="scrollToTop"><i class="fas fa-arrow-up"></i></div>
 
-    <!-- ✅ CHAT WIDGET COMPONENT -->
     @Html.Partial("_ChatWidget")
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -158,11 +149,21 @@
         var notifications = [];
 
         connection.on("ReceiveMessage", function (title, message, type, link) {
+            // ✅ Phát âm thanh
             var audio = document.getElementById("notifSound");
             if(audio) audio.play().catch(e => console.log("Cần tương tác để phát âm thanh"));
 
+            // ✅ Hiển thị toast
             showFloatingToast(title, message, type);
 
+            // ✅ Thêm hiệu ứng rung lắc cho icon thông báo
+            var notifBtn = document.querySelector('.staff-notif-btn');
+            if (notifBtn) {
+                notifBtn.classList.add('shake');
+                setTimeout(() => notifBtn.classList.remove('shake'), 500);
+            }
+
+            // ✅ Thêm thông báo vào danh sách
             var notif = {
                 id: Date.now(),
                 title: title,
@@ -210,7 +211,7 @@
             var badge = document.getElementById("notifBadge");
             if (unreadCount > 0) {
                 badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
-                badge.style.display = "block";
+                badge.style.display = "flex";
             } else {
                 badge.style.display = "none";
             }
@@ -256,7 +257,6 @@
                 updateNotifBadge();
                 renderNotifList();
 
-                // ✅ LƯU VÀO DATABASE
                 try {
                     await fetch('/Staff/MarkNotificationAsRead', {
                         method: 'POST',
@@ -276,7 +276,6 @@
             updateNotifBadge();
             renderNotifList();
 
-            // ✅ CHỈ GỌI API NẾU CÓ THÔNG BÁO CHƯA ĐỌC
             if (hasUnread) {
                 try {
                     await fetch('/Staff/MarkAllNotificationsAsRead', {
@@ -289,25 +288,38 @@
         }
 
         function getTimeAgo(date) {
-            var seconds = Math.floor((new Date() - date) / 1000);
+            const now = new Date();
+            const notifDate = new Date(date);
+            const diffMs = now - notifDate;
+            const seconds = Math.floor(diffMs / 1000);
+
             if (seconds < 60) return 'Vừa xong';
-            var minutes = Math.floor(seconds / 60);
+
+            const minutes = Math.floor(seconds / 60);
             if (minutes < 60) return minutes + ' phút trước';
-            var hours = Math.floor(minutes / 60);
+
+            const hours = Math.floor(minutes / 60);
             if (hours < 24) return hours + ' giờ trước';
-            var days = Math.floor(hours / 24);
-            return days + ' ngày trước';
+
+            const days = Math.floor(hours / 24);
+            if (days < 30) return days + ' ngày trước';
+
+            const months = Math.floor(days / 30);
+            if (months < 12) return months + ' tháng trước';
+
+            const years = Math.floor(days / 365);
+            return years + ' năm trước';
         }
 
         function showFloatingToast(title, message, type) {
             var container = document.getElementById("toast-container");
-            var color = type === 'success' ? '#7A3F30' : (type === 'error' ? '#CC7051' : '#D4A459');
+            var color = type === 'success' ? '#10b981' : (type === 'error' ? '#ef4444' : '#6366f1');
             var div = document.createElement('div');
             div.className = "staff-toast";
             div.style.borderLeftColor = color;
             div.innerHTML = `
                 <div style="flex:1">
-                    <div style="font-weight:bold; margin-bottom:4px">${title}</div>
+                    <div style="font-weight:bold; margin-bottom:4px; color:var(--staff-text)">${title}</div>
                     <div style="font-size:13px; color:var(--staff-text-secondary)">${message}</div>
                 </div>
             `;
@@ -333,11 +345,10 @@
             }
         }
 
-        // ✅ CẬP NHẬT SỐ LƯỢNG TASK CẦN TEST (CHỈ DÀNH CHO TESTER)
+        // ✅ CẬP NHẬT SỐ LƯỢNG TASK CẦN TEST
         async function updateTestingTaskCount() {
-            // Kiểm tra xem user có phải Tester không
             const isTester = document.getElementById('testingTaskCount');
-            if (!isTester) return; // Không phải tester thì return
+            if (!isTester) return;
 
             try {
                 const response = await fetch('/Tester/GetStatistics');
@@ -356,7 +367,6 @@
 
         // ✅ LOAD KHI TRANG VỪA MỞ
         document.addEventListener('DOMContentLoaded', function() {
-            // Load saved theme
             const savedTheme = localStorage.getItem('staffTheme');
             const themeIcon = document.querySelector('#staffThemeToggle i');
 
@@ -366,13 +376,8 @@
                 themeIcon.classList.add('fa-sun');
             }
 
-            // Load notifications
             loadNotifications();
-
-            // ✅ CẬP NHẬT TASK COUNT CHO TESTER
             updateTestingTaskCount();
-
-            // Refresh task count mỗi 30 giây
             setInterval(updateTestingTaskCount, 30000);
         });
     </script>

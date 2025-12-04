@@ -228,8 +228,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>x8xanwgyl4</Fingerprint>
-      <Integrity>L8JLHwfHIyOnp3NBgFgHXu7sf1SJV8VXSgeAOGI/rt0=</Integrity>
+      <Fingerprint>v3zprz1hww</Fingerprint>
+      <Integrity>+zRs0rP+5zA27ADsFc3H8SDdY/UZblTn/Wazlz2H+Bk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\kpi-dashboard.css'))</OriginalItemSpec>
@@ -246,8 +246,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>60xe426k16</Fingerprint>
-      <Integrity>ajUZPsXNj7y3zFF8TCmMqdYUCxmacWoAC9lAzgE/GbY=</Integrity>
+      <Fingerprint>vmnmx2rqcx</Fingerprint>
+      <Integrity>2aVThA12ChfcBoa/zGnuKGTkmosH7lHwpt/cEQPoruE=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\layout.css'))</OriginalItemSpec>
@@ -264,8 +264,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>wqlbgjdqs8</Fingerprint>
-      <Integrity>KDHhzGi8yZiTxp+36HOhu8DFSDlPBj9mkJfVUQQQ6YY=</Integrity>
+      <Fingerprint>pie2at37f4</Fingerprint>
+      <Integrity>AYS2ILPoCVM/+IX7nOY2XVfpyIP1V/ZtR/3THWU48mo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\layoutstaff.css'))</OriginalItemSpec>
@@ -624,8 +624,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>itfa70hjj8</Fingerprint>
-      <Integrity>alojSJcHTpnLyCMz4YXoDC8CiZdwjw3NqMivzU1ztxo=</Integrity>
+      <Fingerprint>olw8zylpmt</Fingerprint>
+      <Integrity>DLJr1xgKBaFloI2bitwvWAhA1XFUnT1QS1D0vvVEy+M=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\tasklist-staff.css'))</OriginalItemSpec>

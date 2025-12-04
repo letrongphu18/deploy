@@ -3,579 +3,138 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-    /* ===== KPI DASHBOARD - AIHUB STYLE ===== */
-    .kpi-dashboard-container {
-        padding: 24px;
-        max-width: 1920px;
-        margin: 0 auto;
-    }
+<link rel="stylesheet" href="~/css/kpi-dashboard.css" />
 
-    /* Page Header */
-    .kpi-page-header {
-        background: linear-gradient(135deg, var(--aihub-bg-primary, #fff) 0%, var(--aihub-bg-tertiary, #f8f9fa) 100%);
-        padding: 32px 36px;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        margin-bottom: 32px;
-        border: 1px solid var(--aihub-border-color, #e5e7eb);
-        position: relative;
-        overflow: hidden;
-    }
-
-        .kpi-page-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(122, 63, 48, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translate(30%, -30%);
-        }
-
-    .kpi-page-title {
-        font-size: 32px;
-        font-weight: 800;
-        color: var(--aihub-text-primary, #1e293b);
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-        .kpi-page-title i {
-            color: var(--aihub-terracotta, #7a3f30);
-        }
-
-    /* KPI Cards */
-    .kpi-card {
-        background: var(--aihub-bg-primary, white);
-        border-radius: 18px;
-        padding: 28px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-        border: 1px solid var(--aihub-border-color, #e5e7eb);
-        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-    }
-
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(180deg, var(--aihub-terracotta, #7a3f30), var(--aihub-clay, #cc7051));
-            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .kpi-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-            .kpi-card:hover::before {
-                width: 10px;
-            }
-
-    .kpi-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .kpi-icon {
-        width: 72px;
-        height: 72px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        color: white;
-        flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(122, 63, 48, 0.2);
-    }
-
-    .kpi-value {
-        font-size: 36px;
-        font-weight: 800;
-        color: var(--aihub-text-primary, #1e293b);
-        margin: 8px 0;
-        line-height: 1;
-        letter-spacing: -0.5px;
-    }
-
-    .kpi-label {
-        color: var(--aihub-text-secondary, #64748b);
-        font-size: 13px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-    }
-
-    .kpi-trend {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 12px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    }
-
-        .kpi-trend.up {
-            background: rgba(16, 185, 129, 0.12);
-            color: var(--aihub-success, #10b981);
-        }
-
-        .kpi-trend.down {
-            background: rgba(239, 68, 68, 0.12);
-            color: var(--aihub-danger, #ef4444);
-        }
-
-    /* Filter Section */
-    .filter-section {
-        background: var(--aihub-bg-primary, white);
-        padding: 24px 28px;
-        border-radius: 18px;
-        margin-bottom: 32px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-        border: 1px solid var(--aihub-border-color, #e5e7eb);
-    }
-
-    /* Chart Container */
-    .chart-container {
-        background: var(--aihub-bg-primary, white);
-        border-radius: 18px;
-        padding: 28px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-        margin-bottom: 32px;
-        position: relative;
-        border: 1px solid var(--aihub-border-color, #e5e7eb);
-    }
-
-    .chart-wrapper {
-        position: relative;
-        height: 350px;
-        width: 100%;
-    }
-
-    /* Top Performers */
-    .top-performers {
-        background: var(--aihub-bg-primary, white);
-        border-radius: 18px;
-        padding: 28px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-        border: 1px solid var(--aihub-border-color, #e5e7eb);
-        height: 100%;
-    }
-
-    .performer-item {
-        display: flex;
-        align-items: center;
-        padding: 18px;
-        background: var(--aihub-bg-tertiary, #f8f9fa);
-        border-radius: 14px;
-        margin-bottom: 14px;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-    }
-
-        .performer-item:hover {
-            border-color: var(--aihub-terracotta, #7a3f30);
-            transform: translateX(6px);
-            background: var(--aihub-hover-bg, #f1f5f9);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-    .performer-rank {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        color: white;
-        margin-right: 16px;
-        flex-shrink: 0;
-    }
-
-    .rank-1 {
-        background: linear-gradient(135deg, #FFD700, #FFA500);
-        font-size: 22px;
-        box-shadow: 0 6px 16px rgba(255, 215, 0, 0.5);
-    }
-
-    .rank-2 {
-        background: linear-gradient(135deg, #C0C0C0, #A9A9A9);
-        font-size: 20px;
-        box-shadow: 0 6px 16px rgba(192, 192, 192, 0.5);
-    }
-
-    .rank-3 {
-        background: linear-gradient(135deg, #CD7F32, #B87333);
-        font-size: 20px;
-        box-shadow: 0 6px 16px rgba(205, 127, 50, 0.5);
-    }
-
-    .rank-other {
-        background: var(--aihub-bg-secondary, #f1f5f9);
-        color: var(--aihub-text-secondary, #64748b);
-        border: 2px solid var(--aihub-border-color, #e5e7eb);
-    }
-
-    .performer-info {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .performer-name {
-        font-weight: 800;
-        color: var(--aihub-text-primary, #1e293b);
-        font-size: 15px;
-        margin-bottom: 4px;
-    }
-
-    .performer-dept {
-        font-size: 12px;
-        color: var(--aihub-text-secondary, #64748b);
-    }
-
-    .performer-score {
-        font-size: 28px;
-        font-weight: 800;
-        color: var(--aihub-terracotta, #7a3f30);
-        line-height: 1;
-    }
-
-    /* Tab Navigation */
-    .tab-nav {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 32px;
-        border-bottom: 2px solid var(--aihub-border-color, #e5e7eb);
-        background: var(--aihub-bg-primary, white);
-        padding: 12px 24px;
-        border-radius: 18px 18px 0 0;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-    }
-
-        .tab-nav button {
-            padding: 12px 24px;
-            border: none;
-            background: none;
-            color: var(--aihub-text-secondary, #64748b);
-            font-weight: 700;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.25s ease;
-            border-radius: 8px;
-        }
-
-            .tab-nav button.active {
-                color: var(--aihub-terracotta, #7a3f30);
-                background: rgba(122, 63, 48, 0.08);
-                border-bottom-color: var(--aihub-terracotta, #7a3f30);
-            }
-
-            .tab-nav button:hover {
-                color: var(--aihub-terracotta, #7a3f30);
-                background: rgba(122, 63, 48, 0.05);
-            }
-
-    /* Export Button */
-    .export-btn {
-        background: linear-gradient(135deg, var(--aihub-terracotta, #7a3f30) 0%, var(--aihub-clay, #cc7051) 100%);
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 12px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(122, 63, 48, 0.3);
-    }
-
-        .export-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(122, 63, 48, 0.4);
-        }
-
-    /* Loading Spinner */
-    .loading-spinner {
-        display: none;
-        text-align: center;
-        padding: 60px 20px;
-        background: var(--aihub-bg-primary, white);
-        border-radius: 18px;
-        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-    }
-
-        .loading-spinner.show {
-            display: block;
-        }
-
-    /* Tab Content */
-    .tab-content {
-        animation: fadeIn 0.3s ease-in;
-    }
-
-    keyframes fadeIn {
-        from
-
-    {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    }
-
-    /* Table Styles */
-    .table {
-        background: var(--aihub-bg-primary, white);
-    }
-
-        .table thead th {
-            background: var(--aihub-bg-tertiary, #f8f9fa);
-            color: var(--aihub-text-primary, #1e293b);
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-            padding: 16px;
-            border-bottom: 2px solid var(--aihub-terracotta, #7a3f30);
-        }
-
-        .table tbody tr {
-            transition: all 0.2s ease;
-        }
-
-            .table tbody tr:hover {
-                background: var(--aihub-hover-bg, #f1f5f9);
-                transform: scale(1.01);
-            }
-
-        .table tbody td {
-            padding: 16px;
-            vertical-align: middle;
-            border-bottom: 1px solid var(--aihub-border-color, #e5e7eb);
-        }
-
-    /* Form Controls */
-    .form-control,
-    .form-select {
-        border: 2px solid var(--aihub-border-color, #e5e7eb);
-        border-radius: 12px;
-        padding: 10px 16px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--aihub-terracotta, #7a3f30);
-            box-shadow: 0 0 0 3px rgba(122, 63, 48, 0.1);
-        }
-
-    /* Button Group */
-    .btn-group .btn {
-        border-radius: 8px;
-        font-weight: 700;
-        padding: 8px 16px;
-    }
-
-        .btn-group .btn.active {
-            background: var(--aihub-terracotta, #7a3f30);
-            border-color: var(--aihub-terracotta, #7a3f30);
-        }
-
-    /* Responsive */
-    media (max-width: 991px) {
-        .kpi-dashboard-container
-
-    {
-        padding: 20px;
-    }
-
-    .kpi-page-header {
-        padding: 24px 28px;
-    }
-
-    .chart-wrapper {
-        height: 300px;
-    }
-
-    }
-
-    media (max-width: 576px) {
-        .kpi-dashboard-container
-
-    {
-        padding: 16px;
-    }
-
-    .kpi-page-header {
-        padding: 20px 24px;
-    }
-
-    .kpi-page-title {
-        font-size: 24px;
-    }
-
-    .chart-wrapper {
-        height: 250px;
-    }
-
-    .tab-nav {
-        flex-wrap: wrap;
-    }
-
-        .tab-nav button {
-            flex: 1 1 45%;
-        }
-
-    }
-</style>
-
-<div class="kpi-dashboard-container">
+<div class="kpi-container">
     <!-- Page Header -->
     <div class="kpi-page-header">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="kpi-header-content">
             <div>
                 <h1 class="kpi-page-title">
                     <i class="fas fa-chart-line"></i>
                     Báo cáo KPI
                 </h1>
-                <p class="text-muted mb-0">Theo dõi và đánh giá hiệu suất làm việc</p>
+                <p class="kpi-page-subtitle">Theo dõi và đánh giá hiệu suất làm việc toàn hệ thống</p>
             </div>
+            <button class="kpi-btn kpi-btn-export" onclick="exportAllKPI()">
+                <i class="fas fa-file-excel"></i>
+                <span>Xuất Excel</span>
+            </button>
         </div>
     </div>
+
     <!-- Filter Section -->
-    <div class="filter-section">
-        <div class="row align-items-end">
-            <div class="col-md-3">
-                <label class="form-label">Từ ngày</label>
-                <input type="date" class="form-control" id="startDate" value="">
+    <div class="kpi-card kpi-filter-card">
+        <div class="kpi-filter-grid">
+            <div class="kpi-filter-item">
+                <label class="kpi-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    Từ ngày
+                </label>
+                <input type="date" class="kpi-input" id="startDate" />
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Đến ngày</label>
-                <input type="date" class="form-control" id="endDate" value="">
+            <div class="kpi-filter-item">
+                <label class="kpi-label">
+                    <i class="fas fa-calendar-alt"></i>
+                    Đến ngày
+                </label>
+                <input type="date" class="kpi-input" id="endDate" />
             </div>
-            <div class="col-md-3">
-                <label class="form-label">Phòng ban</label>
-                <select class="form-select" id="departmentFilter">
+            <div class="kpi-filter-item">
+                <label class="kpi-label">
+                    <i class="fas fa-building"></i>
+                    Phòng ban
+                </label>
+                <select class="kpi-select" id="departmentFilter">
                     <option value="">Tất cả phòng ban</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <button class="btn btn-primary w-100" onclick="loadKPIData()">
-                    <i class="fas fa-search me-2"></i>Xem báo cáo
+            <div class="kpi-filter-item kpi-filter-actions">
+                <button class="kpi-btn kpi-btn-primary" onclick="loadKPIData()">
+                    <i class="fas fa-search"></i>
+                    <span>Xem báo cáo</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Tab Navigation -->
-    <div class="tab-nav">
-        <button class="active" onclick="switchTab('overview')">
-            <i class="fas fa-chart-pie me-2"></i>Tổng quan
-        </button>
-        <button onclick="switchTab('timeline')">
-            <i class="fas fa-chart-line me-2"></i>Xu hướng
-        </button>
-        <button onclick="switchTab('department')">
-            <i class="fas fa-building me-2"></i>So sánh phòng ban
-        </button>
-        <button onclick="switchTab('personal')">
-            <i class="fas fa-user me-2"></i>KPI cá nhân
-        </button>
+    <!-- Loading Spinner -->
+    <div class="kpi-loading" id="loadingSpinner">
+        <div class="kpi-spinner"></div>
+        <p>Đang tải dữ liệu...</p>
     </div>
 
-    <!-- Loading -->
-    <div class="loading-spinner" id="loadingSpinner">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <p class="mt-3 text-muted">Đang tải dữ liệu...</p>
+    <!-- Tab Navigation -->
+    <div class="kpi-tabs">
+        <button class="kpi-tab active" data-tab="overview" onclick="switchTab('overview')">
+            <i class="fas fa-chart-pie"></i>
+            <span>Tổng quan</span>
+        </button>
+        <button class="kpi-tab" data-tab="department" onclick="switchTab('department')">
+            <i class="fas fa-building"></i>
+            <span>So sánh phòng ban</span>
+        </button>
+        <button class="kpi-tab" data-tab="personal" onclick="switchTab('personal')">
+            <i class="fas fa-users"></i>
+            <span>KPI cá nhân</span>
+        </button>
+        <button class="kpi-tab" data-tab="timeline" onclick="switchTab('timeline')">
+            <i class="fas fa-chart-line"></i>
+            <span>Xu hướng</span>
+        </button>
     </div>
 
     <!-- Overview Tab -->
-    <div class="tab-content" id="overviewTab">
-        <!-- KPI Cards Row -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div>
-                            <div class="kpi-label">Tổng nhân viên</div>
-                            <div class="kpi-value" id="totalUsers">0</div>
-                        </div>
-                        <div class="kpi-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <i class="fas fa-users"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-trend up" id="userTrend">
+    <div class="kpi-tab-content active" id="overviewTab">
+        <!-- Statistics Cards -->
+        <div class="kpi-stats-grid">
+            <div class="kpi-stat-card kpi-stat-primary">
+                <div class="kpi-stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="kpi-stat-content">
+                    <div class="kpi-stat-label">Tổng nhân viên</div>
+                    <div class="kpi-stat-value" id="totalUsers">0</div>
+                    <div class="kpi-stat-trend up" id="userTrend">
                         <i class="fas fa-arrow-up"></i> 0%
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div>
-                            <div class="kpi-label">Tỷ lệ chấm công</div>
-                            <div class="kpi-value" id="attendanceRate">0%</div>
-                        </div>
-                        <div class="kpi-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-trend up" id="attendanceTrend">
+
+            <div class="kpi-stat-card kpi-stat-success">
+                <div class="kpi-stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="kpi-stat-content">
+                    <div class="kpi-stat-label">Tỷ lệ chấm công</div>
+                    <div class="kpi-stat-value" id="attendanceRate">0%</div>
+                    <div class="kpi-stat-trend up" id="attendanceTrend">
                         <i class="fas fa-arrow-up"></i> 0%
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div>
-                            <div class="kpi-label">Tasks đang hoạt động</div>
-                            <div class="kpi-value" id="activeTasks">0</div>
-                        </div>
-                        <div class="kpi-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-trend up" id="taskTrend">
+
+            <div class="kpi-stat-card kpi-stat-info">
+                <div class="kpi-stat-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="kpi-stat-content">
+                    <div class="kpi-stat-label">Tasks hoạt động</div>
+                    <div class="kpi-stat-value" id="activeTasks">0</div>
+                    <div class="kpi-stat-trend up" id="taskTrend">
                         <i class="fas fa-arrow-up"></i> 0%
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div>
-                            <div class="kpi-label">Đề xuất chờ duyệt</div>
-                            <div class="kpi-value" id="pendingRequests">0</div>
-                        </div>
-                        <div class="kpi-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                            <i class="fas fa-clipboard-check"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-trend down" id="requestTrend">
+
+            <div class="kpi-stat-card kpi-stat-warning">
+                <div class="kpi-stat-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <div class="kpi-stat-content">
+                    <div class="kpi-stat-label">Đề xuất chờ duyệt</div>
+                    <div class="kpi-stat-value" id="pendingRequests">0</div>
+                    <div class="kpi-stat-trend down" id="requestTrend">
                         <i class="fas fa-arrow-down"></i> 0%
                     </div>
                 </div>
@@ -583,86 +142,128 @@
         </div>
 
         <!-- Charts Row -->
-        <div class="row">
-            <div class="col-md-8">
-                <div class="chart-container">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="fas fa-chart-area me-2"></i>Thống kê tháng này</h5>
-                        <button class="export-btn" onclick="exportMonthlyStats()">
-                            <i class="fas fa-download me-2"></i>Xuất Excel
-                        </button>
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="monthlyChart"></canvas>
-                    </div>
+        <div class="kpi-charts-grid">
+            <div class="kpi-card kpi-chart-card">
+                <div class="kpi-card-header">
+                    <h3>
+                        <i class="fas fa-chart-bar"></i>
+                        Thống kê tháng này
+                    </h3>
+                </div>
+                <div class="kpi-chart-wrapper">
+                    <canvas id="monthlyChart"></canvas>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="top-performers">
-                    <h5 class="mb-4"><i class="fas fa-trophy me-2"></i>Top Performers</h5>
-                    <div id="topPerformersList"></div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Timeline Tab -->
-    <div class="tab-content" id="timelineTab" style="display: none;">
-        <div class="chart-container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Xu hướng KPI theo thời gian</h5>
-                <div class="btn-group" role="group">
-                    <button class="btn btn-outline-primary active" onclick="loadTimeline('day')">Ngày</button>
-                    <button class="btn btn-outline-primary" onclick="loadTimeline('week')">Tuần</button>
-                    <button class="btn btn-outline-primary" onclick="loadTimeline('month')">Tháng</button>
+            <div class="kpi-card kpi-performers-card">
+                <div class="kpi-card-header">
+                    <h3>
+                        <i class="fas fa-trophy"></i>
+                        Top Performers
+                    </h3>
                 </div>
-            </div>
-            <div class="chart-wrapper">
-                <canvas id="timelineChart"></canvas>
+                <div class="kpi-performers-list" id="topPerformersList">
+                    <div class="kpi-empty">Đang tải dữ liệu...</div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Department Tab -->
-    <div class="tab-content" id="departmentTab" style="display: none;">
-        <div class="chart-container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="mb-0"><i class="fas fa-building me-2"></i>So sánh KPI giữa các phòng ban</h5>
-                <button class="export-btn" onclick="exportDepartmentKPI()">
-                    <i class="fas fa-download me-2"></i>Xuất Excel
+    <div class="kpi-tab-content" id="departmentTab">
+        <div class="kpi-card">
+            <div class="kpi-card-header">
+                <h3>
+                    <i class="fas fa-building"></i>
+                    So sánh KPI giữa các phòng ban
+                </h3>
+                <button class="kpi-btn kpi-btn-secondary" onclick="exportDepartmentKPI()">
+                    <i class="fas fa-download"></i>
+                    <span>Xuất Excel</span>
                 </button>
             </div>
-            <div class="chart-wrapper">
+            <div class="kpi-chart-wrapper">
                 <canvas id="departmentChart"></canvas>
             </div>
         </div>
-        <div class="table-responsive mt-4">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Phòng ban</th>
-                        <th>Số nhân viên</th>
-                        <th>Tỷ lệ muộn</th>
-                        <th>Tỷ lệ hoàn thành task</th>
-                        <th>Điểm KPI</th>
-                    </tr>
-                </thead>
-                <tbody id="departmentTableBody"></tbody>
-            </table>
+
+        <div class="kpi-card">
+            <div class="kpi-table-wrapper">
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>Phòng ban</th>
+                            <th>Số nhân viên</th>
+                            <th>Tổng chấm công</th>
+                            <th>Tỷ lệ muộn</th>
+                            <th>Giờ làm TB</th>
+                            <th>Tasks hoàn thành</th>
+                            <th>Điểm KPI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="departmentTableBody">
+                        <tr>
+                            <td colspan="7" class="kpi-empty">Đang tải dữ liệu...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <!-- Personal Tab -->
-    <div class="tab-content" id="personalTab" style="display: none;">
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <label class="form-label">Chọn nhân viên</label>
-                <select class="form-select" id="userSelect" onchange="loadUserKPI()">
-                    <option value="">-- Chọn nhân viên --</option>
-                </select>
+    <div class="kpi-tab-content" id="personalTab">
+        <div class="kpi-card">
+            <div class="kpi-card-header">
+                <h3>
+                    <i class="fas fa-users"></i>
+                    KPI cá nhân (Tất cả nhân viên)
+                </h3>
+            </div>
+            <div class="kpi-table-wrapper">
+                <table class="kpi-table">
+                    <thead>
+                        <tr>
+                            <th>Nhân viên</th>
+                            <th>Phòng ban</th>
+                            <th>Ngày làm việc</th>
+                            <th>Đi muộn</th>
+                            <th>Tỷ lệ muộn</th>
+                            <th>Tổng giờ</th>
+                            <th>Tasks</th>
+                            <th>Hoàn thành</th>
+                            <th>Điểm KPI</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="personalTableBody">
+                        <tr>
+                            <td colspan="10" class="kpi-empty">Đang tải dữ liệu...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div id="userKPIContent"></div>
+    </div>
+
+    <!-- Timeline Tab -->
+    <div class="kpi-tab-content" id="timelineTab">
+        <div class="kpi-card">
+            <div class="kpi-card-header">
+                <h3>
+                    <i class="fas fa-chart-line"></i>
+                    Xu hướng KPI theo thời gian
+                </h3>
+                <div class="kpi-btn-group">
+                    <button class="kpi-btn kpi-btn-sm active" onclick="loadTimeline('day')" data-period="day">Ngày</button>
+                    <button class="kpi-btn kpi-btn-sm" onclick="loadTimeline('week')" data-period="week">Tuần</button>
+                    <button class="kpi-btn kpi-btn-sm" onclick="loadTimeline('month')" data-period="month">Tháng</button>
+                </div>
+            </div>
+            <div class="kpi-chart-wrapper">
+                <canvas id="timelineChart"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -672,6 +273,7 @@
         let charts = {};
         const API_BASE = '/api/KPI';
         let isLoading = false;
+        let allUsers = [];
 
         // Initialize
         $(document).ready(function() {
@@ -711,12 +313,7 @@
             try {
                 const response = await fetch('/api/users');
                 if (!response.ok) throw new Error('Failed to load users');
-                const data = await response.json();
-                const select = $('#userSelect');
-                select.find('option:not(:first)').remove();
-                data.forEach(user => {
-                    select.append(`<option value="${user.userId}">${user.fullName} - ${user.email}</option>`);
-                });
+                allUsers = await response.json();
             } catch (error) {
                 console.error('Error loading users:', error);
             }
@@ -725,6 +322,7 @@
         async function loadKPIData() {
             if (isLoading) return;
             showLoading();
+
             try {
                 const date = $('#endDate').val();
                 const response = await fetch(`${API_BASE}/overview?date=${date}`);
@@ -736,60 +334,57 @@
                 updateTopPerformers(data.topPerformers);
             } catch (error) {
                 console.error('Error loading KPI data:', error);
-                alert('Lỗi khi tải dữ liệu KPI: ' + error.message);
+                showError('Lỗi khi tải dữ liệu KPI');
             } finally {
                 hideLoading();
             }
         }
 
         function updateOverviewCards(system) {
-            $('#totalUsers').text(system.totalUsers);
-            $('#attendanceRate').text(system.attendanceRate.toFixed(1) + '%');
-            $('#activeTasks').text(system.activeTasks);
-            $('#pendingRequests').text(system.pendingRequests);
+            $('#totalUsers').text(system.totalUsers || 0);
+            $('#attendanceRate').text((system.attendanceRate || 0).toFixed(1) + '%');
+            $('#activeTasks').text(system.activeTasks || 0);
+            $('#pendingRequests').text(system.pendingRequests || 0);
         }
 
         function updateMonthlyChart(stats) {
             const ctx = document.getElementById('monthlyChart');
             if (!ctx) return;
 
-            // Destroy existing chart
             if (charts.monthly) {
                 charts.monthly.destroy();
-                charts.monthly = null;
             }
 
             charts.monthly = new Chart(ctx.getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: ['Chấm công', 'Đi muộn (%)', 'Giờ làm', 'Tăng ca'],
+                    labels: ['Chấm công', 'Tỷ lệ muộn (%)', 'Giờ làm', 'Tăng ca'],
                     datasets: [{
                         label: 'Thống kê',
                         data: [
-                            stats.totalAttendances,
-                            stats.averageLateRate,
-                            stats.totalWorkHours,
-                            stats.totalOvertimeHours
+                            stats.totalAttendances || 0,
+                            stats.averageLateRate || 0,
+                            stats.totalWorkHours || 0,
+                            stats.totalOvertimeHours || 0
                         ],
                         backgroundColor: [
-                            'rgba(102, 126, 234, 0.8)',
-                            'rgba(245, 87, 108, 0.8)',
-                            'rgba(79, 172, 254, 0.8)',
-                            'rgba(250, 112, 154, 0.8)'
-                        ]
+                            'rgba(99, 102, 241, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)'
+                        ],
+                        borderRadius: 8,
+                        borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
-                    aspectRatio: 2,
                     plugins: {
                         legend: { display: false }
                     },
                     scales: {
-                        y: {
-                            beginAtZero: true
-                        }
+                        y: { beginAtZero: true }
                     }
                 }
             });
@@ -800,48 +395,194 @@
             container.empty();
 
             if (!performers || performers.length === 0) {
-                container.html('<p class="text-muted">Chưa có dữ liệu</p>');
+                container.html('<div class="kpi-empty">Chưa có dữ liệu</div>');
                 return;
             }
 
             performers.forEach((user, index) => {
-                const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
-                container.append(`
-                    <div class="performer-item">
-                        <div class="performer-rank ${rankClass}">${index + 1}</div>
-                        <div class="performer-info">
-                            <div class="performer-name">${user.fullName || 'N/A'}</div>
-                            <div class="performer-dept">${user.department || 'N/A'}</div>
+                const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : 'default';
+                const html = `
+                    <div class="kpi-performer-item">
+                        <div class="kpi-performer-rank kpi-rank-${rankClass}">${index + 1}</div>
+                        <div class="kpi-performer-info">
+                            <div class="kpi-performer-name">${user.fullName || 'N/A'}</div>
+                            <div class="kpi-performer-dept">${user.department || 'N/A'}</div>
                         </div>
-                        <div class="performer-score">${user.kpiScore || 0}</div>
+                        <div class="kpi-performer-score">${(user.kpiScore || 0).toFixed(1)}</div>
                     </div>
-                `);
+                `;
+                container.append(html);
             });
+        }
+
+        async function loadDepartmentComparison() {
+            if (isLoading) return;
+            showLoading();
+
+            try {
+                const start = $('#startDate').val();
+                const end = $('#endDate').val();
+                const response = await fetch(`/Admin/GetDepartmentComparison?startDate=${start}&endDate=${end}`);
+
+                if (!response.ok) throw new Error('Failed to load department comparison');
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    throw new Error('Invalid data format');
+                }
+
+                updateDepartmentChart(data);
+                updateDepartmentTable(data);
+            } catch (error) {
+                console.error('Error loading department comparison:', error);
+                showError('Lỗi khi tải so sánh phòng ban');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function updateDepartmentChart(data) {
+            const ctx = document.getElementById('departmentChart');
+            if (!ctx) return;
+
+            if (charts.department) {
+                charts.department.destroy();
+            }
+
+            charts.department = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.departmentName || 'N/A'),
+                    datasets: [{
+                        label: 'Điểm KPI',
+                        data: data.map(d => d.departmentKPIScore || 0),
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderRadius: 8,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateDepartmentTable(data) {
+            const tbody = $('#departmentTableBody');
+            tbody.empty();
+
+            if (data.length === 0) {
+                tbody.append('<tr><td colspan="7" class="kpi-empty">Không có dữ liệu</td></tr>');
+                return;
+            }
+
+            data.forEach(dept => {
+                const html = `
+                    <tr>
+                        <td><strong>${dept.departmentName || 'N/A'}</strong></td>
+                        <td>${dept.totalEmployees || 0}</td>
+                        <td>${dept.totalAttendances || 0}</td>
+                        <td><span class="kpi-badge ${dept.lateRate > 10 ? 'kpi-badge-danger' : 'kpi-badge-success'}">${(dept.lateRate || 0).toFixed(1)}%</span></td>
+                        <td>${(dept.avgHoursPerDay || 0).toFixed(1)}h</td>
+                        <td>${dept.completedTasks || 0}/${dept.totalTasks || 0} <small class="kpi-muted">(${(dept.taskCompletionRate || 0).toFixed(1)}%)</small></td>
+                        <td><strong class="kpi-score">${(dept.departmentKPIScore || 0).toFixed(1)}</strong></td>
+                    </tr>
+                `;
+                tbody.append(html);
+            });
+        }
+
+        async function loadAllUserKPI() {
+            if (isLoading) return;
+            showLoading();
+
+            try {
+                const start = $('#startDate').val();
+                const end = $('#endDate').val();
+                const tbody = $('#personalTableBody');
+                tbody.empty();
+
+                if (allUsers.length === 0) {
+                    tbody.append('<tr><td colspan="10" class="kpi-empty">Không có nhân viên nào</td></tr>');
+                    hideLoading();
+                    return;
+                }
+
+                for (const user of allUsers) {
+                    const response = await fetch(`${API_BASE}/user/${user.userId}?startDate=${start}&endDate=${end}`);
+                    if (!response.ok) continue;
+
+                    const data = await response.json();
+                    const html = `
+                        <tr>
+                            <td><strong>${user.fullName}</strong></td>
+                            <td>${user.departmentName || 'N/A'}</td>
+                            <td>${data.attendance.totalDays || 0}</td>
+                            <td>${data.attendance.lateDays || 0}</td>
+                            <td><span class="kpi-badge ${data.attendance.lateRate > 10 ? 'kpi-badge-danger' : 'kpi-badge-success'}">${(data.attendance.lateRate || 0).toFixed(1)}%</span></td>
+                            <td>${(data.attendance.totalWorkHours || 0).toFixed(1)}h</td>
+                            <td>${data.tasks.totalAssigned || 0}</td>
+                            <td>${data.tasks.completed || 0} <small class="kpi-muted">(${(data.tasks.completionRate || 0).toFixed(1)}%)</small></td>
+                            <td><strong class="kpi-score">${(data.overallScore || 0).toFixed(1)}</strong></td>
+                            <td>
+                                <button class="kpi-btn kpi-btn-sm kpi-btn-secondary" onclick="exportUserKPI(${user.userId})">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.append(html);
+                }
+            } catch (error) {
+                console.error('Error loading user KPI:', error);
+                showError('Lỗi khi tải KPI cá nhân');
+            } finally {
+                hideLoading();
+            }
         }
 
         async function loadTimeline(groupBy) {
             if (isLoading) return;
             showLoading();
+
+            // Update active button
+            $('.kpi-btn-group .kpi-btn').removeClass('active');
+            $(`.kpi-btn-group .kpi-btn[data-period="${groupBy}"]`).addClass('active');
+
             try {
                 const start = $('#startDate').val();
                 const end = $('#endDate').val();
                 const response = await fetch(`${API_BASE}/timeline?startDate=${start}&endDate=${end}&groupBy=${groupBy}`);
+
                 if (!response.ok) throw new Error('Failed to load timeline');
                 const data = await response.json();
 
                 const ctx = document.getElementById('timelineChart');
                 if (!ctx) return;
 
-                // Destroy existing chart
                 if (charts.timeline) {
                     charts.timeline.destroy();
-                    charts.timeline = null;
                 }
 
                 const labels = data.map(d => {
-                    if (d.date) return d.date;
-                    if (d.year && d.month) return `${d.year}-${d.month}`;
-                    if (d.year && d.week) return `W${d.week}`;
+                    if (d.date) return new Date(d.date).toLocaleDateString('vi-VN');
+                    if (d.year && d.month) return `${d.month}/${d.year}`;
+                    if (d.year && d.week) return `Tuần ${d.week}`;
                     return 'N/A';
                 });
 
@@ -849,203 +590,54 @@
                     type: 'line',
                     data: {
                         labels: labels,
-                        datasets: [{
-                            label: 'Tỷ lệ muộn (%)',
-                            data: data.map(d => d.lateRate || 0),
-                            borderColor: 'rgb(245, 87, 108)',
-                            backgroundColor: 'rgba(245, 87, 108, 0.1)',
-                            tension: 0.4
-                        }, {
-                            label: 'Giờ làm trung bình',
-                            data: data.map(d => (d.totalAttendances > 0 ? d.totalHours / d.totalAttendances : 0)),
-                            borderColor: 'rgb(79, 172, 254)',
-                            backgroundColor: 'rgba(79, 172, 254, 0.1)',
-                            tension: 0.4
-                        }]
+                        datasets: [
+                            {
+                                label: 'Tỷ lệ muộn (%)',
+                                data: data.map(d => d.lateRate || 0),
+                                borderColor: 'rgb(239, 68, 68)',
+                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'Giờ làm TB',
+                                data: data.map(d => (d.totalAttendances > 0 ? (d.totalHours / d.totalAttendances).toFixed(1) : 0)),
+                                borderColor: 'rgb(16, 185, 129)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
-                        aspectRatio: 2.5,
                         scales: {
-                            y: {
-                                beginAtZero: true
-                            }
+                            y: { beginAtZero: true }
                         }
                     }
                 });
             } catch (error) {
                 console.error('Error loading timeline:', error);
-                alert('Lỗi khi tải xu hướng: ' + error.message);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function loadUserKPI() {
-            const userId = $('#userSelect').val();
-            if (!userId) return;
-
-            if (isLoading) return;
-            showLoading();
-            try {
-                const start = $('#startDate').val();
-                const end = $('#endDate').val();
-                const response = await fetch(`${API_BASE}/user/${userId}?startDate=${start}&endDate=${end}`);
-                if (!response.ok) throw new Error('Failed to load user KPI');
-                const data = await response.json();
-
-                const content = $('#userKPIContent');
-                content.html(`
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="kpi-card">
-                                <h6>Chấm công</h6>
-                                <div class="kpi-value">${data.attendance.totalDays}</div>
-                                <small class="text-muted">ngày làm việc</small>
-                                <hr>
-                                <p>Đi muộn: ${data.attendance.lateDays} lần (${data.attendance.lateRate.toFixed(1)}%)</p>
-                                <p>Tổng giờ: ${data.attendance.totalWorkHours.toFixed(1)} giờ</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="kpi-card">
-                                <h6>Nhiệm vụ</h6>
-                                <div class="kpi-value">${data.tasks.completed}/${data.tasks.totalAssigned}</div>
-                                <small class="text-muted">hoàn thành</small>
-                                <hr>
-                                <p>Tỷ lệ: ${data.tasks.completionRate.toFixed(1)}%</p>
-                                <p>Đang làm: ${data.tasks.inProgress}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="kpi-card">
-                                <h6>Điểm KPI</h6>
-                                <div class="kpi-value" style="color: ${data.overallScore >= 80 ? '#16a34a' : data.overallScore >= 60 ? '#f59e0b' : '#dc2626'}">${data.overallScore.toFixed(1)}</div>
-                                <small class="text-muted">/ 100 điểm</small>
-                                <hr>
-                                <button class="btn btn-primary btn-sm w-100" onclick="exportUserKPI(${userId})">
-                                    <i class="fas fa-download me-2"></i>Xuất Excel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `);
-            } catch (error) {
-                console.error('Error loading user KPI:', error);
-                alert('Lỗi khi tải KPI cá nhân: ' + error.message);
+                showError('Lỗi khi tải xu hướng');
             } finally {
                 hideLoading();
             }
         }
 
         function switchTab(tabName) {
-            $('.tab-nav button').removeClass('active');
-            event.target.closest('button').classList.add('active');
+            $('.kpi-tab').removeClass('active');
+            $(`.kpi-tab[data-tab="${tabName}"]`).addClass('active');
 
-            $('.tab-content').hide();
-            $(`#${tabName}Tab`).show();
+            $('.kpi-tab-content').removeClass('active');
+            $(`#${tabName}Tab`).addClass('active');
 
-            if (tabName === 'timeline') loadTimeline('day');
-            if (tabName === 'department') loadDepartmentComparison();
-        }
-
-        async function loadDepartmentComparison() {
-            if (isLoading) return;
-            showLoading();
-            try {
-                const start = $('#startDate').val();
-                const end = $('#endDate').val();
-
-                const response = await fetch(`/Admin/GetDepartmentComparison?startDate=${start}&endDate=${end}`);
-                if (!response.ok) throw new Error('Failed to load department comparison');
-
-                const data = await response.json();
-
-                // ✅ FIX: Kiểm tra data có phải array không
-                if (!Array.isArray(data)) {
-                    console.error('Data is not an array:', data);
-                    alert('Dữ liệu không hợp lệ');
-                    return;
-                }
-
-                // Update chart
-                const ctx = document.getElementById('departmentChart');
-                if (!ctx) return;
-
-                // Destroy existing chart
-                if (charts.department) {
-                    charts.department.destroy();
-                    charts.department = null;
-                }
-
-                charts.department = new Chart(ctx.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: data.map(d => d.departmentName || 'N/A'),
-                        datasets: [{
-                            label: 'Điểm KPI',
-                            data: data.map(d => d.departmentKPIScore || 0),
-                            backgroundColor: 'rgba(122, 63, 48, 0.8)',
-                            borderColor: 'rgba(122, 63, 48, 1)',
-                            borderWidth: 2,
-                            borderRadius: 8
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        aspectRatio: 2.5,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                ticks: {
-                                    callback: function(value) {
-                                        return value + '%';
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return 'KPI Score: ' + context.parsed.y.toFixed(1) + '%';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-
-                // Update table
-                const tbody = $('#departmentTableBody');
-                tbody.empty();
-
-                if (data.length === 0) {
-                    tbody.append('<tr><td colspan="5" class="text-center text-muted">Không có dữ liệu</td></tr>');
-                } else {
-                    data.forEach(dept => {
-                        tbody.append(`
-                            <tr>
-                                <td><strong>${dept.departmentName || 'N/A'}</strong></td>
-                                <td>${dept.totalEmployees || 0}</td>
-                                <td>${(dept.lateRate || 0).toFixed(1)}%</td>
-                                <td>${(dept.taskCompletionRate || 0).toFixed(1)}%</td>
-                                <td><strong style="color: var(--aihub-terracotta, #7a3f30); font-size: 18px;">${(dept.departmentKPIScore || 0).toFixed(1)}</strong></td>
-                            </tr>
-                        `);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading department comparison:', error);
-                alert('Lỗi khi tải so sánh phòng ban: ' + error.message);
-            } finally {
-                hideLoading();
+            if (tabName === 'department') {
+                loadDepartmentComparison();
+            } else if (tabName === 'personal') {
+                loadAllUserKPI();
+            } else if (tabName === 'timeline') {
+                loadTimeline('day');
             }
         }
 
@@ -1066,39 +658,24 @@
             window.location.href = `${API_BASE}/export/department/${deptId}?startDate=${start}&endDate=${end}`;
         }
 
-        function exportMonthlyStats() {
+        function exportAllKPI() {
             const start = $('#startDate').val();
             const end = $('#endDate').val();
-
-            // ✅ FIX: Xuất Excel từ overview - tạo temporary form và submit
-            const form = document.createElement('form');
-            form.method = 'GET';
-            form.action = `${API_BASE}/export/overview`;
-            form.style.display = 'none';
-
-            const startInput = document.createElement('input');
-            startInput.name = 'startDate';
-            startInput.value = start;
-            form.appendChild(startInput);
-
-            const endInput = document.createElement('input');
-            endInput.name = 'endDate';
-            endInput.value = end;
-            form.appendChild(endInput);
-
-            document.body.appendChild(form);
-            form.submit();
-            document.body.removeChild(form);
+            alert('Chức năng xuất tất cả KPI đang được phát triển');
         }
 
         function showLoading() {
             isLoading = true;
-            $('#loadingSpinner').addClass('show');
+            $('#loadingSpinner').addClass('active');
         }
 
         function hideLoading() {
             isLoading = false;
-            $('#loadingSpinner').removeClass('show');
+            $('#loadingSpinner').removeClass('active');
+        }
+
+        function showError(message) {
+            alert(message);
         }
     </script>
 }

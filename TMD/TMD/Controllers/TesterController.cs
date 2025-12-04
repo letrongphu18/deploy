@@ -32,11 +32,9 @@ namespace TMD.Controllers
 			var roleName = HttpContext.Session.GetString("RoleName") ?? "";
 			var isTesterStr = HttpContext.Session.GetString("IsTester") ?? "";
 
-			// ✅ Kiểm tra RoleName
 			if (roleName.Equals("Tester", StringComparison.OrdinalIgnoreCase))
 				return true;
 
-			// ✅ Kiểm tra IsTester flag (cho phép Staff có IsTester=1)
 			if (isTesterStr == "1"
 				|| isTesterStr.Equals("true", StringComparison.OrdinalIgnoreCase)
 				|| isTesterStr.Equals("yes", StringComparison.OrdinalIgnoreCase))
@@ -64,18 +62,16 @@ namespace TMD.Controllers
 
 			var testerId = HttpContext.Session.GetInt32("UserId");
 
-			// ✅ CHỈ LẤY TASK ĐƯỢC ASSIGN CHO TESTER NÀY
 			var tasksToTest = await _context.UserTasks
 				.Include(ut => ut.Task)
 				.Include(ut => ut.User)
 					.ThenInclude(u => u.Department)
 				.Where(ut => ut.Status == "Testing"
 						  && ut.Task.IsActive == true
-						  && ut.TesterId == testerId)  // ✅ CHỈ LẤY TASK CỦA TESTER NÀY
+						  && ut.TesterId == testerId)
 				.OrderByDescending(ut => ut.UpdatedAt)
 				.ToListAsync();
 
-			// STATISTICS
 			ViewBag.TotalTesting = tasksToTest.Count;
 			ViewBag.OverdueTasks = tasksToTest.Count(ut =>
 				ut.Task.Deadline.HasValue &&
@@ -94,6 +90,7 @@ namespace TMD.Controllers
 
 			return View(tasksToTest);
 		}
+
 
 		// ============================================
 		// 📄 GET TASK DETAIL FOR TESTING
@@ -118,7 +115,6 @@ namespace TMD.Controllers
 				if (userTask == null)
 					return Json(new { success = false, message = "Không tìm thấy task" });
 
-				// ✅ CHỈ CHO PHÉP XEM TASK Ở TRẠNG THÁI "Testing"
 				if (userTask.Status != "Testing")
 					return Json(new { success = false, message = "Task không ở trạng thái chờ test" });
 
@@ -175,15 +171,12 @@ namespace TMD.Controllers
 			if (userTask == null)
 				return Json(new { success = false, message = "Không tìm thấy task" });
 
-			// ✅ CHỈ CHO PHÉP REVIEW TASK Ở TRẠNG THÁI "Testing"
 			if (userTask.Status != "Testing")
 				return Json(new { success = false, message = "Chỉ có thể review task đang ở trạng thái Testing" });
 
-			// ✅ VALIDATE ACTION
 			if (request.Action != "Done" && request.Action != "Reopen")
 				return Json(new { success = false, message = "Action không hợp lệ. Chỉ chấp nhận: Done hoặc Reopen" });
 
-			// ✅ REQUIRE NOTE FOR REOPEN
 			if (request.Action == "Reopen" && string.IsNullOrWhiteSpace(request.Note))
 				return Json(new { success = false, message = "Vui lòng nhập lý do reopen" });
 
@@ -193,16 +186,27 @@ namespace TMD.Controllers
 				userTask.Status = request.Action;
 				userTask.UpdatedAt = DateTime.Now;
 
+				// ✅ LƯU LÝ DO REOPEN VÀO DB
+				if (request.Action == "Reopen")
+				{
+					userTask.ReopenReason = request.Note;
+				}
+				else if (request.Action == "Done")
+				{
+					// ✅ CHỈ XÓA LÝ DO REOPEN KHI HOÀN THÀNH
+					userTask.ReopenReason = null;
+				}
+				// ✅ GIỮ NGUYÊN ReopenReason khi chuyển sang InProgress để dev nhớ lý do cần sửa
+
 				await _context.SaveChangesAsync();
 
-				// ✅ LOG AUDIT
 				await _auditHelper.LogDetailedAsync(
 					testerId,
 					"REVIEW",
 					"UserTask",
 					userTask.UserTaskId,
-					new { Status = oldStatus },
-					new { Status = request.Action },
+					new { Status = oldStatus, ReopenReason = userTask.ReopenReason },
+					new { Status = request.Action, ReopenReason = request.Note },
 					$"Tester {(request.Action == "Done" ? "approve" : "reopen")} task: {userTask.Task.TaskName}",
 					new Dictionary<string, object>
 					{
@@ -213,19 +217,16 @@ namespace TMD.Controllers
 					}
 				);
 
-				// ✅ GỬI THÔNG BÁO
 				if (request.Action == "Done")
 				{
-					// Gửi cho Dev
 					await _notificationService.SendToUserAsync(
 						userTask.UserId,
 						"Task đã hoàn thành",
-						$"Task '{userTask.Task.TaskName}' đã được Tester approve ",
+						$"Task '{userTask.Task.TaskName}' đã được Tester approve ✅",
 						"success",
 						"/Staff/MyTasks"
 					);
 
-					// Gửi cho Admin
 					await _notificationService.SendToAdminsAsync(
 						"Task hoàn thành",
 						$"Task '{userTask.Task.TaskName}' đã được test và hoàn thành bởi {userTask.User.FullName}",
@@ -235,19 +236,17 @@ namespace TMD.Controllers
 				}
 				else if (request.Action == "Reopen")
 				{
-					// Gửi cho Dev với lý do
 					await _notificationService.SendToUserAsync(
 						userTask.UserId,
 						"Task bị reopen",
-						$"Task '{userTask.Task.TaskName}' cần sửa lại.\n\n Lý do: {request.Note}",
+						$"Task '{userTask.Task.TaskName}' cần sửa lại.\n\n📝 Lý do: {request.Note}",
 						"warning",
 						"/Staff/MyTasks"
 					);
 
-					// Gửi cho Admin
 					await _notificationService.SendToAdminsAsync(
 						"Task bị reopen",
-						$"Task '{userTask.Task.TaskName}' của {userTask.User.FullName} bị reopen.\nLý do: {request.Note}",
+						$"Task '{userTask.Task.TaskName}' của {userTask.User.FullName} bị reopen.\n📝 Lý do: {request.Note}",
 						"warning",
 						"/Admin/TaskList"
 					);
@@ -257,8 +256,8 @@ namespace TMD.Controllers
 				{
 					success = true,
 					message = request.Action == "Done"
-						? " Task đã được approve và hoàn thành"
-						: " Task đã được reopen. Dev sẽ nhận được thông báo."
+						? "✅ Task đã được approve và hoàn thành"
+						: "⚠️ Task đã được reopen. Dev sẽ nhận được thông báo."
 				});
 			}
 			catch (Exception ex)
@@ -295,7 +294,6 @@ namespace TMD.Controllers
 
 				var stats = new
 				{
-					// ✅ CHỈ THỐNG KÊ TASK CỦA TESTER NÀY
 					totalTesting = await _context.UserTasks
 						.CountAsync(ut => ut.Status == "Testing" && ut.TesterId == testerId),
 					reviewedToday = await _context.UserTasks
@@ -321,7 +319,7 @@ namespace TMD.Controllers
 			{
 				return Json(new { success = false, message = ex.Message });
 			}
-		}
+		}	
 
 		// ============================================
 		// 📝 REQUEST MODEL
