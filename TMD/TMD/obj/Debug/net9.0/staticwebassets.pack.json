@@ -133,6 +133,10 @@
       "PackagePath": "staticwebassets\\css\\staff-requests.css"
     },
     {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\sweetalert2-custom.css",
+      "PackagePath": "staticwebassets\\css\\sweetalert2-custom.css"
+    },
+    {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\task-create.css",
       "PackagePath": "staticwebassets\\css\\task-create.css"
     },
@@ -511,6 +515,10 @@
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251202_175426_checkout.jpg",
       "PackagePath": "staticwebassets\\uploads\\attendance\\3_20251202_175426_checkout.jpg"
+    },
+    {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251204_150830_checkin.jpg",
+      "PackagePath": "staticwebassets\\uploads\\attendance\\3_20251204_150830_checkin.jpg"
     },
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\6_20251129_134923_checkin.jpg",

@@ -1,12 +1,12 @@
 ﻿@{
-    ViewData["Title"] = $"Chi tiết dự án - {ViewBag.Project.ProjectName}";
+    ViewData["Title"] = $"Chi tiết dự án - {ViewBag.Project?.ProjectName ?? "N/A"}";
     var project = ViewBag.Project;
-    var myTasksWithMetadata = ViewBag.MyTasksWithMetadata as List<dynamic>;
-    var activeMembers = ViewBag.ActiveMembers as List<dynamic>;
+    var myTasksWithMetadata = ViewBag.MyTasksWithMetadata as List<object>;
+    var activeMembers = ViewBag.ActiveMembers as List<object>;
 }
 
 <link rel="stylesheet" href="~/css/project-management.css" />
-
+<link href="~/css/sweetalert2-custom.css" rel="stylesheet" />
 <div class="pm-container">
     <!-- DETAIL HEADER -->
     <div class="pm-detail-header">
@@ -177,17 +177,23 @@
                 @if (myTasksWithMetadata != null && myTasksWithMetadata.Any())
                 {
                     <div class="pm-tasks-list">
-                        @foreach (var item in myTasksWithMetadata)
+                        @foreach (dynamic item in myTasksWithMetadata)
                         {
-                            var ut = item.UserTask;
-                            var task = item.Task;
+                            // ✅ CRITICAL: NULL CHECK cho tất cả properties
+                            var ut = item?.UserTask;
+                            var task = item?.Task;
 
-                            <div class="pm-task-card status-@ut.Status">
+                            if (ut == null || task == null)
+                            {
+                                continue; // Skip null items
+                            }
+
+                            <div class="pm-task-card status-@(ut.Status ?? "TODO")">
                                 <div class="pm-task-header">
                                     <div>
                                         <h4 class="pm-task-title">
-                                            @task.TaskName
-                                            @if (item.IsOverdue)
+                                            @(task.TaskName ?? "Unnamed Task")
+                                            @if (item.IsOverdue == true)
                                             {
                                                 <span class="pm-badge pm-badge-high" style="font-size: 0.75rem;">
                                                     <i class="fas fa-exclamation-triangle"></i>
@@ -196,12 +202,15 @@
                                             }
                                         </h4>
                                         <div class="pm-task-meta">
-                                            @if (task.Deadline.HasValue)
-                                            {
-                                                <span class="pm-task-meta-item">
-                                                    <i class="fas fa-calendar"></i>
-                                                    Deadline: @task.Deadline.Value.ToString("dd/MM/yyyy HH:mm")
-                                                </span>
+                                            @{
+                                                var deadline = task.Deadline;
+                                                if (deadline != null)
+                                                {
+                                                    <span class="pm-task-meta-item">
+                                                        <i class="fas fa-calendar"></i>
+                                                        Deadline: @String.Format("{0:dd/MM/yyyy HH:mm}", deadline)
+                                                    </span>
+                                                }
                                             }
                                             @if (!string.IsNullOrEmpty(task.Platform))
                                             {
@@ -210,23 +219,26 @@
                                                     @task.Platform
                                                 </span>
                                             }
-                                            @if (ut.UpdatedAt.HasValue)
-                                            {
-                                                <span class="pm-task-meta-item">
-                                                    <i class="fas fa-clock"></i>
-                                                    Cập nhật: @ut.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")
-                                                </span>
+                                            @{
+                                                var updatedAt = ut.UpdatedAt;
+                                                if (updatedAt != null)
+                                                {
+                                                    <span class="pm-task-meta-item">
+                                                        <i class="fas fa-clock"></i>
+                                                        Cập nhật: @String.Format("{0:dd/MM/yyyy HH:mm}", updatedAt)
+                                                    </span>
+                                                }
                                             }
                                         </div>
                                     </div>
                                     <div class="pm-project-badges">
-                                        <span class="pm-badge @item.StatusBadgeClass">
+                                        <span class="pm-badge @(item.StatusBadgeClass ?? "")">
                                             <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
-                                            @item.StatusText
+                                            @(item.StatusText ?? "TODO")
                                         </span>
-                                        <span class="pm-badge @item.PriorityClass">
+                                        <span class="pm-badge @(item.PriorityClass ?? "pm-badge-medium")">
                                             <i class="fas fa-flag"></i>
-                                            @(task.Priority ?? "Medium")
+                                            @(item.PriorityText ?? "Trung bình")
                                         </span>
                                     </div>
                                 </div>
@@ -253,7 +265,7 @@
                                 {
                                     <div class="pm-d-flex pm-gap-2" style="margin-top: 1rem;">
                                         <button type="button" class="pm-btn pm-btn-primary pm-btn-sm"
-                                                onclick="updateTaskStatus(@ut.UserTaskId, '@ut.Status')">
+                                                onclick="updateTaskStatus(@ut.UserTaskId, '@(ut.Status ?? "TODO")')">
                                             <i class="fas fa-edit"></i>
                                             Cập nhật tiến độ
                                         </button>
@@ -349,31 +361,28 @@
     <div class="pm-tab-content" id="members">
         <div class="pm-card">
             <div class="pm-card-body">
-                @{
-                    var membersList = activeMembers ?? new List<dynamic>();
-                }
-
-                @if (membersList.Any())
+                @if (activeMembers != null && activeMembers.Any())
                 {
                     <div class="pm-members-grid">
-                        @foreach (var item in membersList)
+                        @foreach (dynamic item in activeMembers)
                         {
-                            var member = item.Member;
+                            var member = item?.Member;
+                            if (member == null || member.User == null) continue;
 
                             <div class="pm-member-card">
                                 <div class="pm-member-avatar">
-                                    @if (item.HasAvatar)
+                                    @if (item.HasAvatar == true)
                                     {
                                         <img src="@member.User.Avatar" alt="@member.User.FullName">
                                     }
                                     else
                                     {
-                                        <span>@item.Initials</span>
+                                        <span>@(item.Initials ?? "?")</span>
                                     }
                                 </div>
                                 <div class="pm-member-info">
                                     <div class="pm-member-name">
-                                        @member.User?.FullName
+                                        @(member.User?.FullName ?? "Unknown")
                                         @if (member.Role == "Leader")
                                         {
                                             <span class="pm-badge pm-badge-leader" style="font-size: 0.65rem; padding: 0.25rem 0.5rem;">
@@ -381,7 +390,7 @@
                                             </span>
                                         }
                                     </div>
-                                    <div class="pm-member-role">@member.User?.Email</div>
+                                    <div class="pm-member-role">@(member.User?.Email ?? "")</div>
                                     <div class="pm-member-dept">@(member.User?.Department?.DepartmentName ?? "N/A")</div>
                                 </div>
                             </div>

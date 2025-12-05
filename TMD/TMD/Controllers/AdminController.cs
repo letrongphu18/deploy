@@ -2176,7 +2176,11 @@ namespace TMD.Controllers
 		// ============================================
 		// Thêm action này vào AdminController.cs
 
-		// Thêm action này vào AdminController.cs
+		// ============================================
+		// GET TASK DETAILS - UPDATED VERSION
+		// Thêm vào AdminController.cs
+		// ============================================
+
 		[HttpGet]
 		public async Task<IActionResult> GetTaskDetails(int id)
 		{
@@ -2185,7 +2189,6 @@ namespace TMD.Controllers
 
 			try
 			{
-				// ✅ CRITICAL: Include đầy đủ
 				var task = await _context.Tasks
 					.Include(t => t.UserTasks)
 						.ThenInclude(ut => ut.User)
@@ -2195,12 +2198,8 @@ namespace TMD.Controllers
 				if (task == null)
 					return Json(new { success = false, message = "Không tìm thấy task" });
 
-				// ✅ ENSURE UserTasks is never null
 				if (task.UserTasks == null)
 					task.UserTasks = new List<UserTask>();
-
-				// ✅ Log để debug
-				System.Diagnostics.Debug.WriteLine($"[GetTaskDetails] TaskId={id}, Name={task.TaskName}, UserTasks={task.UserTasks.Count}");
 
 				await _auditHelper.LogViewAsync(
 					HttpContext.Session.GetInt32("UserId").Value,
@@ -2209,15 +2208,16 @@ namespace TMD.Controllers
 					$"Xem chi tiết task: {task.TaskName}"
 				);
 
-				// ✅ STATISTICS - với null-safe
+				// ✅ STATISTICS
 				var todoCount = task.UserTasks.Count(ut => ut.Status == "TODO");
 				var inProgressCount = task.UserTasks.Count(ut => ut.Status == "InProgress");
 				var testingCount = task.UserTasks.Count(ut => ut.Status == "Testing");
 				var doneCount = task.UserTasks.Count(ut => ut.Status == "Done");
 				var reopenCount = task.UserTasks.Count(ut => ut.Status == "Reopen");
 
-				// ✅ ASSIGNED USERS
+				// ✅ ASSIGNED USERS WITH STATUS
 				var assignedUsers = task.UserTasks.Select(ut => {
+					// Map status to badge class
 					string statusClass = ut.Status switch
 					{
 						"TODO" => "secondary",
@@ -2228,6 +2228,7 @@ namespace TMD.Controllers
 						_ => "secondary"
 					};
 
+					// Map status to text
 					string statusText = ut.Status switch
 					{
 						"TODO" => "Chưa bắt đầu",
@@ -2270,19 +2271,17 @@ namespace TMD.Controllers
 						CreatedAtStr = task.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A",
 						UpdatedAtStr = task.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A",
 
+						// Status counts
 						TodoCount = todoCount,
 						InProgressCount = inProgressCount,
 						TestingCount = testingCount,
 						DoneCount = doneCount,
 						ReopenCount = reopenCount,
 
+						// Assigned users with status
 						AssignedUsers = assignedUsers
 					}
 				};
-
-				// ✅ Log response
-				var jsonResponse = System.Text.Json.JsonSerializer.Serialize(result);
-				System.Diagnostics.Debug.WriteLine($"[GetTaskDetails] Response: {jsonResponse}");
 
 				return Json(result);
 			}

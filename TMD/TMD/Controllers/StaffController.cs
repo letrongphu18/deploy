@@ -2600,6 +2600,9 @@ namespace TMD.Controllers
 		// ============================================
 		// MY PROJECT DETAIL - Chi tiết dự án & task của mình
 		// ============================================
+		// ============================================
+		// ✅ MYPROJECTDETAIL - FIXED TYPE CONVERSION
+		// ============================================
 		[HttpGet]
 		public async Task<IActionResult> MyProjectDetail(int id)
 		{
@@ -2608,117 +2611,140 @@ namespace TMD.Controllers
 
 			var userId = HttpContext.Session.GetInt32("UserId").Value;
 
-			var membership = await _context.ProjectMembers
-				.Include(pm => pm.Project)
-					.ThenInclude(p => p.Leader)
-				.Include(pm => pm.Project)
-					.ThenInclude(p => p.Department)
-				.Include(pm => pm.Project)
-					.ThenInclude(p => p.ProjectMembers)
-						.ThenInclude(pm => pm.User)
-							.ThenInclude(u => u.Department)
-				.FirstOrDefaultAsync(pm => pm.ProjectId == id && pm.UserId == userId && pm.IsActive == true);
-
-			if (membership == null)
+			try
 			{
-				TempData["Error"] = "Bạn không phải thành viên của dự án này";
+				// 1. Kiểm tra membership
+				var membership = await _context.ProjectMembers
+					.Include(pm => pm.Project)
+						.ThenInclude(p => p.Leader)
+					.Include(pm => pm.Project)
+						.ThenInclude(p => p.Department)
+					.Include(pm => pm.Project)
+						.ThenInclude(p => p.ProjectMembers)
+							.ThenInclude(pm => pm.User)
+								.ThenInclude(u => u.Department)
+					.FirstOrDefaultAsync(pm => pm.ProjectId == id && pm.UserId == userId && pm.IsActive == true);
+
+				if (membership == null)
+				{
+					TempData["Error"] = "Bạn không phải thành viên của dự án này";
+					return RedirectToAction("MyProjects");
+				}
+
+				var project = membership.Project;
+
+				// 2. Lấy tasks
+				var myTasks = await _context.UserTasks
+					.Include(ut => ut.Task)
+					.Include(ut => ut.Tester)
+					.Include(ut => ut.User)
+					.Where(ut => ut.UserId == userId &&
+								ut.Task != null &&
+								ut.Task.ProjectId == id &&
+								ut.Task.IsActive == true)
+					.OrderBy(ut => ut.Status == "TODO" ? 1 : ut.Status == "InProgress" ? 2 : 3)
+					.ThenByDescending(ut => ut.Task.Priority == "High" ? 1 : ut.Task.Priority == "Medium" ? 2 : 3)
+					.ToListAsync();
+
+				// ✅ 3. Tạo metadata - QUAN TRỌNG: Cast sang object ngay
+				var myTasksWithMetadata = myTasks.Select(ut => (object)new
+				{
+					UserTask = ut,
+					Task = ut.Task,
+					IsOverdue = ut.Task.Deadline.HasValue &&
+							   (ut.Status != "Done"
+								? DateTime.Now > ut.Task.Deadline.Value
+								: (ut.UpdatedAt.HasValue && ut.UpdatedAt.Value > ut.Task.Deadline.Value)),
+					StatusBadgeClass = ut.Status switch
+					{
+						"TODO" => "style='background: rgba(107, 114, 128, 0.1); color: #6b7280;'",
+						"InProgress" => "pm-badge-medium",
+						"Testing" => "style='background: rgba(59, 130, 246, 0.1); color: var(--info);'",
+						"Done" => "style='background: rgba(16, 185, 129, 0.1); color: var(--success);'",
+						"Reopen" => "pm-badge-high",
+						_ => ""
+					},
+					StatusText = ut.Status switch
+					{
+						"TODO" => "Chưa bắt đầu",
+						"InProgress" => "Đang làm",
+						"Testing" => "Chờ test",
+						"Done" => "Hoàn thành",
+						"Reopen" => "Cần sửa lại",
+						_ => "TODO"
+					},
+					PriorityClass = ut.Task.Priority switch
+					{
+						"High" => "pm-badge-high",
+						"Medium" => "pm-badge-medium",
+						"Low" => "pm-badge-low",
+						_ => "pm-badge-medium"
+					},
+					PriorityText = ut.Task.Priority switch
+					{
+						"High" => "Cao",
+						"Medium" => "Trung bình",
+						"Low" => "Thấp",
+						_ => "Trung bình"
+					}
+				}).ToList();
+
+				// 4. Thống kê tasks
+				ViewBag.MyTotalTasks = myTasks.Count;
+				ViewBag.MyTodoTasks = myTasks.Count(ut => ut.Status == "TODO");
+				ViewBag.MyInProgressTasks = myTasks.Count(ut => ut.Status == "InProgress");
+				ViewBag.MyTestingTasks = myTasks.Count(ut => ut.Status == "Testing");
+				ViewBag.MyCompletedTasks = myTasks.Count(ut => ut.Status == "Done");
+				ViewBag.MyReopenTasks = myTasks.Count(ut => ut.Status == "Reopen");
+
+				ViewBag.MyCompletionRate = myTasks.Count > 0
+					? Math.Round((double)ViewBag.MyCompletedTasks / myTasks.Count * 100, 1)
+					: 0;
+
+				ViewBag.IsLeader = project.LeaderId == userId;
+				ViewBag.MyRole = membership.Role ?? "Member";
+				ViewBag.Project = project;
+				ViewBag.MyTasksWithMetadata = myTasksWithMetadata;
+
+				// ✅ 5. Active members - Cast sang object
+				var activeMembers = new List<object>();
+
+				if (project.ProjectMembers != null && project.ProjectMembers.Any())
+				{
+					activeMembers = project.ProjectMembers
+						.Where(pm => pm.IsActive && pm.User != null)
+						.OrderBy(pm => pm.Role == "Leader" ? 0 : 1)
+						.ThenBy(pm => pm.User.FullName)
+						.Select(pm => (object)new
+						{
+							Member = pm,
+							HasAvatar = !string.IsNullOrEmpty(pm.User?.Avatar) &&
+									   pm.User.Avatar != "/images/default-avatar.png",
+							Initials = pm.User?.FullName?.Substring(0, 1).ToUpper() ?? "?"
+						})
+						.ToList();
+				}
+
+				ViewBag.ActiveMembers = activeMembers;
+
+				// 6. Log audit
+				await _auditHelper.LogViewAsync(
+					userId,
+					"Project",
+					id,
+					$"Xem chi tiết dự án: {project.ProjectName}"
+				);
+
+				return View();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"[ERROR] MyProjectDetail Exception: {ex.Message}");
+				Console.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+
+				TempData["Error"] = $"Có lỗi xảy ra: {ex.Message}";
 				return RedirectToAction("MyProjects");
 			}
-
-			var project = membership.Project;
-
-			// Lấy tasks
-			var myTasks = await _context.UserTasks
-				.Include(ut => ut.Task)
-				.Include(ut => ut.Tester)
-				.Where(ut => ut.UserId == userId &&
-							ut.Task.ProjectId == id &&
-							ut.Task.IsActive == true)
-				.OrderBy(ut => ut.Status == "TODO" ? 1 : ut.Status == "InProgress" ? 2 : 3)
-				.ThenByDescending(ut => ut.Task.Priority == "High" ? 1 : ut.Task.Priority == "Medium" ? 2 : 3)
-				.ToListAsync();
-
-			// Tính toán task metadata
-			var myTasksWithMetadata = myTasks.Select(ut => new
-			{
-				UserTask = ut,
-				Task = ut.Task,
-				IsOverdue = ut.Task.Deadline.HasValue &&
-						   (ut.Status != "Done"
-							? DateTime.Now > ut.Task.Deadline.Value
-							: (ut.UpdatedAt.HasValue && ut.UpdatedAt.Value > ut.Task.Deadline.Value)),
-				StatusBadgeClass = ut.Status switch
-				{
-					"TODO" => "style='background: rgba(107, 114, 128, 0.1); color: #6b7280;'",
-					"InProgress" => "pm-badge-medium",
-					"Testing" => "style='background: rgba(59, 130, 246, 0.1); color: var(--info);'",
-					"Done" => "style='background: rgba(16, 185, 129, 0.1); color: var(--success);'",
-					"Reopen" => "pm-badge-high",
-					_ => ""
-				},
-				StatusText = ut.Status switch
-				{
-					"TODO" => "Chưa bắt đầu",
-					"InProgress" => "Đang làm",
-					"Testing" => "Chờ test",
-					"Done" => "Hoàn thành",
-					"Reopen" => "Cần sửa lại",
-					_ => "TODO"
-				},
-				PriorityClass = ut.Task.Priority switch
-				{
-					"High" => "pm-badge-high",
-					"Medium" => "pm-badge-medium",
-					"Low" => "pm-badge-low",
-					_ => "pm-badge-medium"
-				}
-			}).ToList();
-
-			// Thống kê
-			ViewBag.MyTotalTasks = myTasks.Count;
-			ViewBag.MyTodoTasks = myTasks.Count(ut => ut.Status == "TODO");
-			ViewBag.MyInProgressTasks = myTasks.Count(ut => ut.Status == "InProgress");
-			ViewBag.MyTestingTasks = myTasks.Count(ut => ut.Status == "Testing");
-			ViewBag.MyCompletedTasks = myTasks.Count(ut => ut.Status == "Done");
-			ViewBag.MyReopenTasks = myTasks.Count(ut => ut.Status == "Reopen");
-
-			ViewBag.MyCompletionRate = myTasks.Count > 0
-				? Math.Round((double)ViewBag.MyCompletedTasks / myTasks.Count * 100, 1)
-				: 0;
-
-			ViewBag.IsLeader = project.LeaderId == userId;
-			ViewBag.MyRole = membership.Role ?? "Member";
-			ViewBag.Project = project;
-			ViewBag.MyTasksWithMetadata = myTasksWithMetadata;
-
-			// ✅ CRITICAL FIX: Đảm bảo activeMembers luôn có giá trị
-			var activeMembers = new List<dynamic>(); // Khởi tạo empty list
-
-			if (project.ProjectMembers != null)
-			{
-				activeMembers = project.ProjectMembers
-					.Where(pm => pm.IsActive)
-					.OrderBy(pm => pm.Role == "Leader" ? 0 : 1)
-					.Select(pm => new
-					{
-						Member = pm,
-						HasAvatar = !string.IsNullOrEmpty(pm.User?.Avatar) &&
-								   pm.User.Avatar != "/images/default-avatar.png",
-						Initials = pm.User?.FullName?.Substring(0, 1).ToUpper() ?? "?"
-					})
-					.ToList<dynamic>();
-			}
-
-			ViewBag.ActiveMembers = activeMembers; // Luôn gán giá trị (có thể là empty list)
-
-			await _auditHelper.LogViewAsync(
-				userId,
-				"Project",
-				id,
-				$"Xem chi tiết dự án: {project.ProjectName}"
-			);
-
-			return View();
 		}
 
 		// ============================================

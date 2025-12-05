@@ -5,6 +5,7 @@
 }
 
 <link rel="stylesheet" href="~/css/project-management.css" />
+<link href="~/css/sweetalert2-custom.css" rel="stylesheet" />
 
 <div class="pm-container">
     <!-- PAGE HEADER -->
@@ -77,7 +78,6 @@
                 <div class="pm-projects-grid">
                     @foreach (var project in Model)
                     {
-                        // ✅ BỎ @{ ... } - Không cần trong foreach
                         var projectStatsDict = ViewBag.ProjectStats as Dictionary<int, dynamic>;
                         var stats = projectStatsDict?.ContainsKey(project.ProjectId) == true
                         ? projectStatsDict[project.ProjectId]
@@ -121,7 +121,9 @@
                         ? Math.Round((double)stats.MyCompletedTasks / stats.MyTotalTasks * 100, 1)
                         : 0;
 
-                        <div class="pm-project-card status-@project.Status">
+                        <!-- ✅ THÊM onclick VÀO ĐÂY -->
+                        <div class="pm-project-card status-@project.Status pm-project-card-clickable"
+                             onclick="openProjectDetail(@project.ProjectId, @((stats?.IsLeader ?? false).ToString().ToLower()))">
                             <div class="pm-project-header">
                                 <div class="pm-project-code">@project.ProjectCode</div>
                                 <h3 class="pm-project-name">
@@ -217,17 +219,20 @@
                                         </span>
                                     </div>
 
+                                    <!-- ✅ CẢI THIỆN: Thêm stopPropagation cho action buttons -->
                                     <div class="pm-project-actions">
-                                        <a href="@Url.Action("MyProjectDetail", "Staff", new { id = project.ProjectId })"
-                                           class="pm-action-btn" title="Xem chi tiết">
+                                        <button class="pm-action-btn"
+                                                onclick="event.stopPropagation(); viewDetail(@project.ProjectId)"
+                                                title="Xem chi tiết">
                                             <i class="fas fa-eye"></i>
-                                        </a>
+                                        </button>
                                         @if (stats?.IsLeader == true)
                                         {
-                                            <a href="@Url.Action("ProjectDetail", "Admin", new { id = project.ProjectId })"
-                                               class="pm-action-btn" title="Quản lý dự án">
+                                            <button class="pm-action-btn"
+                                                    onclick="event.stopPropagation(); manageProject(@project.ProjectId)"
+                                                    title="Quản lý dự án">
                                                 <i class="fas fa-cog"></i>
-                                            </a>
+                                            </button>
                                         }
                                     </div>
                                 </div>
@@ -252,9 +257,51 @@
 
 @section Scripts {
     <script>
+        // ============================================
+        // OPEN PROJECT DETAIL
+        // ============================================
+        function openProjectDetail(projectId, isLeader) {
+            // Chuyển đến trang MyProjectDetail
+            window.location.href = '@Url.Action("MyProjectDetail", "Staff")?id=' + projectId;
+        }
+
+        // ============================================
+        // VIEW DETAIL (From action button)
+        // ============================================
+        function viewDetail(projectId) {
+            window.location.href = '@Url.Action("MyProjectDetail", "Staff")?id=' + projectId;
+        }
+
+        // ============================================
+        // MANAGE PROJECT (Leader only)
+        // ============================================
+        function manageProject(projectId) {
+            window.location.href = '@Url.Action("ProjectDetail", "Admin")?id=' + projectId;
+        }
+
         // Dark mode support
         if (localStorage.getItem('dark-mode') === 'enabled') {
             document.body.classList.add('staff-dark-mode');
         }
     </script>
 }
+
+<style>
+    /* ✅ THÊM CURSOR POINTER CHO CARD */
+    .pm-project-card-clickable {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .pm-project-card-clickable:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+    /* ✅ ACTION BUTTONS KHÔNG BỊ ẢNH HƯỞNG */
+    .pm-project-actions button,
+    .pm-project-actions a {
+        position: relative;
+        z-index: 10;
+    }
+</style>

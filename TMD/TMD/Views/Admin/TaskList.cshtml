@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <!-- ✅ STATISTICS CARDS - CẬP NHẬT THEO TRẠNG THÁI MỚI -->
+    <!-- Statistics Cards -->
     <div class="tl-stats-grid">
         <div class="tl-stats-card tl-stats-secondary">
             <div class="tl-stats-icon"><i class="fas fa-inbox"></i></div>
@@ -76,6 +76,107 @@
         </div>
     </div>
 
+    <!-- Filters & Sorting Card -->
+    <div class="tl-card tl-mb-4">
+        <div class="tl-filters-header">
+            <h6><i class="fas fa-filter"></i> Bộ lọc & Sắp xếp</h6>
+        </div>
+        <div class="tl-card-body">
+            <form id="filterForm">
+                <div class="tl-row">
+                    <!-- Search -->
+                    <div class="tl-col-3">
+                        <label class="tl-form-label">Tìm kiếm</label>
+                        <div class="tl-search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchTask" class="tl-form-control" placeholder="Tên task, mô tả...">
+                        </div>
+                    </div>
+
+                    <!-- Platform Filter -->
+                    <div class="tl-col-2">
+                        <label class="tl-form-label">Platform</label>
+                        <select id="filterPlatform" class="tl-form-control">
+                            <option value="">Tất cả</option>
+                            <option value="Web">Web</option>
+                            <option value="Mobile">Mobile</option>
+                            <option value="Desktop">Desktop</option>
+                            <option value="API">API</option>
+                        </select>
+                    </div>
+
+                    <!-- Priority Filter -->
+                    <div class="tl-col-2">
+                        <label class="tl-form-label">Priority</label>
+                        <select id="filterPriority" class="tl-form-control">
+                            <option value="">Tất cả</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="tl-col-2">
+                        <label class="tl-form-label">Trạng thái</label>
+                        <select id="filterStatus" class="tl-form-control">
+                            <option value="">Tất cả</option>
+                            <option value="TODO">TODO</option>
+                            <option value="InProgress">Đang làm</option>
+                            <option value="Testing">Chờ test</option>
+                            <option value="Done">Hoàn thành</option>
+                            <option value="Reopen">Reopen</option>
+                        </select>
+                    </div>
+
+                    <!-- Active Filter -->
+                    <div class="tl-col-2">
+                        <label class="tl-form-label">Active</label>
+                        <select id="filterActive" class="tl-form-control">
+                            <option value="">Tất cả</option>
+                            <option value="true">Có</option>
+                            <option value="false">Không</option>
+                        </select>
+                    </div>
+
+                    <!-- Deadline Filter -->
+                    <div class="tl-col-2">
+                        <label class="tl-form-label">Deadline</label>
+                        <select id="filterDeadline" class="tl-form-control">
+                            <option value="">Tất cả</option>
+                            <option value="overdue">Quá hạn</option>
+                            <option value="today">Hôm nay</option>
+                            <option value="week">Tuần này</option>
+                            <option value="month">Tháng này</option>
+                        </select>
+                    </div>
+
+                    <!-- Sort By -->
+                    <div class="tl-col-2">
+                        <label class="tl-form-label">Sắp xếp theo</label>
+                        <select id="sortBy" class="tl-form-control">
+                            <option value="id-desc">ID (Mới nhất)</option>
+                            <option value="id-asc">ID (Cũ nhất)</option>
+                            <option value="name-asc">Tên (A-Z)</option>
+                            <option value="name-desc">Tên (Z-A)</option>
+                            <option value="deadline-asc">Deadline (Gần nhất)</option>
+                            <option value="deadline-desc">Deadline (Xa nhất)</option>
+                            <option value="priority-desc">Priority (High-Low)</option>
+                            <option value="priority-asc">Priority (Low-High)</option>
+                        </select>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div class="tl-col-1 tl-flex-end">
+                        <button type="button" id="resetFilters" class="tl-btn-secondary w-100">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Task Table Card -->
     <div class="tl-card">
         <div class="tl-card-header">
@@ -87,13 +188,13 @@
                     <thead>
                         <tr>
                             <th width="5%">ID</th>
-                            <th width="20%">Tên Task</th>
+                            <th width="22%">Tên Task</th>
                             <th width="10%">Platform</th>
                             <th width="12%">Deadline</th>
                             <th width="8%">Priority</th>
                             <th width="28%">Người làm & Trạng thái</th>
                             <th width="7%">Active</th>
-                            <th width="10%">Thao tác</th>
+                            <th width="8%">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -105,9 +206,29 @@
                             var isOverdue = task.Deadline.HasValue && !isTaskCompleted && DateTime.Now > task.Deadline.Value;
                             var rowClass = isOverdue ? "tl-row-overdue" : "";
 
-                            <tr class="@rowClass" data-task-id="@task.TaskId">
+                            // Determine task status
+                            var taskStatus = "";
+                            if (totalAssigned > 0)
+                            {
+                                var statuses = task.UserTasks.Select(ut => ut.Status).ToList();
+                                if (statuses.All(s => s == "Done")) taskStatus = "Done";
+                                else if (statuses.Any(s => s == "Reopen")) taskStatus = "Reopen";
+                                else if (statuses.Any(s => s == "Testing")) taskStatus = "Testing";
+                                else if (statuses.Any(s => s == "InProgress")) taskStatus = "InProgress";
+                                else taskStatus = "TODO";
+                            }
+
+                            <tr class="@rowClass task-row"
+                                data-task-id="@task.TaskId"
+                                data-platform="@(task.Platform ?? "")"
+                                data-priority="@task.Priority"
+                                data-status="@taskStatus"
+                                data-active="@task.IsActive.ToString().ToLower()"
+                                data-deadline="@(task.Deadline?.ToString("yyyy-MM-dd") ?? "")"
+                                data-task-name="@task.TaskName.ToLower()"
+                                data-description="@(task.Description?.ToLower() ?? "")">
                                 <td class="tl-text-center">
-                                    <span class="tl-task-id">@task.TaskId</span>
+                                    <span class="tl-task-id">#@task.TaskId</span>
                                 </td>
                                 <td>
                                     <div class="tl-task-info">
@@ -127,7 +248,7 @@
                                     @if (!string.IsNullOrEmpty(task.Platform))
                                     {
                                         <span class="tl-badge tl-badge-info">
-                                            <i class="fas fa-globe tl-me-1"></i>@task.Platform
+                                            <i class="fas fa-globe"></i>@task.Platform
                                         </span>
                                     }
                                     else
@@ -147,7 +268,7 @@
                                             @if (isOverdue)
                                             {
                                                 <span class="tl-badge tl-badge-danger tl-mt-1">
-                                                    <i class="fas fa-exclamation-circle tl-me-1"></i>Quá hạn
+                                                    <i class="fas fa-exclamation-circle"></i>Quá hạn
                                                 </span>
                                             }
                                         </div>
@@ -205,17 +326,16 @@
                                                             <img src="@ut.User.Avatar"
                                                                  alt="@ut.User.FullName"
                                                                  class="tl-user-avatar-sm"
-                                                                 style="object-fit: cover;"
                                                                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                                                             <div class="tl-user-avatar-sm"
-                                                                 style="display:none;background:linear-gradient(135deg,#667eea,#764ba2);color:white;align-items:center;justify-content:center;font-weight:700;font-size:12px;">
+                                                                 style="display:none;background:linear-gradient(135deg,#667eea,#764ba2);color:white;align-items:center;justify-content:center;font-weight:700;font-size:11px;">
                                                                 @ut.User.FullName.Substring(0, 1).ToUpper()
                                                             </div>
                                                         }
                                                         else
                                                         {
                                                             <div class="tl-user-avatar-sm"
-                                                                 style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">
+                                                                 style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;">
                                                                 @ut.User.FullName.Substring(0, 1).ToUpper()
                                                             </div>
                                                         }
@@ -245,12 +365,8 @@
                                         @(task.IsActive == true ? "Có" : "Không")
                                     </span>
                                 </td>
-                                <td>
+                                <td onclick="event.stopPropagation();">
                                     <div class="tl-action-buttons">
-                                        <button type="button" class="tl-btn-action tl-btn-action-info btn-view"
-                                                data-id="@task.TaskId" title="Xem chi tiết">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
                                         @if (task.IsActive == true)
                                         {
                                             <a asp-action="EditTask" asp-route-id="@task.TaskId"
@@ -308,9 +424,10 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // ✅ INIT DATATABLE VỚI CONFIG ĐẦY ĐỦ
+            // ✅ INIT DATATABLE
+            let table;
             if (typeof $ !== 'undefined' && $.fn.DataTable) {
-                const table = $('#taskTable').DataTable({
+                table = $('#taskTable').DataTable({
                     language: {
                         url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json',
                         paginate: {
@@ -331,20 +448,151 @@
                     responsive: true,
                     dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rtip',
                     drawCallback: function() {
-                        // ✅ RE-ATTACH EVENT LISTENERS SAU KHI PHÂN TRANG
                         attachEventListeners();
+                        applyFilters();
                     }
                 });
 
-                console.log('✅ DataTable initialized:', table);
+                console.log('✅ DataTable initialized');
             }
 
-            // ✅ HÀM ATTACH EVENTS (GỌI LẠI SAU MỖI LẦN PHÂN TRANG)
+            // ✅ FILTER & SORT FUNCTIONALITY
+            function applyFilters() {
+                const searchVal = document.getElementById('searchTask').value.toLowerCase();
+                const platformVal = document.getElementById('filterPlatform').value;
+                const priorityVal = document.getElementById('filterPriority').value;
+                const statusVal = document.getElementById('filterStatus').value;
+                const activeVal = document.getElementById('filterActive').value;
+                const deadlineVal = document.getElementById('filterDeadline').value;
+                const sortVal = document.getElementById('sortBy').value;
+
+                // Get all rows
+                let rows = Array.from(document.querySelectorAll('.task-row'));
+
+                // Filter rows
+                rows.forEach(row => {
+                    let show = true;
+
+                    // Search filter
+                    if (searchVal) {
+                        const name = row.dataset.taskName || '';
+                        const desc = row.dataset.description || '';
+                        if (!name.includes(searchVal) && !desc.includes(searchVal)) {
+                            show = false;
+                        }
+                    }
+
+                    // Platform filter
+                    if (platformVal && row.dataset.platform !== platformVal) {
+                        show = false;
+                    }
+
+                    // Priority filter
+                    if (priorityVal && row.dataset.priority !== priorityVal) {
+                        show = false;
+                    }
+
+                    // Status filter
+                    if (statusVal && row.dataset.status !== statusVal) {
+                        show = false;
+                    }
+
+                    // Active filter
+                    if (activeVal && row.dataset.active !== activeVal) {
+                        show = false;
+                    }
+
+                    // Deadline filter
+                    if (deadlineVal && row.dataset.deadline) {
+                        const deadline = new Date(row.dataset.deadline);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+
+                        const isOverdue = row.classList.contains('tl-row-overdue');
+
+                        if (deadlineVal === 'overdue' && !isOverdue) show = false;
+                        if (deadlineVal === 'today') {
+                            const isSameDay = deadline.toDateString() === today.toDateString();
+                            if (!isSameDay) show = false;
+                        }
+                        if (deadlineVal === 'week') {
+                            const weekLater = new Date(today);
+                            weekLater.setDate(today.getDate() + 7);
+                            if (deadline < today || deadline > weekLater) show = false;
+                        }
+                        if (deadlineVal === 'month') {
+                            const monthLater = new Date(today);
+                            monthLater.setMonth(today.getMonth() + 1);
+                            if (deadline < today || deadline > monthLater) show = false;
+                        }
+                    }
+
+                    row.style.display = show ? '' : 'none';
+                });
+
+                // Sort rows
+                const tbody = document.querySelector('#taskTable tbody');
+                const visibleRows = rows.filter(row => row.style.display !== 'none');
+
+                visibleRows.sort((a, b) => {
+                    const [field, order] = sortVal.split('-');
+                    let aVal, bVal;
+
+                    switch(field) {
+                        case 'id':
+                            aVal = parseInt(a.dataset.taskId);
+                            bVal = parseInt(b.dataset.taskId);
+                            break;
+                        case 'name':
+                            aVal = a.dataset.taskName;
+                            bVal = b.dataset.taskName;
+                            break;
+                        case 'deadline':
+                            aVal = a.dataset.deadline || '9999-12-31';
+                            bVal = b.dataset.deadline || '9999-12-31';
+                            break;
+                        case 'priority':
+                            const priorityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
+                            aVal = priorityOrder[a.dataset.priority] || 0;
+                            bVal = priorityOrder[b.dataset.priority] || 0;
+                            break;
+                    }
+
+                    if (order === 'asc') {
+                        return aVal > bVal ? 1 : -1;
+                    } else {
+                        return aVal < bVal ? 1 : -1;
+                    }
+                });
+
+                // Reorder in DOM
+                visibleRows.forEach(row => tbody.appendChild(row));
+            }
+
+            // Filter event listeners
+            ['searchTask', 'filterPlatform', 'filterPriority', 'filterStatus', 'filterActive', 'filterDeadline', 'sortBy'].forEach(id => {
+                document.getElementById(id).addEventListener('change', applyFilters);
+                document.getElementById(id).addEventListener('keyup', applyFilters);
+            });
+
+            // Reset filters
+            document.getElementById('resetFilters').addEventListener('click', function() {
+                document.getElementById('searchTask').value = '';
+                document.getElementById('filterPlatform').value = '';
+                document.getElementById('filterPriority').value = '';
+                document.getElementById('filterStatus').value = '';
+                document.getElementById('filterActive').value = '';
+                document.getElementById('filterDeadline').value = '';
+                document.getElementById('sortBy').value = 'id-desc';
+                applyFilters();
+            });
+
+            // ✅ ATTACH EVENT LISTENERS
             function attachEventListeners() {
-                // VIEW BUTTON
-                document.querySelectorAll('.btn-view').forEach(btn => {
-                    btn.removeEventListener('click', handleView); // Xóa listener cũ
-                    btn.addEventListener('click', handleView);
+                // ROW CLICK TO VIEW DETAIL
+                document.querySelectorAll('.task-row').forEach(row => {
+                    row.removeEventListener('click', handleRowClick);
+                    row.addEventListener('click', handleRowClick);
                 });
 
                 // DELETE & RESTORE BUTTONS
@@ -354,15 +602,20 @@
                 });
             }
 
-            function handleView(e) {
-                e.preventDefault();
-                const taskId = this.dataset.id;
-                console.log('🔍 Viewing task:', taskId);
+            function handleRowClick(e) {
+                if (e.target.closest('.tl-action-buttons') ||
+                    e.target.closest('a') ||
+                    e.target.closest('button')) {
+                    return;
+                }
+                const taskId = this.dataset.taskId;
                 viewTaskDetail(taskId);
             }
 
             function handleDeleteRestore(e) {
                 e.preventDefault();
+                e.stopPropagation();
+
                 const isDelete = this.classList.contains('btn-delete');
                 const taskId = this.dataset.id;
                 const taskName = this.dataset.name;
@@ -373,7 +626,6 @@
                 }
             }
 
-            // ✅ ATTACH LẦN ĐẦU
             attachEventListeners();
 
             function showToast(message, type = 'info') {
@@ -381,62 +633,76 @@
                 const toast = document.createElement('div');
                 toast.className = toastClass;
                 toast.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-                toast.innerHTML = `
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
+                toast.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 4000);
             }
 
-            // ✅ VIEW TASK DETAIL - FIXED
             function viewTaskDetail(taskId) {
-                console.log('📋 Opening modal for task:', taskId);
-
                 const modal = new bootstrap.Modal(document.getElementById('taskDetailModal'));
                 const content = document.getElementById('taskDetailContent');
 
-                content.innerHTML = `
-                    <div class="tl-loading">
-                        <div class="spinner-border" role="status"></div>
-                        <p class="tl-mt-3 tl-text-muted">Đang tải...</p>
-                    </div>
-                `;
+                content.innerHTML = '<div class="tl-loading"><div class="spinner-border" role="status"></div><p class="tl-mt-3 tl-text-muted">Đang tải...</p></div>';
 
                 modal.show();
 
                 fetch(`/Admin/GetTaskDetails?id=${taskId}`)
                     .then(r => {
-                        console.log('📡 Response status:', r.status);
                         if (!r.ok) throw new Error(`HTTP ${r.status}`);
                         return r.json();
                     })
                     .then(data => {
-                        console.log('📦 Response data:', data);
-
                         if (!data || !data.success) {
-                            content.innerHTML = `<div class="alert alert-danger">Lỗi: ${data?.message || 'Không thể tải dữ liệu'}</div>`;
+                            content.innerHTML = `<div class="alert alert-danger m-3">Lỗi: ${data?.message || 'Không thể tải dữ liệu'}</div>`;
                             return;
                         }
 
                         const t = data.task || {};
-                        console.log('✅ Task data:', t);
 
-                        const priorityBg = t.Priority === 'High' ? 'danger' : t.Priority === 'Medium' ? 'warning' : 'success';
-                        const statusBg = t.IsActive ? 'success' : 'secondary';
+                        // Safe value extraction with defaults
+                        const taskId = t.taskId || t.TaskId || 'N/A';
+                        const taskName = t.taskName || t.TaskName || 'Không có tên';
+                        const description = t.description || t.Description || 'Không có mô tả';
+                        const platform = t.platform || t.Platform || 'N/A';
+                        const priority = t.priority || t.Priority || 'Medium';
+                        const deadlineStr = t.deadlineStr || t.DeadlineStr || '';
+                        const isActive = t.isActive !== undefined ? t.isActive : (t.IsActive !== undefined ? t.IsActive : false);
+                        const createdAtStr = t.createdAtStr || t.CreatedAtStr || 'N/A';
+                        const updatedAtStr = t.updatedAtStr || t.UpdatedAtStr || 'N/A';
+
+                        // Statistics
+                        const todoCount = t.todoCount || t.TodoCount || 0;
+                        const inProgressCount = t.inProgressCount || t.InProgressCount || 0;
+                        const testingCount = t.testingCount || t.TestingCount || 0;
+                        const doneCount = t.doneCount || t.DoneCount || 0;
+                        const reopenCount = t.reopenCount || t.ReopenCount || 0;
+
+                        const priorityBg = priority === 'High' ? 'danger' : priority === 'Medium' ? 'warning' : 'success';
+                        const statusBg = isActive ? 'success' : 'secondary';
+
+                        // Assigned users
+                        const assignedUsers = t.assignedUsers || t.AssignedUsers || [];
 
                         let usersHTML = '';
-                        if (t.AssignedUsers && t.AssignedUsers.length > 0) {
-                            usersHTML = t.AssignedUsers.map(u => {
-                                const statusBg = u.StatusClass === 'success' ? 'bg-success' :
-                                                 u.StatusClass === 'warning' ? 'bg-warning' :
-                                                 u.StatusClass === 'info' ? 'bg-info' :
-                                                 u.StatusClass === 'danger' ? 'bg-danger' : 'bg-secondary';
+                        if (assignedUsers.length > 0) {
+                            usersHTML = assignedUsers.map(u => {
+                                const statusClass = u.statusClass || u.StatusClass || 'secondary';
+                                const statusBg = statusClass === 'success' ? 'bg-success' :
+                                                 statusClass === 'warning' ? 'bg-warning' :
+                                                 statusClass === 'info' ? 'bg-info' :
+                                                 statusClass === 'danger' ? 'bg-danger' : 'bg-secondary';
 
-                                let avatarHTML = u.Avatar ?
-                                    `<img src="${u.Avatar}" alt="${u.FullName}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:10px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                                     <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:none;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;">${u.FullName.substring(0,1).toUpperCase()}</div>` :
-                                    `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;">${u.FullName.substring(0,1).toUpperCase()}</div>`;
+                                const fullName = u.fullName || u.FullName || 'N/A';
+                                const deptName = u.departmentName || u.DepartmentName || 'N/A';
+                                const statusText = u.statusText || u.StatusText || 'N/A';
+                                const reportLink = u.reportLink || u.ReportLink || '';
+                                const updatedAt = u.updatedAtStr || u.UpdatedAtStr || 'Chưa cập nhật';
+                                const avatar = u.avatar || u.Avatar;
+
+                                let avatarHTML = avatar ?
+                                    `<img src="${avatar}" alt="${fullName}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:10px;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                                     <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:none;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;">${fullName.substring(0,1).toUpperCase()}</div>` :
+                                    `<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;margin-right:10px;font-size:14px;">${fullName.substring(0,1).toUpperCase()}</div>`;
 
                                 return `
                                     <tr>
@@ -444,14 +710,14 @@
                                             <div class="d-flex align-items-center">
                                                 ${avatarHTML}
                                                 <div>
-                                                    <div class="fw-bold">${u.FullName}</div>
-                                                    <small class="text-muted">${u.DepartmentName}</small>
+                                                    <div class="fw-bold">${fullName}</div>
+                                                    <small class="text-muted">${deptName}</small>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td><span class="badge ${statusBg}">${u.StatusText}</span></td>
-                                        <td>${u.ReportLink ? `<a href="${u.ReportLink}" target="_blank" class="link-primary"><i class="fas fa-external-link-alt"></i> Xem</a>` : '<span class="text-muted">—</span>'}</td>
-                                        <td><small class="text-muted">${u.UpdatedAtStr}</small></td>
+                                        <td><span class="badge ${statusBg}">${statusText}</span></td>
+                                        <td>${reportLink ? `<a href="${reportLink}" target="_blank" class="link-primary"><i class="fas fa-external-link-alt"></i> Xem</a>` : '<span class="text-muted">—</span>'}</td>
+                                        <td><small class="text-muted">${updatedAt}</small></td>
                                     </tr>
                                 `;
                             }).join('');
@@ -460,41 +726,41 @@
                         }
 
                         content.innerHTML = `
-                            <div class="p-3">
+                            <div class="p-4">
                                 <div class="mb-4 pb-3 border-bottom">
-                                    <h5 class="mb-2">${t.TaskName}</h5>
-                                    <p class="text-muted mb-3">${t.Description}</p>
+                                    <h5 class="mb-2 fw-bold">${taskName}</h5>
+                                    <p class="text-muted mb-3">${description}</p>
 
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <small class="text-muted d-block mb-1"><i class="fas fa-globe me-1"></i>Platform</small>
-                                            <strong>${t.Platform}</strong>
+                                            <strong>${platform}</strong>
                                         </div>
                                         <div class="col-md-6">
                                             <small class="text-muted d-block mb-1"><i class="fas fa-flag me-1"></i>Priority</small>
-                                            <span class="badge bg-${priorityBg}">${t.Priority}</span>
+                                            <span class="badge bg-${priorityBg}">${priority}</span>
                                         </div>
                                         <div class="col-md-6">
                                             <small class="text-muted d-block mb-1"><i class="far fa-calendar me-1"></i>Deadline</small>
-                                            <strong>${t.DeadlineStr || '<span class="text-muted">—</span>'}</strong>
+                                            <strong>${deadlineStr || '<span class="text-muted">Không có</span>'}</strong>
                                         </div>
                                         <div class="col-md-6">
                                             <small class="text-muted d-block mb-1"><i class="fas fa-toggle-on me-1"></i>Status</small>
-                                            <span class="badge bg-${statusBg}">${t.IsActive ? 'Hoạt động' : 'Ẩn'}</span>
+                                            <span class="badge bg-${statusBg}">${isActive ? 'Hoạt động' : 'Ẩn'}</span>
                                         </div>
                                         <div class="col-md-6">
                                             <small class="text-muted d-block mb-1"><i class="fas fa-info-circle me-1"></i>Thời gian</small>
-                                            <small class="text-muted">Tạo: ${t.CreatedAtStr}<br>Cập nhật: ${t.UpdatedAtStr}</small>
+                                            <small class="text-muted">Tạo: ${createdAtStr}<br>Cập nhật: ${updatedAtStr}</small>
                                         </div>
                                         <div class="col-md-6">
                                             <small class="text-muted d-block mb-1"><i class="fas fa-chart-pie me-1"></i>Statistics</small>
-                                            <small>TODO: ${t.TodoCount} | Đang làm: ${t.InProgressCount} | Testing: ${t.TestingCount}<br>Done: ${t.DoneCount} | Reopen: ${t.ReopenCount}</small>
+                                            <small>TODO: ${todoCount} | Đang làm: ${inProgressCount} | Testing: ${testingCount}<br>Done: ${doneCount} | Reopen: ${reopenCount}</small>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h6 class="mb-3"><i class="fas fa-users me-2"></i>Danh sách người làm (${t.AssignedUsers?.length || 0})</h6>
+                                    <h6 class="mb-3 fw-bold"><i class="fas fa-users me-2"></i>Danh sách người làm (${assignedUsers.length})</h6>
                                     <div class="table-responsive">
                                         <table class="table table-sm table-hover">
                                             <thead class="table-light">
@@ -514,7 +780,7 @@
                     })
                     .catch(err => {
                         console.error('❌ Error:', err);
-                        content.innerHTML = `<div class="alert alert-danger">Lỗi tải dữ liệu: ${err.message}</div>`;
+                        content.innerHTML = `<div class="alert alert-danger m-3">Lỗi tải dữ liệu: ${err.message}</div>`;
                     });
             }
 

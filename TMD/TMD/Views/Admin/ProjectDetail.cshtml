@@ -5,6 +5,7 @@
 }
 
 <link rel="stylesheet" href="~/css/project-management.css" />
+<link href="~/css/sweetalert2-custom.css" rel="stylesheet" />
 
 <div class="pm-container">
     <!-- DETAIL HEADER -->
@@ -217,7 +218,7 @@
         </div>
     </div>
 
-    <!-- TAB CONTENT: TASKS -->
+    <!-- TAB CONTENT: TASKS - UPDATED VERSION -->
     <div class="pm-tab-content" id="tasks">
         <div class="pm-card">
             <div class="pm-card-body">
@@ -227,18 +228,20 @@
                         @foreach (var task in Model.Tasks.OrderByDescending(t => t.Priority == "High" ? 1 : t.Priority == "Medium" ? 2 : 3))
                         {
                             var totalAssigned = task.UserTasks?.Count ?? 0;
-                            var completed = task.UserTasks?.Count(ut => ut.Status == "Done") ?? 0;
-                            var progress = totalAssigned > 0 ? Math.Round((double)completed / totalAssigned * 100, 1) : 0;
+                            var todoCount = task.UserTasks?.Count(ut => ut.Status == "TODO") ?? 0;
+                            var inProgressCount = task.UserTasks?.Count(ut => ut.Status == "InProgress") ?? 0;
+                            var testingCount = task.UserTasks?.Count(ut => ut.Status == "Testing") ?? 0;
+                            var doneCount = task.UserTasks?.Count(ut => ut.Status == "Done") ?? 0;
+                            var reopenCount = task.UserTasks?.Count(ut => ut.Status == "Reopen") ?? 0;
 
-                            <div class="pm-task-card status-@(task.UserTasks?.FirstOrDefault()?.Status ?? "TODO")">
+                            var assignedUsers = task.UserTasks?.Select(ut => ut.User).Where(u => u != null).Take(3).ToList() ?? new List<TMD.Models.User>();
+                            var remainingCount = totalAssigned - assignedUsers.Count;
+
+                            <div class="pm-task-card-new" onclick="openTaskDetailModal(@task.TaskId)">
                                 <div class="pm-task-header">
                                     <div>
                                         <h4 class="pm-task-title">@task.TaskName</h4>
                                         <div class="pm-task-meta">
-                                            <span class="pm-task-meta-item">
-                                                <i class="fas fa-users"></i>
-                                                @totalAssigned người
-                                            </span>
                                             @if (task.Deadline.HasValue)
                                             {
                                                 <span class="pm-task-meta-item">
@@ -279,15 +282,85 @@
                                     </p>
                                 }
 
-                                <div class="pm-project-progress" style="margin-top: 1rem;">
-                                    <div class="pm-progress-label">
-                                        <span class="pm-progress-text">Tiến độ</span>
-                                        <span class="pm-progress-value">@completed/@totalAssigned (@progress.ToString("F1")%)</span>
-                                    </div>
-                                    <div class="pm-progress-bar">
-                                        <div class="pm-progress-fill" style="width: @progress.ToString("F1")%"></div>
-                                    </div>
+                                <!-- STATUS BADGES -->
+                                <div class="pm-task-status-row">
+                                    @if (todoCount > 0)
+                                    {
+                                        <span class="pm-status-badge pm-status-todo">
+                                            <i class="fas fa-circle"></i>
+                                            TODO: @todoCount
+                                        </span>
+                                    }
+                                    @if (inProgressCount > 0)
+                                    {
+                                        <span class="pm-status-badge pm-status-inprogress">
+                                            <i class="fas fa-spinner"></i>
+                                            Đang làm: @inProgressCount
+                                        </span>
+                                    }
+                                    @if (testingCount > 0)
+                                    {
+                                        <span class="pm-status-badge pm-status-testing">
+                                            <i class="fas fa-vial"></i>
+                                            Testing: @testingCount
+                                        </span>
+                                    }
+                                    @if (doneCount > 0)
+                                    {
+                                        <span class="pm-status-badge pm-status-done">
+                                            <i class="fas fa-check-circle"></i>
+                                            Done: @doneCount
+                                        </span>
+                                    }
+                                    @if (reopenCount > 0)
+                                    {
+                                        <span class="pm-status-badge pm-status-reopen">
+                                            <i class="fas fa-redo"></i>
+                                            Reopen: @reopenCount
+                                        </span>
+                                    }
+                                    @if (totalAssigned == 0)
+                                    {
+                                        <span class="pm-status-badge" style="background: rgba(107, 114, 128, 0.1); color: #6b7280;">
+                                            <i class="fas fa-user-slash"></i>
+                                            Chưa giao
+                                        </span>
+                                    }
                                 </div>
+
+                                <!-- ASSIGNED USERS -->
+                                @if (totalAssigned > 0)
+                                {
+                                    <div class="pm-task-assignees">
+                                        <span style="font-size: 0.75rem; color: var(--text-muted); margin-right: 0.5rem;">
+                                            <i class="fas fa-users"></i> Phụ trách:
+                                        </span>
+                                        <div class="pm-avatar-group">
+                                            @foreach (var user in assignedUsers)
+                                            {
+                                                var hasAvatar = !string.IsNullOrEmpty(user.Avatar) && user.Avatar != "/images/default-avatar.png";
+                                                var initials = user.FullName?.Substring(0, 1).ToUpper() ?? "?";
+
+                                                <div class="pm-avatar-small" title="@user.FullName">
+                                                    @if (hasAvatar)
+                                                    {
+                                                        <img src="@user.Avatar" alt="@user.FullName">
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@initials</span>
+                                                    }
+                                                </div>
+                                            }
+                                            @if (remainingCount > 0)
+                                            {
+                                                <div class="pm-avatar-small pm-avatar-more">
+                                                    <span>+@remainingCount</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         }
                     }
@@ -378,6 +451,24 @@
     </div>
 </div>
 
+<!-- TASK DETAIL MODAL -->
+<div id="taskDetailModal" class="pm-modal" style="display: none;">
+    <div class="pm-modal-content" style="max-width: 800px;">
+        <div class="pm-modal-header">
+            <h3 id="modalTaskTitle">Chi tiết Task</h3>
+            <button type="button" class="pm-modal-close" onclick="closeTaskDetailModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="pm-modal-body" id="taskDetailContent">
+            <div class="text-center" style="padding: 2rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary);"></i>
+                <p style="margin-top: 1rem; color: var(--text-muted);">Đang tải...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -402,107 +493,222 @@
         });
 
         // ============================================
-        // ADD MEMBER MODAL
+        // TASK DETAIL MODAL
         // ============================================
-        async function openAddMemberModal() {
-            const { value: formValues } = await Swal.fire({
-                title: 'Thêm thành viên vào dự án',
-                html: `
-                    <div style="text-align: left;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Chọn nhân viên</label>
-                        <select id="swal-user" class="swal2-input" style="width: 100%; padding: 0.75rem;">
-                            <option value="">-- Chọn nhân viên --</option>
-                            ${await getUserOptions()}
-                        </select>
-                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Vai trò</label>
-                        <select id="swal-role" class="swal2-input" style="width: 100%; padding: 0.75rem;">
-                            <option value="Member">Thành viên</option>
-                            <option value="Leader">Leader</option>
-                        </select>
-                    </div>
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Thêm',
-                cancelButtonText: 'Hủy',
-                preConfirm: () => {
-                    const userId = document.getElementById('swal-user').value;
-                    const role = document.getElementById('swal-role').value;
-
-                    if (!userId) {
-                        Swal.showValidationMessage('Vui lòng chọn nhân viên');
-                        return false;
-                    }
-
-                    return { userId: parseInt(userId), role };
-                }
-            });
-
-            if (formValues) {
-                await addMember(formValues.userId, formValues.role);
-            }
-        }
-
-        async function getUserOptions() {
+        async function openTaskDetailModal(taskId) {
+            const modal = document.getElementById('taskDetailModal');
+            modal.style.display = 'flex';
+            
             try {
-                const response = await fetch('@Url.Action("GetAllUsers", "Admin")');
+                const response = await fetch(`/Admin/GetTaskDetails?id=${taskId}`);
                 const result = await response.json();
-
+                
                 if (result.success) {
-                    return result.users
-                        .filter(u => !currentMembers.includes(u.userId))
-                        .map(u => `<option value="${u.userId}">${u.fullName} (${u.departmentName})</option>`)
-                        .join('');
+                    const task = result.task;
+                    document.getElementById('modalTaskTitle').textContent = task.TaskName;
+                    
+                    const content = `
+                        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <!-- TASK INFO -->
+                            <div class="pm-card">
+                                <div class="pm-card-header">
+                                    <h5 class="pm-card-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Thông tin Task
+                                    </h5>
+                                </div>
+                                <div class="pm-card-body">
+                                    <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem;">
+                                        <strong style="color: var(--text-muted);">Mô tả:</strong>
+                                        <div style="color: var(--text);">${task.Description || 'Không có mô tả'}</div>
+                                        
+                                        <strong style="color: var(--text-muted);">Platform:</strong>
+                                        <div style="color: var(--text);">${task.Platform || 'N/A'}</div>
+                                        
+                                        <strong style="color: var(--text-muted);">Deadline:</strong>
+                                        <div style="color: var(--text);">${task.DeadlineStr || 'Không có deadline'}</div>
+                                        
+                                        <strong style="color: var(--text-muted);">Độ ưu tiên:</strong>
+                                        <div>
+                                            <span class="pm-badge ${task.Priority === 'High' ? 'pm-badge-high' : task.Priority === 'Low' ? 'pm-badge-low' : 'pm-badge-medium'}">
+                                                <i class="fas fa-flag"></i> ${task.Priority}
+                                            </span>
+                                        </div>
+                                        
+                                        <strong style="color: var(--text-muted);">Trạng thái:</strong>
+                                        <div>
+                                            <span class="pm-badge ${task.IsActive ? 'pm-badge-progress' : 'pm-badge-onhold'}">
+                                                ${task.IsActive ? 'Đang hoạt động' : 'Tạm dừng'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- STATUS SUMMARY -->
+                            <div class="pm-card">
+                                <div class="pm-card-header">
+                                    <h5 class="pm-card-title">
+                                        <i class="fas fa-chart-pie"></i>
+                                        Tổng quan tiến độ
+                                    </h5>
+                                </div>
+                                <div class="pm-card-body">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                        ${task.TodoCount > 0 ? `
+                                            <span class="pm-status-badge pm-status-todo">
+                                                <i class="fas fa-circle"></i>
+                                                TODO: ${task.TodoCount}
+                                            </span>
+                                        ` : ''}
+                                        ${task.InProgressCount > 0 ? `
+                                            <span class="pm-status-badge pm-status-inprogress">
+                                                <i class="fas fa-spinner"></i>
+                                                Đang làm: ${task.InProgressCount}
+                                            </span>
+                                        ` : ''}
+                                        ${task.TestingCount > 0 ? `
+                                            <span class="pm-status-badge pm-status-testing">
+                                                <i class="fas fa-vial"></i>
+                                                Testing: ${task.TestingCount}
+                                            </span>
+                                        ` : ''}
+                                        ${task.DoneCount > 0 ? `
+                                            <span class="pm-status-badge pm-status-done">
+                                                <i class="fas fa-check-circle"></i>
+                                                Done: ${task.DoneCount}
+                                            </span>
+                                        ` : ''}
+                                        ${task.ReopenCount > 0 ? `
+                                            <span class="pm-status-badge pm-status-reopen">
+                                                <i class="fas fa-redo"></i>
+                                                Reopen: ${task.ReopenCount}
+                                            </span>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ASSIGNED USERS -->
+                            <div class="pm-card">
+                                <div class="pm-card-header">
+                                    <h5 class="pm-card-title">
+                                        <i class="fas fa-users"></i>
+                                        Người phụ trách (${task.AssignedUsers.length})
+                                    </h5>
+                                </div>
+                                <div class="pm-card-body">
+                                    ${task.AssignedUsers.length > 0 ? `
+                                        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                            ${task.AssignedUsers.map(user => `
+                                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; border-radius: 6px; background: var(--bg-light);">
+                                                    <div class="pm-avatar-small">
+                                                        ${user.Avatar ? 
+                                                            `<img src="${user.Avatar}" alt="${user.FullName}">` :
+                                                            `<span>${user.FullName.substring(0,1).toUpperCase()}</span>`
+                                                        }
+                                                    </div>
+                                                    <div style="flex: 1;">
+                                                        <div style="font-weight: 600; color: var(--text);">${user.FullName}</div>
+                                                        <div style="font-size: 0.75rem; color: var(--text-muted);">${user.DepartmentName}</div>
+                                                    </div>
+                                                    <div>
+                                                        <span class="pm-badge pm-badge-${user.StatusClass}">
+                                                            ${user.StatusText}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : '<p style="color: var(--text-muted); text-align: center;">Chưa có người phụ trách</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('taskDetailContent').innerHTML = content;
+                } else {
+                    Swal.fire('Lỗi!', result.message, 'error');
+                    closeTaskDetailModal();
                 }
             } catch (error) {
                 console.error('Error:', error);
+                Swal.fire('Lỗi!', 'Có lỗi xảy ra khi tải thông tin task', 'error');
+                closeTaskDetailModal();
             }
-            return '';
-        }
+            }function closeTaskDetailModal() {
+                const modal = document.getElementById('taskDetailModal');
+                modal.style.display = 'none';
+            }
 
-        async function addMember(userId, role) {
-            try {
-                const response = await fetch('@Url.Action("ManageProjectMember", "Admin")', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        projectId: projectId,
-                        userId: userId,
-                        action: 'Add',
-                        role: role
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Thành công!',
-                        text: result.message,
-                        timer: 2000
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire('Lỗi!', result.message, 'error');
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('taskDetailModal');
+                if (event.target === modal) {
+                    closeTaskDetailModal();
                 }
-            } catch (error) {
-                Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
-            }
-        }
-
-        async function removeMember(userId) {
-            const result = await Swal.fire({
-                title: 'Xác nhận xóa',
-                text: 'Bạn có chắc muốn xóa thành viên này khỏi dự án?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Xóa',
-                cancelButtonText: 'Hủy'
             });
 
-            if (result.isConfirmed) {
+            // ============================================
+            // ADD MEMBER MODAL
+            // ============================================
+            async function openAddMemberModal() {
+                const { value: formValues } = await Swal.fire({
+                    title: 'Thêm thành viên vào dự án',
+                    html: `
+                        <div style="text-align: left;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Chọn nhân viên</label>
+                            <select id="swal-user" class="swal2-input" style="width: 100%; padding: 0.75rem;">
+                                <option value="">-- Chọn nhân viên --</option>
+                                ${await getUserOptions()}
+                            </select>
+                            <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Vai trò</label>
+                            <select id="swal-role" class="swal2-input" style="width: 100%; padding: 0.75rem;">
+                                <option value="Member">Thành viên</option>
+                                <option value="Leader">Leader</option>
+                            </select>
+                        </div>
+                    `,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Thêm',
+                    cancelButtonText: 'Hủy',
+                    preConfirm: () => {
+                        const userId = document.getElementById('swal-user').value;
+                        const role = document.getElementById('swal-role').value;
+
+                        if (!userId) {
+                            Swal.showValidationMessage('Vui lòng chọn nhân viên');
+                            return false;
+                        }
+
+                        return { userId: parseInt(userId), role };
+                    }
+                });
+
+                if (formValues) {
+                    await addMember(formValues.userId, formValues.role);
+                }
+            }
+
+            async function getUserOptions() {
+                try {
+                    const response = await fetch('@Url.Action("GetAllUsers", "Admin")');
+                    const result = await response.json();
+
+                    if (result.success) {
+                        return result.users
+                            .filter(u => !currentMembers.includes(u.userId))
+                            .map(u => `<option value="${u.userId}">${u.fullName} (${u.departmentName})</option>`)
+                            .join('');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+                return '';
+            }
+
+            async function addMember(userId, role) {
                 try {
                     const response = await fetch('@Url.Action("ManageProjectMember", "Admin")', {
                         method: 'POST',
@@ -510,147 +716,189 @@
                         body: JSON.stringify({
                             projectId: projectId,
                             userId: userId,
-                            action: 'Remove'
+                            action: 'Add',
+                            role: role
                         })
                     });
 
-                    const res = await response.json();
+                    const result = await response.json();
 
-                    if (res.success) {
+                    if (result.success) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Đã xóa!',
-                            text: res.message,
+                            title: 'Thành công!',
+                            text: result.message,
                             timer: 2000
                         }).then(() => location.reload());
                     } else {
-                        Swal.fire('Lỗi!', res.message, 'error');
+                        Swal.fire('Lỗi!', result.message, 'error');
                     }
                 } catch (error) {
                     Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
                 }
             }
-        }
 
-        // ============================================
-        // ADD TASK MODAL
-        // ============================================
-        async function openAddTaskModal() {
-            const members = await getProjectMembers();
-
-            const { value: formValues } = await Swal.fire({
-                title: 'Thêm Task mới',
-                html: `
-                    <div style="text-align: left;">
-                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Tên Task *</label>
-                        <input id="swal-taskname" class="swal2-input" style="width: 100%;" placeholder="Nhập tên task">
-
-                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Mô tả</label>
-                        <textarea id="swal-desc" class="swal2-textarea" style="width: 100%;" placeholder="Mô tả chi tiết"></textarea>
-
-                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Platform</label>
-                        <input id="swal-platform" class="swal2-input" style="width: 100%;" placeholder="Web, Mobile, API...">
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
-                            <div>
-                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Deadline</label>
-                                <input type="date" id="swal-deadline" class="swal2-input" style="width: 100%;">
-                            </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Độ ưu tiên</label>
-                                <select id="swal-priority" class="swal2-input" style="width: 100%;">
-                                    <option value="Low">Thấp</option>
-                                    <option value="Medium" selected>Trung bình</option>
-                                    <option value="High">Cao</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Giao cho (giữ Ctrl để chọn nhiều)</label>
-                        <select id="swal-assignees" class="swal2-input" multiple style="width: 100%; height: 120px;">
-                            ${members}
-                        </select>
-                    </div>
-                `,
-                width: '600px',
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Tạo Task',
-                cancelButtonText: 'Hủy',
-                preConfirm: () => {
-                    const taskName = document.getElementById('swal-taskname').value.trim();
-                    if (!taskName) {
-                        Swal.showValidationMessage('Vui lòng nhập tên task');
-                        return false;
-                    }
-
-                    const assignees = Array.from(document.getElementById('swal-assignees').selectedOptions)
-                        .map(opt => parseInt(opt.value));
-
-                    return {
-                        taskName,
-                        description: document.getElementById('swal-desc').value.trim(),
-                        platform: document.getElementById('swal-platform').value.trim(),
-                        deadline: document.getElementById('swal-deadline').value || null,
-                        priority: document.getElementById('swal-priority').value,
-                        assignedUserIds: assignees
-                    };
-                }
-            });
-
-            if (formValues) {
-                await createTask(formValues);
-            }
-        }
-
-        async function getProjectMembers() {
-            try {
-                const response = await fetch(`/Admin/GetAllUsers`);
-                const result = await response.json();
-
-                if (result.success) {
-                    return result.users
-                        .filter(u => currentMembers.includes(u.userId))
-                        .map(u => `<option value="${u.userId}">${u.fullName}</option>`)
-                        .join('');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-            return '';
-        }
-
-        async function createTask(data) {
-            try {
-                const response = await fetch('@Url.Action("CreateProjectTask", "Admin")', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        ...data,
-                        projectId: projectId
-                    })
+            async function removeMember(userId) {
+                const result = await Swal.fire({
+                    title: 'Xác nhận xóa',
+                    text: 'Bạn có chắc muốn xóa thành viên này khỏi dự án?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
                 });
 
-                const result = await response.json();
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch('@Url.Action("ManageProjectMember", "Admin")', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                projectId: projectId,
+                                userId: userId,
+                                action: 'Remove'
+                            })
+                        });
 
-                if (result.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Thành công!',
-                        text: result.message,
-                        timer: 2000
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire('Lỗi!', result.message, 'error');
+                        const res = await response.json();
+
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Đã xóa!',
+                                text: res.message,
+                                timer: 2000
+                            }).then(() => location.reload());
+                        } else {
+                            Swal.fire('Lỗi!', res.message, 'error');
+                        }
+                    } catch (error) {
+                        Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
+                    }
                 }
-            } catch (error) {
-                Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
             }
-        }
 
-        // Dark mode support
-        if (localStorage.getItem('dark-mode') === 'enabled') {
-            document.body.classList.add('staff-dark-mode');
-        }
+            // ============================================
+            // ADD TASK MODAL
+            // ============================================
+            async function openAddTaskModal() {
+                const members = await getProjectMembers();
+
+                const { value: formValues } = await Swal.fire({
+                    title: 'Thêm Task mới',
+                    html: `
+                        <div style="text-align: left;">
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Tên Task *</label>
+                            <input id="swal-taskname" class="swal2-input" style="width: 100%;" placeholder="Nhập tên task">
+
+                            <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Mô tả</label>
+                            <textarea id="swal-desc" class="swal2-textarea" style="width: 100%;" placeholder="Mô tả chi tiết"></textarea>
+
+                            <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Platform</label>
+                            <input id="swal-platform" class="swal2-input" style="width: 100%;" placeholder="Web, Mobile, API...">
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Deadline</label>
+                                    <input type="date" id="swal-deadline" class="swal2-input" style="width: 100%;">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Độ ưu tiên</label>
+                                    <select id="swal-priority" class="swal2-input" style="width: 100%;">
+                                        <option value="Low">Thấp</option>
+                                        <option value="Medium" selected>Trung bình</option>
+                                        <option value="High">Cao</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <label style="display: block; margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Giao cho (giữ Ctrl để chọn nhiều)</label>
+                            <select id="swal-assignees" class="swal2-input" multiple style="width: 100%; height: 120px;">
+                                ${members}
+                            </select>
+                        </div>
+                    `,
+                    width: '600px',
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Tạo Task',
+                    cancelButtonText: 'Hủy',
+                    preConfirm: () => {
+                        const taskName = document.getElementById('swal-taskname').value.trim();
+                        if (!taskName) {
+                            Swal.showValidationMessage('Vui lòng nhập tên task');
+                            return false;
+                        }
+
+                        const assignees = Array.from(document.getElementById('swal-assignees').selectedOptions)
+                            .map(opt => parseInt(opt.value));
+
+                        return {
+                            taskName,
+                            description: document.getElementById('swal-desc').value.trim(),
+                            platform: document.getElementById('swal-platform').value.trim(),
+                            deadline: document.getElementById('swal-deadline').value || null,
+                            priority: document.getElementById('swal-priority').value,
+                            assignedUserIds: assignees
+                        };
+                    }
+                });
+
+                if (formValues) {
+                    await createTask(formValues);
+                }
+            }
+
+            async function getProjectMembers() {
+                try {
+                    const response = await fetch(`/Admin/GetAllUsers`);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        return result.users
+                            .filter(u => currentMembers.includes(u.userId))
+                            .map(u => `<option value="${u.userId}">${u.fullName}</option>`)
+                            .join('');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+                return '';
+            }
+
+            async function createTask(data) {
+                try {
+                    const response = await fetch('@Url.Action("CreateProjectTask", "Admin")', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ...data,
+                            projectId: projectId
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công!',
+                            text: result.message,
+                            timer: 2000
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Lỗi!', result.message, 'error');
+                    }
+                } catch (error) {
+                    Swal.fire('Lỗi!', 'Có lỗi xảy ra: ' + error.message, 'error');
+                }
+            }
+
+            // Dark mode support
+            if (localStorage.getItem('dark-mode') === 'enabled') {
+                document.body.classList.add('staff-dark-mode');
+            }
     </script>
 }
