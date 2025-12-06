@@ -1,0 +1,323 @@
+﻿@{
+    ViewData["Title"] = "Import Nhân Viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/user-management.css" rel="stylesheet" />
+
+<div class="reg-container">
+    <div class="reg-form-wrapper">
+        <div class="reg-form-card">
+            <div class="reg-form-header">
+                <h4><i class="fas fa-file-excel"></i> Import Nhân Viên Từ Excel</h4>
+                <p class="reg-mb-0">Tải lên file Excel để tạo nhiều tài khoản cùng lúc</p>
+                <div style="margin-top: 12px;">
+                    <a href="/Admin/UserList" class="reg-btn reg-btn-secondary" style="font-size: 14px; padding: 8px 16px;">
+                        <i class="fas fa-arrow-left"></i> Quay Lại
+                    </a>
+                </div>
+            </div>
+
+            <div class="reg-form-body">
+                <!-- Step 1: Download Template -->
+                <div class="import-step">
+                    <h5><i class="fas fa-download"></i> Bước 1: Tải file mẫu</h5>
+                    <p>Tải xuống file Excel mẫu và điền thông tin nhân viên</p>
+                    <button type="button" class="reg-btn reg-btn-secondary" id="downloadTemplateBtn">
+                        <i class="fas fa-download"></i> Tải File Mẫu
+                    </button>
+                </div>
+
+                <hr style="margin: 24px 0; border: 1px solid #e5e7eb;">
+
+                <!-- Step 2: Upload File -->
+                <div class="import-step">
+                    <h5><i class="fas fa-upload"></i> Bước 2: Tải lên file Excel</h5>
+                    <p>Chọn file Excel đã điền thông tin để import</p>
+                    
+                    <div class="file-upload-area" id="dropArea">
+                        <input type="file" id="excelFile" accept=".xlsx,.xls" style="display: none;">
+                        <div class="file-upload-content">
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #9ca3af; margin-bottom: 12px;"></i>
+                            <p style="margin: 0 0 8px 0; font-weight: 600;">Kéo thả file vào đây hoặc click để chọn</p>
+                            <p style="margin: 0; color: #6b7280; font-size: 14px;">Chỉ chấp nhận file .xlsx hoặc .xls</p>
+                            <button type="button" class="reg-btn reg-btn-primary" style="margin-top: 16px;" id="selectFileBtn">
+                                <i class="fas fa-folder-open"></i> Chọn File
+                            </button>
+                        </div>
+                        <div class="file-selected" id="fileSelected" style="display: none;">
+                            <i class="fas fa-file-excel" style="font-size: 48px; color: #10b981; margin-bottom: 12px;"></i>
+                            <p id="fileName" style="margin: 0 0 8px 0; font-weight: 600;"></p>
+                            <p id="fileSize" style="margin: 0 0 16px 0; color: #6b7280; font-size: 14px;"></p>
+                            <button type="button" class="reg-btn reg-btn-secondary" id="changeFileBtn">
+                                <i class="fas fa-exchange-alt"></i> Đổi File
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="margin: 24px 0; border: 1px solid #e5e7eb;">
+
+                <!-- Step 3: Preview & Import -->
+                <div class="import-step" id="previewSection" style="display: none;">
+                    <h5><i class="fas fa-eye"></i> Bước 3: Xem trước & Import</h5>
+                    <p>Kiểm tra dữ liệu trước khi import</p>
+                    
+                    <div class="preview-stats" id="previewStats"></div>
+                    
+                    <div class="preview-table-wrapper" id="previewTable"></div>
+                    
+                    <div class="reg-btn-group" style="margin-top: 24px;">
+                        <button type="button" class="reg-btn reg-btn-primary" id="importBtn">
+                            <i class="fas fa-upload"></i> Bắt Đầu Import
+                        </button>
+                        <button type="button" class="reg-btn reg-btn-secondary" id="cancelBtn">
+                            <i class="fas fa-times"></i> Hủy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Import Progress -->
+                <div class="import-progress" id="progressSection" style="display: none;">
+                    <h5><i class="fas fa-spinner fa-spin"></i> Đang import...</h5>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">0 / 0</p>
+                </div>
+
+                <!-- Import Results -->
+                <div class="import-results" id="resultsSection" style="display: none;"></div>
+
+                <div class="reg-btn-group" style="justify-content: space-between; margin-top: 24px;">
+                    <a href="/Admin/UserList" class="reg-btn reg-btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay Lại
+                    </a>
+                    <a href="/Admin/CreateUser" class="reg-btn reg-btn-secondary">
+                        <i class="fas fa-user-plus"></i> Tạo Thủ Công
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.import-step {
+    margin-bottom: 32px;
+}
+
+.import-step h5 {
+    color: #111827;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.import-step p {
+    color: #6b7280;
+    margin-bottom: 16px;
+}
+
+.file-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+    background: #f9fafb;
+    transition: all 0.3s ease;
+}
+
+.file-upload-area.dragover {
+    border-color: #7A3F30;
+    background: #fef3f2;
+}
+
+.preview-stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 150px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-card .stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #7A3F30;
+    margin-bottom: 4px;
+}
+
+.stat-card .stat-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.preview-table-wrapper {
+    max-height: 400px;
+    overflow: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.preview-table th {
+    background: #f9fafb;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.preview-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13px;
+}
+
+.preview-table tr.error {
+    background: #fee;
+}
+
+.preview-table tr.error td {
+    color: #dc2626;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7A3F30, #9d5444);
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.import-results {
+    margin-top: 24px;
+}
+
+.result-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.result-card {
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.result-card.success {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+}
+
+.result-card.error {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+}
+
+.result-card .result-number {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.result-card.success .result-number {
+    color: #16a34a;
+}
+
+.result-card.error .result-number {
+    color: #dc2626;
+}
+
+.result-card .stat-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.error-list {
+    max-height: 300px;
+    overflow: auto;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.error-item {
+    padding: 8px;
+    margin-bottom: 8px;
+    background: white;
+    border-left: 4px solid #dc2626;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.success-list {
+    max-height: 300px;
+    overflow: auto;
+    background: #f9fafb;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.success-item {
+    padding: 8px;
+    margin-bottom: 8px;
+    background: white;
+    border-left: 4px solid #10b981;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.file-selected {
+    text-align: center;
+}
+
+.import-progress {
+    text-align: center;
+}
+
+.import-progress h5 {
+    margin-bottom: 20px;
+}
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+	<script src="~/js/import-users.js"></script>
+ 
+}

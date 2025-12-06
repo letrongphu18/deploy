@@ -20,9 +20,10 @@ namespace TMD.Controllers
 		private readonly HttpClient _httpClient;
 		private readonly IHubContext<NotificationHub> _hubContext;
 		private readonly INotificationService _notificationService;
+		private readonly ITelegramService _telegramService;
 
 
-		public StaffController(AihubSystemContext context, AuditHelper auditHelper, IWebHostEnvironment env, IHttpClientFactory httpClientFactory, IHubContext<NotificationHub> hubContext, INotificationService notificationService)
+		public StaffController(AihubSystemContext context, AuditHelper auditHelper, IWebHostEnvironment env, IHttpClientFactory httpClientFactory, IHubContext<NotificationHub> hubContext, INotificationService notificationService, ITelegramService telegramService)
 		{
 			_context = context;
 			_auditHelper = auditHelper;
@@ -30,7 +31,7 @@ namespace TMD.Controllers
 			_httpClient = httpClientFactory.CreateClient();
 			_hubContext = hubContext;
 			_notificationService = notificationService;
-
+			_telegramService = telegramService;
 
 		}
 		[HttpGet]
@@ -817,10 +818,29 @@ namespace TMD.Controllers
 
 				await _context.SaveChangesAsync();
 
+				// ✅ LẤY THÔNG TIN USER
+				var user = await _context.Users.FindAsync(userId);
+
+				// ✅ GỬI TELEGRAM NOTIFICATION
+				try
+				{
+					await _telegramService.SendCheckInNotificationAsync(
+						user?.FullName ?? "N/A",
+						user?.Username ?? "N/A",
+						serverNow,
+						address,
+						isLate
+					);
+				}
+				catch (Exception ex)
+				{
+					// Log error nhưng không block flow chính
+					Console.WriteLine($"Telegram notification failed: {ex.Message}");
+				}
+
 				// GỬI THÔNG BÁO CHO ADMIN NẾU ĐI TRỄ
 				if (isLate)
 				{
-					var user = await _context.Users.FindAsync(userId);
 					await _notificationService.SendToAdminsAsync(
 						"Nhân viên đi trễ",
 						$"{user?.FullName ?? "Nhân viên"} vừa check-in muộn lúc {serverNow:HH:mm:ss}",
@@ -964,6 +984,24 @@ namespace TMD.Controllers
 
 				await _context.SaveChangesAsync();
 
+				var user = await _context.Users.FindAsync(userId);
+
+				// ✅ GỬI TELEGRAM NOTIFICATION
+				try
+				{
+					await _telegramService.SendCheckOutNotificationAsync(
+						user?.FullName ?? "N/A",
+						user?.Username ?? "N/A",
+						serverNow,
+						totalHours,
+						0 // Overtime chưa được approve nên để 0
+					);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Telegram notification failed: {ex.Message}");
+				}
+
 				await _auditHelper.LogDetailedAsync(
 					userId, "CHECK_OUT", "Attendance", attendance.AttendanceId,
 					null, new
@@ -986,7 +1024,6 @@ namespace TMD.Controllers
 				// ✅ THÔNG BÁO CHO ADMIN NẾU CHECKOUT SỚM
 				if (isEarlyCheckout)
 				{
-					var user = await _context.Users.FindAsync(userId);
 					await _notificationService.SendToAdminsAsync(
 						"Nhân viên checkout sớm",
 						$"{user?.FullName ?? "Nhân viên"} vừa checkout sớm lúc {serverNow:HH:mm:ss} (Chuẩn: {standardEndTime:HH:mm})",
@@ -1025,6 +1062,31 @@ namespace TMD.Controllers
 			{
 				await _auditHelper.LogFailedAttemptAsync(userId, "CHECK_OUT", "Attendance", $"Exception: {ex.Message}", new { Error = ex.ToString() });
 				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+
+		[HttpGet]
+		public async Task<IActionResult> TestTelegram()
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			try
+			{
+				await _telegramService.SendCheckInNotificationAsync(
+					"Nguyễn Văn A (Test)",
+					"testuser",
+					DateTime.Now,
+					"Văn phòng AIHUB - TP.HCM",
+					false
+				);
+
+				return Json(new { success = true, message = "Telegram test sent! Check your group." });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
 			}
 		}
 		[HttpGet]

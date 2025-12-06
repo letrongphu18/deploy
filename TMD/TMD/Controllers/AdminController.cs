@@ -4484,7 +4484,427 @@ namespace TMD.Controllers
 		}
 
 
+		// ============================================
+		// THÊM VÀO AdminController.cs
+		// ============================================
 
+		/// <summary>
+		/// Hiển thị trang Import Users
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> ImportUsers()
+		{
+			if (!IsAdmin())
+				return RedirectToAction("Login", "Account");
+
+			await _auditHelper.LogViewAsync(
+				HttpContext.Session.GetInt32("UserId").Value,
+				"ImportUsers",
+				0,
+				"Vào trang Import Users"
+			);
+
+			return View();
+		}
+
+		/// <summary>
+		/// Import từng user một (được gọi từ JavaScript)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> ImportSingleUser([FromBody] ImportUserRequest request)
+		{
+			if (!IsAdmin())
+				return Json(new { success = false, message = "Không có quyền" });
+
+			var adminId = HttpContext.Session.GetInt32("UserId");
+
+			try
+			{
+				// ✅ Validate required fields
+				if (string.IsNullOrWhiteSpace(request.FullName))
+					return Json(new { success = false, message = "Tên không được để trống" });
+
+				if (string.IsNullOrWhiteSpace(request.Email))
+					return Json(new { success = false, message = "Email không được để trống" });
+
+				if (string.IsNullOrWhiteSpace(request.PhoneNumber))
+					return Json(new { success = false, message = "Số điện thoại không được để trống" });
+
+				// ✅ Validate email format
+				if (!IsValidEmail(request.Email))
+					return Json(new { success = false, message = "Email không hợp lệ" });
+
+				// ✅ Check email already exists
+				var emailExists = await _context.Users
+					.AnyAsync(u => u.Email == request.Email.ToLower());
+
+				if (emailExists)
+					return Json(new { success = false, message = $"Email {request.Email} đã tồn tại trong hệ thống" });
+
+				// ============================================
+				// PHÒNG BAN: TỰ ĐỘNG TẠO NẾU CHƯA TỒN TẠI
+				// ============================================
+				int? departmentId = null;
+				string departmentStatus = "Không có";
+				bool departmentCreated = false;
+
+				if (!string.IsNullOrWhiteSpace(request.Department))
+				{
+					var dept = await _context.Departments
+						.FirstOrDefaultAsync(d =>
+							d.DepartmentName.ToLower() == request.Department.ToLower());
+
+					if (dept != null)
+					{
+						// Phòng ban đã tồn tại
+						departmentId = dept.DepartmentId;
+						departmentStatus = dept.DepartmentName;
+					}
+					else
+					{
+						// ✅ TỰ ĐỘNG TẠO PHÒNG BAN MỚI
+						var newDept = new Department
+						{
+							DepartmentName = request.Department.Trim(),
+							IsActive = true,
+							CreatedAt = DateTime.Now,
+							UpdatedAt = DateTime.Now
+						};
+						_context.Departments.Add(newDept);
+						await _context.SaveChangesAsync();
+
+						departmentId = newDept.DepartmentId;
+						departmentStatus = newDept.DepartmentName;
+						departmentCreated = true;
+
+						// ✅ LOG TỰ ĐỘNG TẠO PHÒNG BAN
+						await _auditHelper.LogAsync(
+							adminId,
+							"CREATE",
+							"Department",
+							newDept.DepartmentId,
+							null,
+							new { newDept.DepartmentName, newDept.IsActive },
+							$"Tự động tạo phòng ban '{newDept.DepartmentName}' khi import user"
+						);
+					}
+				}
+
+				// ============================================
+				// VAI TRÒ: TỰ ĐỘNG TẠO NẾU CHƯA TỒN TẠI
+				// ============================================
+				var roleName = string.IsNullOrWhiteSpace(request.Role) ? "Staff" : request.Role.Trim();
+				var role = await _context.Roles
+					.FirstOrDefaultAsync(r => r.RoleName.ToLower() == roleName.ToLower());
+
+				bool roleCreated = false;
+
+				// ✅ Nếu role không tồn tại → tạo mới
+				if (role == null)
+				{
+					role = new Role
+					{
+						RoleName = roleName,
+						CreatedAt = DateTime.Now
+					};
+					_context.Roles.Add(role);
+					await _context.SaveChangesAsync();
+					roleCreated = true;
+
+					await _auditHelper.LogAsync(
+						adminId,
+						"CREATE",
+						"Role",
+						role.RoleId,
+						null,
+						new { role.RoleName, role.CreatedAt },
+						$"Tự động tạo role '{roleName}' khi import user"
+					);
+				}
+
+				// ============================================
+				// GENERATE USERNAME từ email
+				// ============================================
+				var username = GenerateUsernameFromEmail(request.Email);
+
+				// ✅ Check username already exists
+				var usernameExists = await _context.Users
+					.AnyAsync(u => u.Username == username);
+
+				if (usernameExists)
+				{
+					var counter = 1;
+					var baseUsername = username;
+					while (await _context.Users.AnyAsync(u => u.Username == username))
+					{
+						username = $"{baseUsername}{counter}";
+						counter++;
+					}
+				}
+
+				// ============================================
+				// TÍNH ISTESTER - Đơn giản
+				// ============================================
+				bool isTester = role.RoleName.ToLower() == "tester";
+
+				// ============================================
+				// TẠO USER MỚI
+				// ============================================
+				var user = new User
+				{
+					Username = username,
+					PasswordHash = BCrypt.Net.BCrypt.HashPassword("123456789A@a"), // Mật khẩu mặc định
+					FullName = request.FullName.Trim(),
+					Email = request.Email.Trim().ToLower(),
+					PhoneNumber = request.PhoneNumber.Trim(),
+					DepartmentId = departmentId,
+					RoleId = role.RoleId,
+					IsTester = isTester,
+					IsActive = true,
+					CreatedAt = DateTime.Now,
+					CreatedBy = adminId
+				};
+
+				_context.Users.Add(user);
+				await _context.SaveChangesAsync();
+
+				// ============================================
+				// LOG AUDIT
+				// ============================================
+				await _auditHelper.LogDetailedAsync(
+					adminId,
+					"IMPORT",
+					"User",
+					user.UserId,
+					null,
+					new
+					{
+						Username = user.Username,
+						FullName = user.FullName,
+						Email = user.Email,
+						PhoneNumber = user.PhoneNumber,
+						RoleName = role.RoleName,
+						DepartmentId = departmentId ?? 0,
+						IsTester = user.IsTester
+					},
+					$"Import user: {user.FullName} ({username})",
+					new Dictionary<string, object>
+					{
+				{ "ImportMethod", "Excel" },
+				{ "DefaultPassword", "123456789A@a" },
+				{ "CreatedBy", HttpContext.Session.GetString("FullName") ?? "Admin" },
+				{ "RoleCreated", roleCreated },
+				{ "DepartmentCreated", departmentCreated }
+					}
+				);
+
+				// ============================================
+				// RESPONSE VỚI WARNINGS NẾU CẦN
+				// ============================================
+				var warnings = new List<string>();
+
+				if (roleCreated)
+					warnings.Add($"✓ Tự động tạo role '{role.RoleName}'");
+
+				if (departmentCreated)
+					warnings.Add($"✓ Tự động tạo phòng ban '{request.Department}'");
+
+				if (!roleCreated && !departmentCreated)
+					warnings.Add("✓ Import thành công");
+
+				return Json(new
+				{
+					success = true,
+					message = "Import thành công",
+					username = username,
+					userId = user.UserId,
+					department = departmentStatus,
+					role = role.RoleName,
+					warnings = warnings
+				});
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"[ImportSingleUser] Error: {ex.Message}\n{ex.StackTrace}");
+
+				await _auditHelper.LogFailedAttemptAsync(
+					adminId,
+					"IMPORT",
+					"User",
+					$"Exception: {ex.Message}",
+					new
+					{
+						Email = request.Email,
+						FullName = request.FullName,
+						PhoneNumber = request.PhoneNumber,
+						Department = request.Department,
+						Error = ex.ToString()
+					}
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"Có lỗi xảy ra: {ex.Message}"
+				});
+			}
+		}
+
+		// ============================================
+		// HELPER METHODS CHO IMPORT
+		// ============================================
+
+		/// <summary>
+		/// Validate email format
+		/// </summary>
+		private bool IsValidEmail(string email)
+		{
+			try
+			{
+				var addr = new System.Net.Mail.MailAddress(email);
+				return addr.Address == email;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		private string GenerateUsernameFromEmail(string email)
+		{
+			if (string.IsNullOrEmpty(email))
+				return "user" + DateTime.Now.Ticks;
+
+			var username = email.Split('@')[0];
+			username = new string(username.Where(c => char.IsLetterOrDigit(c) || c == '_' || c == '.').ToArray());
+			username = username.ToLower();
+
+			if (username.Length > 50)
+				username = username.Substring(0, 50);
+
+			if (string.IsNullOrEmpty(username))
+				username = "user" + new Random().Next(1000, 9999);
+
+			return username;
+		}
+
+
+
+		/// <summary>
+		/// Export danh sách users ra file Excel
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> ExportUsersToExcel(
+			string? search = null,
+			string? roleName = null,
+			string? status = null,
+			int? departmentId = null)
+		{
+			if (!IsAdmin())
+				return Json(new { success = false, message = "Không có quyền" });
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+
+				// Query với filter giống UserList
+				var query = _context.Users
+					.Include(u => u.Role)
+					.Include(u => u.Department)
+					.AsQueryable();
+
+				if (!string.IsNullOrWhiteSpace(search))
+				{
+					var s = search.Trim().ToLower();
+					query = query.Where(u =>
+						(u.FullName != null && u.FullName.ToLower().Contains(s)) ||
+						(u.Username != null && u.Username.ToLower().Contains(s)) ||
+						(u.Email != null && u.Email.ToLower().Contains(s)) ||
+						(u.PhoneNumber != null && u.PhoneNumber.ToLower().Contains(s))
+					);
+				}
+
+				if (!string.IsNullOrWhiteSpace(roleName))
+					query = query.Where(u => u.Role != null && u.Role.RoleName == roleName);
+
+				if (!string.IsNullOrWhiteSpace(status))
+				{
+					if (status == "active")
+						query = query.Where(u => u.IsActive == true);
+					else if (status == "inactive")
+						query = query.Where(u => u.IsActive == false);
+				}
+
+				if (departmentId.HasValue && departmentId.Value > 0)
+					query = query.Where(u => u.DepartmentId == departmentId.Value);
+
+				var users = await query
+					.OrderBy(u => u.FullName)
+					.ToListAsync();
+
+				// Tạo danh sách data để export
+				var exportData = users.Select((u, index) => new
+				{
+					STT = index + 1,
+					HoTen = u.FullName ?? "",
+					Username = u.Username ?? "",
+					Email = u.Email ?? "",
+					SoDienThoai = u.PhoneNumber ?? "",
+					PhongBan = u.Department?.DepartmentName ?? "Chưa phân công",
+					VaiTro = u.Role?.RoleName ?? "N/A",
+					TrangThai = u.IsActive == true ? "Hoạt động" : "Vô hiệu hóa",
+					NgayTao = u.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "",
+					LanDangNhapCuoi = u.LastLoginAt?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa đăng nhập"
+				}).ToList();
+
+				// Log audit
+				await _auditHelper.LogAsync(
+					adminId,
+					"EXPORT",
+					"User",
+					null,
+					null,
+					null,
+					$"Xuất danh sách {users.Count} users ra Excel"
+				);
+
+				// Trả về JSON data để xử lý ở client
+				return Json(new
+				{
+					success = true,
+					data = exportData,
+					totalRecords = users.Count,
+					exportDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"EXPORT",
+					"User",
+					$"Exception: {ex.Message}",
+					new { Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+
+
+		// ============================================
+		// REQUEST MODEL
+		// ============================================
+		public class ImportUserRequest
+		{
+			public int RowNumber { get; set; }
+			public string FullName { get; set; } = string.Empty;
+			public string Email { get; set; } = string.Empty;
+			public string? PhoneNumber { get; set; }
+			public string? Department { get; set; } // Có thể null
+			public string? Role { get; set; }       // Có thể null, mặc định Staff
+		}
 		// ============================================
 		// REQUEST MODELS
 		// ============================================

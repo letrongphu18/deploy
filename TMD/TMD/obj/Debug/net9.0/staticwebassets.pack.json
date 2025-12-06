@@ -177,6 +177,10 @@
       "PackagePath": "staticwebassets\\js\\attendance-history.js"
     },
     {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\import-users.js",
+      "PackagePath": "staticwebassets\\js\\import-users.js"
+    },
+    {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
       "PackagePath": "staticwebassets\\js\\notification-hub.js"
     },

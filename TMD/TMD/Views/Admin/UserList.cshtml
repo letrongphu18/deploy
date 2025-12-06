@@ -13,9 +13,17 @@
                 <h2 class="um-page-title"><i class="fas fa-users"></i> Quản lý người dùng</h2>
                 <p class="um-page-subtitle">Danh sách tất cả người dùng và công việc của họ</p>
             </div>
-            <a href="/Account/Register" class="um-btn-create">
-                <i class="fas fa-user-plus"></i> Tạo người dùng mới
-            </a>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="/Account/Register" class="um-btn-create">
+                    <i class="fas fa-user-plus"></i> Tạo người dùng mới
+                </a>
+                <a href="/Admin/ImportUsers" class="um-btn-create" style="background: #10b981;">
+                    <i class="fas fa-file-excel"></i> Import Excel
+                </a>
+                <button id="btnExportExcel" class="um-btn-create" style="background: #0891b2;">
+                    <i class="fas fa-file-download"></i> Xuất Excel
+                </button>
+            </div>
         </div>
     </header>
 
@@ -81,7 +89,7 @@
         </div>
     </section>
 
-    <!-- FILTER & SEARCH (server-side form optional) -->
+    <!-- FILTER & SEARCH -->
     <section class="um-card um-mb-4">
         <div class="um-filters-header">
             <h6><i class="fas fa-filter"></i> Bộ lọc và tìm kiếm</h6>
@@ -323,7 +331,7 @@
     </section>
 </div>
 
-<!-- CUSTOM MODAL (CSS only, no Bootstrap) -->
+<!-- CUSTOM MODAL -->
 <div id="um-modal-overlay" class="um-modal-overlay" aria-hidden="true">
     <div class="um-modal-card" role="dialog" aria-modal="true" aria-labelledby="um-modal-title">
         <header class="um-modal-header">
@@ -340,8 +348,13 @@
 </div>
 
 @section Scripts {
+    <!-- SheetJS Library for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <script>
-        // Modal controls (no bootstrap)
+        // ========================================
+        // MODAL CONTROLS
+        // ========================================
         const modalOverlay = document.getElementById('um-modal-overlay');
         const modalBody = document.getElementById('um-modal-body');
         const modalClose = document.getElementById('um-modal-close');
@@ -359,7 +372,9 @@
             if (e.target === modalOverlay) closeModal();
         });
 
-        // View detail buttons
+        // ========================================
+        // VIEW DETAIL BUTTONS
+        // ========================================
         document.querySelectorAll('.um-action-view').forEach(btn => {
             btn.addEventListener('click', async function () {
                 const userId = this.dataset.id;
@@ -378,7 +393,6 @@
                     const t = data.tasks;
                     const a = data.attendance;
                     const s = data.salary;
-                    const r = data.requests;
 
                     const html = `
                         <section class="um-detail">
@@ -417,7 +431,9 @@
             });
         });
 
-        // Toggle user status (uses existing endpoint)
+        // ========================================
+        // TOGGLE USER STATUS
+        // ========================================
         async function toggleUserStatus(userId, fullName, currentStatus) {
             const isActive = currentStatus === "true";
             const action = isActive ? 'vô hiệu hóa' : 'kích hoạt';
@@ -441,7 +457,9 @@
             }
         }
 
-        // Client-side quick filter (works on current page)
+        // ========================================
+        // CLIENT-SIDE QUICK FILTER
+        // ========================================
         const searchInput = document.getElementById('searchInput');
         const roleFilter = document.getElementById('roleFilter');
         const statusFilter = document.getElementById('statusFilter');
@@ -483,5 +501,87 @@
         if (roleFilter) roleFilter.addEventListener('change', filterTable);
         if (statusFilter) statusFilter.addEventListener('change', filterTable);
         if (deptFilter) deptFilter.addEventListener('change', filterTable);
+
+        // ========================================
+        // EXPORT TO EXCEL FUNCTIONALITY
+        // ========================================
+        document.getElementById('btnExportExcel').addEventListener('click', async function() {
+            const btn = this;
+            const originalHtml = btn.innerHTML;
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
+
+                // Lấy parameters từ form filter hiện tại
+                const params = new URLSearchParams({
+                    search: document.getElementById('searchInput')?.value || '',
+                    roleName: document.getElementById('roleFilter')?.value || '',
+                    status: document.getElementById('statusFilter')?.value || '',
+                    departmentId: document.getElementById('deptFilter')?.value || ''
+                });
+
+                const response = await fetch(`/Admin/ExportUsersToExcel?${params.toString()}`);
+                const result = await response.json();
+
+                if (!result.success) {
+                    alert('Lỗi: ' + result.message);
+                    return;
+                }
+
+                // Tạo workbook
+                const wb = XLSX.utils.book_new();
+
+                // Tạo data với header có dấu và chỉ các cột cần thiết
+                const worksheetData = [
+                    ['STT', 'Họ Tên', 'Username', 'Email', 'Số Điện Thoại', 'Phòng Ban', 'Vai Trò', 'Trạng Thái'],
+                    ...result.data.map(item => [
+                        item.stt || item.STT,
+                        item.hoTen || item.HoTen,
+                        item.username || item.Username,
+                        item.email || item.Email,
+                        item.soDienThoai || item.SoDienThoai,
+                        item.phongBan || item.PhongBan,
+                        item.vaiTro || item.VaiTro,
+                        item.trangThai || item.TrangThai
+                    ])
+                ];
+
+                // Tạo worksheet từ array
+                const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+
+                // Set column widths
+                ws['!cols'] = [
+                    { wch: 5 },  // STT
+                    { wch: 25 }, // Họ Tên
+                    { wch: 15 }, // Username
+                    { wch: 30 }, // Email
+                    { wch: 15 }, // Số Điện Thoại
+                    { wch: 20 }, // Phòng Ban
+                    { wch: 12 }, // Vai Trò
+                    { wch: 15 }  // Trạng Thái
+                ];
+
+                // Thêm worksheet vào workbook
+                XLSX.utils.book_append_sheet(wb, ws, 'Danh sách người dùng');
+
+                // Tạo tên file với timestamp
+                const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
+                const filename = `DanhSachNguoiDung_${timestamp}.xlsx`;
+
+                // Download file
+                XLSX.writeFile(wb, filename);
+
+                // Show success message
+                alert(`✅ Đã xuất ${result.totalRecords} người dùng ra file Excel thành công!\n\nFile: ${filename}`);
+
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Có lỗi xảy ra khi xuất Excel: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        });
     </script>
 }

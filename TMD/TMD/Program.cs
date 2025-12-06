@@ -85,7 +85,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServe
 {
 	options.Limits.MaxRequestBodySize = 10_485_760;
 });
-
+builder.Services.AddScoped<ITelegramService, TelegramService>();
 // ============================================
 // 5. BUILD APP
 // ============================================
