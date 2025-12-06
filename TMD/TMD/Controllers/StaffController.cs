@@ -829,7 +829,9 @@ namespace TMD.Controllers
 						user?.Username ?? "N/A",
 						serverNow,
 						address,
-						isLate
+						 
+						isLate,
+						request.Notes
 					);
 				}
 				catch (Exception ex)
@@ -994,7 +996,8 @@ namespace TMD.Controllers
 						user?.Username ?? "N/A",
 						serverNow,
 						totalHours,
-						0 // Overtime chưa được approve nên để 0
+						0 ,// Overtime chưa được approve nên để 0
+						  attendance.CheckOutNotes
 					);
 				}
 				catch (Exception ex)

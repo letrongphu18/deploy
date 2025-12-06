@@ -5,8 +5,8 @@ namespace AIHUBOS.Services
 {
 	public interface ITelegramService
 	{
-		Task SendCheckInNotificationAsync(string fullName, string username, DateTime checkInTime, string address, bool isLate);
-		Task SendCheckOutNotificationAsync(string fullName, string username, DateTime checkOutTime, decimal totalHours, decimal overtimeHours);
+		Task SendCheckInNotificationAsync(string fullName, string username, DateTime checkInTime, string address, bool isLate, string? notes = null);
+		Task SendCheckOutNotificationAsync(string fullName, string username, DateTime checkOutTime, decimal totalHours, decimal overtimeHours, string? notes = null);
 		Task SendTestMessageAsync();
 	}
 
@@ -27,62 +27,63 @@ namespace AIHUBOS.Services
 			_chatId = configuration["Telegram:ChatId"] ?? throw new ArgumentNullException("Telegram:ChatId");
 			_logger = logger;
 
-			_logger.LogInformation("🤖 TelegramService initialized - BotToken: {Token}, ChatId: {ChatId}",
+			_logger.LogInformation("TelegramService initialized - BotToken: {Token}, ChatId: {ChatId}",
 				_botToken.Substring(0, 10) + "...", _chatId);
 		}
 
-		public async Task SendCheckInNotificationAsync(string fullName, string username, DateTime checkInTime, string address, bool isLate)
+		public async Task SendCheckInNotificationAsync(string fullName, string username, DateTime checkInTime, string address, bool isLate, string? notes = null)
 		{
 			try
 			{
-				var emoji = isLate ? "⚠️" : "✅";
-				var statusText = isLate ? "ĐI TRỄ" : "ĐÚng GIỜ";
+				var statusText = isLate ? "ĐI TRỄ" : "ĐÚNG GIỜ";
 
-				var message = $@"{emoji} <b>CHECK-IN {statusText}</b>
+				var message = $@"<b>CHECK-IN {statusText}</b>
 
-👤 <b>Nhân viên:</b> {fullName} (@{username})
-🕐 <b>Thời gian:</b> {checkInTime:dd/MM/yyyy HH:mm:ss}
-📍 <b>Vị trí:</b> {address}
+<b>Nhân viên:</b> {fullName} (@{username})
+<b>Thời gian:</b> {checkInTime:dd/MM/yyyy HH:mm:ss}
+<b>Vị trí:</b> {address}
+{(!string.IsNullOrWhiteSpace(notes) ? $"<b>Ghi chú:</b> {notes}" : "")}
 
-{(isLate ? "⚠️ Nhân viên đến muộn!" : "✨ Nhân viên đến đúng giờ")}";
+{(isLate ? "Nhân viên đến muộn!" : "Nhân viên đến đúng giờ")}";
 
 				await SendMessageAsync(message);
-				_logger.LogInformation("✅ Check-in notification sent for {FullName}", fullName);
+				_logger.LogInformation("Check-in notification sent for {FullName}", fullName);
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "❌ Failed to send check-in notification for {FullName}", fullName);
+				_logger.LogError(ex, "Failed to send check-in notification for {FullName}", fullName);
 			}
 		}
 
-		public async Task SendCheckOutNotificationAsync(string fullName, string username, DateTime checkOutTime, decimal totalHours, decimal overtimeHours)
+		public async Task SendCheckOutNotificationAsync(string fullName, string username, DateTime checkOutTime, decimal totalHours, decimal overtimeHours, string? notes = null)
 		{
 			try
 			{
-				var message = $@"🏁 <b>CHECK-OUT</b>
+				var message = $@"<b>CHECK-OUT</b>
 
-👤 <b>Nhân viên:</b> {fullName} (@{username})
-🕐 <b>Thời gian:</b> {checkOutTime:dd/MM/yyyy HH:mm:ss}
-⏱️ <b>Tổng giờ làm:</b> {totalHours:F2}h
-{(overtimeHours > 0 ? $"🔥 <b>Giờ tăng ca:</b> {overtimeHours:F2}h" : "")}
+<b>Nhân viên:</b> {fullName} (@{username})
+<b>Thời gian:</b> {checkOutTime:dd/MM/yyyy HH:mm:ss}
+<b>Tổng giờ làm:</b> {totalHours:F2}h
+{(overtimeHours > 0 ? $"<b>Giờ tăng ca:</b> {overtimeHours:F2}h" : "")}
+{(!string.IsNullOrWhiteSpace(notes) ? $"<b>Ghi chú:</b> {notes}" : "")}
 
-✨ Chúc bạn buổi tối vui vẻ!";
+Chúc bạn buổi tối vui vẻ!";
 
 				await SendMessageAsync(message);
-				_logger.LogInformation("✅ Check-out notification sent for {FullName}", fullName);
+				_logger.LogInformation("Check-out notification sent for {FullName}", fullName);
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "❌ Failed to send check-out notification for {FullName}", fullName);
+				_logger.LogError(ex, "Failed to send check-out notification for {FullName}", fullName);
 			}
 		}
 
 		public async Task SendTestMessageAsync()
 		{
-			var message = $@"🧪 <b>TEST MESSAGE</b>
+			var message = $@"<b>TEST MESSAGE</b>
 
-✅ Bot hoạt động bình thường
-🕐 Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}
+Bot hoạt động bình thường
+Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}
 
 Nếu bạn nhận được tin nhắn này, bot đã được cấu hình đúng!";
 
@@ -103,28 +104,28 @@ Nếu bạn nhận được tin nhắn này, bot đã được cấu hình đún
 				};
 
 				var jsonPayload = JsonSerializer.Serialize(payload);
-				_logger.LogInformation("📤 Sending to Telegram: {Url}", url);
-				_logger.LogInformation("📦 Payload: {Payload}", jsonPayload);
+				_logger.LogInformation("Sending to Telegram: {Url}", url);
+				_logger.LogInformation("Payload: {Payload}", jsonPayload);
 
 				var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
 				var response = await _httpClient.PostAsync(url, content);
 				var responseBody = await response.Content.ReadAsStringAsync();
 
-				_logger.LogInformation("📥 Telegram Response Status: {StatusCode}", response.StatusCode);
-				_logger.LogInformation("📥 Telegram Response Body: {Body}", responseBody);
+				_logger.LogInformation("Telegram Response Status: {StatusCode}", response.StatusCode);
+				_logger.LogInformation("Telegram Response Body: {Body}", responseBody);
 
 				if (!response.IsSuccessStatusCode)
 				{
-					_logger.LogError("❌ Telegram API Error: {StatusCode} - {Body}", response.StatusCode, responseBody);
+					_logger.LogError("Telegram API Error: {StatusCode} - {Body}", response.StatusCode, responseBody);
 					throw new Exception($"Telegram API Error: {response.StatusCode} - {responseBody}");
 				}
 
-				_logger.LogInformation("✅ Message sent successfully to Telegram");
+				_logger.LogInformation("Message sent successfully to Telegram");
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "❌ Exception when sending message to Telegram");
+				_logger.LogError(ex, "Exception when sending message to Telegram");
 				throw;
 			}
 		}

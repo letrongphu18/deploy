@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ptCnOzYz69lvyc3JhblpuXfVlPBABacww3AGUPgWnwc=",
+  "Hash": "nieW1vFmNV614uw1lf59Hmyr0HgI+PWz1pnFNC75Sf0=",
   "Source": "TMD",
   "BasePath": "_content/TMD",
   "Mode": "Default",
@@ -4929,6 +4929,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\uploads\\attendance\\15_20251121_213522_checkout.jpg"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\15_20251206_194005_checkin.jpg",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "uploads/attendance/15_20251206_194005_checkin#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "l2ittjgt5e",
+      "Integrity": "Q1Y+c6Vn8mGxeJ/keaPzVsXcJhg5kJIAFt8mr/g22KY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\attendance\\15_20251206_194005_checkin.jpg"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\15_20251206_194043_checkout.jpg",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "uploads/attendance/15_20251206_194043_checkout#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "d004d8e039",
+      "Integrity": "8/nw26h0TYidB3prFAKTFEcZEZPaIX/DjiWO3bOTziI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\uploads\\attendance\\15_20251206_194043_checkout.jpg"
     },
     {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\3_20251127_141009_checkin.jpg",
@@ -39747,6 +39789,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-oBYNaWUy1WIWQB8490rtEEaLIRhI0xcJf4ODjfYdcbM="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/15_20251206_194005_checkin.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\15_20251206_194005_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23814"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Q1Y+c6Vn8mGxeJ/keaPzVsXcJhg5kJIAFt8mr/g22KY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 06 Dec 2025 12:40:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Q1Y+c6Vn8mGxeJ/keaPzVsXcJhg5kJIAFt8mr/g22KY="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/15_20251206_194005_checkin.l2ittjgt5e.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\15_20251206_194005_checkin.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "23814"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Q1Y+c6Vn8mGxeJ/keaPzVsXcJhg5kJIAFt8mr/g22KY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 06 Dec 2025 12:40:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "l2ittjgt5e"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/attendance/15_20251206_194005_checkin.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Q1Y+c6Vn8mGxeJ/keaPzVsXcJhg5kJIAFt8mr/g22KY="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/15_20251206_194043_checkout.d004d8e039.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\15_20251206_194043_checkout.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "47394"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8/nw26h0TYidB3prFAKTFEcZEZPaIX/DjiWO3bOTziI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 06 Dec 2025 12:40:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "d004d8e039"
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/attendance/15_20251206_194043_checkout.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8/nw26h0TYidB3prFAKTFEcZEZPaIX/DjiWO3bOTziI="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/attendance/15_20251206_194043_checkout.jpg",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\attendance\\15_20251206_194043_checkout.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "47394"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8/nw26h0TYidB3prFAKTFEcZEZPaIX/DjiWO3bOTziI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 06 Dec 2025 12:40:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-8/nw26h0TYidB3prFAKTFEcZEZPaIX/DjiWO3bOTziI="
         }
       ]
     },

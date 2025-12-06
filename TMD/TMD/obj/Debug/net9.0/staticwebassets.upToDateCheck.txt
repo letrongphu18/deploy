@@ -228,6 +228,8 @@ wwwroot\uploads\attendance\12_20251124_113424_checkin.jpg
 wwwroot\uploads\attendance\14_20251121_202839_checkin.jpg
 wwwroot\uploads\attendance\15_20251121_210659_checkin.jpg
 wwwroot\uploads\attendance\15_20251121_213522_checkout.jpg
+wwwroot\uploads\attendance\15_20251206_194005_checkin.jpg
+wwwroot\uploads\attendance\15_20251206_194043_checkout.jpg
 wwwroot\uploads\attendance\3_20251127_141009_checkin.jpg
 wwwroot\uploads\attendance\3_20251127_235420_checkout.jpg
 wwwroot\uploads\attendance\3_20251128_095116_checkin.jpg

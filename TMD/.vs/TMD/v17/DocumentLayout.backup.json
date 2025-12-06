@@ -3,20 +3,8 @@
   "WorkspaceRootPath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\views\\admin\\userlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\views\\admin\\userlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\wwwroot\\css\\user-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\wwwroot\\css\\user-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\services\\telegramservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\services\\telegramservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\views\\staff\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\views\\staff\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,6 +13,22 @@
     {
       "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\services\\telegramservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\services\\telegramservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\views\\admin\\userlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\views\\admin\\userlist.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\wwwroot\\css\\user-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\wwwroot\\css\\user-management.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -281,10 +285,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\models\\viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\models\\viewmodels\\changepasswordviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\views\\staff\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|solutionrelative:tmd\\views\\staff\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{850C1418-9545-46EC-B535-4A4C523B78F6}|TMD\\TMD.csproj|e:\\aihub task\\deploy\\deploy\\tmd\\tmd\\services\\autorejectrequestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -706,7 +706,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Document",
@@ -723,27 +723,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "AdminController.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "TMD\\Controllers\\AdminController.cs",
               "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Controllers\\AdminController.cs",
               "RelativeToolTip": "TMD\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAAK8TAAAAAAAAAAA7wNkTAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAOUBAAAAAAAAAAAkwAMCAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-14T10:44:28.334Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "StaffController.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Controllers\\StaffController.cs",
               "RelativeDocumentMoniker": "TMD\\Controllers\\StaffController.cs",
               "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Controllers\\StaffController.cs",
               "RelativeToolTip": "TMD\\Controllers\\StaffController.cs",
-              "ViewState": "AgIAADkMAAAAAAAAAAAuwE4MAAABAAAAAAAAAA==",
+              "ViewState": "AgIAACQMAAAAAAAAAAAowFEMAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-15T04:28:56.236Z",
               "IsPinned": true,
@@ -771,33 +770,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TelegramService.cs",
-              "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Services\\TelegramService.cs",
-              "RelativeDocumentMoniker": "TMD\\Services\\TelegramService.cs",
-              "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Services\\TelegramService.cs",
-              "RelativeToolTip": "TMD\\Services\\TelegramService.cs",
-              "ViewState": "AgIAAGMAAAAAAAAAAAAcwIMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-06T07:25:29.743Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserList.cshtml",
-              "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\UserList.cshtml",
-              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\UserList.cshtml",
-              "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\UserList.cshtml*",
-              "RelativeToolTip": "TMD\\Views\\Admin\\UserList.cshtml*",
-              "ViewState": "AgIAAA8CAAAAAAAAAAAQwEoCAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T05:38:01.223Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "Program.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Program.cs",
               "RelativeDocumentMoniker": "TMD\\Program.cs",
@@ -805,25 +778,23 @@
               "RelativeToolTip": "TMD\\Program.cs",
               "ViewState": "AgIAAK0AAAAAAAAAAAAMwL0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-14T10:43:03.491Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-14T10:43:03.491Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "appsettings.json",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\appsettings.json",
               "RelativeDocumentMoniker": "TMD\\appsettings.json",
               "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\appsettings.json",
               "RelativeToolTip": "TMD\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAQwCAAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-11-26T07:51:39.621Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-26T07:51:39.621Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "user-management.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\user-management.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\user-management.css",
@@ -831,12 +802,11 @@
               "RelativeToolTip": "TMD\\wwwroot\\css\\user-management.css",
               "ViewState": "AgIAAB0GAAAAAAAAAAAiwFoGAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-11-16T17:37:27.883Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-16T17:37:27.883Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "AccountController.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "TMD\\Controllers\\AccountController.cs",
@@ -848,7 +818,44 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 0,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\Dashboard.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\Dashboard.cshtml*",
+              "RelativeToolTip": "TMD\\Views\\Staff\\Dashboard.cshtml*",
+              "ViewState": "AgIAAJUDAAAAAAAAAAAIwNADAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:13:03.35Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "UserList.cshtml",
+              "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\UserList.cshtml",
+              "RelativeDocumentMoniker": "TMD\\Views\\Admin\\UserList.cshtml",
+              "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\UserList.cshtml",
+              "RelativeToolTip": "TMD\\Views\\Admin\\UserList.cshtml",
+              "ViewState": "AgIAACoCAAAAAAAAAAAcwEECAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-15T05:38:01.223Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TelegramService.cs",
+              "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Services\\TelegramService.cs",
+              "RelativeDocumentMoniker": "TMD\\Services\\TelegramService.cs",
+              "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Services\\TelegramService.cs",
+              "RelativeToolTip": "TMD\\Services\\TelegramService.cs",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAcwIQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-06T07:25:29.743Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "ImportUsers.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\ImportUsers.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\ImportUsers.cshtml",
@@ -860,7 +867,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "import-users.js",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\import-users.js",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\js\\import-users.js",
@@ -872,7 +879,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "Login.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Account\\Login.cshtml",
@@ -884,7 +891,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Register.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Account\\Register.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Account\\Register.cshtml",
@@ -896,7 +903,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "AihubSystemContext.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\AihubSystemContext.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\AihubSystemContext.cs",
@@ -908,7 +915,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "Attendance.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\Attendance.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\Attendance.cs",
@@ -920,7 +927,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "project-management.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\project-management.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\project-management.css",
@@ -932,7 +939,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "sweetalert2-custom.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\sweetalert2-custom.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\sweetalert2-custom.css",
@@ -944,7 +951,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "MyProjects.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\MyProjects.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyProjects.cshtml",
@@ -956,7 +963,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "MyRequests.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\MyRequests.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyRequests.cshtml",
@@ -968,7 +975,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "CreateProject.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\CreateProject.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\CreateProject.cshtml",
@@ -980,7 +987,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "EditProject.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\EditProject.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\EditProject.cshtml",
@@ -992,7 +999,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "ProjectList.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\ProjectList.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\ProjectList.cshtml",
@@ -1004,7 +1011,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "ProjectDetail.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\ProjectDetail.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\ProjectDetail.cshtml",
@@ -1016,7 +1023,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "MyProjectDetail.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\MyProjectDetail.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyProjectDetail.cshtml",
@@ -1028,7 +1035,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "CreateTask.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\CreateTask.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\CreateTask.cshtml",
@@ -1040,7 +1047,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "layoutstaff.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\layoutstaff.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\layoutstaff.css",
@@ -1052,7 +1059,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "_LayoutStaff.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Shared\\_LayoutStaff.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Shared\\_LayoutStaff.cshtml",
@@ -1064,7 +1071,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "ResetUserPassword.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\ResetUserPassword.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\ResetUserPassword.cshtml",
@@ -1076,7 +1083,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "tasklist-ad.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\tasklist-ad.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\tasklist-ad.css",
@@ -1088,7 +1095,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "TaskList.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\TaskList.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\TaskList.cshtml",
@@ -1100,7 +1107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "kpi-dashboard.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\kpi-dashboard.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\kpi-dashboard.css",
@@ -1112,7 +1119,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 31,
               "Title": "KPIDashboard.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Admin\\KPIDashboard.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Admin\\KPIDashboard.cshtml",
@@ -1124,7 +1131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 33,
               "Title": "layout.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\layout.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\layout.css",
@@ -1136,7 +1143,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 32,
               "Title": "TesterController.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Controllers\\TesterController.cs",
               "RelativeDocumentMoniker": "TMD\\Controllers\\TesterController.cs",
@@ -1148,7 +1155,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 34,
               "Title": "_Layout.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Shared\\_Layout.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Shared\\_Layout.cshtml",
@@ -1160,7 +1167,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 35,
               "Title": "_ValidationScriptsPartial.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
@@ -1172,7 +1179,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 36,
               "Title": "MyTasks.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\MyTasks.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Staff\\MyTasks.cshtml",
@@ -1184,7 +1191,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 37,
               "Title": "tasklist-staff.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\tasklist-staff.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\tasklist-staff.css",
@@ -1196,7 +1203,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "Dashboard.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Tester\\Dashboard.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Tester\\Dashboard.cshtml",
@@ -1208,7 +1215,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 39,
               "Title": "NotificationService.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Services\\NotificationService.cs",
               "RelativeDocumentMoniker": "TMD\\Services\\NotificationService.cs",
@@ -1220,7 +1227,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "NotificationHub.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Hubs\\NotificationHub.cs",
               "RelativeDocumentMoniker": "TMD\\Hubs\\NotificationHub.cs",
@@ -1232,7 +1239,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "User.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\User.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\User.cs",
@@ -1244,7 +1251,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "Task.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\Task.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\Task.cs",
@@ -1256,7 +1263,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "UserTask.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\UserTask.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\UserTask.cs",
@@ -1268,7 +1275,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "Role.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\Role.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\Role.cs",
@@ -1280,7 +1287,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 45,
               "Title": "chat.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\chat.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\chat.css",
@@ -1292,7 +1299,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 46,
               "Title": "project-management.js",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\project-management.js",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\js\\project-management.js",
@@ -1304,7 +1311,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 47,
               "Title": "VwActiveSalarySetting.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\VwActiveSalarySetting.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\VwActiveSalarySetting.cs",
@@ -1316,7 +1323,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 48,
               "Title": "ChatController.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Controllers\\ChatController.cs",
               "RelativeDocumentMoniker": "TMD\\Controllers\\ChatController.cs",
@@ -1328,7 +1335,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 50,
               "Title": "ChatHub.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Hubs\\ChatHub.cs",
               "RelativeDocumentMoniker": "TMD\\Hubs\\ChatHub.cs",
@@ -1340,7 +1347,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 49,
               "Title": "Index.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Chat\\Index.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Chat\\Index.cshtml",
@@ -1352,7 +1359,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 51,
               "Title": "_ChatWidget.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Shared\\_ChatWidget.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Shared\\_ChatWidget.cshtml",
@@ -1364,7 +1371,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 52,
               "Title": "ChatMessage.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ChatMessage.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ChatMessage.cs",
@@ -1376,7 +1383,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 53,
+              "DocumentIndex": 54,
               "Title": "login.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\login.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\login.css",
@@ -1388,7 +1395,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 54,
+              "DocumentIndex": 55,
               "Title": "Kpihistory.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\Kpihistory.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\Kpihistory.cs",
@@ -1400,7 +1407,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 52,
+              "DocumentIndex": 53,
               "Title": "dashboard-management.css",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\dashboard-management.css",
               "RelativeDocumentMoniker": "TMD\\wwwroot\\css\\dashboard-management.css",
@@ -1412,7 +1419,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 55,
+              "DocumentIndex": 56,
               "Title": "EmailService.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Services\\EmailService.cs",
               "RelativeDocumentMoniker": "TMD\\Services\\EmailService.cs",
@@ -1424,7 +1431,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 56,
+              "DocumentIndex": 57,
               "Title": "VerifyOtp.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Account\\VerifyOtp.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Account\\VerifyOtp.cshtml",
@@ -1436,7 +1443,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 57,
+              "DocumentIndex": 58,
               "Title": "ForgotPassword.cshtml",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Account\\ForgotPassword.cshtml",
               "RelativeDocumentMoniker": "TMD\\Views\\Account\\ForgotPassword.cshtml",
@@ -1448,7 +1455,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 58,
+              "DocumentIndex": 59,
               "Title": "UserListViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\UserListViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\UserListViewModel.cs",
@@ -1460,7 +1467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 59,
+              "DocumentIndex": 60,
               "Title": "UpdateProfileViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\UpdateProfileViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\UpdateProfileViewModel.cs",
@@ -1472,7 +1479,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 60,
+              "DocumentIndex": 61,
               "Title": "ReviewRequestViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\ReviewRequestViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\ReviewRequestViewModel.cs",
@@ -1484,7 +1491,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 61,
+              "DocumentIndex": 62,
               "Title": "RequestViewModels.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\RequestViewModels.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\RequestViewModels.cs",
@@ -1496,7 +1503,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 62,
+              "DocumentIndex": 63,
               "Title": "PendingRequestsViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\PendingRequestsViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\PendingRequestsViewModel.cs",
@@ -1508,7 +1515,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 63,
+              "DocumentIndex": 64,
               "Title": "RegisterViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\RegisterViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\RegisterViewModel.cs",
@@ -1520,7 +1527,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 64,
+              "DocumentIndex": 65,
               "Title": "LoginViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\LoginViewModel.cs",
@@ -1532,7 +1539,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 65,
+              "DocumentIndex": 66,
               "Title": "ForgotPasswordViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\ForgotPasswordViewModel.cs",
@@ -1544,7 +1551,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 66,
+              "DocumentIndex": 67,
               "Title": "CreateOvertimeRequestViewModels.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\CreateOvertimeRequestViewModels.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\CreateOvertimeRequestViewModels.cs",
@@ -1556,7 +1563,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 67,
+              "DocumentIndex": 68,
               "Title": "CreateLeaveRequestViewModels.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\CreateLeaveRequestViewModels.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\CreateLeaveRequestViewModels.cs",
@@ -1568,7 +1575,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 68,
+              "DocumentIndex": 69,
               "Title": "CreateLateRequestViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\CreateLateRequestViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\CreateLateRequestViewModel.cs",
@@ -1581,18 +1588,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 70,
-              "Title": "Dashboard.cshtml",
-              "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\Dashboard.cshtml",
-              "RelativeDocumentMoniker": "TMD\\Views\\Staff\\Dashboard.cshtml",
-              "ToolTip": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Views\\Staff\\Dashboard.cshtml",
-              "RelativeToolTip": "TMD\\Views\\Staff\\Dashboard.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-15T05:13:03.35Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 69,
               "Title": "ChangePasswordViewModel.cs",
               "DocumentMoniker": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\Models\\ViewModels\\ChangePasswordViewModel.cs",
               "RelativeDocumentMoniker": "TMD\\Models\\ViewModels\\ChangePasswordViewModel.cs",
