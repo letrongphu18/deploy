@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>409pz5rh0a</Fingerprint>
-      <Integrity>LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo=</Integrity>
+      <Fingerprint>iagmezfa6d</Fingerprint>
+      <Integrity>Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\attendance-history.css'))</OriginalItemSpec>

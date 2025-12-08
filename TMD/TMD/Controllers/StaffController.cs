@@ -2811,6 +2811,45 @@ namespace TMD.Controllers
 				return RedirectToAction("MyProjects");
 			}
 		}
+		[HttpGet]
+		public async System.Threading.Tasks.Task<IActionResult> AttendanceHistory()
+		{
+			if (!IsAuthenticated())
+				return RedirectToAction("Login", "Account");
+
+			if (!IsStaffOrAdmin())
+				return RedirectToAction("Login", "Account");
+
+			var userId = HttpContext.Session.GetInt32("UserId");
+
+			await _auditHelper.LogViewAsync(
+				userId.Value,
+				"Attendance",
+				userId.Value,
+				"Xem lịch sử chấm công cá nhân (Staff)"
+			);
+
+			// ✅ FIX: Include đầy đủ User và Department như Admin version
+			var attendances = await _context.Attendances
+				.Include(a => a.User)
+					.ThenInclude(u => u.Department)
+				.Where(a => a.UserId == userId)
+				.OrderByDescending(a => a.WorkDate)
+				.ThenByDescending(a => a.CheckInTime)
+				.ToListAsync();
+
+			// ✅ TÍNH TOÁN STATISTICS GIỐNG ADMIN
+			ViewBag.TotalRecords = attendances.Count;
+			ViewBag.TotalCheckIns = attendances.Count(a => a.CheckInTime != null);
+			ViewBag.TotalCheckOuts = attendances.Count(a => a.CheckOutTime != null);
+			ViewBag.CompletedDays = attendances.Count(a => a.CheckInTime != null && a.CheckOutTime != null);
+			ViewBag.OnTimeCount = attendances.Count(a => a.IsLate == false);
+			ViewBag.LateCount = attendances.Count(a => a.IsLate == true);
+			ViewBag.TotalWorkHours = attendances.Sum(a => a.TotalHours ?? 0);
+			ViewBag.OutsideGeofence = attendances.Count(a => a.IsWithinGeofence == false);
+
+			return View(attendances);
+		}
 
 		// ============================================
 		// GET MY PROJECTS (JSON)

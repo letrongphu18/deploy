@@ -12,17 +12,17 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"e4w56dvxfl"},{"Name":"integrity","Value":"sha256-IoRr69kTeqySh4zR\u002BjK0fHl62FeoxqAfT2cRJpqqRAE="},{"Name":"label","Value":"_content/TMD/css/admin-request.css"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"13818"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022IoRr69kTeqySh4zR\u002BjK0fHl62FeoxqAfT2cRJpqqRAE=\u0022"},{"Name":"Last-Modified","Value":"Sat, 29 Nov 2025 09:45:07 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/TMD/css/attendance-history.409pz5rh0a.css">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\attendance-history.css'))</AssetFile>
-      <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"409pz5rh0a"},{"Name":"integrity","Value":"sha256-LN\u002BmrNQetEv1BtwGQ0q3G9Gp05WVTD8\u002BNtUEUcbnPOo="},{"Name":"label","Value":"_content/TMD/css/attendance-history.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"23476"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022LN\u002BmrNQetEv1BtwGQ0q3G9Gp05WVTD8\u002BNtUEUcbnPOo=\u0022"},{"Name":"Last-Modified","Value":"Sun, 30 Nov 2025 05:53:53 GMT"}]]]></ResponseHeaders>
-    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/TMD/css/attendance-history.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\attendance-history.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-LN\u002BmrNQetEv1BtwGQ0q3G9Gp05WVTD8\u002BNtUEUcbnPOo="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"23476"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022LN\u002BmrNQetEv1BtwGQ0q3G9Gp05WVTD8\u002BNtUEUcbnPOo=\u0022"},{"Name":"Last-Modified","Value":"Sun, 30 Nov 2025 05:53:53 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"29659"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=\u0022"},{"Name":"Last-Modified","Value":"Mon, 08 Dec 2025 08:43:49 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/TMD/css/attendance-history.iagmezfa6d.css">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\attendance-history.css'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"iagmezfa6d"},{"Name":"integrity","Value":"sha256-Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM="},{"Name":"label","Value":"_content/TMD/css/attendance-history.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"29659"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=\u0022"},{"Name":"Last-Modified","Value":"Mon, 08 Dec 2025 08:43:49 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/TMD/css/attendance-management.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\attendance-management.css'))</AssetFile>

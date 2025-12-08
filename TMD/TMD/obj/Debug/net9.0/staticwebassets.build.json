@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "nieW1vFmNV614uw1lf59Hmyr0HgI+PWz1pnFNC75Sf0=",
+  "Hash": "BmPrCdrfqu4bhPP2KfY3PNBDIJV+r9B0ikg2y1v1Z7I=",
   "Source": "TMD",
   "BasePath": "_content/TMD",
   "Mode": "Default",
@@ -80,12 +80,12 @@
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\verify-otp.css"
     },
     {
-      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-409pz5rh0a.gz",
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-iagmezfa6d.gz",
       "SourceId": "TMD",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/TMD",
-      "RelativePath": "css/attendance-history#[.{fingerprint=409pz5rh0a}]?.css.gz",
+      "RelativePath": "css/attendance-history#[.{fingerprint=iagmezfa6d}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -94,8 +94,8 @@
       "RelatedAsset": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\attendance-history.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "ryfi5saeky",
-      "Integrity": "U1aRP3WIJNh+8LblkE59O9ax6cIXSNNdoTW+suoEVF8=",
+      "Fingerprint": "v2y1ri27w8",
+      "Integrity": "OTrZiXeSsQb9wPYOPP6HjBGtokNwaLoc8RmenKgThe8=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\attendance-history.css"
@@ -2425,8 +2425,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "409pz5rh0a",
-      "Integrity": "LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo=",
+      "Fingerprint": "iagmezfa6d",
+      "Integrity": "Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\attendance-history.css"
@@ -6029,13 +6029,13 @@
       ]
     },
     {
-      "Route": "css/attendance-history.409pz5rh0a.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-409pz5rh0a.gz",
+      "Route": "css/attendance-history.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-iagmezfa6d.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000244678248"
+          "Quality": "0.000206696982"
         }
       ],
       "ResponseHeaders": [
@@ -6045,19 +6045,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4086"
+          "Value": "4837"
         },
         {
           "Name": "ETag",
-          "Value": "\"U1aRP3WIJNh+8LblkE59O9ax6cIXSNNdoTW+suoEVF8=\""
+          "Value": "\"OTrZiXeSsQb9wPYOPP6HjBGtokNwaLoc8RmenKgThe8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 05:53:53 GMT"
+          "Value": "Mon, 08 Dec 2025 08:43:49 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Encoding",
@@ -6073,26 +6073,18 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo=\""
+          "Value": "W/\"Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=\""
         }
       ],
       "EndpointProperties": [
         {
-          "Name": "fingerprint",
-          "Value": "409pz5rh0a"
-        },
-        {
-          "Name": "label",
-          "Value": "css/attendance-history.css"
-        },
-        {
           "Name": "integrity",
-          "Value": "sha256-LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo="
+          "Value": "sha256-Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM="
         }
       ]
     },
     {
-      "Route": "css/attendance-history.409pz5rh0a.css",
+      "Route": "css/attendance-history.css",
       "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\attendance-history.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -6102,7 +6094,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "23476"
+          "Value": "29659"
         },
         {
           "Name": "Content-Type",
@@ -6110,11 +6102,156 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo=\""
+          "Value": "\"Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 05:53:53 GMT"
+          "Value": "Mon, 08 Dec 2025 08:43:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM="
+        }
+      ]
+    },
+    {
+      "Route": "css/attendance-history.css.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-iagmezfa6d.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4837"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"OTrZiXeSsQb9wPYOPP6HjBGtokNwaLoc8RmenKgThe8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 08 Dec 2025 08:43:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-OTrZiXeSsQb9wPYOPP6HjBGtokNwaLoc8RmenKgThe8="
+        }
+      ]
+    },
+    {
+      "Route": "css/attendance-history.iagmezfa6d.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-iagmezfa6d.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000206696982"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4837"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"OTrZiXeSsQb9wPYOPP6HjBGtokNwaLoc8RmenKgThe8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 08 Dec 2025 08:43:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "iagmezfa6d"
+        },
+        {
+          "Name": "label",
+          "Value": "css/attendance-history.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM="
+        }
+      ]
+    },
+    {
+      "Route": "css/attendance-history.iagmezfa6d.css",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\attendance-history.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "29659"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 08 Dec 2025 08:43:49 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6124,7 +6261,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "409pz5rh0a"
+          "Value": "iagmezfa6d"
         },
         {
           "Name": "label",
@@ -6132,13 +6269,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo="
+          "Value": "sha256-Blp6e6fhub2LdSK2drvPRhaWd4OOqdSh1ZS6HtRygJM="
         }
       ]
     },
     {
-      "Route": "css/attendance-history.409pz5rh0a.css.gz",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-409pz5rh0a.gz",
+      "Route": "css/attendance-history.iagmezfa6d.css.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-iagmezfa6d.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -6147,7 +6284,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4086"
+          "Value": "4837"
         },
         {
           "Name": "Content-Type",
@@ -6155,11 +6292,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"U1aRP3WIJNh+8LblkE59O9ax6cIXSNNdoTW+suoEVF8=\""
+          "Value": "\"OTrZiXeSsQb9wPYOPP6HjBGtokNwaLoc8RmenKgThe8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 05:53:53 GMT"
+          "Value": "Mon, 08 Dec 2025 08:43:49 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -6177,7 +6314,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "409pz5rh0a"
+          "Value": "iagmezfa6d"
         },
         {
           "Name": "label",
@@ -6185,144 +6322,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-U1aRP3WIJNh+8LblkE59O9ax6cIXSNNdoTW+suoEVF8="
-        }
-      ]
-    },
-    {
-      "Route": "css/attendance-history.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-409pz5rh0a.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000244678248"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4086"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"U1aRP3WIJNh+8LblkE59O9ax6cIXSNNdoTW+suoEVF8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 05:53:53 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo="
-        }
-      ]
-    },
-    {
-      "Route": "css/attendance-history.css",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\attendance-history.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "23476"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 05:53:53 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-LN+mrNQetEv1BtwGQ0q3G9Gp05WVTD8+NtUEUcbnPOo="
-        }
-      ]
-    },
-    {
-      "Route": "css/attendance-history.css.gz",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\1jishpc1v9-409pz5rh0a.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "4086"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"U1aRP3WIJNh+8LblkE59O9ax6cIXSNNdoTW+suoEVF8=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sun, 30 Nov 2025 05:53:53 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-U1aRP3WIJNh+8LblkE59O9ax6cIXSNNdoTW+suoEVF8="
+          "Value": "sha256-OTrZiXeSsQb9wPYOPP6HjBGtokNwaLoc8RmenKgThe8="
         }
       ]
     },
