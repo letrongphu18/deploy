@@ -3488,24 +3488,27 @@ namespace TMD.Controllers
 				user.DepartmentId = request.DepartmentId;
 				user.RoleId = request.RoleId;
 
-				// ✅ CẬP NHẬT IsTester
-				// Nếu role là Tester → tự động set IsTester = true
-				// Nếu role là Staff → lấy từ request
-				// Nếu role khác → set IsTester = false
+				// ✅ CẬP NHẬT IsTester - LOGIC MỚI
+				// Admin: KHÔNG BAO GIỜ là Tester
+				// Tester role: TỰ ĐỘNG là Tester
+				// Các role khác (Staff, Leader, Manager, v.v.): LẤY TỪ CHECKBOX
 				var newRole = await _context.Roles.FindAsync(request.RoleId);
 				if (newRole != null)
 				{
-					if (newRole.RoleName == "Tester")
+					if (newRole.RoleName == "Admin")
 					{
-						user.IsTester = true;
+						// Admin không bao giờ là Tester
+						user.IsTester = false;
 					}
-					else if (newRole.RoleName == "Staff")
+					else if (newRole.RoleName == "Tester")
 					{
-						user.IsTester = request.IsTester ?? false;
+						// Role Tester tự động có quyền Tester
+						user.IsTester = true;
 					}
 					else
 					{
-						user.IsTester = false;
+						// TẤT CẢ ROLE KHÁC: lấy từ checkbox
+						user.IsTester = request.IsTester ?? false;
 					}
 				}
 

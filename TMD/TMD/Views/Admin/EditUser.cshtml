@@ -172,30 +172,53 @@
             handleRoleChange();
         });
 
-        function handleRoleChange() {
+                function handleRoleChange() {
             const roleSelect = document.getElementById('roleId');
             const selectedOption = roleSelect.options[roleSelect.selectedIndex];
             const roleName = selectedOption.getAttribute('data-role-name');
             const testerSection = document.getElementById('testerPermissionSection');
+            const testerCheckbox = document.getElementById('isTester');
 
-            // ✅ CHỈ HIỂN THỊ CHECKBOX TESTER KHI ROLE = Staff
-            if (roleName === 'Staff') {
-                testerSection.style.display = 'block';
-            } else {
+            // ✅ LOGIC MỚI:
+            // - Admin: ẨN checkbox, không cho phép
+            // - Tester: ẨN checkbox (tự động có quyền)
+            // - Các role khác: HIỂN THỊ checkbox cho phép chọn
+
+            if (roleName === 'Admin') {
+                // Admin không được cấp quyền Tester
                 testerSection.style.display = 'none';
-                // Nếu là Tester → tự động check
-                if (roleName === 'Tester') {
-                    document.getElementById('isTester').checked = true;
-                }
+                testerCheckbox.checked = false;
+            } else if (roleName === 'Tester') {
+                // Role Tester tự động có quyền, không cần hiển thị checkbox
+                testerSection.style.display = 'none';
+                testerCheckbox.checked = true;
+            } else {
+                // TẤT CẢ ROLE KHÁC: hiển thị checkbox
+                testerSection.style.display = 'block';
+                // Giữ nguyên giá trị checkbox hiện tại
             }
         }
 
-        document.getElementById('editUserForm').addEventListener('submit', async function(e) {
+               document.getElementById('editUserForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const roleSelect = document.getElementById('roleId');
             const selectedOption = roleSelect.options[roleSelect.selectedIndex];
             const roleName = selectedOption.getAttribute('data-role-name');
+
+            // ✅ LOGIC XỬ LÝ IsTester
+            let isTesterValue;
+
+            if (roleName === 'Admin') {
+                // Admin: luôn false
+                isTesterValue = false;
+            } else if (roleName === 'Tester') {
+                // Tester role: luôn true
+                isTesterValue = true;
+            } else {
+                // Các role khác: lấy từ checkbox
+                isTesterValue = document.getElementById('isTester').checked;
+            }
 
             const data = {
                 userId: parseInt(document.getElementById('userId').value),
@@ -206,9 +229,7 @@
                     ? parseInt(document.getElementById('departmentId').value)
                     : null,
                 roleId: parseInt(document.getElementById('roleId').value),
-                isTester: roleName === 'Staff'
-                    ? document.getElementById('isTester').checked
-                    : (roleName === 'Tester' ? true : false),
+                isTester: isTesterValue,
                 isActive: document.getElementById('isActive').checked
             };
 

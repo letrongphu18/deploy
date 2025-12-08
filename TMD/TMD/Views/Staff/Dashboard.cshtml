@@ -32,21 +32,6 @@
                     <div id="currentTime" class="sd-time-display"></div>
                     <small class="sd-text-muted">Thời gian server</small>
                 </div>
-
-                <!-- Quick Requests -->
-               @*  <div class="sd-quick-requests ms-3">
-                    <div class="btn-group">
-                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#overtimeModal">
-                            <i class="fas fa-clock me-1"></i> Tăng ca
-                        </button>
-                        <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#leaveModal">
-                            <i class="fas fa-umbrella-beach me-1"></i> Nghỉ phép
-                        </button>
-                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#lateModal">
-                            <i class="fas fa-user-clock me-1"></i> Đi trễ
-                        </button>
-                    </div>
-                </div> *@
             </div>
         </div>
     </div>
@@ -55,57 +40,37 @@
     <div class="row g-3 mb-4">
         <div class="col-md-3 col-6">
             <div class="sd-stats-card sd-stats-primary">
-                <div class="sd-stats-icon">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
+                <div class="sd-stats-icon"><i class="fas fa-calendar-check"></i></div>
                 <div class="sd-stats-content">
                     <div class="sd-stats-label">Ngày chấm công</div>
                     <div class="sd-stats-value">@(ViewBag.AttendanceThisMonth ?? 0)</div>
-                </div>
-                <div class="sd-stats-trend">
-                    <i class="fas fa-chart-line"></i>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6">
             <div class="sd-stats-card sd-stats-success">
-                <div class="sd-stats-icon">
-                    <i class="fas fa-clock"></i>
-                </div>
+                <div class="sd-stats-icon"><i class="fas fa-clock"></i></div>
                 <div class="sd-stats-content">
                     <div class="sd-stats-label">Tổng giờ làm</div>
                     <div class="sd-stats-value">@(ViewBag.TotalHoursThisMonth?.ToString("F0") ?? "0")h</div>
-                </div>
-                <div class="sd-stats-trend">
-                    <i class="fas fa-arrow-up"></i>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6">
             <div class="sd-stats-card sd-stats-warning">
-                <div class="sd-stats-icon">
-                    <i class="fas fa-sign-in-alt"></i>
-                </div>
+                <div class="sd-stats-icon"><i class="fas fa-sign-in-alt"></i></div>
                 <div class="sd-stats-content">
                     <div class="sd-stats-label">Lần đăng nhập</div>
                     <div class="sd-stats-value">@ViewBag.ThisMonthLogins</div>
-                </div>
-                <div class="sd-stats-trend">
-                    <i class="fas fa-user-check"></i>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-6">
             <div class="sd-stats-card sd-stats-info">
-                <div class="sd-stats-icon">
-                    <i class="fas fa-users"></i>
-                </div>
+                <div class="sd-stats-icon"><i class="fas fa-users"></i></div>
                 <div class="sd-stats-content">
                     <div class="sd-stats-label">Thành viên</div>
                     <div class="sd-stats-value">@(ViewBag.DepartmentUserCount ?? 0)</div>
-                </div>
-                <div class="sd-stats-trend">
-                    <i class="fas fa-user-friends"></i>
                 </div>
             </div>
         </div>
@@ -116,9 +81,7 @@
         <div class="col-lg-8">
             <div class="sd-card">
                 <div class="sd-card-header">
-                    <h5>
-                        <i class="fas fa-user-clock me-2"></i> Chấm công hôm nay
-                    </h5>
+                    <h5><i class="fas fa-user-clock me-2"></i> Chấm công hôm nay</h5>
                 </div>
                 <div class="sd-card-body">
                     <div class="row">
@@ -235,9 +198,7 @@
         <div class="col-lg-4">
             <div class="sd-card">
                 <div class="sd-card-header">
-                    <h5>
-                        <i class="fas fa-tasks me-2"></i> Công việc của tôi
-                    </h5>
+                    <h5><i class="fas fa-tasks me-2"></i> Công việc của tôi</h5>
                     <a href="/Staff/MyTasks" class="btn btn-sm btn-outline-primary">
                         <i class="fas fa-list me-1"></i> Xem tất cả
                     </a>
@@ -249,11 +210,6 @@
                             <p class="mt-2 sd-text-muted">Đang tải công việc...</p>
                         </div>
                     </div>
-                    <div id="taskLoadMore" style="display: none;" class="p-3 border-top bg-light">
-                        <button class="btn btn-sm btn-outline-primary w-100" onclick="loadMoreTasks()">
-                            <i class="fas fa-chevron-down me-1"></i> <span id="loadMoreText">Xem thêm</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -263,9 +219,7 @@
     <div class="row g-3 mt-2">
         <div class="col-md-4 col-6">
             <a href="/Staff/AttendanceHistory" class="sd-quick-action-card">
-                <div class="sd-quick-action-icon">
-                    <i class="fas fa-history"></i>
-                </div>
+                <div class="sd-quick-action-icon"><i class="fas fa-history"></i></div>
                 <div class="sd-quick-action-content">
                     <h6>Lịch sử chấm công</h6>
                     <p>Xem chi tiết chấm công</p>
@@ -274,9 +228,7 @@
         </div>
         <div class="col-md-4 col-6">
             <a href="/Staff/MyTasks" class="sd-quick-action-card">
-                <div class="sd-quick-action-icon">
-                    <i class="fas fa-clipboard-list"></i>
-                </div>
+                <div class="sd-quick-action-icon"><i class="fas fa-clipboard-list"></i></div>
                 <div class="sd-quick-action-content">
                     <h6>Quản lý công việc</h6>
                     <p>Cập nhật tiến độ task</p>
@@ -285,208 +237,12 @@
         </div>
         <div class="col-md-4 col-6">
             <a href="/Staff/Profile" class="sd-quick-action-card">
-                <div class="sd-quick-action-icon">
-                    <i class="fas fa-user-circle"></i>
-                </div>
+                <div class="sd-quick-action-icon"><i class="fas fa-user-circle"></i></div>
                 <div class="sd-quick-action-content">
                     <h6>Hồ sơ cá nhân</h6>
                     <p>Xem và chỉnh sửa</p>
                 </div>
             </a>
-        </div>
-    </div>
-</div>
-
-<!-- ====== IMPROVED OVERTIME MODAL ====== -->
-<div class="modal fade" id="overtimeModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-warning text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-clock me-2"></i>Đề xuất tăng ca
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Lưu ý:</strong> Hệ thống sẽ tự động tính số giờ tăng ca dựa trên bản ghi chấm công của bạn.
-                </div>
-                <form id="overtimeForm">
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-calendar-day me-1"></i>Ngày tăng ca *
-                        </label>
-                        <input type="date" class="form-control" id="overtimeWorkDate" required>
-                        <small class="text-muted">Chọn ngày đã check-out có giờ tăng ca</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-comment-dots me-1"></i>Lý do *
-                        </label>
-                        <textarea class="form-control" id="overtimeReason" rows="3"
-                                  placeholder="Ví dụ: Hoàn thành dự án X, xử lý công việc khẩn cấp..."
-                                  required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-tasks me-1"></i>Mô tả công việc (tùy chọn)
-                        </label>
-                        <textarea class="form-control" id="overtimeTaskDesc" rows="2"
-                                  placeholder="Mô tả chi tiết công việc đã làm..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Đóng
-                </button>
-                <button type="button" class="btn btn-warning" onclick="submitOvertimeRequest()">
-                    <i class="fas fa-paper-plane me-1"></i>Gửi đề xuất
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ====== IMPROVED LEAVE MODAL ====== -->
-<div class="modal fade" id="leaveModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-umbrella-beach me-2"></i>Đề xuất nghỉ phép
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle me-2"></i>
-                    <strong>Lưu ý:</strong> Số ngày sẽ được tự động tính dựa trên khoảng thời gian bạn chọn.
-                </div>
-                <form id="leaveForm">
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-tag me-1"></i>Loại nghỉ *
-                        </label>
-                        <select class="form-select" id="leaveType" required>
-                            <option value="">-- Chọn loại nghỉ --</option>
-                            <option value="Nghỉ phép năm">Nghỉ phép năm</option>
-                            <option value="Nghỉ ốm">Nghỉ ốm</option>
-                            <option value="Nghỉ việc riêng">Nghỉ việc riêng</option>
-                            <option value="Nghỉ không lương">Nghỉ không lương</option>
-                        </select>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-calendar-check me-1"></i>Từ ngày *
-                            </label>
-                            <input type="date" class="form-control" id="leaveStartDate" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-calendar-times me-1"></i>Đến ngày *
-                            </label>
-                            <input type="date" class="form-control" id="leaveEndDate" required>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-comment-dots me-1"></i>Lý do *
-                        </label>
-                        <textarea class="form-control" id="leaveReason" rows="3"
-                                  placeholder="Lý do nghỉ phép..."
-                                  required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-paperclip me-1"></i>Tài liệu đính kèm (URL)
-                        </label>
-                        <input type="url" class="form-control" id="leaveProof"
-                               placeholder="https://drive.google.com/...">
-                        <small class="text-muted">
-                            <i class="fas fa-lightbulb me-1"></i>
-                            Nếu có giấy khám/chứng từ, upload lên Drive và dán link tại đây
-                        </small>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Đóng
-                </button>
-                <button type="button" class="btn btn-info" onclick="submitLeaveRequest()">
-                    <i class="fas fa-paper-plane me-1"></i>Gửi đề xuất
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ====== IMPROVED LATE MODAL ====== -->
-<div class="modal fade" id="lateModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">
-                    <i class="fas fa-user-clock me-2"></i>Đề xuất đi trễ
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Lưu ý:</strong> Nên gửi đề xuất trước khi đến công ty để quản lý biết và sắp xếp công việc.
-                </div>
-                <form id="lateForm">
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-calendar-day me-1"></i>Ngày *
-                        </label>
-                        <input type="date" class="form-control" id="lateRequestDate" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-clock me-1"></i>Dự kiến đến lúc *
-                        </label>
-                        <input type="time" class="form-control" id="lateExpectedTime" required>
-                        <small class="text-muted">Chọn giờ:phút dự kiến bạn sẽ đến</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-comment-dots me-1"></i>Lý do *
-                        </label>
-                        <textarea class="form-control" id="lateReason" rows="3"
-                                  placeholder="Ví dụ: Tắc đường, việc gia đình khẩn cấp..."
-                                  required></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-paperclip me-1"></i>Tài liệu đính kèm (URL)
-                        </label>
-                        <input type="url" class="form-control" id="lateProof"
-                               placeholder="https://...">
-                        <small class="text-muted">Tùy chọn: Link ảnh/file minh chứng</small>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>Đóng
-                </button>
-                <button type="button" class="btn btn-danger" onclick="submitLateRequest()">
-                    <i class="fas fa-paper-plane me-1"></i>Gửi đề xuất
-                </button>
-            </div>
         </div>
     </div>
 </div>
@@ -503,10 +259,9 @@
         let longitude = null;
         let currentAddress = '';
         let isGettingLocation = false;
-        let isLocationLocked = false; // <<< ĐÂY LÀ CỜ GIÚP GPS KHÔNG BỊ MẤT
+        let isLocationLocked = false;
         let checkInTimeValue = null;
 
-        // Lấy giờ chuẩn từ Server (ViewBag) - Đảm bảo đã cập nhật StaffController.cs
         const STANDARD_START_TIME = "@ViewBag.StandardStartTime";
         const STANDARD_END_TIME = "@ViewBag.StandardEndTime";
 
@@ -555,8 +310,8 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Lỗi Camera',
-                    text: 'Không thể truy cập camera. Vui lòng kiểm tra quyền truy cập hoặc chuyển sang chế độ tải ảnh.',
-                    confirmButtonText: 'Chuyển sang tải ảnh'
+                    text: 'Không thể truy cập camera. Chuyển sang chế độ tải ảnh.',
+                    confirmButtonText: 'OK'
                 }).then(() => {
                     document.getElementById('modeUpload').checked = true;
                     document.getElementById('modeUpload').dispatchEvent(new Event('change'));
@@ -605,9 +360,8 @@
             initCamera();
         }
 
-        // ========== LOCATION LOGIC (FIX GPS STABILITY) ==========
+        // ========== LOCATION LOGIC (GPS BẮTBUỘC) ==========
         async function getLocation(isRetry = false) {
-            // Chỉ chạy khi chưa có vị trí (hoặc bị lỗi) HOẶC khi người dùng bấm nút làm mới
             if (isLocationLocked && !isRetry) return;
             if (isGettingLocation) return;
 
@@ -643,7 +397,7 @@
                 await getAddressFromServer(latitude, longitude, accuracy);
 
                 isGettingLocation = false;
-                isLocationLocked = true; // KHÓA VỊ TRÍ: Giúp vị trí không bị mất
+                isLocationLocked = true;
 
             } catch (error) {
                 console.error('Location error:', error);
@@ -662,10 +416,8 @@
             document.getElementById('locationInfo').innerHTML = `
                 <div class="alert alert-warning">
                     <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <i class="fas fa-exclamation-triangle"></i> ${msg}
-                        </div>
-                        ${showRetry ? `<button class="btn btn-sm btn-outline-warning" onclick="getLocation(true)" title="Thử lại vị trí"><i class="fas fa-sync-alt"></i></button>` : ''}
+                        <div><i class="fas fa-exclamation-triangle"></i> ${msg}</div>
+                        ${showRetry ? `<button class="btn btn-sm btn-outline-warning" onclick="getLocation(true)"><i class="fas fa-sync-alt"></i></button>` : ''}
                     </div>
                 </div>
             `;
@@ -694,16 +446,14 @@
                             <p class="mb-0 mt-1 small"><i class="fas fa-map-marker-alt text-danger"></i> ${currentAddress}</p>
                             <small class="text-muted">Độ chính xác: ±${Math.round(accuracy)}m</small>
                         </div>
-                        <button class="btn btn-sm btn-light text-primary" onclick="getLocation(true)" title="Làm mới vị trí">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
+                        <button class="btn btn-sm btn-light text-primary" onclick="getLocation(true)"><i class="fas fa-sync-alt"></i></button>
                     </div>
                 </div>
             `;
             updateButtonsState();
         }
 
-        // ... (Giữ nguyên các hàm File Upload và updateButtonsState) ...
+        // ========== FILE UPLOAD ==========
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -732,29 +482,29 @@
         }
 
         function updateButtonsState() {
-            const hasPhoto = capturedBlob !== null || uploadedFile !== null;
+            // ✅ Ảnh tùy chọn - không cần kiểm tra
             const hasLocation = latitude !== null && longitude !== null;
 
             const btnCheckIn = document.getElementById('btnCheckIn');
             const btnCheckOut = document.getElementById('btnCheckOut');
 
-            if (btnCheckIn) btnCheckIn.disabled = !(hasPhoto && hasLocation);
-            if (btnCheckOut) btnCheckOut.disabled = !(hasPhoto && hasLocation);
+            if (btnCheckIn) btnCheckIn.disabled = !hasLocation;
+            if (btnCheckOut) btnCheckOut.disabled = !hasLocation;
         }
 
         function getCurrentTimeStr() {
             const now = new Date();
-            return now.toTimeString().split(' ')[0].substring(0, 5); // HH:mm
+            return now.toTimeString().split(' ')[0].substring(0, 5);
         }
 
-        // ========== CHECK IN POPUP & API CALL LOGIC (ĐÃ SỬA) ==========
+        // ========== CHECK IN POPUP & API CALL ==========
         async function checkIn() {
-            const photoFile = capturedBlob || uploadedFile;
-            if (!photoFile || !latitude || !longitude) {
-                Swal.fire('Thiếu thông tin', 'Vui lòng chụp ảnh và đợi lấy vị trí GPS', 'warning');
+            if (!latitude || !longitude) {
+                Swal.fire('Thiếu thông tin', 'Vui lòng đợi lấy vị trí GPS', 'warning');
                 return;
             }
 
+            const photoFile = capturedBlob || uploadedFile;
             const nowStr = getCurrentTimeStr();
             let statusHtml = '';
             if (nowStr > STANDARD_START_TIME) {
@@ -763,7 +513,6 @@
                 statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
             }
 
-            // POPUP XÁC NHẬN CHECK-IN
             const result = await Swal.fire({
                 title: 'Xác nhận Check-in',
                 html: `
@@ -772,10 +521,10 @@
                         <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
                         <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
                     </div>
-                    <div class="mt-3 text-center">
+                    ${photoFile ? `<div class="mt-3 text-center">
                         <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
                              style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
-                    </div>
+                    </div>` : '<p class="text-muted mt-3">Không có ảnh check-in</p>'}
                 `,
                 icon: 'question',
                 showCancelButton: true,
@@ -786,18 +535,16 @@
                 reverseButtons: true
             });
 
-            // <<< ĐÂY LÀ LOGIC BẮT BUỘC XÁC NHẬN
             if (!result.isConfirmed) return;
 
-            // Gửi dữ liệu (CHỈ CHẠY KHI ĐÃ XÁC NHẬN)
             const formData = new FormData();
-            formData.append('Photo', photoFile, 'checkin.jpg');
+            if (photoFile) formData.append('Photo', photoFile, 'checkin.jpg');
             formData.append('Latitude', latitude);
             formData.append('Longitude', longitude);
             formData.append('Address', currentAddress);
             formData.append('Notes', document.getElementById('attendanceNotes').value);
 
-            Swal.fire({ title: 'Đang Check-in...', text: 'Vui lòng đợi giây lát', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            Swal.fire({ title: 'Đang Check-in...', text: 'Vui lòng đợi', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
             try {
                 const response = await fetch('/Staff/CheckIn', { method: 'POST', body: formData });
@@ -807,7 +554,7 @@
                         icon: 'success',
                         title: 'Check-in thành công!',
                         html: data.message.replace(/\n/g, '<br>'),
-                        confirmButtonText: 'Tuyệt vời'
+                        confirmButtonText: 'OK'
                     }).then(() => location.reload());
                 } else {
                     Swal.fire('Lỗi', data.message, 'error');
@@ -817,14 +564,14 @@
             }
         }
 
-        // ========== CHECK OUT POPUP & API CALL LOGIC (ĐÃ SỬA) ==========
+        // ========== CHECK OUT POPUP & API CALL ==========
         async function checkOut() {
-            const photoFile = capturedBlob || uploadedFile;
-            if (!photoFile || !latitude || !longitude) {
-                Swal.fire('Thiếu thông tin', 'Vui lòng chụp ảnh và đợi lấy vị trí GPS', 'warning');
+            if (!latitude || !longitude) {
+                Swal.fire('Thiếu thông tin', 'Vui lòng đợi lấy vị trí GPS', 'warning');
                 return;
             }
 
+            const photoFile = capturedBlob || uploadedFile;
             const nowStr = getCurrentTimeStr();
             let statusHtml = '';
             if (nowStr < STANDARD_END_TIME) {
@@ -833,7 +580,6 @@
                 statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
             }
 
-            // POPUP XÁC NHẬN CHECK-OUT
             const result = await Swal.fire({
                 title: 'Xác nhận Check-out',
                 html: `
@@ -842,10 +588,10 @@
                         <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
                         <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
                     </div>
-                    <div class="mt-3 text-center">
+                    ${photoFile ? `<div class="mt-3 text-center">
                         <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
                              style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
-                    </div>
+                    </div>` : '<p class="text-muted mt-3">Không có ảnh check-out</p>'}
                 `,
                 icon: 'warning',
                 showCancelButton: true,
@@ -856,11 +602,10 @@
                 reverseButtons: true
             });
 
-            // <<< ĐÂY LÀ LOGIC BẮT BUỘC XÁC NHẬN
             if (!result.isConfirmed) return;
 
             const formData = new FormData();
-            formData.append('Photo', photoFile, 'checkout.jpg');
+            if (photoFile) formData.append('Photo', photoFile, 'checkout.jpg');
             formData.append('Latitude', latitude);
             formData.append('Longitude', longitude);
             formData.append('Address', currentAddress);
@@ -876,7 +621,7 @@
                         icon: 'success',
                         title: 'Check-out thành công!',
                         html: data.message.replace(/\n/g, '<br>'),
-                        confirmButtonText: 'Hẹn gặp lại'
+                        confirmButtonText: 'OK'
                     }).then(() => location.reload());
                 } else {
                     Swal.fire('Lỗi', data.message, 'error');
@@ -886,9 +631,9 @@
             }
         }
 
-        // ========== ATTENDANCE STATUS AND WORKING HOURS ==========
+        // ========== ATTENDANCE STATUS ==========
         async function checkAttendanceStatus() {
-             try {
+            try {
                 const response = await fetch('/Staff/GetTodayAttendance');
                 const data = await response.json();
 
@@ -909,12 +654,10 @@
                                 <hr>
                                 <div class="row text-center">
                                     <div class="col-6">
-                                        <small>Check-in</small>
-                                        <br><strong>${data.checkInTime}</strong>
+                                        <small>Check-in</small><br><strong>${data.checkInTime}</strong>
                                     </div>
                                     <div class="col-6">
-                                        <small>Check-out</small>
-                                        <br><strong>${data.checkOutTime}</strong>
+                                        <small>Check-out</small><br><strong>${data.checkOutTime}</strong>
                                     </div>
                                 </div>
                             </div>
@@ -970,15 +713,12 @@
             setInterval(updateHours, 1000);
         }
 
-        // ... (Bạn nên copy các hàm liên quan đến task: loadMyTasks, renderTasks, updateTaskStatus, v.v. từ file Dashboard.cshtml cũ của bạn vào đây) ...
-
         // ========== INIT ON LOAD ==========
         window.onload = async function() {
             console.log('🚀 Initializing Staff Dashboard...');
             await initCamera();
             await getLocation();
             await checkAttendanceStatus();
-            // if (typeof loadMyTasks === "function") await loadMyTasks();
             console.log('✅ Dashboard initialized');
         };
 

@@ -757,40 +757,51 @@ namespace TMD.Controllers
 				});
 			}
 
-			if (request.Photo == null || request.Photo.Length == 0)
-				return Json(new { success = false, message = "Vui lòng chụp ảnh hoặc tải lên ảnh để check-in" });
+			// ✅ KHÔNG BẮT BUỘC ẢNH - Chỉ validate nếu có upload
+			string photoPath = null;
+			if (request.Photo != null && request.Photo.Length > 0)
+			{
+				if (request.Photo.Length > 10 * 1024 * 1024)
+					return Json(new { success = false, message = "Kích thước ảnh không được vượt quá 10MB" });
 
-			if (request.Photo.Length > 10 * 1024 * 1024)
-				return Json(new { success = false, message = "Kích thước ảnh không được vượt quá 10MB" });
+				var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+				var extension = Path.GetExtension(request.Photo.FileName).ToLower();
+				if (!allowedExtensions.Contains(extension))
+					return Json(new { success = false, message = "Chỉ chấp nhận file ảnh định dạng JPG, JPEG, PNG" });
 
-			var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-			var extension = Path.GetExtension(request.Photo.FileName).ToLower();
-			if (!allowedExtensions.Contains(extension))
-				return Json(new { success = false, message = "Chỉ chấp nhận file ảnh định dạng JPG, JPEG, PNG" });
+				try
+				{
+					var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "attendance");
+					if (!Directory.Exists(uploadsFolder))
+						Directory.CreateDirectory(uploadsFolder);
 
+					var uniqueFileName = $"{userId}_{serverNow:yyyyMMdd_HHmmss}_checkin{extension}";
+					var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+					using (var fileStream = new FileStream(filePath, FileMode.Create))
+						await request.Photo.CopyToAsync(fileStream);
+
+					photoPath = $"/uploads/attendance/{uniqueFileName}";
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Photo upload failed: {ex.Message}");
+					// Không block check-in nếu upload ảnh thất bại
+				}
+			}
+
+			// ✅ BẮT BUỘC GPS
 			if (request.Latitude == 0 || request.Longitude == 0)
 				return Json(new { success = false, message = "Không thể lấy vị trí GPS. Vui lòng bật GPS và thử lại" });
 
 			try
 			{
-				// ✅ ĐỌC TỪ SystemSettings THAY VÌ SalaryConfigurations
 				var configs = await _context.SystemSettings
 					.Where(c => c.IsActive == true && c.IsEnabled == true)
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
 				var standardStartTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00"));
 
-				var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "attendance");
-				if (!Directory.Exists(uploadsFolder))
-					Directory.CreateDirectory(uploadsFolder);
-
-				var uniqueFileName = $"{userId}_{serverNow:yyyyMMdd_HHmmss}_checkin{extension}";
-				var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-				using (var fileStream = new FileStream(filePath, FileMode.Create))
-					await request.Photo.CopyToAsync(fileStream);
-
-				var photoPath = $"/uploads/attendance/{uniqueFileName}";
 				var checkInTime = new TimeOnly(serverNow.Hour, serverNow.Minute, serverNow.Second);
 				var isLate = checkInTime > standardStartTime;
 				var address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
@@ -806,7 +817,7 @@ namespace TMD.Controllers
 				attendance.CheckInLatitude = request.Latitude;
 				attendance.CheckInLongitude = request.Longitude;
 				attendance.CheckInAddress = address;
-				attendance.CheckInPhotos = photoPath;
+				attendance.CheckInPhotos = photoPath; // Có thể null
 				attendance.CheckInNotes = request.Notes;
 				attendance.CheckInIpaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 				attendance.IsLate = isLate;
@@ -818,10 +829,8 @@ namespace TMD.Controllers
 
 				await _context.SaveChangesAsync();
 
-				// ✅ LẤY THÔNG TIN USER
 				var user = await _context.Users.FindAsync(userId);
 
-				// ✅ GỬI TELEGRAM NOTIFICATION
 				try
 				{
 					await _telegramService.SendCheckInNotificationAsync(
@@ -829,18 +838,15 @@ namespace TMD.Controllers
 						user?.Username ?? "N/A",
 						serverNow,
 						address,
-						 
 						isLate,
 						request.Notes
 					);
 				}
 				catch (Exception ex)
 				{
-					// Log error nhưng không block flow chính
 					Console.WriteLine($"Telegram notification failed: {ex.Message}");
 				}
 
-				// GỬI THÔNG BÁO CHO ADMIN NẾU ĐI TRỄ
 				if (isLate)
 				{
 					await _notificationService.SendToAdminsAsync(
@@ -854,12 +860,14 @@ namespace TMD.Controllers
 				return Json(new
 				{
 					success = true,
-					message = $"Check-in thành công!\nThời gian: {serverNow:HH:mm:ss}\nVị trí: {address}" +
-							  (isLate ? $"\nGhi nhận: Đến sau {standardStartTime:HH:mm}" : "\nĐúng giờ!"),
+					message = $"✅ Check-in thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n📍 Vị trí: {address}" +
+							  (isLate ? $"\n⚠️ Ghi nhận: Đến sau {standardStartTime:HH:mm}" : "\n✨ Đúng giờ!") +
+							  (photoPath == null ? "\n📷 Không có ảnh check-in" : ""),
 					serverTime = serverNow.ToString("yyyy-MM-dd HH:mm:ss"),
 					checkInTime = serverNow.ToString("HH:mm:ss"),
 					address = address,
-					isLate = isLate
+					isLate = isLate,
+					hasPhoto = photoPath != null
 				});
 			}
 			catch (Exception ex)
@@ -876,7 +884,7 @@ namespace TMD.Controllers
 		// CHECK-OUT - ĐÃ SỬA ĐỌC TỪ SystemSettings
 		// ============================================
 		[HttpPost]
-		[RequestSizeLimit(5_242_880)]
+		[RequestSizeLimit(10_485_760)]
 		public async System.Threading.Tasks.Task<IActionResult> CheckOut([FromForm] CheckOutRequest request)
 		{
 			if (!IsAuthenticated())
@@ -893,26 +901,48 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = "Bạn chưa check-in hôm nay" });
 
 			if (attendance.CheckOutTime.HasValue)
-				return Json(new { success = false, message = "Bạn đã check-out hôm nay rồi! Chúc bạn một ngày vui vẻ! ", isCompleted = true });
+				return Json(new { success = false, message = "Bạn đã check-out hôm nay rồi! Chúc bạn một ngày vui vẻ!", isCompleted = true });
 
-			if (request.Photo == null || request.Photo.Length == 0)
-				return Json(new { success = false, message = "Vui lòng chụp ảnh hoặc tải lên ảnh để check-out" });
+			// ✅ KHÔNG BẮT BUỘC ẢNH - Chỉ validate nếu có upload
+			string photoPath = null;
+			if (request.Photo != null && request.Photo.Length > 0)
+			{
+				if (request.Photo.Length > 10 * 1024 * 1024)
+					return Json(new { success = false, message = "Kích thước ảnh không được vượt quá 10MB" });
 
-			if (request.Photo.Length > 10 * 1024 * 1024)
-				return Json(new { success = false, message = "Kích thước ảnh không được vượt quá 10MB" });
+				var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+				var extension = Path.GetExtension(request.Photo.FileName).ToLower();
+				if (!allowedExtensions.Contains(extension))
+					return Json(new { success = false, message = "Chỉ chấp nhận file ảnh định dạng JPG, JPEG, PNG" });
 
-			var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-			var extension = Path.GetExtension(request.Photo.FileName).ToLower();
-			if (!allowedExtensions.Contains(extension))
-				return Json(new { success = false, message = "Chỉ chấp nhận file ảnh định dạng JPG, JPEG, PNG" });
+				try
+				{
+					var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "attendance");
+					if (!Directory.Exists(uploadsFolder))
+						Directory.CreateDirectory(uploadsFolder);
 
-			// ✅ Validate GPS
+					var uniqueFileName = $"{userId}_{serverNow:yyyyMMdd_HHmmss}_checkout{extension}";
+					var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+					using (var fileStream = new FileStream(filePath, FileMode.Create))
+						await request.Photo.CopyToAsync(fileStream);
+
+					photoPath = $"/uploads/attendance/{uniqueFileName}";
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Photo upload failed: {ex.Message}");
+					// Không block check-out nếu upload ảnh thất bại
+				}
+			}
+
+			// ✅ BẮT BUỘC GPS
 			if (request.Latitude == 0 || request.Longitude == 0)
 			{
 				return Json(new
 				{
 					success = false,
-					message = " Không thể lấy vị trí GPS. Vui lòng đợi GPS ổn định và thử lại."
+					message = "⚠️ Không thể lấy vị trí GPS. Vui lòng đợi GPS ổn định và thử lại."
 				});
 			}
 
@@ -921,13 +951,12 @@ namespace TMD.Controllers
 				return Json(new
 				{
 					success = false,
-					message = " Tọa độ GPS không hợp lệ. Vui lòng thử lại."
+					message = "⚠️ Tọa độ GPS không hợp lệ. Vui lòng thử lại."
 				});
 			}
 
 			try
 			{
-				// ✅ ĐỌC TỪ SystemSettings THAY VÌ HARD-CODE
 				var configs = await _context.SystemSettings
 					.Where(c => c.IsActive == true && c.IsEnabled == true)
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
@@ -936,31 +965,17 @@ namespace TMD.Controllers
 				var standardStartTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00"));
 				var standardHoursPerDay = decimal.Parse(configs.GetValueOrDefault("STANDARD_HOURS_PER_DAY", "8"));
 
-				var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "attendance");
-				if (!Directory.Exists(uploadsFolder))
-					Directory.CreateDirectory(uploadsFolder);
-
-				var uniqueFileName = $"{userId}_{serverNow:yyyyMMdd_HHmmss}_checkout{extension}";
-				var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-				using (var fileStream = new FileStream(filePath, FileMode.Create))
-					await request.Photo.CopyToAsync(fileStream);
-
-				var photoPath = $"/uploads/attendance/{uniqueFileName}";
 				var address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
 
-				// ✅ CALCULATE EXACT WORKING HOURS
 				var duration = serverNow - attendance.CheckInTime.Value;
 				var totalHours = (decimal)duration.TotalHours;
 				var hours = duration.Hours;
 				var minutes = duration.Minutes;
 				var seconds = duration.Seconds;
 
-				// ✅ KIỂM TRA CHECKOUT SỚM (TRƯỚC GIỜ CHUẨN)
 				var checkOutTime = new TimeOnly(serverNow.Hour, serverNow.Minute, serverNow.Second);
 				bool isEarlyCheckout = checkOutTime < standardEndTime;
 
-				// ✅ TÍNH GIỜ THIẾU NẾU CHECKOUT SỚM
 				decimal penaltyHours = 0;
 				if (isEarlyCheckout)
 				{
@@ -972,13 +987,12 @@ namespace TMD.Controllers
 				attendance.CheckOutLatitude = request.Latitude;
 				attendance.CheckOutLongitude = request.Longitude;
 				attendance.CheckOutAddress = address;
-				attendance.CheckOutPhotos = photoPath;
+				attendance.CheckOutPhotos = photoPath; // Có thể null
 				attendance.CheckOutNotes = request.Notes;
 				attendance.CheckOutIpaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 				attendance.TotalHours = totalHours;
 				attendance.ActualWorkHours = totalHours;
 
-				// ✅ GHI CHÚ NẾU CHECKOUT SỚM
 				if (isEarlyCheckout)
 				{
 					attendance.CheckOutNotes = $"{request.Notes ?? ""} [Checkout sớm {penaltyHours:F2}h - Thiếu {penaltyHours:F2}h so với chuẩn]".Trim();
@@ -988,7 +1002,6 @@ namespace TMD.Controllers
 
 				var user = await _context.Users.FindAsync(userId);
 
-				// ✅ GỬI TELEGRAM NOTIFICATION
 				try
 				{
 					await _telegramService.SendCheckOutNotificationAsync(
@@ -996,8 +1009,8 @@ namespace TMD.Controllers
 						user?.Username ?? "N/A",
 						serverNow,
 						totalHours,
-						0 ,// Overtime chưa được approve nên để 0
-						  attendance.CheckOutNotes
+						0,
+						attendance.CheckOutNotes
 					);
 				}
 				catch (Exception ex)
@@ -1013,7 +1026,8 @@ namespace TMD.Controllers
 						TotalHours = $"{hours:D2}:{minutes:D2}:{seconds:D2}",
 						Address = address,
 						IsEarlyCheckout = isEarlyCheckout,
-						PenaltyHours = penaltyHours
+						PenaltyHours = penaltyHours,
+						HasPhoto = photoPath != null
 					},
 					$"Check-out tại {address} - Tổng giờ: {hours:D2}:{minutes:D2}:{seconds:D2}",
 					new Dictionary<string, object> {
@@ -1024,7 +1038,6 @@ namespace TMD.Controllers
 					}
 				);
 
-				// ✅ THÔNG BÁO CHO ADMIN NẾU CHECKOUT SỚM
 				if (isEarlyCheckout)
 				{
 					await _notificationService.SendToAdminsAsync(
@@ -1035,16 +1048,20 @@ namespace TMD.Controllers
 					);
 				}
 
-				// ✅ TẠO MESSAGE ĐỘNG
-				string message = $" Check-out thành công!\n Thời gian: {serverNow:HH:mm:ss}\n Tổng giờ làm: {hours:D2}:{minutes:D2}:{seconds:D2}\n📍 Vị trí: {address}";
+				string message = $"✅ Check-out thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n⏱️ Tổng giờ làm: {hours:D2}:{minutes:D2}:{seconds:D2}\n📍 Vị trí: {address}";
 
 				if (isEarlyCheckout)
 				{
-					message += $"\n\n Lưu ý: Bạn checkout sớm hơn {penaltyHours:F2}h so với giờ chuẩn ({standardEndTime:HH:mm})";
+					message += $"\n\n⚠️ Lưu ý: Bạn checkout sớm hơn {penaltyHours:F2}h so với giờ chuẩn ({standardEndTime:HH:mm})";
 				}
 				else
 				{
-					message += "\n\n Chúc bạn một buổi tối vui vẻ!";
+					message += "\n\n🎉 Chúc bạn một buổi tối vui vẻ!";
+				}
+
+				if (photoPath == null)
+				{
+					message += "\n📷 Không có ảnh check-out";
 				}
 
 				return Json(new
@@ -1058,7 +1075,8 @@ namespace TMD.Controllers
 					address = address,
 					isEarlyCheckout = isEarlyCheckout,
 					penaltyHours = penaltyHours,
-					standardEndTime = standardEndTime.ToString("HH:mm")
+					standardEndTime = standardEndTime.ToString("HH:mm"),
+					hasPhoto = photoPath != null
 				});
 			}
 			catch (Exception ex)

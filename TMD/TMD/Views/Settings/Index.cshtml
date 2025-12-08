@@ -675,496 +675,650 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        // ========== GLOBAL VARIABLES ==========
-        let stream = null;
-        let capturedBlob = null;
-        let uploadedFile = null;
-        let latitude = null;
-        let longitude = null;
-        let currentAddress = '';
-        let isGettingLocation = false;
-        let isLocationLocked = false; // Fix lỗi GPS biến mất
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        // Lấy giờ chuẩn từ Server (ViewBag)
-        const STANDARD_START_TIME = "@ViewBag.StandardStartTime"; // Ví dụ: "08:00"
-        const STANDARD_END_TIME = "@ViewBag.StandardEndTime";     // Ví dụ: "17:00"
+<script>
+    // ========== GLOBAL STATE ==========
+    let modifiedSettings = new Set(); // Theo dõi settings đã chỉnh sửa
+    let currentLayoutType = null;
 
-        // ========== TIME UPDATE ==========
-        function updateTime() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('vi-VN', options);
-            document.getElementById('currentTime').textContent = now.toLocaleTimeString('vi-VN');
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        // ========== PHOTO MODE SWITCH ==========
-        document.querySelectorAll('input[name="photoMode"]').forEach(radio => {
+    // ========== INIT ON LOAD ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✅ Settings page initialized');
+        
+        // Setup input listeners
+        setupInputListeners();
+        
+        // Setup search
+        setupSearch();
+        
+        // Load trash count
+        updateTrashCount();
+        
+        // Setup apply method radio listener
+        document.querySelectorAll('input[name="applyMethod"]').forEach(radio => {
             radio.addEventListener('change', function() {
-                if (this.value === 'camera') {
-                    document.getElementById('cameraMode').style.display = 'block';
-                    document.getElementById('uploadMode').style.display = 'none';
-                    uploadedFile = null;
-                    initCamera();
+                const conditionalGroup = document.getElementById('conditionalDescGroup');
+                if (this.value === 'CONDITIONAL') {
+                    conditionalGroup.style.display = 'block';
                 } else {
-                    document.getElementById('cameraMode').style.display = 'none';
-                    document.getElementById('uploadMode').style.display = 'block';
-                    if (stream) {
-                        stream.getTracks().forEach(track => track.stop());
-                        stream = null;
-                    }
+                    conditionalGroup.style.display = 'none';
                 }
-                updateButtonsState();
             });
         });
 
-        // ========== CAMERA INIT & CAPTURE (FIX MOBILE IMAGE) ==========
-        async function initCamera() {
-            try {
-                // Ưu tiên camera trước (user) trên điện thoại
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
+        // Setup category change listener
+        document.getElementById('createCategory').addEventListener('change', function() {
+            document.getElementById('createCategoryHidden').value = this.value;
+            // Ẩn/hiển thị apply method group dựa trên category
+            const applyMethodGroup = document.getElementById('applyMethodGroup');
+            if (this.value === 'Salary') {
+                applyMethodGroup.style.display = 'block';
+            } else {
+                applyMethodGroup.style.display = 'none';
+            }
+        });
+    });
+
+    // ========== INPUT LISTENER SETUP ==========
+    function setupInputListeners() {
+        document.querySelectorAll('.setting-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const key = this.dataset.key;
+                modifiedSettings.add(key);
+                updateSaveAllButton();
+            });
+
+            input.addEventListener('input', function() {
+                const key = this.dataset.key;
+                modifiedSettings.add(key);
+                updateSaveAllButton();
+            });
+        });
+    }
+
+    // ========== UPDATE SAVE ALL BUTTON ==========
+    function updateSaveAllButton() {
+        const btnSaveAll = document.getElementById('btnSaveAll');
+        const modifiedCount = document.getElementById('modifiedCount');
+        const saveIndicator = document.getElementById('saveIndicator');
+
+        const count = modifiedSettings.size;
+        modifiedCount.textContent = count;
+
+        if (count > 0) {
+            btnSaveAll.classList.remove('disabled');
+            btnSaveAll.disabled = false;
+            saveIndicator.style.display = 'flex';
+        } else {
+            btnSaveAll.classList.add('disabled');
+            btnSaveAll.disabled = true;
+            saveIndicator.style.display = 'none';
+        }
+    }
+
+    // ========== SEARCH FUNCTIONALITY ==========
+    function setupSearch() {
+        const searchSalary = document.getElementById('searchSalary');
+        const searchAttendance = document.getElementById('searchAttendance');
+
+        if (searchSalary) {
+            searchSalary.addEventListener('input', function() {
+                filterSettings('salarySettingsList', this.value);
+            });
+        }
+
+        if (searchAttendance) {
+            searchAttendance.addEventListener('input', function() {
+                filterSettings('attendanceSettingsList', this.value);
+            });
+        }
+    }
+
+    function filterSettings(containerId, keyword) {
+        const container = document.getElementById(containerId);
+        const cards = container.querySelectorAll('.setting-card');
+
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            const key = card.dataset.key.toLowerCase();
+            
+            if (text.includes(keyword.toLowerCase()) || key.includes(keyword.toLowerCase())) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // ========== SAVE ALL SETTINGS ==========
+    async function saveAllSettings() {
+        if (modifiedSettings.size === 0) {
+            Swal.fire('Lưu ý', 'Không có cấu hình nào được thay đổi', 'info');
+            return;
+        }
+
+        // Thu thập dữ liệu cần lưu
+        const requests = [];
+        modifiedSettings.forEach(key => {
+            const input = document.querySelector(`[data-key="${key}"]`);
+            if (input) {
+                requests.push({
+                    settingKey: key,
+                    settingValue: input.value
                 });
-                document.getElementById('video').srcObject = stream;
-            } catch (err) {
-                console.error('Camera error:', err);
+            }
+        });
+
+        if (requests.length === 0) return;
+
+        Swal.fire({ title: 'Đang lưu...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
+
+        try {
+            const response = await fetch('/Settings/BatchUpdateSettings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requests)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi Camera',
-                    text: 'Không thể truy cập camera. Vui lòng kiểm tra quyền truy cập hoặc chuyển sang chế độ tải ảnh.',
-                    confirmButtonText: 'Chuyển sang tải ảnh'
-                }).then(() => {
-                    document.getElementById('modeUpload').checked = true;
-                    document.getElementById('modeUpload').dispatchEvent(new Event('change'));
-                });
-            }
-        }
-
-        function capturePhoto() {
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            const capturedImage = document.getElementById('capturedImage');
-
-            // FIX ẢNH ĐIỆN THOẠI: Resize ảnh về kích thước hợp lý (Max width 1024px)
-            // Giúp giảm dung lượng file upload và hiển thị nhanh hơn
-            const MAX_WIDTH = 1024;
-            let width = video.videoWidth;
-            let height = video.videoHeight;
-
-            if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, width, height);
-
-            // Chuyển sang Blob (JPEG quality 0.8)
-            canvas.toBlob(blob => {
-                capturedBlob = blob;
-                capturedImage.src = URL.createObjectURL(blob);
-                capturedImage.style.display = 'block';
-                video.style.display = 'none';
-                document.getElementById('btnCapture').style.display = 'none';
-                document.getElementById('btnRetake').style.display = 'inline-block';
-                updateButtonsState();
-            }, 'image/jpeg', 0.8);
-        }
-
-        function retakePhoto() {
-            document.getElementById('video').style.display = 'block';
-            document.getElementById('capturedImage').style.display = 'none';
-            document.getElementById('btnCapture').style.display = 'inline-block';
-            document.getElementById('btnRetake').style.display = 'none';
-            capturedBlob = null;
-            updateButtonsState();
-        }
-
-        // ========== LOCATION (FIX GPS BIẾN MẤT) ==========
-        async function getLocation(isRetry = false) {
-            // Nếu đã có vị trí và không phải là retry/refresh, không làm gì cả để tránh nhấp nháy
-            if (isLocationLocked && !isRetry) return;
-            if (isGettingLocation) return;
-
-            if (!navigator.geolocation) {
-                showLocationError('Trình duyệt không hỗ trợ GPS');
-                return;
-            }
-
-            isGettingLocation = true;
-
-            // Chỉ hiện loading nếu chưa có vị trí hoặc đang retry
-            document.getElementById('locationInfo').innerHTML = `
-                <div class="alert alert-info">
-                    <div class="d-flex align-items-center">
-                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                        <div><strong>Đang lấy vị trí GPS...</strong></div>
-                    </div>
-                </div>
-            `;
-
-            try {
-                const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true,
-                        timeout: 10000,
-                        maximumAge: 0
-                    });
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: data.message,
+                    confirmButtonText: 'OK'
                 });
 
-                latitude = position.coords.latitude;
-                longitude = position.coords.longitude;
-                const accuracy = position.coords.accuracy;
-
-                // Gọi API lấy địa chỉ
-                await getAddressFromServer(latitude, longitude, accuracy);
-
-                isGettingLocation = false;
-                isLocationLocked = true; // Khóa vị trí để không bị loading lại
-
-            } catch (error) {
-                console.error('Location error:', error);
-                isGettingLocation = false;
-                isLocationLocked = false;
-
-                let msg = 'Không thể lấy vị trí.';
-                if (error.code === 1) msg = 'Vui lòng cho phép truy cập vị trí.';
-                else if (error.code === 2) msg = 'Vị trí không khả dụng. Kiểm tra GPS.';
-                else if (error.code === 3) msg = 'Hết thời gian chờ lấy vị trí.';
-
-                showLocationError(msg, true);
+                modifiedSettings.clear();
+                updateSaveAllButton();
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
             }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+            console.error(err);
+        }
+    }
+
+    // ========== AUTO GENERATE KEY ==========
+    function autoGenerateKey() {
+        const description = document.getElementById('createDescription').value;
+        const applyMethod = document.querySelector('input[name="applyMethod"]:checked')?.value || '';
+
+        if (!description) {
+            document.getElementById('createKey').value = '';
+            return;
         }
 
-        function showLocationError(msg, showRetry = false) {
-            document.getElementById('locationInfo').innerHTML = `
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i> ${msg}
-                    ${showRetry ? `<button class="btn btn-sm btn-outline-warning w-100 mt-2" onclick="getLocation(true)">Thử lại</button>` : ''}
-                </div>
-            `;
-        }
-
-        async function getAddressFromServer(lat, lng, accuracy) {
-            try {
-                const response = await fetch(`/Staff/GetAddressFromCoordinatesApi?latitude=${lat}&longitude=${lng}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    currentAddress = (data.success && data.address) ? data.address : `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        // Gửi request tới backend để generate key
+        fetch('/Settings/GenerateKey', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                description: description,
+                applyMethod: applyMethod
+            })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('createKey').value = data.key;
+                const keyStatus = document.getElementById('keyStatus');
+                if (data.exists) {
+                    keyStatus.innerHTML = '<i class="fas fa-exclamation-circle" style="color: var(--warning);"></i> Key đã tồn tại, tự động đổi tên';
                 } else {
-                    currentAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    keyStatus.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Key này có sẵn';
                 }
-            } catch (err) {
-                currentAddress = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
             }
-            displayLocationSuccess(accuracy);
+        })
+        .catch(err => console.error(err));
+    }
+
+    // ========== OPEN MODALS ==========
+    function openCreateModal(category = 'Salary') {
+        document.getElementById('createForm').reset();
+        document.getElementById('createCategoryHidden').value = category;
+        document.getElementById('createCategory').value = category;
+        document.getElementById('createKey').value = '';
+        
+        // Hiển thị apply method nếu là Salary
+        const applyMethodGroup = document.getElementById('applyMethodGroup');
+        if (category === 'Salary') {
+            applyMethodGroup.style.display = 'block';
+        } else {
+            applyMethodGroup.style.display = 'none';
         }
 
-        function displayLocationSuccess(accuracy) {
-            // Fix: Hiển thị ổn định
-            document.getElementById('locationInfo').innerHTML = `
-                <div class="alert alert-success">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <strong><i class="fas fa-check-circle"></i> Đã lấy vị trí</strong>
-                            <p class="mb-0 mt-1 small"><i class="fas fa-map-marker-alt text-danger"></i> ${currentAddress}</p>
-                            <small class="text-muted">Độ chính xác: ±${Math.round(accuracy)}m</small>
-                        </div>
-                        <button class="btn btn-sm btn-light text-primary" onclick="getLocation(true)" title="Làm mới vị trí">
-                            <i class="fas fa-sync-alt"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            updateButtonsState();
+        const modal = new bootstrap.Modal(document.getElementById('createModal'));
+        modal.show();
+    }
+
+    function openEditModal(id, key, value, description, dataType, category, applyMethod) {
+        document.getElementById('editId').value = id;
+        document.getElementById('editKey').value = key;
+        document.getElementById('editValue').value = value;
+        document.getElementById('editDescription').value = description;
+        document.getElementById('editDataType').value = dataType;
+        document.getElementById('editCategory').value = category;
+        document.getElementById('editApplyMethod').value = applyMethod || '';
+
+        const modal = new bootstrap.Modal(document.getElementById('editModal'));
+        modal.show();
+    }
+
+    async function openTrashModal() {
+        const modal = new bootstrap.Modal(document.getElementById('trashModal'));
+        modal.show();
+
+        // Load trash list
+        try {
+            const response = await fetch('/Settings/GetTrashList');
+            const data = await response.json();
+
+            if (data.success) {
+                const tbody = document.getElementById('trashTableBody');
+                tbody.innerHTML = '';
+
+                if (data.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Thùng rác trống</td></tr>';
+                } else {
+                    data.data.forEach(item => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><code>${item.settingKey}</code></td>
+                                <td>${item.description}</td>
+                                <td>${item.settingValue}</td>
+                                <td>${item.category}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="restoreSetting(${item.settingId})">
+                                        <i class="fas fa-undo"></i> Khôi phục
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="permanentDelete(${item.settingId})">
+                                        <i class="fas fa-trash"></i> Xóa vĩnh viễn
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function openBackupModal() {
+        const modal = new bootstrap.Modal(document.getElementById('backupModal'));
+        modal.show();
+
+        // Load backup files
+        try {
+            const response = await fetch('/Settings/GetBackupFiles');
+            const data = await response.json();
+
+            if (data.success) {
+                const tbody = document.getElementById('backupTableBody');
+                tbody.innerHTML = '';
+
+                if (data.backups.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">Không có backup nào</td></tr>';
+                } else {
+                    data.backups.forEach(file => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${file.fileName}</td>
+                                <td>${(file.size / 1024).toFixed(2)} KB</td>
+                                <td>${file.created}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="restoreFromBackup('${file.fileName}')">
+                                        <i class="fas fa-history"></i> Restore
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="deleteBackup('${file.fileName}')">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // ========== CREATE SETTING ==========
+    async function createSetting() {
+        const key = document.getElementById('createKey').value;
+        const value = document.getElementById('createValue').value;
+        const description = document.getElementById('createDescription').value;
+        const dataType = document.getElementById('createDataType').value;
+        const category = document.getElementById('createCategory').value;
+        const applyMethod = document.querySelector('input[name="applyMethod"]:checked')?.value || '';
+
+        if (!key || !value || !description) {
+            Swal.fire('Lỗi', 'Vui lòng điền đầy đủ thông tin', 'error');
+            return;
         }
 
-        // ========== FILE UPLOAD ==========
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedFile = file;
-                    document.getElementById('uploadPlaceholder').style.display = 'none';
-                    document.getElementById('uploadedImage').src = e.target.result;
-                    document.getElementById('uploadedImage').style.display = 'block';
-                    document.getElementById('btnClearUpload').style.display = 'inline-block';
-                    updateButtonsState();
-                };
-                reader.readAsDataURL(file);
+        try {
+            const response = await fetch('/Settings/CreateSetting', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    settingKey: key,
+                    settingValue: value,
+                    description: description,
+                    dataType: dataType,
+                    category: category,
+                    applyMethod: applyMethod
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
             }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
+
+    // ========== EDIT SETTING ==========
+    async function editSetting() {
+        const id = document.getElementById('editId').value;
+        const key = document.getElementById('editKey').value;
+        const value = document.getElementById('editValue').value;
+        const description = document.getElementById('editDescription').value;
+        const dataType = document.getElementById('editDataType').value;
+        const category = document.getElementById('editCategory').value;
+        const applyMethod = document.getElementById('editApplyMethod').value;
+
+        try {
+            const response = await fetch('/Settings/EditSetting', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    settingId: parseInt(id),
+                    settingKey: key,
+                    settingValue: value,
+                    description: description,
+                    dataType: dataType,
+                    category: category,
+                    applyMethod: applyMethod
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
+
+    // ========== TOGGLE SETTING STATUS ==========
+    async function toggleSettingStatus(id, key) {
+        try {
+            const response = await fetch('/Settings/ToggleSettingStatus', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ settingId: id })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
+
+    // ========== MOVE TO TRASH ==========
+    async function moveToTrash(id) {
+        const result = await Swal.fire({
+            title: 'Xác nhận',
+            text: 'Bạn chắc chắn muốn chuyển cấu hình này vào thùng rác?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Xóa'
         });
 
-        document.getElementById('uploadPlaceholder').addEventListener('click', () => document.getElementById('fileInput').click());
+        if (!result.isConfirmed) return;
 
-        function clearUploadedImage() {
-            uploadedFile = null;
-            document.getElementById('uploadedImage').style.display = 'none';
-            document.getElementById('uploadPlaceholder').style.display = 'flex';
-            document.getElementById('btnClearUpload').style.display = 'none';
-            document.getElementById('fileInput').value = '';
-            updateButtonsState();
-        }
-
-        function updateButtonsState() {
-            const hasPhoto = capturedBlob !== null || uploadedFile !== null;
-            const hasLocation = latitude !== null && longitude !== null;
-
-            const btnCheckIn = document.getElementById('btnCheckIn');
-            const btnCheckOut = document.getElementById('btnCheckOut');
-
-            if (btnCheckIn) btnCheckIn.disabled = !(hasPhoto && hasLocation);
-            if (btnCheckOut) btnCheckOut.disabled = !(hasPhoto && hasLocation);
-        }
-
-        // ========== CHECK IN/OUT POPUP LOGIC ==========
-
-        function getCurrentTimeStr() {
-            const now = new Date();
-            return now.toTimeString().split(' ')[0].substring(0, 5); // HH:mm
-        }
-
-        async function checkIn() {
-            const photoFile = capturedBlob || uploadedFile;
-            if (!photoFile || !latitude || !longitude) {
-                Swal.fire('Thiếu thông tin', 'Vui lòng chụp ảnh và đợi lấy vị trí GPS', 'warning');
-                return;
-            }
-
-            // Tính toán trạng thái hiển thị trên popup
-            const nowStr = getCurrentTimeStr(); // HH:mm hiện tại
-            let statusHtml = '';
-            if (nowStr > STANDARD_START_TIME) {
-                statusHtml = `<span class="badge bg-danger fs-6">Đi trễ</span> <small class="text-muted">(Chuẩn: ${STANDARD_START_TIME})</small>`;
-            } else {
-                statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
-            }
-
-            // POPUP XÁC NHẬN CHECK-IN
-            const result = await Swal.fire({
-                title: 'Xác nhận Check-in',
-                html: `
-                    <div class="text-start p-3 bg-light rounded">
-                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Thời gian:</strong> ${nowStr}</p>
-                        <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
-                        <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
-                    </div>
-                    <div class="mt-3 text-center">
-                        <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
-                             style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
-                    </div>
-                `,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-check"></i> Xác nhận Check-in',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#6c757d',
-                reverseButtons: true
+        try {
+            const response = await fetch('/Settings/MoveToTrash?id=' + id, {
+                method: 'POST'
             });
 
-            if (!result.isConfirmed) return;
+            const data = await response.json();
 
-            // Gửi dữ liệu
-            const formData = new FormData();
-            formData.append('Photo', photoFile, 'checkin.jpg');
-            formData.append('Latitude', latitude);
-            formData.append('Longitude', longitude);
-            formData.append('Address', currentAddress);
-            formData.append('Notes', document.getElementById('attendanceNotes').value);
-
-            Swal.fire({ title: 'Đang Check-in...', text: 'Vui lòng đợi giây lát', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-            try {
-                const response = await fetch('/Staff/CheckIn', { method: 'POST', body: formData });
-                const data = await response.json();
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Check-in thành công!',
-                        html: data.message.replace(/\n/g, '<br>'),
-                        confirmButtonText: 'Tuyệt vời'
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire('Lỗi', data.message, 'error');
-                }
-            } catch (err) {
-                Swal.fire('Lỗi kết nối', err.message, 'error');
-            }
-        }
-
-        async function checkOut() {
-            const photoFile = capturedBlob || uploadedFile;
-            if (!photoFile || !latitude || !longitude) {
-                Swal.fire('Thiếu thông tin', 'Vui lòng chụp ảnh và đợi lấy vị trí GPS', 'warning');
-                return;
-            }
-
-            // Tính toán trạng thái hiển thị trên popup
-            const nowStr = getCurrentTimeStr();
-            let statusHtml = '';
-            if (nowStr < STANDARD_END_TIME) {
-                statusHtml = `<span class="badge bg-warning text-dark fs-6">Về sớm</span> <small class="text-muted">(Chuẩn: ${STANDARD_END_TIME})</small>`;
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    location.reload();
+                });
             } else {
-                statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
+                Swal.fire('Lỗi', data.message, 'error');
             }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
 
-            // POPUP XÁC NHẬN CHECK-OUT
-            const result = await Swal.fire({
-                title: 'Xác nhận Check-out',
-                html: `
-                    <div class="text-start p-3 bg-light rounded">
-                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Thời gian:</strong> ${nowStr}</p>
-                        <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
-                        <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
-                    </div>
-                    <div class="mt-3 text-center">
-                        <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
-                             style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
-                    </div>
-                `,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-sign-out-alt"></i> Xác nhận Check-out',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                reverseButtons: true
+    // ========== RESTORE SETTING ==========
+    async function restoreSetting(id) {
+        try {
+            const response = await fetch('/Settings/RestoreSetting?id=' + id, {
+                method: 'POST'
             });
 
-            if (!result.isConfirmed) return;
+            const data = await response.json();
 
-            const formData = new FormData();
-            formData.append('Photo', photoFile, 'checkout.jpg');
-            formData.append('Latitude', latitude);
-            formData.append('Longitude', longitude);
-            formData.append('Address', currentAddress);
-            formData.append('Notes', document.getElementById('attendanceNotes').value);
-
-            Swal.fire({ title: 'Đang Check-out...', text: 'Đang tổng hợp công...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-            try {
-                const response = await fetch('/Staff/CheckOut', { method: 'POST', body: formData });
-                const data = await response.json();
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Check-out thành công!',
-                        html: data.message.replace(/\n/g, '<br>'),
-                        confirmButtonText: 'Hẹn gặp lại'
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire('Lỗi', data.message, 'error');
-                }
-            } catch (err) {
-                Swal.fire('Lỗi kết nối', err.message, 'error');
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
             }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
         }
+    }
 
-        // ========== INIT ==========
-        // Giữ nguyên các hàm checkAttendanceStatus, loadMyTasks, renderTasks...
-        // ... (Copy lại các hàm loadMyTasks, renderTasks, checkAttendanceStatus từ code cũ của bạn vào đây) ...
+    // ========== PERMANENT DELETE ==========
+    async function permanentDelete(id) {
+        const result = await Swal.fire({
+            title: 'Cảnh báo!',
+            text: 'Xóa vĩnh viễn không thể hoàn tác!',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Xóa'
+        });
 
-        async function checkAttendanceStatus() {
-             try {
-                const response = await fetch('/Staff/GetTodayAttendance');
-                const data = await response.json();
+        if (!result.isConfirmed) return;
 
-                const statusDiv = document.getElementById('attendanceStatus');
-                const checkInSection = document.getElementById('checkInSection');
-                const checkOutSection = document.getElementById('checkOutSection');
-                const completedSection = document.getElementById('completedSection');
+        try {
+            const response = await fetch('/Settings/PermanentDelete?id=' + id, {
+                method: 'POST'
+            });
 
-                if (data.hasCheckedIn) {
-                    statusDiv.style.display = 'none';
-                    if (data.hasCheckedOut) {
-                        checkInSection.style.display = 'none';
-                        checkOutSection.style.display = 'none';
-                        completedSection.style.display = 'block';
-                        completedSection.innerHTML = `
-                            <div class="alert alert-success">
-                                <h5><i class="fas fa-check-double"></i> Đã hoàn tất!</h5>
-                                <hr>
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <small>Check-in</small>
-                                        <br><strong>${data.checkInTime}</strong>
-                                    </div>
-                                    <div class="col-6">
-                                        <small>Check-out</small>
-                                        <br><strong>${data.checkOutTime}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        checkInSection.style.display = 'none';
-                        checkOutSection.style.display = 'block';
-                        checkInTimeValue = data.checkInTime;
-                        updateWorkingHours();
-                    }
-                } else {
-                    statusDiv.style.display = 'none';
-                    checkInSection.style.display = 'block';
-                }
-                updateButtonsState();
-            } catch (error) {
-                console.error('Error:', error);
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
             }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
+
+    // ========== UPDATE TRASH COUNT ==========
+    async function updateTrashCount() {
+        try {
+            const response = await fetch('/Settings/GetTrashList');
+            const data = await response.json();
+
+            if (data.success && data.data) {
+                document.getElementById('trashCount').textContent = data.data.length;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // ========== LAYOUT EDITOR ==========
+    async function loadLayout(layoutType) {
+        currentLayoutType = layoutType;
+
+        try {
+            const response = await fetch(`/Settings/GetLayoutContent?layoutType=${layoutType}`);
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('layoutEditor').value = data.content;
+                document.getElementById('currentLayoutName').textContent = data.fileName;
+                document.getElementById('fileName').textContent = data.fileName;
+                document.getElementById('lastModified').textContent = data.lastModified;
+                document.getElementById('layoutInfo').style.display = 'block';
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
+
+    async function saveLayout() {
+        if (!currentLayoutType) {
+            Swal.fire('Lỗi', 'Vui lòng load layout trước khi lưu', 'error');
+            return;
         }
 
-        function updateWorkingHours() {
-            if (!checkInTimeValue) return;
-            const updateHours = () => {
-                const now = new Date();
-                const checkIn = new Date(`${now.toDateString()} ${checkInTimeValue}`);
-                const diff = now - checkIn;
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
-                const el = document.querySelector('.sd-check-info');
-                if (el) {
-                    el.innerHTML = `
-                        <div class="alert alert-info">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i class="fas fa-sign-in-alt me-2"></i>
-                                    <strong>Đã check-in:</strong> <code>${checkInTimeValue}</code>
-                                </div>
-                                <div class="badge bg-primary fs-6">
-                                    <i class="fas fa-clock me-1"></i>
-                                    ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            };
-            updateHours();
-            setInterval(updateHours, 1000);
+        const content = document.getElementById('layoutEditor').value;
+
+        Swal.fire({ title: 'Đang lưu...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
+
+        try {
+            const response = await fetch('/Settings/SaveLayoutFile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    layoutType: currentLayoutType,
+                    content: content
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success');
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
         }
+    }
 
-        // Tải công việc và init
-        window.onload = async function() {
-            console.log('🚀 Initializing Staff Dashboard...');
-            await initCamera();
-            await getLocation();
-            await checkAttendanceStatus();
-            // Hàm loadMyTasks bạn giữ nguyên từ code cũ
-            if (typeof loadMyTasks === "function") await loadMyTasks();
-            console.log('✅ Dashboard initialized');
-        };
+    async function restoreFromBackup(fileName) {
+        const result = await Swal.fire({
+            title: 'Xác nhận',
+            text: `Restore từ ${fileName}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Restore'
+        });
 
-        window.onbeforeunload = function() {
-            if (stream) stream.getTracks().forEach(track => track.stop());
-        };
-    </script>
+        if (!result.isConfirmed) return;
+
+        try {
+            const response = await fetch('/Settings/RestoreFromBackup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ backupFileName: fileName })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
+
+    async function deleteBackup(fileName) {
+        const result = await Swal.fire({
+            title: 'Xóa backup',
+            text: 'Bạn chắc chắn?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Xóa'
+        });
+
+        if (!result.isConfirmed) return;
+
+        try {
+            const response = await fetch('/Settings/DeleteBackup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ backupFileName: fileName })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                Swal.fire('Thành công', data.message, 'success').then(() => {
+                    openBackupModal(); // Reload backup list
+                });
+            } else {
+                Swal.fire('Lỗi', data.message, 'error');
+            }
+        } catch (err) {
+            Swal.fire('Lỗi kết nối', err.message, 'error');
+        }
+    }
+
+    // ========== SAVE ALL BUTTON EVENT ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnSaveAll = document.getElementById('btnSaveAll');
+        if (btnSaveAll) {
+            btnSaveAll.addEventListener('click', saveAllSettings);
+        }
+    });
+
+</script>
 }
