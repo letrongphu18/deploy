@@ -497,3 +497,74 @@ body.staff-dark-mode .aihub-audit-ip {
         width: 100%;
     }
 }
+/* Pagination Styles */
+.aihub-audit-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding: 16px 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.aihub-audit-pagination-info {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.aihub-audit-pagination-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.aihub-audit-pagination-btn {
+    min-width: 40px;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+    .aihub-audit-pagination-btn:hover:not(:disabled) {
+        background: #f8fafc;
+        border-color: #7A3F30;
+        color: #7A3F30;
+    }
+
+    .aihub-audit-pagination-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+.aihub-audit-pagination-btn--active {
+    background: #7A3F30;
+    color: white;
+    border-color: #7A3F30;
+}
+
+.aihub-audit-pagination-ellipsis {
+    color: #94a3b8;
+    padding: 0 8px;
+}
+
+@media (max-width: 768px) {
+    .aihub-audit-pagination {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .aihub-audit-pagination-controls {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}

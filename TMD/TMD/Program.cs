@@ -3,7 +3,8 @@ using TMD.Models;
 using AIHUBOS.Helpers;
 using AIHUBOS.Services;
 using AIHUBOS.Hubs;
-
+using Hangfire.SqlServer;
+using Hangfire;
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================
@@ -31,7 +32,22 @@ builder.Services.AddScoped<AihubSystemContext>(provider =>
 	var factory = provider.GetRequiredService<IDbContextFactory<AihubSystemContext>>();
 	return factory.CreateDbContext();
 });
+builder.Services.AddScoped<IAuditCleanupService, AuditCleanupService>();
+builder.Services.AddHangfire(config =>
+	config
+		.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+		.UseSimpleAssemblyNameTypeSerializer()
+		.UseRecommendedSerializerSettings()
+		.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"), new SqlServerStorageOptions
+		{
+			CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+			SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+			QueuePollInterval = TimeSpan.Zero,
+			UseRecommendedIsolationLevel = true,
+			DisableGlobalLocks = true
+		}));
 
+builder.Services.AddHangfireServer();
 // ============================================
 // 2. SESSION CONFIGURATION
 // ============================================

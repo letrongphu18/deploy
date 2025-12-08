@@ -84,8 +84,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>oa80vubkv7</Fingerprint>
-      <Integrity>AJE34FoxlxluYgOaBeiFkpykMw88w5Du20Vx0UBCTpM=</Integrity>
+      <Fingerprint>92h6byvf4v</Fingerprint>
+      <Integrity>4f7AC+x5W4wRwUTucgJVN1eEtbUommgQ8XXNUOrx1VM=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\audit-logs.css'))</OriginalItemSpec>

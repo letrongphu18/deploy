@@ -689,7 +689,6 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\scopedcss\projectbundle\TMD
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\6fgpefhmu5-e4w56dvxfl.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\gtbsh4fv8z-eg6nctajdx.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\3mj6o5yuf7-p678wqel0n.gz
-E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\gfcs0w108j-oa80vubkv7.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\hxympk3u9e-gp37md6f29.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\9kop78m6sp-mdb4jsk2lk.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\6g42rt434v-vs0ng5fpp1.gz
@@ -813,3 +812,8 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\TMD.genruntimeconfig.cache
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\ref\TMD.dll
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\ctnkjuzzcg-t2ar98rpmp.gz
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\1jishpc1v9-iagmezfa6d.gz
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\bin\Debug\net9.0\Hangfire.AspNetCore.dll
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\bin\Debug\net9.0\Hangfire.Core.dll
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\bin\Debug\net9.0\Hangfire.NetCore.dll
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\bin\Debug\net9.0\Hangfire.SqlServer.dll
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\gfcs0w108j-92h6byvf4v.gz

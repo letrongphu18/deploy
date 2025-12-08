@@ -11,7 +11,7 @@
         <h2 class="aihub-audit-title">
             <i class="fas fa-clipboard-list"></i> Nhật ký hoạt động hệ thống
         </h2>
-        <p>Theo dõi tất cả hoạt động trong hệ thống - Tổng: <strong>@Model.Count</strong> bản ghi</p>
+        <p>Theo dõi tất cả hoạt động trong hệ thống - Tổng: <strong>@Model.Count</strong> bản ghi (trang này)</p>
     </div>
 
     <!-- FILTERS -->
@@ -22,9 +22,9 @@
                     <label class="aihub-audit-form-label">Loại hành động</label>
                     <select name="action" class="aihub-audit-form-select">
                         <option value="">Tất cả</option>
-                        @foreach (var act in ViewBag.Actions as List<string>)
+                        @foreach (var act in ViewBag.Actions as List<string> ?? new List<string>())
                         {
-                            <option value="@act" selected="@(act == ViewBag.SelectedAction)">@act</option>
+                            <option value="@act" selected="@(act == (string)ViewBag.SelectedAction)">@act</option>
                         }
                     </select>
                 </div>
@@ -64,89 +64,92 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var log in Model)
+                    @if (Model != null && Model.Count > 0)
                     {
-                        <tr>
-                            <td>
-                                <div class="aihub-audit-timestamp">
-                                    <i class="far fa-clock"></i>
-                                    <div>
-                                        <div class="aihub-audit-timestamp-date">@log.Timestamp?.ToString("dd/MM/yyyy")</div>
-                                        <div class="aihub-audit-timestamp-time">@log.Timestamp?.ToString("HH:mm:ss")</div>
+                        @foreach (var log in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="aihub-audit-timestamp">
+                                        <i class="far fa-clock"></i>
+                                        <div>
+                                            <div class="aihub-audit-timestamp-date">@(log.Timestamp?.ToString("dd/MM/yyyy") ?? "N/A")</div>
+                                            <div class="aihub-audit-timestamp-time">@(log.Timestamp?.ToString("HH:mm:ss") ?? "N/A")</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="aihub-audit-user-info">
-                                    <div class="aihub-audit-user-avatar">
-                                        @if (!string.IsNullOrEmpty(log.User?.Avatar) && log.User.Avatar != "/images/default-avatar.png")
+                                </td>
+                                <td>
+                                    <div class="aihub-audit-user-info">
+                                        <div class="aihub-audit-user-avatar">
+                                            @if (log.User != null && !string.IsNullOrEmpty(log.User.Avatar) && log.User.Avatar != "/images/default-avatar.png")
+                                            {
+                                                <img src="@log.User.Avatar" alt="@log.User.FullName"
+                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="aihub-audit-user-avatar-placeholder" style="display:none;">@(log.User?.FullName?.Substring(0, 1) ?? "?")</div>
+                                            }
+                                            else
+                                            {
+                                                <div class="aihub-audit-user-avatar-placeholder">@(log.User?.FullName?.Substring(0, 1) ?? "?")</div>
+                                            }
+                                        </div>
+                                        <div>
+                                            <div class="aihub-audit-user-name">@(log.User?.FullName ?? "System")</div>
+                                            <div class="aihub-audit-user-username">@(log.User?.Username ?? "-")</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="aihub-audit-action-badge aihub-audit-action-badge--@(log.Action?.ToLower().Replace("_", "-") ?? "unknown")">
+                                        <i class="fas fa-@(GetActionIcon(log.Action))"></i>
+                                        @(log.Action ?? "UNKNOWN")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="aihub-audit-entity-info">
+                                        <div class="aihub-audit-entity-name">@(log.EntityName ?? "N/A")</div>
+                                        @if (log.EntityId.HasValue)
                                         {
-                                            <img src="@log.User.Avatar" alt="@log.User.FullName"
-                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                            <div class="aihub-audit-user-avatar-placeholder" style="display:none;">@(log.User?.FullName?.Substring(0, 1) ?? "?")</div>
-                                        }
-                                        else
-                                        {
-                                            <div class="aihub-audit-user-avatar-placeholder">@(log.User?.FullName?.Substring(0, 1) ?? "?")</div>
+                                            <div class="aihub-audit-entity-id">ID: @log.EntityId</div>
                                         }
                                     </div>
-                                    <div>
-                                        <div class="aihub-audit-user-name">@(log.User?.FullName ?? "System")</div>
-                                        <div class="aihub-audit-user-username">@(log.User?.Username ?? "-")</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="aihub-audit-action-badge aihub-audit-action-badge--@(log.Action?.ToLower().Replace("_", "-") ?? "unknown")">
-                                    <i class="fas fa-@(GetActionIcon(log.Action))"></i>
-                                    @log.Action
-                                </span>
-                            </td>
-                            <td>
-                                <div class="aihub-audit-entity-info">
-                                    <div class="aihub-audit-entity-name">@log.EntityName</div>
-                                    @if (log.EntityId.HasValue)
+                                </td>
+                                <td>
+                                    <div class="aihub-audit-description">@(log.Description ?? "N/A")</div>
+                                </td>
+                                <td>
+                                    <div class="aihub-audit-ip">@(log.Ipaddress ?? "-")</div>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(log.OldValue) || !string.IsNullOrEmpty(log.NewValue))
                                     {
-                                        <div class="aihub-audit-entity-id">ID: @log.EntityId</div>
+                                        <button class="aihub-audit-btn-icon"
+                                                onclick='viewDetails(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
+                                                    id = log.AuditLogId,
+                                                    oldValue = log.OldValue,
+                                                    newValue = log.NewValue,
+                                                    action = log.Action,
+                                                    entity = log.EntityName,
+                                                    timestamp = log.Timestamp?.ToString("dd/MM/yyyy HH:mm:ss"),
+                                                    user = log.User?.FullName ?? "System"
+                                                })))'
+                                                title="Xem chi tiết">
+                                            <i class="fas fa-info-circle"></i>
+                                        </button>
                                     }
-                                </div>
-                            </td>
-                            <td>
-                                <div class="aihub-audit-description">@log.Description</div>
-                            </td>
-                            <td>
-                                <div class="aihub-audit-ip">@(log.Ipaddress ?? "-")</div>
-                            </td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(log.OldValue) || !string.IsNullOrEmpty(log.NewValue))
-                                {
-                                    <button class="aihub-audit-btn-icon"
-                                            onclick='viewDetails(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
-                                                id = log.AuditLogId,
-                                                oldValue = log.OldValue,
-                                                newValue = log.NewValue,
-                                                action = log.Action,
-                                                entity = log.EntityName,
-                                                timestamp = log.Timestamp?.ToString("dd/MM/yyyy HH:mm:ss"),
-                                                user = log.User?.FullName ?? "System"
-                                            })))'
-                                            title="Xem chi tiết">
-                                        <i class="fas fa-info-circle"></i>
-                                    </button>
-                                }
-                                else
-                                {
-                                    <span class="aihub-audit-no-data">-</span>
-                                }
-                            </td>
-                        </tr>
+                                    else
+                                    {
+                                        <span class="aihub-audit-no-data">-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
         </div>
     </div>
 
-    @if (!Model.Any())
+    @if (Model == null || !Model.Any())
     {
         <div class="aihub-audit-empty-state">
             <i class="fas fa-clipboard-list"></i>
@@ -172,6 +175,11 @@
             "CHECK_IN" => "sign-in-alt",
             "CHECK_OUT" => "sign-out-alt",
             "TASK_REPORT" => "clipboard-check",
+            "VIEW" => "eye",
+            "IMPORT" => "file-import",
+            "EXPORT" => "file-export",
+            "REVIEW" => "check-double",
+            "AUTO_REJECT" => "ban",
             _ => "eye"
         };
     }
@@ -230,6 +238,7 @@
                     confirmButtonText: '<i class="fas fa-times"></i> Đóng'
                 });
             } catch (error) {
+                console.error('Error:', error);
                 Swal.fire({
                     icon: 'error',
                     title: 'Lỗi',

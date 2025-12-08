@@ -6,7 +6,6 @@
 <link href="~/css/user-management.css" rel="stylesheet" />
 
 <div class="um-container">
-    <!-- PAGE HEADER -->
     <header class="um-page-header">
         <div class="um-d-flex um-justify-between um-align-center">
             <div>
@@ -27,19 +26,12 @@
         </div>
     </header>
 
-    <!-- STATISTICS CARDS -->
     <section class="um-stats-grid">
         <div class="um-stats-card um-stats-primary">
             <div class="um-stats-icon"><i class="fas fa-users"></i></div>
             <div class="um-stats-content">
                 <div class="um-stats-label">Tổng người dùng</div>
-                <div class="um-stats-value">
-                    @(
-                        ViewBag.TotalUsers != null
-                        ? (int)ViewBag.TotalUsers
-                        : Model.TotalCount
-                        )
-                </div>
+                <div class="um-stats-value">@ViewBag.TotalUsers</div>
             </div>
         </div>
 
@@ -47,148 +39,104 @@
             <div class="um-stats-icon"><i class="fas fa-user-check"></i></div>
             <div class="um-stats-content">
                 <div class="um-stats-label">Đang hoạt động</div>
-                <div class="um-stats-value">
-                    @(
-                        ViewBag.ActiveUsers != null
-                        ? (int)ViewBag.ActiveUsers
-                        : Model.Users.Count(u => u.IsActive == true)
-                        )
-                    <small class="um-stats-note">@((ViewBag.ActiveUsers != null) ? "" : "(trên trang)")</small>
-                </div>
+                <div class="um-stats-value">@ViewBag.ActiveUsers</div>
             </div>
         </div>
 
         <div class="um-stats-card um-stats-warning">
             <div class="um-stats-icon"><i class="fas fa-crown"></i></div>
             <div class="um-stats-content">
-                <div class="um-stats-label">Admin</div>
-                <div class="um-stats-value">
-                    @(
-                        ViewBag.AdminCount != null
-                        ? (int)ViewBag.AdminCount
-                        : Model.Users.Count(u => u.Role?.RoleName == "Admin")
-                        )
-                    <small class="um-stats-note">@((ViewBag.AdminCount != null) ? "" : "(trên trang)")</small>
-                </div>
+                <div class="um-stats-label">Vô hiệu hóa</div>
+                <div class="um-stats-value">@(ViewBag.TotalUsers - ViewBag.ActiveUsers)</div>
             </div>
         </div>
 
-        <div class="um-stats-card um-stats-danger">
-            <div class="um-stats-icon"><i class="fas fa-user-slash"></i></div>
+        <div class="um-stats-card um-stats-info">
+            <div class="um-stats-icon"><i class="fas fa-building"></i></div>
             <div class="um-stats-content">
-                <div class="um-stats-label">Vô hiệu hóa</div>
-                <div class="um-stats-value">
-                    @(
-                        ViewBag.InactiveUsers != null
-                        ? (int)ViewBag.InactiveUsers
-                        : Model.Users.Count(u => u.IsActive == false)
-                        )
-                    <small class="um-stats-note">@((ViewBag.InactiveUsers != null) ? "" : "(trên trang)")</small>
-                </div>
+                <div class="um-stats-label">Phòng ban</div>
+                <div class="um-stats-value">@ViewBag.TotalDepartments</div>
             </div>
         </div>
     </section>
 
-    <!-- FILTER & SEARCH -->
     <section class="um-card um-mb-4">
         <div class="um-filters-header">
             <h6><i class="fas fa-filter"></i> Bộ lọc và tìm kiếm</h6>
         </div>
 
         <div class="um-card-body">
-            <form method="get" id="filterForm" class="um-row" action="@Url.Action("UserList","Admin")">
-                <input type="hidden" name="pageSize" value="@Model.PageSize" />
-                <div class="um-col-4">
-                    <label class="um-form-label"><i class="fas fa-search"></i> Tìm kiếm</label>
-                    <div class="um-search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchInput" name="search" value="@Model.Search" class="um-form-control" placeholder="Tên, username, email..." />
+            <form method="get" action="@Url.Action("UserList")" id="filterForm">
+                <div class="um-row">
+                    <div class="um-col-4">
+                        <label class="um-form-label"><i class="fas fa-search"></i> Tìm kiếm</label>
+                        <div class="um-search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" name="search" id="searchInput"
+                                   class="um-form-control"
+                                   placeholder="Tên, username, email, SĐT..."
+                                   value="@Model.Search" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="um-col-2">
-                    <label class="um-form-label"><i class="fas fa-building"></i> Phòng ban</label>
-                    <select id="deptFilter" name="departmentId" class="um-form-control">
-                        <option value="">Tất cả</option>
-                        @{
-                            var depts = Model.Departments ?? new List<TMD.Models.Department>();
-                        }
-                        @foreach (var dept in depts)
-                        {
-                            if (Model.DepartmentId.HasValue && Model.DepartmentId.Value == dept.DepartmentId)
-                            {
-                                <option value="@dept.DepartmentId" selected>@dept.DepartmentName</option>
+                    <div class="um-col-2">
+                        <label class="um-form-label"><i class="fas fa-building"></i> Phòng ban</label>
+                        <select name="departmentId" id="deptFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
+                            <option value="">Tất cả phòng ban</option>
+                            @{
+                                var depts = Model.Departments ?? new List<TMD.Models.Department>();
                             }
-                            else
+                            @foreach (var dept in depts)
                             {
-                                <option value="@dept.DepartmentId">@dept.DepartmentName</option>
+                                <!option value="@dept.DepartmentId" @(Model.DepartmentId == dept.DepartmentId ? "selected" : "")>@dept.DepartmentName</!option>
                             }
-                        }
-                    </select>
-                </div>
+                        </select>
+                    </div>
 
-                <div class="um-col-2">
-                    <label class="um-form-label"><i class="fas fa-user-tag"></i> Vai trò</label>
-                    <select id="roleFilter" name="roleName" class="um-form-control">
-                        <option value="">Tất cả</option>
-                        @if (Model.Roles != null && Model.Roles.Any())
-                        {
-                            foreach (var r in Model.Roles)
+                    <div class="um-col-2">
+                        <label class="um-form-label"><i class="fas fa-user-tag"></i> Vai trò</label>
+                        <select name="roleName" id="roleFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
+                            <option value="">Tất cả vai trò</option>
+                            @if (Model.Roles != null && Model.Roles.Any())
                             {
-                                if (!string.IsNullOrEmpty(Model.RoleName) && Model.RoleName == r.RoleName)
+                                foreach (var r in Model.Roles)
                                 {
-                                    <option value="@r.RoleName" selected>@r.RoleName</option>
-                                }
-                                else
-                                {
-                                    <option value="@r.RoleName">@r.RoleName</option>
+                                    <!option value="@r.RoleName" @(Model.RoleName == r.RoleName ? "selected" : "")>@r.RoleName</!option>
                                 }
                             }
-                        }
-                    </select>
-                </div>
+                        </select>
+                    </div>
 
-                <div class="um-col-2">
-                    <label class="um-form-label"><i class="fas fa-toggle-on"></i> Trạng thái</label>
-                    <select id="statusFilter" name="status" class="um-form-control">
-                        <option value="">Tất cả</option>
-                        @if (Model.Status == "active")
-                        {
-                            <option value="active" selected>Hoạt động</option>
-                            <option value="inactive">Vô hiệu hóa</option>
-                        }
-                        else if (Model.Status == "inactive")
-                        {
-                            <option value="active">Hoạt động</option>
-                            <option value="inactive" selected>Vô hiệu hóa</option>
-                        }
-                        else
-                        {
-                            <option value="active">Hoạt động</option>
-                            <option value="inactive">Vô hiệu hóa</option>
-                        }
-                    </select>
-                </div>
+                    <div class="um-col-2">
+                        <label class="um-form-label"><i class="fas fa-toggle-on"></i> Trạng thái</label>
+                        <select name="status" id="statusFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
+                            <option value="">Tất cả trạng thái</option>
+                            <!option value="active" @(Model.Status == "active" ? "selected" : "")>Hoạt động</!option>
+                            <!option value="inactive" @(Model.Status == "inactive" ? "selected" : "")>Vô hiệu hóa</!option>
+                        </select>
+                    </div>
 
-                <div class="um-col-2 um-flex-end">
-                    <div style="display:flex; gap:8px;">
-                        <button type="submit" class="um-btn um-btn-primary">Áp dụng</button>
-                        <a href="@Url.Action("UserList","Admin")" class="um-btn um-btn-secondary">Reset</a>
+                    <div class="um-col-2 um-flex-end">
+                        <a href="@Url.Action("UserList")" id="resetFilters" class="um-btn um-btn-secondary">
+                            <i class="fas fa-redo"></i> Xóa bộ lọc
+                        </a>
                     </div>
                 </div>
             </form>
         </div>
     </section>
 
-    <!-- USER TABLE -->
     <section class="um-card">
         <div class="um-card-header">
-            <h5 class="um-mb-0"><i class="fas fa-table"></i> Danh sách người dùng (<span id="showingCount">@Model.Users.Count</span>/<span id="totalCount">@Model.TotalCount</span>)</h5>
+            <h5 class="um-mb-0">
+                <i class="fas fa-table"></i> Danh sách người dùng
+                (<span>@Model.Users.Count</span>/<span>@Model.TotalCount</span>)
+            </h5>
         </div>
 
         <div class="um-card-body-table">
             <div class="um-table-wrapper">
-                <table class="um-table" id="userTable" role="table">
+                <table class="um-table" id="userTable">
                     <thead>
                         <tr>
                             <th width="5%">STT</th>
@@ -203,100 +151,106 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for (int i = 0; i < Model.Users.Count; i++)
+                        @if (Model.Users != null && Model.Users.Any())
                         {
-                            var user = Model.Users[i];
-                            <tr data-role="@user.Role?.RoleName"
-                                data-status="@(user.IsActive == true ? "active" : "inactive")"
-                                data-dept="@(user.DepartmentId?.ToString() ?? "")"
-                                data-fullname="@user.FullName?.ToLower()"
-                                data-username="@user.Username?.ToLower()"
-                                data-email="@user.Email?.ToLower()"
-                                data-phone="@user.PhoneNumber">
-                                <td class="um-text-center um-fw-bold">@(((Model.Page - 1) * Model.PageSize) + i + 1)</td>
-                                <td>
-                                    <div class="um-user-info">
-                                        <div class="um-user-avatar">
-                                            @if (!string.IsNullOrEmpty(user.Avatar))
-                                            {
-                                                <img src="@user.Avatar" alt="@user.FullName" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                                                <span style="display:none;">@user.FullName?.Substring(0, 1)</span>
-                                            }
-                                            else
-                                            {
-                                                <span>@(user.FullName != null ? user.FullName.Substring(0, 1) : "U")</span>
-                                            }
+                            int itemIndex = (Model.Page - 1) * Model.PageSize + 1; // Tính STT đúng theo trang
+                            foreach (var user in Model.Users)
+                            {
+                                <tr>
+                                    <td class="um-text-center um-fw-bold">@itemIndex</td>
+                                    <td>
+                                        <div class="um-user-info">
+                                            <div class="um-user-avatar">
+                                                @if (!string.IsNullOrEmpty(user.Avatar))
+                                                {
+                                                    <img src="@user.Avatar" alt="@user.FullName" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                                    <span style="display:none;">@(user.FullName?.Substring(0, 1).ToUpper() ?? "U")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@(user.FullName != null ? user.FullName.Substring(0, 1).ToUpper() : "U")</span>
+                                                }
+                                            </div>
+                                            <div class="um-user-details">
+                                                <div class="um-user-name">@user.FullName</div>
+                                                <small class="um-text-muted"><i class="fas fa-phone-alt um-me-1"></i>@(user.PhoneNumber ?? "N/A")</small>
+                                            </div>
                                         </div>
-                                        <div class="um-user-details">
-                                            <div class="um-user-name">@user.FullName</div>
-                                            <small class="um-text-muted"><i class="fas fa-phone-alt um-me-1"></i>@(user.PhoneNumber ?? "N/A")</small>
+                                    </td>
+                                    <td><span class="um-username-badge">@@@user.Username</span></td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.Email))
+                                        {
+                                            <span class="um-email"><i class="fas fa-envelope"></i>@user.Email</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.Department != null)
+                                        {
+                                            <span class="um-badge um-badge-info"><i class="fas fa-building um-me-1"></i>@user.Department.DepartmentName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.Role?.RoleName))
+                                        {
+                                            <span class="um-badge @(user.Role.RoleName == "Admin" ? "um-badge-admin" : "um-badge-secondary")">
+                                                <i class="fas fa-user um-me-1"></i> @user.Role.RoleName
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-badge um-badge-secondary">N/A</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.IsActive == true)
+                                        {
+                                            <span class="um-badge um-badge-success"><i class="fas fa-check-circle um-me-1"></i> Hoạt động</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-badge um-badge-danger"><i class="fas fa-ban um-me-1"></i> Vô hiệu</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.LastLoginAt.HasValue)
+                                        {
+                                            <div class="um-last-login"><i class="far fa-clock"></i><small>@user.LastLoginAt.Value.ToString("dd/MM/yyyy HH:mm")</small></div>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-text-muted"><small>Chưa đăng nhập</small></span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="um-action-buttons">
+                                            <a href="/Admin/EditUser/@user.UserId" class="um-action-btn" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
+                                            <button class="um-action-btn um-action-view" data-id="@user.UserId" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
+                                            <button class="um-action-btn um-action-toggle"
+                                                    onclick="toggleUserStatus(@user.UserId, '@user.FullName', '@(user.IsActive == true ? "true" : "false")')"
+                                                    title="@(user.IsActive == true ? "Vô hiệu hóa" : "Kích hoạt")">
+                                                <i class="fas fa-@(user.IsActive == true ? "ban" : "check")"></i>
+                                            </button>
+                                            <a href="/Admin/ResetUserPassword/@user.UserId" class="um-action-btn" title="Reset mật khẩu"><i class="fas fa-key"></i></a>
                                         </div>
-                                    </div>
-                                </td>
-                                <td><span class="um-username-badge">@("@" + user.Username)</span></td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(user.Email))
-                                    {
-                                        <span class="um-email"><i class="fas fa-envelope"></i>@user.Email</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="um-text-muted">-</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (user.Department != null)
-                                    {
-                                        <span class="um-badge um-badge-info"><i class="fas fa-building um-me-1"></i>@user.Department.DepartmentName</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="um-text-muted">Chưa phân công</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(user.Role?.RoleName))
-                                    {
-                                        <span class="um-badge @(user.Role.RoleName == "Admin" ? "um-badge-admin" : "um-badge-secondary")">
-                                            <i class="fas fa-user um-me-1"></i> @user.Role.RoleName
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="um-badge um-badge-secondary">N/A</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (user.IsActive == true)
-                                    {
-                                        <span class="um-badge um-badge-success"><i class="fas fa-check-circle um-me-1"></i> Hoạt động</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="um-badge um-badge-danger"><i class="fas fa-ban um-me-1"></i> Vô hiệu</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (user.LastLoginAt.HasValue)
-                                    {
-                                        <div class="um-last-login"><i class="far fa-clock"></i><small>@user.LastLoginAt.Value.ToString("dd/MM/yyyy HH:mm")</small></div>
-                                    }
-                                    else
-                                    {
-                                        <span class="um-text-muted"><small>Chưa đăng nhập</small></span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="um-action-buttons">
-                                        <a href="/Admin/EditUser/@user.UserId" class="um-action-btn" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                        <button class="um-action-btn um-action-view" data-id="@user.UserId" data-name="@user.FullName" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
-                                        <button class="um-action-btn um-action-toggle"
-                                                onclick="toggleUserStatus(@user.UserId, '@user.FullName', '@(user.IsActive == true ? "true" : "false")')"
-                                                title="@(user.IsActive == true ? "Vô hiệu hóa" : "Kích hoạt")">
-                                            <i class="fas fa-@(user.IsActive == true ? "ban" : "check")"></i>
-                                        </button>
-                                        <a href="/Admin/ResetUserPassword/@user.UserId" class="um-action-btn" title="Reset mật khẩu"><i class="fas fa-key"></i></a>
-                                    </div>
+                                    </td>
+                                </tr>
+                                itemIndex++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="um-text-center" style="padding: 20px;">
+                                    <div class="text-muted">Không tìm thấy dữ liệu phù hợp</div>
                                 </td>
                             </tr>
                         }
@@ -305,33 +259,48 @@
             </div>
         </div>
 
-        <!-- PAGINATION -->
-        <footer class="um-card-footer">
-            <nav class="um-pagination" aria-label="User list pagination">
-                <ul class="pagination">
-                    <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-                        <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page - 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">Prev</a>
-                    </li>
+        @if (Model.TotalCount > 0)
+        {
+            <footer class="um-card-footer">
+                <nav class="um-pagination" aria-label="User list pagination">
+                    <ul class="pagination">
+                        @{
+                            var totalPages = (int)Math.Ceiling((decimal)Model.TotalCount / Model.PageSize);
+                            // Giới hạn số trang hiển thị để UI không bị vỡ nếu quá nhiều trang
+                            int startPage = Math.Max(1, Model.Page - 2);
+                            int endPage = Math.Min(totalPages, Model.Page + 2);
+                        }
 
-                    @for (int p = 1; p <= Model.TotalPages; p++)
-                    {
-                        <li class="page-item @(p == Model.Page ? "active" : "")">
-                            <a class="page-link" href="@Url.Action("UserList", new { page = p, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">@p</a>
+                        <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserList", new { page = 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-left"></i></a>
                         </li>
-                    }
 
-                    <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
-                        <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page + 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">Next</a>
-                    </li>
-                </ul>
+                        <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page - 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-left"></i></a>
+                        </li>
 
-                <div class="um-pagination-info">Hiển thị <strong>@Model.Users.Count</strong> / <strong>@Model.TotalCount</strong> người dùng</div>
-            </nav>
-        </footer>
+                        @for (int p = startPage; p <= endPage; p++)
+                        {
+                            <li class="page-item @(p == Model.Page ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("UserList", new { page = p, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">@p</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.Page >= totalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page + 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-right"></i></a>
+                        </li>
+                        <li class="page-item @(Model.Page >= totalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserList", new { page = totalPages, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-right"></i></a>
+                        </li>
+                    </ul>
+
+                    <div class="um-pagination-info">Hiển thị <strong>@Model.Users.Count</strong> / <strong>@Model.TotalCount</strong> người dùng</div>
+                </nav>
+            </footer>
+        }
     </section>
 </div>
 
-<!-- CUSTOM MODAL -->
 <div id="um-modal-overlay" class="um-modal-overlay" aria-hidden="true">
     <div class="um-modal-card" role="dialog" aria-modal="true" aria-labelledby="um-modal-title">
         <header class="um-modal-header">
@@ -348,10 +317,38 @@
 </div>
 
 @section Scripts {
-    <!-- SheetJS Library for Excel Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <script>
+        // ========================================
+        // SERVER-SIDE SEARCH DEBOUNCE
+        // ========================================
+        // Tự động submit form tìm kiếm sau khi người dùng ngừng gõ 500ms
+        let timeout = null;
+        const searchInput = document.getElementById('searchInput');
+        const filterForm = document.getElementById('filterForm');
+
+        if(searchInput && filterForm) {
+            searchInput.addEventListener('keyup', function (e) {
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    // Reset về trang 1 khi tìm kiếm mới
+                    // Lưu ý: Mặc định form submit GET sẽ không gửi 'page' nếu không có input,
+                    // Controller sẽ tự hiểu là page 1.
+                    filterForm.submit();
+                }, 600);
+            });
+
+            // Ngăn chặn submit form khi nhấn Enter để tránh duplicate request với debounce
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(timeout);
+                    filterForm.submit();
+                }
+            });
+        }
+
         // ========================================
         // MODAL CONTROLS
         // ========================================
@@ -367,8 +364,8 @@
             modalOverlay.setAttribute('aria-hidden', 'true');
             modalOverlay.classList.remove('open');
         }
-        modalClose.addEventListener('click', closeModal);
-        modalOverlay.addEventListener('click', (e) => {
+        if(modalClose) modalClose.addEventListener('click', closeModal);
+        if(modalOverlay) modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) closeModal();
         });
 
@@ -379,7 +376,6 @@
             btn.addEventListener('click', async function () {
                 const userId = this.dataset.id;
                 openModal();
-                modalBody.innerHTML = `<div class="um-loading-inline"><div class="um-spinner"></div><p class="um-text-muted">Đang tải dữ liệu...</p></div>`;
 
                 try {
                     const res = await fetch(`/Admin/GetUserDetail?userId=${userId}`);
@@ -458,130 +454,69 @@
         }
 
         // ========================================
-        // CLIENT-SIDE QUICK FILTER
+        // EXPORT TO EXCEL (UPDATE: GET VALUES FROM FORM)
         // ========================================
-        const searchInput = document.getElementById('searchInput');
-        const roleFilter = document.getElementById('roleFilter');
-        const statusFilter = document.getElementById('statusFilter');
-        const deptFilter = document.getElementById('deptFilter');
+        const btnExport = document.getElementById('btnExportExcel');
+        if(btnExport){
+            btnExport.addEventListener('click', async function() {
+                const btn = this;
+                const originalHtml = btn.innerHTML;
 
-        function filterTable() {
-            const rows = document.querySelectorAll('#userTable tbody tr');
-            const searchTerm = (searchInput?.value || '').toLowerCase();
-            const selectedRole = roleFilter?.value || '';
-            const selectedStatus = statusFilter?.value || '';
-            const selectedDept = deptFilter?.value || '';
+                try {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
 
-            let visible = 0;
-            rows.forEach(row => {
-                const fullname = (row.getAttribute('data-fullname') || '').toLowerCase();
-                const username = (row.getAttribute('data-username') || '').toLowerCase();
-                const email = (row.getAttribute('data-email') || '').toLowerCase();
-                const phone = (row.getAttribute('data-phone') || '').toLowerCase();
-                const role = (row.getAttribute('data-role') || '');
-                const status = (row.getAttribute('data-status') || '');
-                const dept = (row.getAttribute('data-dept') || '');
+                    // Lấy giá trị trực tiếp từ các input trong form
+                    const params = new URLSearchParams({
+                        search: document.getElementById('searchInput')?.value || '',
+                        roleName: document.getElementById('roleFilter')?.value || '',
+                        status: document.getElementById('statusFilter')?.value || '',
+                        departmentId: document.getElementById('deptFilter')?.value || ''
+                    });
 
-                const matchSearch = !searchTerm || fullname.includes(searchTerm) || username.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm);
-                const matchRole = !selectedRole || role === selectedRole;
-                const matchStatus = !selectedStatus || status === selectedStatus;
-                const matchDept = !selectedDept || dept === selectedDept;
+                    const response = await fetch(`/Admin/ExportUsersToExcel?${params.toString()}`);
+                    const result = await response.json();
 
-                if (matchSearch && matchRole && matchStatus && matchDept) {
-                    row.style.display = '';
-                    visible++;
-                } else {
-                    row.style.display = 'none';
+                    if (!result.success) {
+                        alert('Lỗi: ' + result.message);
+                        return;
+                    }
+
+                    const wb = XLSX.utils.book_new();
+                    const worksheetData = [
+                        ['STT', 'Họ Tên', 'Username', 'Email', 'Số Điện Thoại', 'Phòng Ban', 'Vai Trò', 'Trạng Thái'],
+                        ...result.data.map(item => [
+                            item.stt || item.STT,
+                            item.hoTen || item.HoTen,
+                            item.username || item.Username,
+                            item.email || item.Email,
+                            item.soDienThoai || item.SoDienThoai,
+                            item.phongBan || item.PhongBan,
+                            item.vaiTro || item.VaiTro,
+                            item.trangThai || item.TrangThai
+                        ])
+                    ];
+
+                    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+                    ws['!cols'] = [
+                        { wch: 5 }, { wch: 25 }, { wch: 15 }, { wch: 30 },
+                        { wch: 15 }, { wch: 20 }, { wch: 12 }, { wch: 15 }
+                    ];
+
+                    XLSX.utils.book_append_sheet(wb, ws, 'Danh sách người dùng');
+                    const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
+                    const filename = `DanhSachNguoiDung_${timestamp}.xlsx`;
+                    XLSX.writeFile(wb, filename);
+
+                    alert(`✅ Đã xuất ${result.totalRecords} người dùng ra file Excel thành công!`);
+                } catch (error) {
+                    console.error('Export error:', error);
+                    alert('Có lỗi xảy ra: ' + error.message);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
                 }
             });
-            document.getElementById('showingCount').textContent = visible;
         }
-
-        if (searchInput) searchInput.addEventListener('input', filterTable);
-        if (roleFilter) roleFilter.addEventListener('change', filterTable);
-        if (statusFilter) statusFilter.addEventListener('change', filterTable);
-        if (deptFilter) deptFilter.addEventListener('change', filterTable);
-
-        // ========================================
-        // EXPORT TO EXCEL FUNCTIONALITY
-        // ========================================
-        document.getElementById('btnExportExcel').addEventListener('click', async function() {
-            const btn = this;
-            const originalHtml = btn.innerHTML;
-
-            try {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
-
-                // Lấy parameters từ form filter hiện tại
-                const params = new URLSearchParams({
-                    search: document.getElementById('searchInput')?.value || '',
-                    roleName: document.getElementById('roleFilter')?.value || '',
-                    status: document.getElementById('statusFilter')?.value || '',
-                    departmentId: document.getElementById('deptFilter')?.value || ''
-                });
-
-                const response = await fetch(`/Admin/ExportUsersToExcel?${params.toString()}`);
-                const result = await response.json();
-
-                if (!result.success) {
-                    alert('Lỗi: ' + result.message);
-                    return;
-                }
-
-                // Tạo workbook
-                const wb = XLSX.utils.book_new();
-
-                // Tạo data với header có dấu và chỉ các cột cần thiết
-                const worksheetData = [
-                    ['STT', 'Họ Tên', 'Username', 'Email', 'Số Điện Thoại', 'Phòng Ban', 'Vai Trò', 'Trạng Thái'],
-                    ...result.data.map(item => [
-                        item.stt || item.STT,
-                        item.hoTen || item.HoTen,
-                        item.username || item.Username,
-                        item.email || item.Email,
-                        item.soDienThoai || item.SoDienThoai,
-                        item.phongBan || item.PhongBan,
-                        item.vaiTro || item.VaiTro,
-                        item.trangThai || item.TrangThai
-                    ])
-                ];
-
-                // Tạo worksheet từ array
-                const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-
-                // Set column widths
-                ws['!cols'] = [
-                    { wch: 5 },  // STT
-                    { wch: 25 }, // Họ Tên
-                    { wch: 15 }, // Username
-                    { wch: 30 }, // Email
-                    { wch: 15 }, // Số Điện Thoại
-                    { wch: 20 }, // Phòng Ban
-                    { wch: 12 }, // Vai Trò
-                    { wch: 15 }  // Trạng Thái
-                ];
-
-                // Thêm worksheet vào workbook
-                XLSX.utils.book_append_sheet(wb, ws, 'Danh sách người dùng');
-
-                // Tạo tên file với timestamp
-                const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
-                const filename = `DanhSachNguoiDung_${timestamp}.xlsx`;
-
-                // Download file
-                XLSX.writeFile(wb, filename);
-
-                // Show success message
-                alert(`✅ Đã xuất ${result.totalRecords} người dùng ra file Excel thành công!\n\nFile: ${filename}`);
-
-            } catch (error) {
-                console.error('Export error:', error);
-                alert('Có lỗi xảy ra khi xuất Excel: ' + error.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalHtml;
-            }
-        });
     </script>
 }

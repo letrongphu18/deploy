@@ -17,13 +17,17 @@ namespace TMD.Controllers
 		private readonly AuditHelper _auditHelper;
 		private readonly IHubContext<NotificationHub> _hubContext;
 		private readonly INotificationService _notificationService;
+		private readonly IAuditCleanupService _auditCleanupService;
+		private readonly ILogger<AdminController> _logger;
 
-		public AdminController(AihubSystemContext context, AuditHelper auditHelper, IHubContext<NotificationHub> hubContext, INotificationService notificationService)
+		public AdminController(AihubSystemContext context, AuditHelper auditHelper, IHubContext<NotificationHub> hubContext, ILogger<AdminController> logger, INotificationService notificationService, IAuditCleanupService auditCleanupService)
 		{
 			_context = context;
 			_auditHelper = auditHelper;
 			_hubContext = hubContext;
 			_notificationService = notificationService;
+			_auditCleanupService = auditCleanupService;
+			_logger = logger;                           // ✅ NEW
 
 		}
 
@@ -279,6 +283,9 @@ namespace TMD.Controllers
 		// ============================================
 		// USER MANAGEMENT
 		// ============================================
+		// ============================================
+		// USER MANAGEMENT - USERLIST (FIXED)
+		// ============================================
 		public async Task<IActionResult> UserList(
 	int page = 1,
 	int pageSize = 10,
@@ -290,17 +297,26 @@ namespace TMD.Controllers
 			if (!IsAdmin())
 				return RedirectToAction("Login", "Account");
 
-			// Lấy roles và departments cho bộ lọc
+			// ============================================
+			// THỐNG KÊ TOÀN BỘ HỆ THỐNG (KHÔNG BỊ ẢNH HƯỞNG BỞI FILTER)
+			// ============================================
+			ViewBag.TotalUsers = await _context.Users.CountAsync();
+			ViewBag.ActiveUsers = await _context.Users.CountAsync(u => u.IsActive == true);
+			ViewBag.TotalDepartments = await _context.Departments.CountAsync();
+
+			// Lấy roles và departments cho dropdown filter
 			var roles = await _context.Roles.OrderBy(r => r.RoleName).ToListAsync();
 			var departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
 
-			// Query base
+			// ============================================
+			// QUERY BASE VỚI FILTERS (SERVER-SIDE)
+			// ============================================
 			var query = _context.Users
 				.Include(u => u.Role)
 				.Include(u => u.Department)
 				.AsQueryable();
 
-			// Filters server-side (safe for large datasets)
+			// ✅ SEARCH FILTER (tìm trong toàn bộ database)
 			if (!string.IsNullOrWhiteSpace(search))
 			{
 				var s = search.Trim().ToLower();
@@ -312,11 +328,13 @@ namespace TMD.Controllers
 				);
 			}
 
+			// ✅ ROLE FILTER
 			if (!string.IsNullOrWhiteSpace(roleName))
 			{
 				query = query.Where(u => u.Role != null && u.Role.RoleName == roleName);
 			}
 
+			// ✅ STATUS FILTER
 			if (!string.IsNullOrWhiteSpace(status))
 			{
 				if (status == "active")
@@ -325,21 +343,26 @@ namespace TMD.Controllers
 					query = query.Where(u => u.IsActive == false);
 			}
 
+			// ✅ DEPARTMENT FILTER
 			if (departmentId.HasValue && departmentId.Value > 0)
 			{
 				query = query.Where(u => u.DepartmentId == departmentId.Value);
 			}
 
-			// Total count after filters
+			// ============================================
+			// PAGINATION (SAU KHI ÁP DỤNG FILTER)
+			// ============================================
 			var totalCount = await query.CountAsync();
 
-			// Paging + ordering
 			var users = await query
 				.OrderBy(u => u.FullName)
 				.Skip((page - 1) * pageSize)
 				.Take(pageSize)
 				.ToListAsync();
 
+			// ============================================
+			// BUILD VIEW MODEL
+			// ============================================
 			var vm = new UserListViewModel
 			{
 				Users = users,
@@ -4894,7 +4917,199 @@ namespace TMD.Controllers
 			}
 		}
 
+		/// <summary>
+		/// Hiển thị thông tin audit logs và cleanup status
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> AuditLogsStatus()
+		{
+			if (!IsAdmin())
+				return RedirectToAction("Login", "Account");
 
+			try
+			{
+				var cleanupStatus = await _auditCleanupService.GetCleanupStatusAsync();
+
+				ViewBag.CleanupStatus = cleanupStatus;
+				ViewBag.DatabaseSizeEstimate = cleanupStatus.GetDatabaseSizeInfo();
+				ViewBag.PercentageOld = cleanupStatus.TotalRecords > 0
+					? Math.Round((double)cleanupStatus.RecordsOlderThan2Months / cleanupStatus.TotalRecords * 100, 1)
+					: 0;
+
+				await _auditHelper.LogViewAsync(
+					HttpContext.Session.GetInt32("UserId").Value,
+					"AuditLog",
+					0,
+					"Xem thông tin Audit Logs Status"
+				);
+
+				return View();
+			}
+			catch (Exception ex)
+			{
+				TempData["Error"] = $"Lỗi: {ex.Message}";
+				return RedirectToAction("Dashboard");
+			}
+		}
+
+		/// <summary>
+		/// TRIGGER CLEANUP NGAY LẬP TỨC (thường xuyên không cần dùng, Hangfire sẽ tự chạy)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> TriggerAuditCleanup([FromBody] CleanupRequest request)
+		{
+			if (!IsAdmin())
+				return Json(new { success = false, message = "Không có quyền thực hiện" });
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var daysToKeep = request.DaysToKeep ?? 60; // Default 60 days = 2 months
+
+				_logger.LogInformation(
+					"[AuditCleanup] Admin {AdminId} triggered cleanup (keep {DaysToKeep} days)",
+					adminId, daysToKeep);
+
+				// ✅ CHẠY CLEANUP (background task)
+				await _auditCleanupService.CleanupOldAuditLogsAsync(daysToKeep);
+
+				// ✅ LOG AUDIT ACTION
+				await _auditHelper.LogAsync(
+					adminId,
+					"CLEANUP",
+					"AuditLog",
+					null,
+					null,
+					new { DaysToKeep = daysToKeep, ExecutedAt = DateTime.Now },
+					$"Admin trigger cleanup audit logs (giữ lại {daysToKeep} ngày)"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"✅ Cleanup hoàn tất! Giữ lại {daysToKeep} ngày dữ liệu"
+				});
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "[AuditCleanup] Cleanup failed");
+
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"CLEANUP",
+					"AuditLog",
+					$"Exception: {ex.Message}",
+					new { Error = ex.ToString() }
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"❌ Cleanup thất bại: {ex.Message}"
+				});
+			}
+		}
+
+		/// <summary>
+		/// Lấy thông tin cleanup status (JSON)
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> GetCleanupStatus()
+		{
+			if (!IsAdmin())
+				return Json(new { success = false, message = "Không có quyền" });
+
+			try
+			{
+				var status = await _auditCleanupService.GetCleanupStatusAsync();
+
+				return Json(new
+				{
+					success = true,
+					data = new
+					{
+						totalRecords = status.TotalRecords,
+						recordsLast2Months = status.RecordsLast2Months,
+						recordsLast6Months = status.RecordsLast6Months,
+						recordsOlderThan2Months = status.RecordsOlderThan2Months,
+						percentageOld = status.TotalRecords > 0
+							? Math.Round((double)status.RecordsOlderThan2Months / status.TotalRecords * 100, 1)
+							: 0,
+						databaseSize = status.GetDatabaseSizeInfo(),
+						oldestLogDate = status.OldestLogDate?.ToString("dd/MM/yyyy HH:mm"),
+						newestLogDate = status.NewestLogDate?.ToString("dd/MM/yyyy HH:mm"),
+						status = status.Status,
+						lastCleanupDate = status.LastCleanupDate.ToString("dd/MM/yyyy HH:mm")
+					}
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+
+		/// <summary>
+		/// Export audit logs ra file (với filter optional)
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> ExportAuditLogs(string? action, DateTime? fromDate, DateTime? toDate)
+		{
+			if (!IsAdmin())
+				return Json(new { success = false, message = "Không có quyền" });
+
+			try
+			{
+				var from = fromDate ?? DateTime.Today.AddMonths(-1);
+				var to = toDate ?? DateTime.Today;
+
+				var query = _context.AuditLogs
+					.Include(a => a.User)
+					.AsQueryable();
+
+				if (!string.IsNullOrWhiteSpace(action))
+					query = query.Where(a => a.Action.ToLower() == action.ToLower());
+
+				query = query.Where(a => a.Timestamp >= from && a.Timestamp <= to);
+
+				var logs = await query
+					.OrderByDescending(a => a.Timestamp)
+					.ToListAsync();
+
+				var exportData = logs.Select((log, index) => new
+				{
+					STT = index + 1,
+					Timestamp = log.Timestamp?.ToString("dd/MM/yyyy HH:mm:ss"),
+					User = log.User?.FullName ?? "System",
+					Action = log.Action,
+					EntityName = log.EntityName,
+					EntityId = log.EntityId,
+					Description = log.Description,
+					IpAddress = log.Ipaddress,
+					Location = log.Location
+				}).ToList();
+
+				return Json(new
+				{
+					success = true,
+					data = exportData,
+					totalRecords = logs.Count,
+					exportDate = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+
+		// ============================================
+		// REQUEST MODEL
+		// ============================================
+		public class CleanupRequest
+		{
+			public int? DaysToKeep { get; set; } = 60; // Default 60 days = 2 months
+		}
 
 		// ============================================
 		// REQUEST MODEL
