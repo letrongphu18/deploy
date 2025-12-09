@@ -35,6 +35,19 @@ namespace TMD.Controllers
 			_notificationService = notificationService;
 			_telegramService = telegramService;
 		}
+		private DateTime GetVietnamTime()
+		{
+			try
+			{
+				var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+				return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
+			}
+			catch
+			{
+				return DateTime.UtcNow.AddHours(7);
+			}
+		}
+
 		private async Task<(TimeOnly startTime, TimeOnly endTime)> GetStandardTimesAsync()
 		{
 			try
@@ -229,7 +242,7 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = "Chỉ Admin mới có quyền" });
 
 			var userId = HttpContext.Session.GetInt32("UserId").Value;
-			var serverNow = DateTime.Now;
+			var serverNow = GetVietnamTime();
 			var today = DateOnly.FromDateTime(serverNow);
 
 			var existingAttendance = await _context.Attendances
@@ -397,7 +410,7 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = "Chỉ Admin mới có quyền" });
 
 			var userId = HttpContext.Session.GetInt32("UserId").Value;
-			var serverNow = DateTime.Now;
+			var serverNow = GetVietnamTime();
 			var today = DateOnly.FromDateTime(serverNow);
 
 			var attendance = await _context.Attendances

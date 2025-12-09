@@ -831,3 +831,4 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\TMD.pdb
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\TMD.genruntimeconfig.cache
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\ref\TMD.dll
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\vimmuyocea-30liuv01ze.gz
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\obj\Debug\net9.0\compressed\50pxc7ltmm-yqtsxrbf36.gz

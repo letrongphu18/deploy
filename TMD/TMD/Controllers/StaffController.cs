@@ -34,7 +34,19 @@ namespace TMD.Controllers
 			_telegramService = telegramService;
 
 		}
-
+		private DateTime GetVietnamTime()
+		{
+			try
+			{
+				var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+				return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
+			}
+			catch
+			{
+				// Fallback: UTC+7
+				return DateTime.UtcNow.AddHours(7);
+			}
+		}
 		/// <summary>
 		/// Đọc thời gian chuẩn từ SystemSettings với validate đầy đủ
 		/// </summary>
@@ -775,7 +787,7 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
 
 			var userId = HttpContext.Session.GetInt32("UserId").Value;
-			var serverNow = DateTime.Now;
+			var serverNow = GetVietnamTime();
 			var today = DateOnly.FromDateTime(serverNow);
 
 			var existingAttendance = await _context.Attendances
@@ -792,7 +804,7 @@ namespace TMD.Controllers
 					checkInTime = checkInTimeStr
 				});
 			}
-
+			
 			// ✅ ẢNH TÙY CHỌN
 			string photoPath = null;
 			if (request.Photo != null && request.Photo.Length > 0)
@@ -939,7 +951,7 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
 
 			var userId = HttpContext.Session.GetInt32("UserId").Value;
-			var serverNow = DateTime.Now;
+			var serverNow = GetVietnamTime();
 			var today = DateOnly.FromDateTime(serverNow);
 
 			var attendance = await _context.Attendances

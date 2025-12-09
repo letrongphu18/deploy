@@ -11,6 +11,27 @@
   },
   {
     "ContainingType": "TMD.Controllers.KPIController",
+    "Method": "GetDepartmentComparison",
+    "RelativePath": "api/KPI/department-comparison",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TMD.Controllers.KPIController",
     "Method": "GetDepartmentKPI",
     "RelativePath": "api/KPI/department/{departmentId}",
     "HttpMethod": "GET",

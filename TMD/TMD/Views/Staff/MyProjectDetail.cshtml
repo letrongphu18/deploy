@@ -1,5 +1,7 @@
 ﻿@{
     ViewData["Title"] = $"Chi tiết dự án - {ViewBag.Project?.ProjectName ?? "N/A"}";
+    Layout = "~/Views/Shared/_LayoutStaff.cshtml";
+
     var project = ViewBag.Project;
     var myTasksWithMetadata = ViewBag.MyTasksWithMetadata as List<object>;
     var activeMembers = ViewBag.ActiveMembers as List<object>;

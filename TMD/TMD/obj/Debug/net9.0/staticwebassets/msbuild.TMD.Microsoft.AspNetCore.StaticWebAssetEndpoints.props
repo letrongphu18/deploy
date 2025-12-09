@@ -576,17 +576,17 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"xtxxf3hu2r"},{"Name":"integrity","Value":"sha256-hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo="},{"Name":"label","Value":"_content/TMD/js/site.js"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"231"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo=\u0022"},{"Name":"Last-Modified","Value":"Sat, 29 Nov 2025 09:45:07 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/TMD/js/tasklist-staff-optimized.cs">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\tasklist-staff-optimized.cs'))</AssetFile>
+    <StaticWebAssetEndpoint Include="_content/TMD/js/tasklist-staff-optimized.js">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\tasklist-staff-optimized.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-mgIoZc\u002BqvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu\u002Bsc="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"19697"},{"Name":"Content-Type","Value":"application/octet-stream"},{"Name":"ETag","Value":"\u0022mgIoZc\u002BqvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu\u002Bsc=\u0022"},{"Name":"Last-Modified","Value":"Tue, 09 Dec 2025 10:51:17 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"19697"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022mgIoZc\u002BqvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu\u002Bsc=\u0022"},{"Name":"Last-Modified","Value":"Tue, 09 Dec 2025 10:51:17 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/TMD/js/tasklist-staff-optimized.yqtsxrbf36.cs">
-      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\tasklist-staff-optimized.cs'))</AssetFile>
+    <StaticWebAssetEndpoint Include="_content/TMD/js/tasklist-staff-optimized.yqtsxrbf36.js">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\tasklist-staff-optimized.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"yqtsxrbf36"},{"Name":"integrity","Value":"sha256-mgIoZc\u002BqvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu\u002Bsc="},{"Name":"label","Value":"_content/TMD/js/tasklist-staff-optimized.cs"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"19697"},{"Name":"Content-Type","Value":"application/octet-stream"},{"Name":"ETag","Value":"\u0022mgIoZc\u002BqvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu\u002Bsc=\u0022"},{"Name":"Last-Modified","Value":"Tue, 09 Dec 2025 10:51:17 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"yqtsxrbf36"},{"Name":"integrity","Value":"sha256-mgIoZc\u002BqvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu\u002Bsc="},{"Name":"label","Value":"_content/TMD/js/tasklist-staff-optimized.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"19697"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022mgIoZc\u002BqvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu\u002Bsc=\u0022"},{"Name":"Last-Modified","Value":"Tue, 09 Dec 2025 10:51:17 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/TMD/js/verify-otp.0s2p0sl3f2.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\verify-otp.js'))</AssetFile>

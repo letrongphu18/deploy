@@ -197,8 +197,8 @@
       "PackagePath": "staticwebassets\\js\\site.js"
     },
     {
-      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.cs",
-      "PackagePath": "staticwebassets\\js\\tasklist-staff-optimized.cs"
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.js",
+      "PackagePath": "staticwebassets\\js\\tasklist-staff-optimized.js"
     },
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\verify-otp.js",

@@ -14605,8 +14605,63 @@
       ]
     },
     {
-      "Route": "js/tasklist-staff-optimized.cs",
-      "AssetFile": "js/tasklist-staff-optimized.cs",
+      "Route": "js/tasklist-staff-optimized.js",
+      "AssetFile": "js/tasklist-staff-optimized.js.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000181455271"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc="
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.js",
+      "AssetFile": "js/tasklist-staff-optimized.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -14623,7 +14678,7 @@
         },
         {
           "Name": "Content-Type",
-          "Value": "application/octet-stream"
+          "Value": "text/javascript"
         },
         {
           "Name": "ETag",
@@ -14642,8 +14697,116 @@
       ]
     },
     {
-      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.cs",
-      "AssetFile": "js/tasklist-staff-optimized.cs",
+      "Route": "js/tasklist-staff-optimized.js.gz",
+      "AssetFile": "js/tasklist-staff-optimized.js.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg="
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.js",
+      "AssetFile": "js/tasklist-staff-optimized.js.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000181455271"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "yqtsxrbf36"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc="
+        },
+        {
+          "Name": "label",
+          "Value": "js/tasklist-staff-optimized.js"
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.js",
+      "AssetFile": "js/tasklist-staff-optimized.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -14660,7 +14823,7 @@
         },
         {
           "Name": "Content-Type",
-          "Value": "application/octet-stream"
+          "Value": "text/javascript"
         },
         {
           "Name": "ETag",
@@ -14682,7 +14845,60 @@
         },
         {
           "Name": "label",
-          "Value": "js/tasklist-staff-optimized.cs"
+          "Value": "js/tasklist-staff-optimized.js"
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.js.gz",
+      "AssetFile": "js/tasklist-staff-optimized.js.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "yqtsxrbf36"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg="
+        },
+        {
+          "Name": "label",
+          "Value": "js/tasklist-staff-optimized.js.gz"
         }
       ]
     },

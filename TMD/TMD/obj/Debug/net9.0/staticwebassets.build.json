@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "jGnDdOAutQocmduRXcXwoe44lrwcl+2WadnUEnkb0co=",
+  "Hash": "q1Dwv84w9sg5Z5c3q2FfRGVAmIWenDgzrLG+sgDWCkE=",
   "Source": "TMD",
   "BasePath": "_content/TMD",
   "Mode": "Default",
@@ -330,6 +330,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\50pxc7ltmm-yqtsxrbf36.gz",
+      "SourceId": "TMD",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/TMD",
+      "RelativePath": "js/tasklist-staff-optimized#[.{fingerprint=yqtsxrbf36}]?.js.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "il70ojcxvq",
+      "Integrity": "ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.js"
     },
     {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\52ubknfd8b-m9qm4tazc0.gz",
@@ -3398,12 +3419,12 @@
       "OriginalItemSpec": "wwwroot\\js\\site.js"
     },
     {
-      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.cs",
+      "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.js",
       "SourceId": "TMD",
       "SourceType": "Discovered",
       "ContentRoot": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\",
       "BasePath": "_content/TMD",
-      "RelativePath": "js/tasklist-staff-optimized#[.{fingerprint}]?.cs",
+      "RelativePath": "js/tasklist-staff-optimized#[.{fingerprint}]?.js",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -3416,7 +3437,7 @@
       "Integrity": "mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\tasklist-staff-optimized.cs"
+      "OriginalItemSpec": "wwwroot\\js\\tasklist-staff-optimized.js"
     },
     {
       "Identity": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\verify-otp.js",
@@ -20056,8 +20077,63 @@
       ]
     },
     {
-      "Route": "js/tasklist-staff-optimized.cs",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.cs",
+      "Route": "js/tasklist-staff-optimized.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\50pxc7ltmm-yqtsxrbf36.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000181455271"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc="
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -20070,7 +20146,7 @@
         },
         {
           "Name": "Content-Type",
-          "Value": "application/octet-stream"
+          "Value": "text/javascript"
         },
         {
           "Name": "ETag",
@@ -20093,8 +20169,116 @@
       ]
     },
     {
-      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.cs",
-      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.cs",
+      "Route": "js/tasklist-staff-optimized.js.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\50pxc7ltmm-yqtsxrbf36.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg="
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\50pxc7ltmm-yqtsxrbf36.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000181455271"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "yqtsxrbf36"
+        },
+        {
+          "Name": "label",
+          "Value": "js/tasklist-staff-optimized.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc="
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.js",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\tasklist-staff-optimized.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -20107,7 +20291,7 @@
         },
         {
           "Name": "Content-Type",
-          "Value": "application/octet-stream"
+          "Value": "text/javascript"
         },
         {
           "Name": "ETag",
@@ -20129,11 +20313,64 @@
         },
         {
           "Name": "label",
-          "Value": "js/tasklist-staff-optimized.cs"
+          "Value": "js/tasklist-staff-optimized.js"
         },
         {
           "Name": "integrity",
           "Value": "sha256-mgIoZc+qvVFQQ2Hil60NqUeh0nYKhtAP/9xCh0hu+sc="
+        }
+      ]
+    },
+    {
+      "Route": "js/tasklist-staff-optimized.yqtsxrbf36.js.gz",
+      "AssetFile": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\obj\\Debug\\net9.0\\compressed\\50pxc7ltmm-yqtsxrbf36.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5510"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Dec 2025 10:51:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "yqtsxrbf36"
+        },
+        {
+          "Name": "label",
+          "Value": "js/tasklist-staff-optimized.js.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ipXMX7Y5wYSHFaBGvMyLdrXf+JXSzBOec5it595nACg="
         }
       ]
     },

@@ -13,6 +13,7 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\notification-hub.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery\dist\jquery.min.map
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\tasklist-staff-optimized.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery\dist\jquery.min.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\css\admin-request.css
@@ -155,7 +156,7 @@ wwwroot\js\notification-hub.js
 wwwroot\js\project-management.js
 wwwroot\js\resetpass.js
 wwwroot\js\site.js
-wwwroot\js\tasklist-staff-optimized.cs
+wwwroot\js\tasklist-staff-optimized.js
 wwwroot\js\verify-otp.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
 wwwroot\lib\bootstrap\dist\css\bootstrap.css.map

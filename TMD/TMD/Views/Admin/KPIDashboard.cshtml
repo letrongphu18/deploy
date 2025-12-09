@@ -334,7 +334,7 @@
                 updateTopPerformers(data.topPerformers);
             } catch (error) {
                 console.error('Error loading KPI data:', error);
-                showError('Lỗi khi tải dữ liệu KPI');
+                showError('Lỗi khi tải dữ liệu KPI: ' + error.message);
             } finally {
                 hideLoading();
             }
@@ -422,20 +422,32 @@
             try {
                 const start = $('#startDate').val();
                 const end = $('#endDate').val();
-                const response = await fetch(`/Admin/GetDepartmentComparison?startDate=${start}&endDate=${end}`);
 
-                if (!response.ok) throw new Error('Failed to load department comparison');
+                // Fixed endpoint - now uses KPI controller endpoint
+                const response = await fetch(`${API_BASE}/department-comparison?startDate=${start}&endDate=${end}`, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Server error:', errorText);
+                    throw new Error('Failed to load department comparison');
+                }
+
                 const data = await response.json();
+                console.log('Department data:', data); // Debug log
 
                 if (!Array.isArray(data)) {
-                    throw new Error('Invalid data format');
+                    throw new Error('Invalid data format - expected array');
                 }
 
                 updateDepartmentChart(data);
                 updateDepartmentTable(data);
             } catch (error) {
                 console.error('Error loading department comparison:', error);
-                showError('Lỗi khi tải so sánh phòng ban');
+                showError('Lỗi khi tải so sánh phòng ban: ' + error.message);
             } finally {
                 hideLoading();
             }
@@ -523,35 +535,50 @@
                     return;
                 }
 
-                for (const user of allUsers) {
-                    const response = await fetch(`${API_BASE}/user/${user.userId}?startDate=${start}&endDate=${end}`);
-                    if (!response.ok) continue;
+                let loadedCount = 0;
+                const totalUsers = allUsers.length;
 
-                    const data = await response.json();
-                    const html = `
-                        <tr>
-                            <td><strong>${user.fullName}</strong></td>
-                            <td>${user.departmentName || 'N/A'}</td>
-                            <td>${data.attendance.totalDays || 0}</td>
-                            <td>${data.attendance.lateDays || 0}</td>
-                            <td><span class="kpi-badge ${data.attendance.lateRate > 10 ? 'kpi-badge-danger' : 'kpi-badge-success'}">${(data.attendance.lateRate || 0).toFixed(1)}%</span></td>
-                            <td>${(data.attendance.totalWorkHours || 0).toFixed(1)}h</td>
-                            <td>${data.tasks.totalAssigned || 0}</td>
-                            <td>${data.tasks.completed || 0} <small class="kpi-muted">(${(data.tasks.completionRate || 0).toFixed(1)}%)</small></td>
-                            <td><strong class="kpi-score">${(data.overallScore || 0).toFixed(1)}</strong></td>
-                            <td>
-                                <button class="kpi-btn kpi-btn-sm kpi-btn-secondary" onclick="exportUserKPI(${user.userId})">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    tbody.append(html);
+                for (const user of allUsers) {
+                    try {
+                        const response = await fetch(`${API_BASE}/user/${user.userId}?startDate=${start}&endDate=${end}`);
+                        if (!response.ok) {
+                            console.warn(`Failed to load KPI for user ${user.userId}`);
+                            continue;
+                        }
+
+                        const data = await response.json();
+                        const html = `
+                            <tr>
+                                <td><strong>${user.fullName}</strong></td>
+                                <td>${user.departmentName || 'N/A'}</td>
+                                <td>${data.attendance.totalDays || 0}</td>
+                                <td>${data.attendance.lateDays || 0}</td>
+                                <td><span class="kpi-badge ${data.attendance.lateRate > 10 ? 'kpi-badge-danger' : 'kpi-badge-success'}">${(data.attendance.lateRate || 0).toFixed(1)}%</span></td>
+                                <td>${(data.attendance.totalWorkHours || 0).toFixed(1)}h</td>
+                                <td>${data.tasks.totalAssigned || 0}</td>
+                                <td>${data.tasks.completed || 0} <small class="kpi-muted">(${(data.tasks.completionRate || 0).toFixed(1)}%)</small></td>
+                                <td><strong class="kpi-score">${(data.overallScore || 0).toFixed(1)}</strong></td>
+                                <td>
+                                    <button class="kpi-btn kpi-btn-sm kpi-btn-secondary" onclick="exportUserKPI(${user.userId})">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.append(html);
+
+                        loadedCount++;
+                        // Update loading progress
+                        $('#loadingSpinner p').text(`Đang tải dữ liệu... (${loadedCount}/${totalUsers})`);
+                    } catch (error) {
+                        console.error(`Error loading user ${user.userId}:`, error);
+                    }
                 }
             } catch (error) {
                 console.error('Error loading user KPI:', error);
-                showError('Lỗi khi tải KPI cá nhân');
+                showError('Lỗi khi tải KPI cá nhân: ' + error.message);
             } finally {
+                $('#loadingSpinner p').text('Đang tải dữ liệu...');
                 hideLoading();
             }
         }
@@ -619,7 +646,7 @@
                 });
             } catch (error) {
                 console.error('Error loading timeline:', error);
-                showError('Lỗi khi tải xu hướng');
+                showError('Lỗi khi tải xu hướng: ' + error.message);
             } finally {
                 hideLoading();
             }
