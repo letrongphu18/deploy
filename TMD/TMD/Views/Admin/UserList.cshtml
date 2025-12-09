@@ -13,6 +13,9 @@
                 <p class="um-page-subtitle">Danh sách tất cả người dùng và công việc của họ</p>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="/Admin/UserTrash" class="um-btn-create" style="background: #ef4444;">
+                    <i class="fas fa-trash-alt"></i> Thùng rác
+                </a>
                 <a href="/Account/Register" class="um-btn-create">
                     <i class="fas fa-user-plus"></i> Tạo người dùng mới
                 </a>
@@ -47,7 +50,7 @@
             <div class="um-stats-icon"><i class="fas fa-crown"></i></div>
             <div class="um-stats-content">
                 <div class="um-stats-label">Vô hiệu hóa</div>
-                <div class="um-stats-value">@(ViewBag.TotalUsers - ViewBag.ActiveUsers)</div>
+                <div class="um-stats-value">0</div>
             </div>
         </div>
 
@@ -85,10 +88,11 @@
                             <option value="">Tất cả phòng ban</option>
                             @{
                                 var depts = Model.Departments ?? new List<TMD.Models.Department>();
-                            }
-                            @foreach (var dept in depts)
-                            {
-                                <!option value="@dept.DepartmentId" @(Model.DepartmentId == dept.DepartmentId ? "selected" : "")>@dept.DepartmentName</!option>
+                                foreach (var dept in depts)
+                                {
+                                    var isSelected = Model.DepartmentId == dept.DepartmentId;
+                                    <option value="@dept.DepartmentId" selected="@isSelected">@dept.DepartmentName</option>
+                                }
                             }
                         </select>
                     </div>
@@ -101,22 +105,14 @@
                             {
                                 foreach (var r in Model.Roles)
                                 {
-                                    <!option value="@r.RoleName" @(Model.RoleName == r.RoleName ? "selected" : "")>@r.RoleName</!option>
+                                    var isSelected = Model.RoleName == r.RoleName;
+                                    <option value="@r.RoleName" selected="@isSelected">@r.RoleName</option>
                                 }
                             }
                         </select>
                     </div>
 
-                    <div class="um-col-2">
-                        <label class="um-form-label"><i class="fas fa-toggle-on"></i> Trạng thái</label>
-                        <select name="status" id="statusFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
-                            <option value="">Tất cả trạng thái</option>
-                            <!option value="active" @(Model.Status == "active" ? "selected" : "")>Hoạt động</!option>
-                            <!option value="inactive" @(Model.Status == "inactive" ? "selected" : "")>Vô hiệu hóa</!option>
-                        </select>
-                    </div>
-
-                    <div class="um-col-2 um-flex-end">
+                    <div class="um-col-4 um-flex-end">
                         <a href="@Url.Action("UserList")" id="resetFilters" class="um-btn um-btn-secondary">
                             <i class="fas fa-redo"></i> Xóa bộ lọc
                         </a>
@@ -153,7 +149,7 @@
                     <tbody>
                         @if (Model.Users != null && Model.Users.Any())
                         {
-                            int itemIndex = (Model.Page - 1) * Model.PageSize + 1; // Tính STT đúng theo trang
+                            int itemIndex = (Model.Page - 1) * Model.PageSize + 1;
                             foreach (var user in Model.Users)
                             {
                                 <tr>
@@ -211,14 +207,7 @@
                                         }
                                     </td>
                                     <td>
-                                        @if (user.IsActive == true)
-                                        {
-                                            <span class="um-badge um-badge-success"><i class="fas fa-check-circle um-me-1"></i> Hoạt động</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="um-badge um-badge-danger"><i class="fas fa-ban um-me-1"></i> Vô hiệu</span>
-                                        }
+                                        <span class="um-badge um-badge-success"><i class="fas fa-check-circle um-me-1"></i> Hoạt động</span>
                                     </td>
                                     <td>
                                         @if (user.LastLoginAt.HasValue)
@@ -234,10 +223,10 @@
                                         <div class="um-action-buttons">
                                             <a href="/Admin/EditUser/@user.UserId" class="um-action-btn" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
                                             <button class="um-action-btn um-action-view" data-id="@user.UserId" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
-                                            <button class="um-action-btn um-action-toggle"
-                                                    onclick="toggleUserStatus(@user.UserId, '@user.FullName', '@(user.IsActive == true ? "true" : "false")')"
-                                                    title="@(user.IsActive == true ? "Vô hiệu hóa" : "Kích hoạt")">
-                                                <i class="fas fa-@(user.IsActive == true ? "ban" : "check")"></i>
+                                            <button class="um-action-btn um-action-delete"
+                                                    onclick="moveUserToTrash(@user.UserId, '@Html.Raw(user.FullName.Replace("'", "\\'"))')"
+                                                    title="Xóa">
+                                                <i class="fas fa-trash-alt"></i>
                                             </button>
                                             <a href="/Admin/ResetUserPassword/@user.UserId" class="um-action-btn" title="Reset mật khẩu"><i class="fas fa-key"></i></a>
                                         </div>
@@ -266,31 +255,30 @@
                     <ul class="pagination">
                         @{
                             var totalPages = (int)Math.Ceiling((decimal)Model.TotalCount / Model.PageSize);
-                            // Giới hạn số trang hiển thị để UI không bị vỡ nếu quá nhiều trang
                             int startPage = Math.Max(1, Model.Page - 2);
                             int endPage = Math.Min(totalPages, Model.Page + 2);
                         }
 
                         <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-                            <a class="page-link" href="@Url.Action("UserList", new { page = 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-left"></i></a>
+                            <a class="page-link" href="@Url.Action("UserList", new { page = 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-left"></i></a>
                         </li>
 
                         <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
-                            <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page - 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-left"></i></a>
+                            <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page - 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-left"></i></a>
                         </li>
 
                         @for (int p = startPage; p <= endPage; p++)
                         {
                             <li class="page-item @(p == Model.Page ? "active" : "")">
-                                <a class="page-link" href="@Url.Action("UserList", new { page = p, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })">@p</a>
+                                <a class="page-link" href="@Url.Action("UserList", new { page = p, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })">@p</a>
                             </li>
                         }
 
                         <li class="page-item @(Model.Page >= totalPages ? "disabled" : "")">
-                            <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page + 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-right"></i></a>
+                            <a class="page-link" href="@Url.Action("UserList", new { page = Model.Page + 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-right"></i></a>
                         </li>
                         <li class="page-item @(Model.Page >= totalPages ? "disabled" : "")">
-                            <a class="page-link" href="@Url.Action("UserList", new { page = totalPages, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, status = Model.Status, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-right"></i></a>
+                            <a class="page-link" href="@Url.Action("UserList", new { page = totalPages, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-right"></i></a>
                         </li>
                     </ul>
 
@@ -317,13 +305,13 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <script>
         // ========================================
         // SERVER-SIDE SEARCH DEBOUNCE
         // ========================================
-        // Tự động submit form tìm kiếm sau khi người dùng ngừng gõ 500ms
         let timeout = null;
         const searchInput = document.getElementById('searchInput');
         const filterForm = document.getElementById('filterForm');
@@ -332,14 +320,10 @@
             searchInput.addEventListener('keyup', function (e) {
                 clearTimeout(timeout);
                 timeout = setTimeout(function () {
-                    // Reset về trang 1 khi tìm kiếm mới
-                    // Lưu ý: Mặc định form submit GET sẽ không gửi 'page' nếu không có input,
-                    // Controller sẽ tự hiểu là page 1.
                     filterForm.submit();
                 }, 600);
             });
 
-            // Ngăn chặn submit form khi nhấn Enter để tránh duplicate request với debounce
             searchInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
@@ -428,33 +412,58 @@
         });
 
         // ========================================
-        // TOGGLE USER STATUS
+        // ✅ CHUYỂN USER VÀO THÙNG RÁC
         // ========================================
-        async function toggleUserStatus(userId, fullName, currentStatus) {
-            const isActive = currentStatus === "true";
-            const action = isActive ? 'vô hiệu hóa' : 'kích hoạt';
-            if (!confirm(`Bạn có chắc muốn ${action} tài khoản của ${fullName}?`)) return;
+        async function moveUserToTrash(userId, fullName) {
+            const result = await Swal.fire({
+                title: 'Xác nhận xóa',
+                html: `Bạn có chắc muốn chuyển<br><strong>"${fullName}"</strong><br>vào thùng rác?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#E74C3C',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-trash-alt me-2"></i>Xóa',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy'
+            });
+
+            if (!result.isConfirmed) return;
 
             try {
-                const res = await fetch('/Admin/ToggleUserStatus', {
+                const res = await fetch('/Admin/MoveUserToTrash', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ userId: userId })
                 });
                 const data = await res.json();
+                
                 if (data.success) {
-                    alert(data.message);
+                    await Swal.fire({
+                        title: 'Thành công!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60'
+                    });
                     location.reload();
                 } else {
-                    alert('Thất bại: ' + data.message);
+                    await Swal.fire({
+                        title: 'Lỗi!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#E74C3C'
+                    });
                 }
             } catch (err) {
-                alert('Lỗi: ' + err.message);
+                await Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra: ' + err.message,
+                    icon: 'error',
+                    confirmButtonColor: '#E74C3C'
+                });
             }
         }
 
         // ========================================
-        // EXPORT TO EXCEL (UPDATE: GET VALUES FROM FORM)
+        // EXPORT TO EXCEL
         // ========================================
         const btnExport = document.getElementById('btnExportExcel');
         if(btnExport){
@@ -466,11 +475,9 @@
                     btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
 
-                    // Lấy giá trị trực tiếp từ các input trong form
                     const params = new URLSearchParams({
                         search: document.getElementById('searchInput')?.value || '',
                         roleName: document.getElementById('roleFilter')?.value || '',
-                        status: document.getElementById('statusFilter')?.value || '',
                         departmentId: document.getElementById('deptFilter')?.value || ''
                     });
 

@@ -155,6 +155,7 @@ wwwroot\js\notification-hub.js
 wwwroot\js\project-management.js
 wwwroot\js\resetpass.js
 wwwroot\js\site.js
+wwwroot\js\tasklist-staff-optimized.cs
 wwwroot\js\verify-otp.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
 wwwroot\lib\bootstrap\dist\css\bootstrap.css.map

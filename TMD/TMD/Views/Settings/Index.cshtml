@@ -720,23 +720,64 @@
             }
         });
     });
+            function handleInputChange(input) {
+            const key = input.dataset.key;
+            const currentValue = input.value;
+            const originalValue = input.dataset.originalValue;
 
+            // Kiểm tra nếu giá trị thay đổi
+            if (currentValue !== originalValue) {
+                modifiedSettings.add(key);
+
+                // Thêm visual indicator
+                input.parentElement.classList.add('modified');
+                if (!input.parentElement.querySelector('.modified-indicator')) {
+                    const indicator = document.createElement('span');
+                    indicator.className = 'modified-indicator';
+                    indicator.innerHTML = '<i class="fas fa-circle" style="color: #f59e0b; font-size: 8px;"></i>';
+                    indicator.style.cssText = 'position: absolute; right: 10px; top: 50%; transform: translateY(-50%);';
+                    input.parentElement.style.position = 'relative';
+                    input.parentElement.appendChild(indicator);
+                }
+            } else {
+                modifiedSettings.delete(key);
+
+                // Xóa visual indicator
+                input.parentElement.classList.remove('modified');
+                const indicator = input.parentElement.querySelector('.modified-indicator');
+                if (indicator) indicator.remove();
+            }
+
+            updateSaveAllButton();
+            console.log(`✅ Changed ${key}: "${originalValue}" → "${currentValue}"`);
+        }
     // ========== INPUT LISTENER SETUP ==========
-    function setupInputListeners() {
-        document.querySelectorAll('.setting-input').forEach(input => {
-            input.addEventListener('change', function() {
-                const key = this.dataset.key;
-                modifiedSettings.add(key);
-                updateSaveAllButton();
-            });
+           function setupInputListeners() {
+            document.querySelectorAll('.setting-input').forEach(input => {
+                // Lưu giá trị ban đầu để so sánh
+                input.dataset.originalValue = input.value;
 
-            input.addEventListener('input', function() {
-                const key = this.dataset.key;
-                modifiedSettings.add(key);
-                updateSaveAllButton();
+                // Bắt cả 'input' và 'change' event
+                input.addEventListener('input', function() {
+                    handleInputChange(this);
+                });
+
+                input.addEventListener('change', function() {
+                    handleInputChange(this);
+                });
+
+                // Thêm visual feedback khi đang edit
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '#3b82f6';
+                    this.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                });
+
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = '';
+                    this.style.boxShadow = '';
+                });
             });
-        });
-    }
+        }
 
     // ========== UPDATE SAVE ALL BUTTON ==========
     function updateSaveAllButton() {
@@ -793,55 +834,82 @@
     }
 
     // ========== SAVE ALL SETTINGS ==========
-    async function saveAllSettings() {
-        if (modifiedSettings.size === 0) {
-            Swal.fire('Lưu ý', 'Không có cấu hình nào được thay đổi', 'info');
-            return;
-        }
-
-        // Thu thập dữ liệu cần lưu
-        const requests = [];
-        modifiedSettings.forEach(key => {
-            const input = document.querySelector(`[data-key="${key}"]`);
-            if (input) {
-                requests.push({
-                    settingKey: key,
-                    settingValue: input.value
-                });
+           async function saveAllSettings() {
+            if (modifiedSettings.size === 0) {
+                Swal.fire('Lưu ý', 'Không có cấu hình nào được thay đổi', 'info');
+                return;
             }
-        });
 
-        if (requests.length === 0) return;
-
-        Swal.fire({ title: 'Đang lưu...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
-
-        try {
-            const response = await fetch('/Settings/BatchUpdateSettings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requests)
+            // Thu thập dữ liệu cần lưu
+            const requests = [];
+            modifiedSettings.forEach(key => {
+                const input = document.querySelector(`[data-key="${key}"]`);
+                if (input) {
+                    requests.push({
+                        settingKey: key,
+                        settingValue: input.value,
+                        description: null,
+                        dataType: null,
+                        category: null,
+                        applyMethod: null
+                    });
+                }
             });
 
-            const data = await response.json();
+            if (requests.length === 0) return;
 
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Thành công!',
-                    text: data.message,
-                    confirmButtonText: 'OK'
+            console.log('📤 Sending update request:', requests);
+
+            Swal.fire({
+                title: 'Đang lưu...',
+                html: `Đang cập nhật <b>${requests.length}</b> cấu hình...`,
+                didOpen: () => Swal.showLoading(),
+                allowOutsideClick: false
+            });
+
+            try {
+                const response = await fetch('/Settings/BatchUpdateSettings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requests)
                 });
 
-                modifiedSettings.clear();
-                updateSaveAllButton();
-            } else {
-                Swal.fire('Lỗi', data.message, 'error');
+                const data = await response.json();
+                console.log('📥 Server response:', data);
+
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        html: `
+                            <p>${data.message}</p>
+                            ${data.updatedCount > 0 ? `<p>✅ Đã cập nhật: <b>${data.updatedCount}</b></p>` : ''}
+                            ${data.createdCount > 0 ? `<p>➕ Đã tạo mới: <b>${data.createdCount}</b></p>` : ''}
+                        `,
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Reset modified state
+                        modifiedSettings.forEach(key => {
+                            const input = document.querySelector(`[data-key="${key}"]`);
+                            if (input) {
+                                input.dataset.originalValue = input.value;
+                                input.parentElement.classList.remove('modified');
+                                const indicator = input.parentElement.querySelector('.modified-indicator');
+                                if (indicator) indicator.remove();
+                            }
+                        });
+
+                        modifiedSettings.clear();
+                        updateSaveAllButton();
+                    });
+                } else {
+                    Swal.fire('Lỗi', data.message, 'error');
+                }
+            } catch (err) {
+                Swal.fire('Lỗi kết nối', err.message, 'error');
+                console.error(err);
             }
-        } catch (err) {
-            Swal.fire('Lỗi kết nối', err.message, 'error');
-            console.error(err);
         }
-    }
 
     // ========== AUTO GENERATE KEY ==========
     function autoGenerateKey() {

@@ -15,9 +15,14 @@
                 </h1>
                 <p class="tmdpt-page-subtitle">Danh sách các phòng ban trong hệ thống</p>
             </div>
-            <button class="tmdpt-btn-create" onclick="addDepartment()">
-                <i class="fas fa-plus"></i> Thêm phòng ban
-            </button>
+            <div class="tmdpt-d-flex tmdpt-gap-2">
+                <a asp-action="DepartmentTrash" class="tmdpt-btn-secondary">
+                    <i class="fas fa-trash-alt"></i> Thùng rác
+                </a>
+                <button class="tmdpt-btn-create" onclick="addDepartment()">
+                    <i class="fas fa-plus"></i> Thêm phòng ban
+                </button>
+            </div>
         </div>
     </div>
 
@@ -70,10 +75,10 @@
     </div>
 
     <!-- Department Cards -->
-    @if (Model.Any())
+    @if (Model.Where(d => d.IsActive == true).Any())
     {
         <div class="tmdpt-row">
-            @foreach (var dept in Model)
+            @foreach (var dept in Model.Where(d => d.IsActive == true))
             {
                 <div class="tmdpt-col-xl-4 tmdpt-col-lg-6 tmdpt-col-md-6">
                     <div class="tmdpt-dept-card">
@@ -88,18 +93,9 @@
                                 <button class="tmdpt-btn-icon tmdpt-btn-icon--primary" onclick="editDepartment(@dept.DepartmentId, '@dept.DepartmentName', '@Html.Raw(dept.Description?.Replace("'", "\\'") ?? "")', @dept.IsActive.ToString().ToLower())" title="Chỉnh sửa">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                @if (dept.IsActive == true)
-                                {
-                                    <button class="tmdpt-btn-icon tmdpt-btn-icon--danger" onclick="toggleDepartmentStatus(@dept.DepartmentId, '@Html.Raw(dept.DepartmentName.Replace("'", "\\'"))')" title="Vô hiệu hóa">
-                                        <i class="fas fa-ban"></i>
-                                    </button>
-                                }
-                                else
-                                {
-                                    <button class="tmdpt-btn-icon tmdpt-btn-icon--success" onclick="toggleDepartmentStatus(@dept.DepartmentId, '@Html.Raw(dept.DepartmentName.Replace("'", "\\'"))')" title="Kích hoạt">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                }
+                                <button class="tmdpt-btn-icon tmdpt-btn-icon--danger" onclick="moveDepartmentToTrash(@dept.DepartmentId, '@Html.Raw(dept.DepartmentName.Replace("'", "\\'"))')" title="Xóa">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
                         </div>
 
@@ -294,20 +290,21 @@
             openModal();
         }
 
-        function toggleDepartmentStatus(id, name) {
+        // ✅ CHUYỂN VÀO THÙNG RÁC
+        function moveDepartmentToTrash(id, name) {
             Swal.fire({
-                title: 'Xác nhận thay đổi',
-                html: `Bạn có chắc muốn thay đổi trạng thái phòng ban<br><strong>"${name}"</strong>?`,
-                icon: 'question',
+                title: 'Xác nhận xóa',
+                html: `Bạn có chắc muốn chuyển phòng ban<br><strong>"${name}"</strong><br>vào thùng rác?`,
+                icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#E74C3C',
                 cancelButtonColor: '#95A5A6',
-                confirmButtonText: '<i class="fas fa-check me-2"></i>Xác nhận',
+                confirmButtonText: '<i class="fas fa-trash-alt me-2"></i>Xóa',
                 cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy',
                 showLoaderOnConfirm: true,
                 preConfirm: async () => {
                     try {
-                        const response = await fetch('/Admin/ToggleDepartmentStatus', {
+                        const response = await fetch('/Admin/MoveDepartmentToTrash', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ departmentId: parseInt(id) })

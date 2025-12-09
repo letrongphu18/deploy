@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "SHnDHEYuI9E=",
+  "dgSpecHash": "NTbhpQLtnEU=",
   "success": true,
   "projectFilePath": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\TMD.csproj",
   "expectedPackageFiles": [
@@ -20,10 +20,10 @@
     "C:\\Users\\Admin\\.nuget\\packages\\google.apis.auth\\1.73.0\\google.apis.auth.1.73.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\google.apis.core\\1.73.0\\google.apis.core.1.73.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\google.apis.gmail.v1\\1.72.0.3966\\google.apis.gmail.v1.1.72.0.3966.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.aspnetcore\\1.8.14\\hangfire.aspnetcore.1.8.14.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.core\\1.8.14\\hangfire.core.1.8.14.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.netcore\\1.8.14\\hangfire.netcore.1.8.14.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.sqlserver\\1.8.14\\hangfire.sqlserver.1.8.14.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.aspnetcore\\1.8.22\\hangfire.aspnetcore.1.8.22.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.core\\1.8.22\\hangfire.core.1.8.22.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.netcore\\1.8.22\\hangfire.netcore.1.8.22.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\hangfire.sqlserver\\1.8.22\\hangfire.sqlserver.1.8.22.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\mailkit\\4.14.1\\mailkit.4.14.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

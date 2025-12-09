@@ -34,6 +34,43 @@ namespace TMD.Controllers
 			_telegramService = telegramService;
 
 		}
+
+		/// <summary>
+		/// Đọc thời gian chuẩn từ SystemSettings với validate đầy đủ
+		/// </summary>
+		private async Task<(TimeOnly startTime, TimeOnly endTime)> GetStandardTimesAsync()
+		{
+			try
+			{
+				var configs = await _context.SystemSettings
+					.Where(c => c.IsActive == true && c.IsEnabled == true)
+					.Where(c => c.SettingKey == "CHECK_IN_STANDARD_TIME" ||
+								c.SettingKey == "CHECK_OUT_STANDARD_TIME")
+					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
+
+				// ✅ GET WITH FALLBACK
+				var startStr = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME") ?? "08:00";
+				var endStr = configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME") ?? "17:00";
+
+				// ✅ VALIDATE & PARSE
+				TimeOnly startTime = TimeOnly.Parse("08:00"); // Default
+				TimeOnly endTime = TimeOnly.Parse("17:00");   // Default
+
+				if (!string.IsNullOrWhiteSpace(startStr) && TimeOnly.TryParse(startStr, out var parsedStart))
+					startTime = parsedStart;
+
+				if (!string.IsNullOrWhiteSpace(endStr) && TimeOnly.TryParse(endStr, out var parsedEnd))
+					endTime = parsedEnd;
+
+				return (startTime, endTime);
+			}
+			catch (Exception ex)
+			{
+				// ✅ LOG ERROR & FALLBACK
+				Console.WriteLine($"[GetStandardTimes] Error: {ex.Message}");
+				return (TimeOnly.Parse("08:00"), TimeOnly.Parse("17:00"));
+			}
+		}
 		[HttpGet]
 		public async Task<IActionResult> GetMyNotifications(int skip = 0, int take = 20)
 		{
@@ -730,7 +767,6 @@ namespace TMD.Controllers
 
 		// ============================================
 		// IMPROVED CHECK-IN - Prevent Multiple Check-ins
-		// ============================================
 		[HttpPost]
 		[RequestSizeLimit(10_485_760)]
 		public async System.Threading.Tasks.Task<IActionResult> CheckIn([FromForm] CheckInRequest request)
@@ -757,7 +793,7 @@ namespace TMD.Controllers
 				});
 			}
 
-			// ✅ KHÔNG BẮT BUỘC ẢNH - Chỉ validate nếu có upload
+			// ✅ ẢNH TÙY CHỌN
 			string photoPath = null;
 			if (request.Photo != null && request.Photo.Length > 0)
 			{
@@ -786,21 +822,33 @@ namespace TMD.Controllers
 				catch (Exception ex)
 				{
 					Console.WriteLine($"Photo upload failed: {ex.Message}");
-					// Không block check-in nếu upload ảnh thất bại
 				}
 			}
 
-			// ✅ BẮT BUỘC GPS
+			// ✅ GPS BẮT BUỘC
 			if (request.Latitude == 0 || request.Longitude == 0)
 				return Json(new { success = false, message = "Không thể lấy vị trí GPS. Vui lòng bật GPS và thử lại" });
 
 			try
 			{
+				// ✅ ĐỌC CONFIG VỚI FALLBACK AN TOÀN
 				var configs = await _context.SystemSettings
 					.Where(c => c.IsActive == true && c.IsEnabled == true)
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
-				var standardStartTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00"));
+				// ✅ LẤY GIÁ TRỊ VỚI FALLBACK
+				var standardStartTimeStr = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME") ?? "09:00";
+
+				// ✅ VALIDATE KHÔNG NULL/EMPTY
+				if (string.IsNullOrWhiteSpace(standardStartTimeStr))
+					standardStartTimeStr = "09:00";
+
+				// ✅ PARSE AN TOÀN
+				TimeOnly standardStartTime;
+				if (!TimeOnly.TryParse(standardStartTimeStr, out standardStartTime))
+				{
+					standardStartTime = TimeOnly.Parse("09:00");
+				}
 
 				var checkInTime = new TimeOnly(serverNow.Hour, serverNow.Minute, serverNow.Second);
 				var isLate = checkInTime > standardStartTime;
@@ -817,7 +865,7 @@ namespace TMD.Controllers
 				attendance.CheckInLatitude = request.Latitude;
 				attendance.CheckInLongitude = request.Longitude;
 				attendance.CheckInAddress = address;
-				attendance.CheckInPhotos = photoPath; // Có thể null
+				attendance.CheckInPhotos = photoPath;
 				attendance.CheckInNotes = request.Notes;
 				attendance.CheckInIpaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 				attendance.IsLate = isLate;
@@ -860,9 +908,9 @@ namespace TMD.Controllers
 				return Json(new
 				{
 					success = true,
-					message = $"✅ Check-in thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n📍 Vị trí: {address}" +
-							  (isLate ? $"\n⚠️ Ghi nhận: Đến sau {standardStartTime:HH:mm}" : "\n✨ Đúng giờ!") +
-							  (photoPath == null ? "\n📷 Không có ảnh check-in" : ""),
+					message = $" Check-in thành công!\n Thời gian: {serverNow:HH:mm:ss}\n📍 Vị trí: {address}" +
+							  (isLate ? $"\n⚠ Ghi nhận: Đến sau {standardStartTime:HH:mm}" : "\n Đúng giờ!") +
+							  (photoPath == null ? "\n Không có ảnh check-in" : ""),
 					serverTime = serverNow.ToString("yyyy-MM-dd HH:mm:ss"),
 					checkInTime = serverNow.ToString("HH:mm:ss"),
 					address = address,
@@ -903,7 +951,7 @@ namespace TMD.Controllers
 			if (attendance.CheckOutTime.HasValue)
 				return Json(new { success = false, message = "Bạn đã check-out hôm nay rồi! Chúc bạn một ngày vui vẻ!", isCompleted = true });
 
-			// ✅ KHÔNG BẮT BUỘC ẢNH - Chỉ validate nếu có upload
+			// ✅ ẢNH TÙY CHỌN
 			string photoPath = null;
 			if (request.Photo != null && request.Photo.Length > 0)
 			{
@@ -932,11 +980,10 @@ namespace TMD.Controllers
 				catch (Exception ex)
 				{
 					Console.WriteLine($"Photo upload failed: {ex.Message}");
-					// Không block check-out nếu upload ảnh thất bại
 				}
 			}
 
-			// ✅ BẮT BUỘC GPS
+			// ✅ GPS BẮT BUỘC
 			if (request.Latitude == 0 || request.Longitude == 0)
 			{
 				return Json(new
@@ -957,13 +1004,42 @@ namespace TMD.Controllers
 
 			try
 			{
+				// ✅ ĐỌC CONFIG VỚI FALLBACK AN TOÀN
 				var configs = await _context.SystemSettings
 					.Where(c => c.IsActive == true && c.IsEnabled == true)
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
-				var standardEndTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME", "17:00"));
-				var standardStartTime = TimeOnly.Parse(configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00"));
-				var standardHoursPerDay = decimal.Parse(configs.GetValueOrDefault("STANDARD_HOURS_PER_DAY", "8"));
+				// ✅ LẤY GIÁ TRỊ VỚI FALLBACK
+				var standardEndTimeStr = configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME") ?? "17:00";
+				var standardStartTimeStr = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME") ?? "08:00";
+				var standardHoursPerDayStr = configs.GetValueOrDefault("STANDARD_HOURS_PER_DAY") ?? "8";
+
+				// ✅ VALIDATE KHÔNG NULL/EMPTY
+				if (string.IsNullOrWhiteSpace(standardEndTimeStr))
+					standardEndTimeStr = "17:00";
+				if (string.IsNullOrWhiteSpace(standardStartTimeStr))
+					standardStartTimeStr = "08:00";
+				if (string.IsNullOrWhiteSpace(standardHoursPerDayStr))
+					standardHoursPerDayStr = "8";
+
+				// ✅ PARSE AN TOÀN
+				TimeOnly standardEndTime;
+				if (!TimeOnly.TryParse(standardEndTimeStr, out standardEndTime))
+				{
+					standardEndTime = TimeOnly.Parse("17:00");
+				}
+
+				TimeOnly standardStartTime;
+				if (!TimeOnly.TryParse(standardStartTimeStr, out standardStartTime))
+				{
+					standardStartTime = TimeOnly.Parse("08:00");
+				}
+
+				decimal standardHoursPerDay;
+				if (!decimal.TryParse(standardHoursPerDayStr, out standardHoursPerDay))
+				{
+					standardHoursPerDay = 8;
+				}
 
 				var address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
 
@@ -987,7 +1063,7 @@ namespace TMD.Controllers
 				attendance.CheckOutLatitude = request.Latitude;
 				attendance.CheckOutLongitude = request.Longitude;
 				attendance.CheckOutAddress = address;
-				attendance.CheckOutPhotos = photoPath; // Có thể null
+				attendance.CheckOutPhotos = photoPath;
 				attendance.CheckOutNotes = request.Notes;
 				attendance.CheckOutIpaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 				attendance.TotalHours = totalHours;
@@ -1048,7 +1124,7 @@ namespace TMD.Controllers
 					);
 				}
 
-				string message = $"✅ Check-out thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n⏱️ Tổng giờ làm: {hours:D2}:{minutes:D2}:{seconds:D2}\n📍 Vị trí: {address}";
+				string message = $" Check-out thành công!\n Thời gian: {serverNow:HH:mm:ss}\n Tổng giờ làm: {hours:D2}:{minutes:D2}:{seconds:D2}\n📍 Vị trí: {address}";
 
 				if (isEarlyCheckout)
 				{
@@ -1056,12 +1132,12 @@ namespace TMD.Controllers
 				}
 				else
 				{
-					message += "\n\n🎉 Chúc bạn một buổi tối vui vẻ!";
+					message += "\n\n Chúc bạn một buổi tối vui vẻ!";
 				}
 
 				if (photoPath == null)
 				{
-					message += "\n📷 Không có ảnh check-out";
+					message += "\n Không có ảnh check-out";
 				}
 
 				return Json(new
@@ -3188,7 +3264,6 @@ namespace TMD.Controllers
 		{
 			public decimal Latitude { get; set; }
 			public decimal Longitude { get; set; }
-			public string? Address { get; set; }
 			public string? Notes { get; set; }
 			public IFormFile Photo { get; set; }
 		}
@@ -3203,7 +3278,7 @@ namespace TMD.Controllers
 		{
 			public decimal Latitude { get; set; }
 			public decimal Longitude { get; set; }
-			public string? Address { get; set; }
+		
 			public string? Notes { get; set; }
 			public IFormFile Photo { get; set; }
 		}

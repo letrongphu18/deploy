@@ -1,0 +1,336 @@
+﻿@model List<TMD.Models.Department>
+@{
+    ViewData["Title"] = "Thùng rác - Phòng ban";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/department-list.css" rel="stylesheet" />
+
+<div class="tmdpt-container">
+    <!-- Header Section -->
+    <div class="tmdpt-page-header">
+        <div class="tmdpt-d-flex tmdpt-justify-content-between tmdpt-align-items-center">
+            <div>
+                <h1 class="tmdpt-page-title">
+                    <i class="fas fa-trash-alt"></i> Thùng rác - Phòng ban
+                </h1>
+                <p class="tmdpt-page-subtitle">Các phòng ban đã bị xóa - có thể khôi phục hoặc xóa vĩnh viễn</p>
+            </div>
+            <div class="tmdpt-d-flex tmdpt-gap-2">
+                <a asp-action="DepartmentList" class="tmdpt-btn-back">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+                @if (Model.Any())
+                {
+                    <button class="tmdpt-btn-outline-danger" onclick="emptyTrash()">
+                        <i class="fas fa-trash"></i> Làm rỗng thùng rác
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="tmdpt-row">
+        <div class="tmdpt-col-xl-6 tmdpt-col-md-6">
+            <div class="tmdpt-stats-card tmdpt-stats-danger">
+                <div class="tmdpt-stats-icon">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <div class="tmdpt-stats-content">
+                    <div class="tmdpt-stats-label">Phòng ban trong thùng rác</div>
+                    <div class="tmdpt-stats-value">@ViewBag.TotalTrash</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tmdpt-col-xl-6 tmdpt-col-md-6">
+            <div class="tmdpt-stats-card tmdpt-stats-warning">
+                <div class="tmdpt-stats-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="tmdpt-stats-content">
+                    <div class="tmdpt-stats-label">Nhân viên liên quan</div>
+                    <div class="tmdpt-stats-value">@ViewBag.TotalUsersInTrash</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trash Cards -->
+    @if (Model.Any())
+    {
+        <div class="tmdpt-row">
+            @foreach (var dept in Model)
+            {
+                var hasUsers = dept.Users != null && dept.Users.Any();
+                var canDelete = !hasUsers;
+
+                <div class="tmdpt-col-xl-4 tmdpt-col-lg-6 tmdpt-col-md-6">
+                    <div class="tmdpt-dept-card tmdpt-dept-card--trash">
+                        <div class="tmdpt-dept-card__header">
+                            <div class="tmdpt-dept-card__icon tmdpt-dept-card__icon--trash">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                            <div class="tmdpt-dept-card__actions">
+                                <button class="tmdpt-btn-icon tmdpt-btn-icon--success"
+                                        onclick="restoreDepartment(@dept.DepartmentId, '@Html.Raw(dept.DepartmentName.Replace("'", "\\'"))')"
+                                        title="Khôi phục">
+                                    <i class="fas fa-undo"></i>
+                                </button>
+                                @if (canDelete)
+                                {
+                                    <button class="tmdpt-btn-icon tmdpt-btn-icon--danger"
+                                            onclick="permanentlyDelete(@dept.DepartmentId, '@Html.Raw(dept.DepartmentName.Replace("'", "\\'"))')"
+                                            title="Xóa vĩnh viễn">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="tmdpt-btn-icon tmdpt-btn-icon--danger"
+                                            disabled
+                                            title="Không thể xóa vĩnh viễn khi còn nhân viên"
+                                            style="opacity: 0.5; cursor: not-allowed;">
+                                        <i class="fas fa-lock"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="tmdpt-dept-card__body">
+                            <h4 class="tmdpt-dept-card__name">@dept.DepartmentName</h4>
+
+                            <div class="tmdpt-dept-card__stats">
+                                <div class="tmdpt-stat-badge tmdpt-stat-badge--warning">
+                                    <i class="fas fa-users"></i>
+                                    <span>@(dept.Users?.Count ?? 0) nhân viên</span>
+                                </div>
+                                <span class="tmdpt-badge tmdpt-badge-secondary">
+                                    <i class="fas fa-trash-alt"></i> Đã xóa
+                                </span>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(dept.Description))
+                            {
+                                <p class="tmdpt-dept-card__desc">@dept.Description</p>
+                            }
+
+                            @if (hasUsers)
+                            {
+                                <div class="tmdpt-dept-card__warning">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Phòng ban này vẫn còn nhân viên. Vui lòng chuyển họ sang phòng ban khác trước khi xóa vĩnh viễn.</span>
+                                </div>
+                            }
+
+                            @if (dept.Users != null && dept.Users.Any())
+                            {
+                                <div class="tmdpt-dept-card__members">
+                                    <p class="tmdpt-members-title">
+                                        <i class="fas fa-users"></i> Nhân viên còn lại:
+                                    </p>
+                                    <div class="tmdpt-member-avatars">
+                                        @foreach (var user in dept.Users.Take(5))
+                                        {
+                                            <div class="tmdpt-member-avatar" title="@user.FullName">
+                                                @if (!string.IsNullOrEmpty(user.Avatar) && user.Avatar != "/images/default-avatar.png")
+                                                {
+                                                    <img src="@user.Avatar" alt="@user.FullName" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                    <span style="display:none;">@user.FullName?.Substring(0, 1)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@user.FullName?.Substring(0, 1)</span>
+                                                }
+                                            </div>
+                                        }
+                                        @if (dept.Users.Count > 5)
+                                        {
+                                            <div class="tmdpt-member-avatar tmdpt-member-avatar--more">
+                                                +@(dept.Users.Count - 5)
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="tmdpt-dept-card__footer">
+                            <small class="tmdpt-text-muted">
+                                <i class="far fa-clock"></i>
+                                Xóa lúc: @(dept.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="tmdpt-empty-state">
+            <i class="fas fa-trash-alt fa-3x"></i>
+            <h4>Thùng rác đang trống</h4>
+            <p>Các phòng ban bị xóa sẽ xuất hiện ở đây</p>
+            <a asp-action="DepartmentList" class="tmdpt-btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // ✅ KHÔI PHỤC PHÒNG BAN
+        function restoreDepartment(id, name) {
+            Swal.fire({
+                title: 'Xác nhận khôi phục',
+                html: `Bạn có muốn khôi phục phòng ban<br><strong>"${name}"</strong>?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#27AE60',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-undo me-2"></i>Khôi phục',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy',
+                showLoaderOnConfirm: true,
+                preConfirm: async () => {
+                    try {
+                        const response = await fetch('/Admin/RestoreDepartmentFromTrash', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ departmentId: parseInt(id) })
+                        });
+                        const data = await response.json();
+                        if (!data.success) throw new Error(data.message || 'Có lỗi xảy ra');
+                        return data;
+                    } catch (error) {
+                        Swal.showValidationMessage(`Lỗi: ${error.message}`);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: result.value.message,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60',
+                        confirmButtonText: '<i class="fas fa-check me-2"></i>OK'
+                    }).then(() => location.reload());
+                }
+            });
+        }
+
+        // ✅ XÓA VĨNH VIỄN
+        function permanentlyDelete(id, name) {
+            Swal.fire({
+                title: '⚠️ Cảnh báo nghiêm trọng!',
+                html: `
+                    <p style="font-size: 1.1em; margin-bottom: 1rem;">Bạn sắp <strong style="color: #E74C3C;">XÓA VĨNH VIỄN</strong> phòng ban:</p>
+                    <p style="font-size: 1.3em; font-weight: bold; color: #E74C3C; margin-bottom: 1rem;">"${name}"</p>
+                    <p style="color: #E74C3C; font-weight: 600;">⚠️ HÀNH ĐỘNG NÀY KHÔNG THỂ HOÀN TÁC!</p>
+                    <p style="margin-top: 1rem;">Dữ liệu sẽ bị xóa hoàn toàn khỏi hệ thống.</p>
+                `,
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#E74C3C',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-trash me-2"></i>Xóa vĩnh viễn',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy bỏ',
+                showLoaderOnConfirm: true,
+                preConfirm: async () => {
+                    try {
+                        const response = await fetch('/Admin/PermanentlyDeleteDepartment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ departmentId: parseInt(id) })
+                        });
+                        const data = await response.json();
+                        if (!data.success) throw new Error(data.message || 'Có lỗi xảy ra');
+                        return data;
+                    } catch (error) {
+                        Swal.showValidationMessage(`Lỗi: ${error.message}`);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Đã xóa vĩnh viễn!',
+                        text: result.value.message,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60',
+                        confirmButtonText: '<i class="fas fa-check me-2"></i>OK'
+                    }).then(() => location.reload());
+                }
+            });
+        }
+
+        // ✅ LÀM RỖNG THÙNG RÁC
+        function emptyTrash() {
+            Swal.fire({
+                title: '🚨 CẢNH BÁO CỰC KỲ NGHIÊM TRỌNG!',
+                html: `
+                    <p style="font-size: 1.2em; font-weight: bold; color: #E74C3C; margin-bottom: 1rem;">
+                        BẠN SẮP XÓA VĨNH VIỄN TẤT CẢ PHÒNG BAN TRONG THÙNG RÁC!
+                    </p>
+                    <div style="background: #FEE; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border-left: 4px solid #E74C3C;">
+                        <p style="margin: 0; font-weight: 600; color: #C0392B;">
+                            ⚠️ Tất cả phòng ban không còn nhân viên sẽ bị xóa hoàn toàn
+                        </p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.9em; color: #E74C3C;">
+                            Hành động này KHÔNG THỂ HOÀN TÁC!
+                        </p>
+                    </div>
+                    <p style="font-weight: 600;">Bạn có chắc chắn muốn tiếp tục?</p>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#E74C3C',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-trash me-2"></i>Xác nhận xóa tất cả',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy bỏ',
+                showLoaderOnConfirm: true,
+                preConfirm: async () => {
+                    try {
+                        const response = await fetch('/Admin/EmptyDepartmentTrash', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+                        const data = await response.json();
+                        if (!data.success) throw new Error(data.message || 'Có lỗi xảy ra');
+                        return data;
+                    } catch (error) {
+                        Swal.showValidationMessage(`Lỗi: ${error.message}`);
+                    }
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const data = result.value;
+                    let messageHtml = `<p>${data.message}</p>`;
+
+                    if (data.skippedCount > 0) {
+                        messageHtml += `
+                            <div style="background: #FFF3CD; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; border-left: 4px solid #FFC107;">
+                                <p style="margin: 0; color: #856404;">
+                                    <i class="fas fa-info-circle"></i>
+                                    Đã bỏ qua ${data.skippedCount} phòng ban vì vẫn còn nhân viên
+                                </p>
+                            </div>
+                        `;
+                    }
+
+                    Swal.fire({
+                        title: 'Hoàn tất!',
+                        html: messageHtml,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60',
+                        confirmButtonText: '<i class="fas fa-check me-2"></i>OK'
+                    }).then(() => location.reload());
+                }
+            });
+        }
+    </script>
+}

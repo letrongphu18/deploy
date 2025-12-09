@@ -59,7 +59,6 @@ namespace TMD.Controllers
 
 		// ============================================
 		// ⚠️ CÁC HÀM STATIC HELPERS (QUAN TRỌNG CHO LAYOUT)
-		// Phần này sửa lỗi CS0117
 		// ============================================
 		public static string GetSettingValue(AihubSystemContext context, string key)
 		{
@@ -72,9 +71,8 @@ namespace TMD.Controllers
 		public static string GetCustomStyles(AihubSystemContext context) => "";
 		public static string GetCustomScripts(AihubSystemContext context) => "";
 
-
 		// ============================================
-		// BATCH UPDATE (SAVE ALL)
+		// BATCH UPDATE (SAVE ALL) - ✅ FIXED
 		// ============================================
 		[HttpPost]
 		public async Task<IActionResult> BatchUpdateSettings([FromBody] List<UpdateSettingRequest> requests)
@@ -94,7 +92,7 @@ namespace TMD.Controllers
 				// Lấy danh sách Key cần update
 				var keysToUpdate = requests.Select(r => r.SettingKey).ToList();
 
-				// Load các setting tồn tại từ DB để tối ưu performance
+				// Load các setting tồn tại từ DB
 				var existingSettings = await _context.SystemSettings
 					.Where(s => keysToUpdate.Contains(s.SettingKey))
 					.ToListAsync();
@@ -109,7 +107,7 @@ namespace TMD.Controllers
 						setting = new SystemSetting
 						{
 							SettingKey = request.SettingKey,
-							SettingValue = request.SettingValue,
+							SettingValue = request.SettingValue ?? "",
 							Description = request.Description ?? GetDescriptionForKey(request.SettingKey),
 							DataType = request.DataType ?? GetDataTypeForKey(request.SettingKey),
 							Category = request.Category ?? GetCategoryForKey(request.SettingKey),
@@ -125,18 +123,23 @@ namespace TMD.Controllers
 					}
 					else
 					{
-						// Chỉ cập nhật nếu giá trị thay đổi
-						if (setting.SettingValue != request.SettingValue)
+						// ✅ FIX: Luôn cập nhật, không check giá trị cũ
+						// Vì người dùng đã thay đổi thì phải lưu
+						var oldValue = setting.SettingValue;
+						setting.SettingValue = request.SettingValue ?? "";
+						setting.UpdatedAt = DateTime.Now;
+						setting.UpdatedBy = adminId;
+
+						// Chỉ tăng counter nếu thực sự khác
+						if (oldValue != setting.SettingValue)
 						{
-							setting.SettingValue = request.SettingValue;
-							setting.UpdatedAt = DateTime.Now;
-							setting.UpdatedBy = adminId;
 							updatedCount++;
 						}
 					}
 				}
 
-				if (updatedCount > 0 || createdCount > 0)
+				// ✅ FIX: Luôn SaveChanges nếu có request
+				if (requests.Count > 0)
 				{
 					await _context.SaveChangesAsync();
 				}
@@ -144,7 +147,9 @@ namespace TMD.Controllers
 				return Json(new
 				{
 					success = true,
-					message = $"Đã cập nhật {updatedCount} cấu hình!",
+					message = updatedCount > 0 || createdCount > 0
+						? $"Đã cập nhật {updatedCount} và tạo mới {createdCount} cấu hình!"
+						: "Đã lưu thành công!",
 					updatedCount,
 					createdCount
 				});
@@ -292,8 +297,8 @@ namespace TMD.Controllers
 				var newSetting = new SystemSetting
 				{
 					SettingKey = settingKey ?? "",
-					SettingValue = request.SettingValue,
-					Description = request.Description,
+					SettingValue = request.SettingValue ?? "",
+					Description = request.Description ?? "",
 					DataType = request.DataType ?? "String",
 					Category = request.Category ?? "General",
 					ApplyMethod = request.ApplyMethod ?? "Add",
@@ -362,11 +367,11 @@ namespace TMD.Controllers
 				}
 
 				setting.SettingKey = request.SettingKey;
-				setting.SettingValue = request.SettingValue;
-				setting.Description = request.Description;
-				setting.DataType = request.DataType;
-				setting.Category = request.Category;
-				setting.ApplyMethod = request.ApplyMethod;
+				setting.SettingValue = request.SettingValue ?? "";
+				setting.Description = request.Description ?? "";
+				setting.DataType = request.DataType ?? "String";
+				setting.Category = request.Category ?? "General";
+				setting.ApplyMethod = request.ApplyMethod ?? "";
 				setting.UpdatedAt = DateTime.Now;
 				setting.UpdatedBy = HttpContext.Session.GetInt32("UserId");
 
@@ -548,8 +553,6 @@ namespace TMD.Controllers
 				await BackupLayoutFile(filePath, fileName);
 				await System.IO.File.WriteAllTextAsync(filePath, request.Content);
 
-				// Audit log...
-
 				return Json(new { success = true, message = $"Đã lưu {fileName}!" });
 			}
 			catch (Exception ex)
@@ -666,6 +669,7 @@ namespace TMD.Controllers
 				new() { SettingKey = "WORK_DAYS_PER_MONTH", SettingValue = "26", Description = "Số ngày làm việc/tháng", DataType = "Number", Category = "Salary", ApplyMethod = "Add", IsActive = true, IsEnabled = true, CreatedAt = DateTime.Now },
 				new() { SettingKey = "STANDARD_HOURS_PER_DAY", SettingValue = "8", Description = "Số giờ làm chuẩn/ngày", DataType = "Decimal", Category = "Salary", ApplyMethod = "Add", IsActive = true, IsEnabled = true, CreatedAt = DateTime.Now },
 				new() { SettingKey = "CHECK_IN_STANDARD_TIME", SettingValue = "08:00", Description = "Giờ chuẩn check-in", DataType = "String", Category = "Attendance", ApplyMethod = "Add", IsActive = true, IsEnabled = true, CreatedAt = DateTime.Now },
+				new() { SettingKey = "CHECKOUT_STANDARD_TIME", SettingValue = "17:00", Description = "Giờ chuẩn check-out", DataType = "String", Category = "Attendance", ApplyMethod = "Add", IsActive = true, IsEnabled = true, CreatedAt = DateTime.Now },
 				new() { SettingKey = "LATE_THRESHOLD_MINUTES", SettingValue = "15", Description = "Ngưỡng phút đi trễ", DataType = "Number", Category = "Attendance", ApplyMethod = "Add", IsActive = true, IsEnabled = true, CreatedAt = DateTime.Now }
 			};
 			_context.SystemSettings.AddRange(defaultSettings);
@@ -687,7 +691,7 @@ namespace TMD.Controllers
 		// ============================================
 		// REQUEST MODELS (DTOs)
 		// ============================================
-		public class GenerateKeyRequest { public string Description { get; set; } public string? ApplyMethod { get; set; } }
+		public class GenerateKeyRequest { public string Description { get; set; } = ""; public string? ApplyMethod { get; set; } }
 		public class ToggleSettingStatusRequest { public int SettingId { get; set; } }
 		public class UpdateSettingRequest
 		{

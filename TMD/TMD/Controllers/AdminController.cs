@@ -281,42 +281,39 @@ namespace TMD.Controllers
 
 
 		// ============================================
-		// USER MANAGEMENT
+		// THÊM VÀO AdminController.cs - USER TRASH SYSTEM
 		// ============================================
-		// ============================================
-		// USER MANAGEMENT - USERLIST (FIXED)
-		// ============================================
+
+		/// <summary>
+		/// Cập nhật UserList để CHỈ hiển thị user ACTIVE
+		/// </summary>
 		public async Task<IActionResult> UserList(
-	int page = 1,
-	int pageSize = 10,
-	string? search = null,
-	string? roleName = null,
-	string? status = null,
-	int? departmentId = null)
+			int page = 1,
+			int pageSize = 10,
+			string? search = null,
+			string? roleName = null,
+			string? status = null,
+			int? departmentId = null)
 		{
 			if (!IsAdmin())
 				return RedirectToAction("Login", "Account");
 
-			// ============================================
-			// THỐNG KÊ TOÀN BỘ HỆ THỐNG (KHÔNG BỊ ẢNH HƯỞNG BỞI FILTER)
-			// ============================================
-			ViewBag.TotalUsers = await _context.Users.CountAsync();
+			// ✅ THỐNG KÊ CHỈ TÍNH USER ACTIVE
+			ViewBag.TotalUsers = await _context.Users.CountAsync(u => u.IsActive == true);
 			ViewBag.ActiveUsers = await _context.Users.CountAsync(u => u.IsActive == true);
 			ViewBag.TotalDepartments = await _context.Departments.CountAsync();
 
-			// Lấy roles và departments cho dropdown filter
 			var roles = await _context.Roles.OrderBy(r => r.RoleName).ToListAsync();
 			var departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
 
-			// ============================================
-			// QUERY BASE VỚI FILTERS (SERVER-SIDE)
-			// ============================================
+			// ✅ QUERY CHỈ LẤY USER ACTIVE
 			var query = _context.Users
 				.Include(u => u.Role)
 				.Include(u => u.Department)
+				.Where(u => u.IsActive == true)  // ← QUAN TRỌNG
 				.AsQueryable();
 
-			// ✅ SEARCH FILTER (tìm trong toàn bộ database)
+			// Search filter
 			if (!string.IsNullOrWhiteSpace(search))
 			{
 				var s = search.Trim().ToLower();
@@ -328,30 +325,19 @@ namespace TMD.Controllers
 				);
 			}
 
-			// ✅ ROLE FILTER
+			// Role filter
 			if (!string.IsNullOrWhiteSpace(roleName))
 			{
 				query = query.Where(u => u.Role != null && u.Role.RoleName == roleName);
 			}
 
-			// ✅ STATUS FILTER
-			if (!string.IsNullOrWhiteSpace(status))
-			{
-				if (status == "active")
-					query = query.Where(u => u.IsActive == true);
-				else if (status == "inactive")
-					query = query.Where(u => u.IsActive == false);
-			}
-
-			// ✅ DEPARTMENT FILTER
+			// Status filter (bỏ vì đã filter IsActive = true ở trên)
+			// Department filter
 			if (departmentId.HasValue && departmentId.Value > 0)
 			{
 				query = query.Where(u => u.DepartmentId == departmentId.Value);
 			}
 
-			// ============================================
-			// PAGINATION (SAU KHI ÁP DỤNG FILTER)
-			// ============================================
 			var totalCount = await query.CountAsync();
 
 			var users = await query
@@ -360,9 +346,6 @@ namespace TMD.Controllers
 				.Take(pageSize)
 				.ToListAsync();
 
-			// ============================================
-			// BUILD VIEW MODEL
-			// ============================================
 			var vm = new UserListViewModel
 			{
 				Users = users,
@@ -378,6 +361,508 @@ namespace TMD.Controllers
 			};
 
 			return View(vm);
+		}
+
+		/// <summary>
+		/// Hiển thị trang Thùng rác User
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> UserTrash(
+			int page = 1,
+			int pageSize = 10,
+			string? search = null,
+			string? roleName = null,
+			int? departmentId = null)
+		{
+			if (!IsAdmin())
+				return RedirectToAction("Login", "Account");
+
+			await _auditHelper.LogViewAsync(
+				HttpContext.Session.GetInt32("UserId").Value,
+				"User",
+				0,
+				"Xem thùng rác người dùng"
+			);
+
+			var roles = await _context.Roles.OrderBy(r => r.RoleName).ToListAsync();
+			var departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
+
+			// ✅ CHỈ LẤY USER ĐÃ BỊ VÔ HIỆU HÓA
+			var query = _context.Users
+				.Include(u => u.Role)
+				.Include(u => u.Department)
+				.Where(u => u.IsActive == false)  // ← QUAN TRỌNG
+				.AsQueryable();
+
+			// Search filter
+			if (!string.IsNullOrWhiteSpace(search))
+			{
+				var s = search.Trim().ToLower();
+				query = query.Where(u =>
+					(u.FullName != null && u.FullName.ToLower().Contains(s)) ||
+					(u.Username != null && u.Username.ToLower().Contains(s)) ||
+					(u.Email != null && u.Email.ToLower().Contains(s)) ||
+					(u.PhoneNumber != null && u.PhoneNumber.ToLower().Contains(s))
+				);
+			}
+
+			// Role filter
+			if (!string.IsNullOrWhiteSpace(roleName))
+			{
+				query = query.Where(u => u.Role != null && u.Role.RoleName == roleName);
+			}
+
+			// Department filter
+			if (departmentId.HasValue && departmentId.Value > 0)
+			{
+				query = query.Where(u => u.DepartmentId == departmentId.Value);
+			}
+
+			var totalCount = await query.CountAsync();
+
+			var users = await query
+				.OrderByDescending(u => u.UpdatedAt)
+				.Skip((page - 1) * pageSize)
+				.Take(pageSize)
+				.ToListAsync();
+
+			var vm = new UserListViewModel
+			{
+				Users = users,
+				Roles = roles,
+				Departments = departments,
+				Page = page,
+				PageSize = pageSize,
+				TotalCount = totalCount,
+				Search = search,
+				RoleName = roleName,
+				DepartmentId = departmentId
+			};
+
+			// Statistics cho thùng rác
+			ViewBag.TotalTrash = totalCount;
+			ViewBag.TotalUsers = await _context.Users.CountAsync();
+			ViewBag.ActiveUsers = await _context.Users.CountAsync(u => u.IsActive == true);
+			ViewBag.TotalDepartments = await _context.Departments.CountAsync();
+
+			return View(vm);
+		}
+
+		/// <summary>
+		/// Chuyển user vào thùng rác (soft delete - set IsActive = false)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> MoveUserToTrash([FromBody] MoveUserToTrashRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"User",
+					"Không có quyền xóa user",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			var user = await _context.Users
+				.Include(u => u.Role)
+				.FirstOrDefaultAsync(u => u.UserId == request.UserId);
+
+			if (user == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"User",
+					"User không tồn tại",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+			}
+
+			// Không cho xóa Admin
+			if (user.Role?.RoleName == "Admin")
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"User",
+					"Không thể xóa Admin",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không thể xóa tài khoản Admin!" });
+			}
+
+			// Không cho tự xóa chính mình
+			var currentUserId = HttpContext.Session.GetInt32("UserId");
+			if (user.UserId == currentUserId)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					currentUserId,
+					"SOFT_DELETE",
+					"User",
+					"Không thể tự xóa chính mình",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không thể xóa chính mình!" });
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var userName = user.FullName;
+
+				// Soft Delete: Đánh dấu IsActive = false
+				user.IsActive = false;
+				user.UpdatedAt = DateTime.Now;
+
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"SOFT_DELETE",
+					"User",
+					user.UserId,
+					new { IsActive = true },
+					new { IsActive = false },
+					$"Chuyển user '{userName}' ({user.Username}) vào thùng rác"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Đã chuyển '{userName}' vào thùng rác"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"User",
+					$"Exception: {ex.Message}",
+					new { UserId = request.UserId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Khôi phục user từ thùng rác
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> RestoreUserFromTrash([FromBody] RestoreUserRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"RESTORE",
+					"User",
+					"Không có quyền khôi phục",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			var user = await _context.Users
+				.FirstOrDefaultAsync(u => u.UserId == request.UserId);
+
+			if (user == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"RESTORE",
+					"User",
+					"User không tồn tại",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var userName = user.FullName;
+
+				// Restore: Đánh dấu IsActive = true
+				user.IsActive = true;
+				user.UpdatedAt = DateTime.Now;
+
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"RESTORE",
+					"User",
+					user.UserId,
+					new { IsActive = false },
+					new { IsActive = true },
+					$"Khôi phục user '{userName}' ({user.Username}) từ thùng rác"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Đã khôi phục '{userName}'"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"RESTORE",
+					"User",
+					$"Exception: {ex.Message}",
+					new { UserId = request.UserId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Xóa vĩnh viễn user khỏi database (hard delete)
+		/// CẨN THẬN: Chỉ dùng khi thực sự cần thiết
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> PermanentlyDeleteUser([FromBody] DeleteUserRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"User",
+					"Không có quyền xóa vĩnh viễn",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			var user = await _context.Users
+				.Include(u => u.Role)
+				.Include(u => u.UserTaskUsers)  // Check tasks
+				.Include(u => u.Attendances)    // Check attendance
+				.FirstOrDefaultAsync(u => u.UserId == request.UserId && u.IsActive == false);
+
+			if (user == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"User",
+					"User không tồn tại hoặc chưa ở trong thùng rác",
+					new { UserId = request.UserId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy người dùng trong thùng rác!" });
+			}
+
+			// Không cho xóa vĩnh viễn user có dữ liệu liên quan
+			if (user.UserTaskUsers != null && user.UserTaskUsers.Any())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"User",
+					"User có tasks liên quan",
+					new { UserId = request.UserId, TaskCount = user.UserTaskUsers.Count }
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"Không thể xóa vĩnh viễn! User có {user.UserTaskUsers.Count} task liên quan."
+				});
+			}
+
+			if (user.Attendances != null && user.Attendances.Any())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"User",
+					"User có dữ liệu chấm công",
+					new { UserId = request.UserId, AttendanceCount = user.Attendances.Count }
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"Không thể xóa vĩnh viễn! User có {user.Attendances.Count} bản ghi chấm công."
+				});
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var userName = user.FullName;
+				var username = user.Username;
+
+				// Hard Delete: Xóa khỏi database
+				_context.Users.Remove(user);
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"HARD_DELETE",
+					"User",
+					request.UserId,
+					new { FullName = userName, Username = username },
+					null,
+					$"Xóa vĩnh viễn user '{userName}' ({username}) khỏi hệ thống"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Đã xóa vĩnh viễn '{userName}'"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"User",
+					$"Exception: {ex.Message}",
+					new { UserId = request.UserId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Làm rỗng thùng rác user (xóa tất cả user không có dữ liệu liên quan)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> EmptyUserTrash()
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"EMPTY_TRASH",
+					"User",
+					"Không có quyền làm rỗng thùng rác",
+					null
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+
+				// Lấy tất cả user trong thùng rác
+				var trashedUsers = await _context.Users
+					.Include(u => u.UserTaskUsers)
+					.Include(u => u.Attendances)
+					.Where(u => u.IsActive == false)
+					.ToListAsync();
+
+				if (!trashedUsers.Any())
+				{
+					return Json(new
+					{
+						success = false,
+						message = "Thùng rác đang trống!"
+					});
+				}
+
+				// User có thể xóa (không có tasks và attendance)
+				var deletableUsers = trashedUsers
+					.Where(u => (u.UserTaskUsers == null || !u.UserTaskUsers.Any()) &&
+							   (u.Attendances == null || !u.Attendances.Any()))
+					.ToList();
+
+				// User không thể xóa (còn dữ liệu liên quan)
+				var nonDeletableUsers = trashedUsers.Except(deletableUsers).ToList();
+
+				if (!deletableUsers.Any())
+				{
+					return Json(new
+					{
+						success = false,
+						message = $"Không thể làm rỗng thùng rác! Có {nonDeletableUsers.Count} user vẫn có dữ liệu liên quan."
+					});
+				}
+
+				// Xóa vĩnh viễn các user không có dữ liệu liên quan
+				_context.Users.RemoveRange(deletableUsers);
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogDetailedAsync(
+					adminId,
+					"EMPTY_TRASH",
+					"User",
+					null,
+					null,
+					null,
+					$"Làm rỗng thùng rác user: Xóa {deletableUsers.Count} user",
+					new Dictionary<string, object>
+					{
+				{ "DeletedCount", deletableUsers.Count },
+				{ "SkippedCount", nonDeletableUsers.Count },
+				{ "DeletedUsers", string.Join(", ", deletableUsers.Select(u => u.Username)) }
+					}
+				);
+
+				var message = deletableUsers.Count == trashedUsers.Count
+					? $"Đã xóa vĩnh viễn {deletableUsers.Count} user khỏi thùng rác"
+					: $"Đã xóa {deletableUsers.Count} user. Bỏ qua {nonDeletableUsers.Count} user vẫn có dữ liệu liên quan.";
+
+				return Json(new
+				{
+					success = true,
+					message = message,
+					deletedCount = deletableUsers.Count,
+					skippedCount = nonDeletableUsers.Count
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"EMPTY_TRASH",
+					"User",
+					$"Exception: {ex.Message}",
+					new { Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		// ============================================
+		// REQUEST MODELS
+		// ============================================
+		public class MoveUserToTrashRequest
+		{
+			public int UserId { get; set; }
+		}
+
+		public class RestoreUserRequest
+		{
+			public int UserId { get; set; }
+		}
+
+		public class DeleteUserRequest
+		{
+			public int UserId { get; set; }
 		}
 
 
@@ -5103,6 +5588,408 @@ namespace TMD.Controllers
 			}
 		}
 
+
+		/// <summary>
+		/// Hiển thị trang Thùng rác Phòng ban
+		/// </summary>
+		[HttpGet]
+		public async Task<IActionResult> DepartmentTrash()
+		{
+			if (!IsAdmin())
+				return RedirectToAction("Login", "Account");
+
+			await _auditHelper.LogViewAsync(
+				HttpContext.Session.GetInt32("UserId").Value,
+				"Department",
+				0,
+				"Xem thùng rác phòng ban"
+			);
+
+			// Lấy danh sách phòng ban đã bị xóa (IsActive = false)
+			var trashedDepartments = await _context.Departments
+				.Include(d => d.Users)
+				.Where(d => d.IsActive == false)
+				.OrderByDescending(d => d.UpdatedAt)
+				.ToListAsync();
+
+			ViewBag.TotalTrash = trashedDepartments.Count;
+			ViewBag.TotalUsersInTrash = trashedDepartments.Sum(d => d.Users?.Count ?? 0);
+
+			return View(trashedDepartments);
+		}
+
+		/// <summary>
+		/// Di chuyển phòng ban vào thùng rác (soft delete)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> MoveDepartmentToTrash([FromBody] DeleteDepartmentRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"Department",
+					"Không có quyền xóa",
+					new { DepartmentId = request.DepartmentId }
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			var department = await _context.Departments
+				.Include(d => d.Users)
+				.FirstOrDefaultAsync(d => d.DepartmentId == request.DepartmentId);
+
+			if (department == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"Department",
+					"Phòng ban không tồn tại",
+					new { DepartmentId = request.DepartmentId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy phòng ban!" });
+			}
+
+			// Không cho xóa nếu có nhân viên đang hoạt động
+			if (department.Users != null && department.Users.Any(u => u.IsActive == true))
+			{
+				var activeUserCount = department.Users.Count(u => u.IsActive == true);
+
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"Department",
+					"Phòng ban có nhân viên đang hoạt động",
+					new { DepartmentId = request.DepartmentId, ActiveUsers = activeUserCount }
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"Không thể xóa phòng ban có {activeUserCount} nhân viên đang hoạt động! Vui lòng chuyển họ sang phòng ban khác trước."
+				});
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var departmentName = department.DepartmentName;
+
+				// Soft Delete: Đánh dấu IsActive = false
+				department.IsActive = false;
+				department.UpdatedAt = DateTime.Now;
+
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"SOFT_DELETE",
+					"Department",
+					department.DepartmentId,
+					new { IsActive = true },
+					new { IsActive = false },
+					$"Chuyển phòng ban '{departmentName}' vào thùng rác"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Đã chuyển phòng ban '{departmentName}' vào thùng rác"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"SOFT_DELETE",
+					"Department",
+					$"Exception: {ex.Message}",
+					new { DepartmentId = request.DepartmentId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Khôi phục phòng ban từ thùng rác
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> RestoreDepartmentFromTrash([FromBody] RestoreDepartmentRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"RESTORE",
+					"Department",
+					"Không có quyền khôi phục",
+					new { DepartmentId = request.DepartmentId }
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			var department = await _context.Departments
+				.FirstOrDefaultAsync(d => d.DepartmentId == request.DepartmentId);
+
+			if (department == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"RESTORE",
+					"Department",
+					"Phòng ban không tồn tại",
+					new { DepartmentId = request.DepartmentId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy phòng ban!" });
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var departmentName = department.DepartmentName;
+
+				// Restore: Đánh dấu IsActive = true
+				department.IsActive = true;
+				department.UpdatedAt = DateTime.Now;
+
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"RESTORE",
+					"Department",
+					department.DepartmentId,
+					new { IsActive = false },
+					new { IsActive = true },
+					$"Khôi phục phòng ban '{departmentName}' từ thùng rác"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Đã khôi phục phòng ban '{departmentName}'"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"RESTORE",
+					"Department",
+					$"Exception: {ex.Message}",
+					new { DepartmentId = request.DepartmentId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Xóa vĩnh viễn phòng ban khỏi database (hard delete)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> PermanentlyDeleteDepartment([FromBody] DeleteDepartmentRequest request)
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"Department",
+					"Không có quyền xóa vĩnh viễn",
+					new { DepartmentId = request.DepartmentId }
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			var department = await _context.Departments
+				.Include(d => d.Users)
+				.FirstOrDefaultAsync(d => d.DepartmentId == request.DepartmentId && d.IsActive == false);
+
+			if (department == null)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"Department",
+					"Phòng ban không tồn tại hoặc chưa ở trong thùng rác",
+					new { DepartmentId = request.DepartmentId }
+				);
+
+				return Json(new { success = false, message = "Không tìm thấy phòng ban trong thùng rác!" });
+			}
+
+			// Không cho xóa vĩnh viễn nếu vẫn còn user liên kết
+			if (department.Users != null && department.Users.Any())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"Department",
+					"Phòng ban vẫn còn nhân viên",
+					new { DepartmentId = request.DepartmentId, UserCount = department.Users.Count }
+				);
+
+				return Json(new
+				{
+					success = false,
+					message = $"Không thể xóa vĩnh viễn phòng ban có {department.Users.Count} nhân viên! Vui lòng chuyển họ sang phòng ban khác trước."
+				});
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+				var departmentName = department.DepartmentName;
+
+				// Hard Delete: Xóa khỏi database
+				_context.Departments.Remove(department);
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					adminId,
+					"HARD_DELETE",
+					"Department",
+					request.DepartmentId,
+					new { DepartmentName = departmentName },
+					null,
+					$"Xóa vĩnh viễn phòng ban '{departmentName}' khỏi hệ thống"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"Đã xóa vĩnh viễn phòng ban '{departmentName}'"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"HARD_DELETE",
+					"Department",
+					$"Exception: {ex.Message}",
+					new { DepartmentId = request.DepartmentId, Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+
+		/// <summary>
+		/// Làm rỗng toàn bộ thùng rác (xóa vĩnh viễn tất cả)
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> EmptyDepartmentTrash()
+		{
+			if (!IsAdmin())
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"EMPTY_TRASH",
+					"Department",
+					"Không có quyền làm rỗng thùng rác",
+					null
+				);
+
+				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+			}
+
+			try
+			{
+				var adminId = HttpContext.Session.GetInt32("UserId");
+
+				// Lấy tất cả phòng ban trong thùng rác KHÔNG CÓ USER
+				var trashedDepartments = await _context.Departments
+					.Include(d => d.Users)
+					.Where(d => d.IsActive == false)
+					.ToListAsync();
+
+				if (!trashedDepartments.Any())
+				{
+					return Json(new
+					{
+						success = false,
+						message = "Thùng rác đang trống!"
+					});
+				}
+
+				// Phòng ban có thể xóa (không có user)
+				var deletableDepartments = trashedDepartments
+					.Where(d => d.Users == null || !d.Users.Any())
+					.ToList();
+
+				// Phòng ban không thể xóa (còn user)
+				var nonDeletableDepartments = trashedDepartments
+					.Where(d => d.Users != null && d.Users.Any())
+					.ToList();
+
+				if (!deletableDepartments.Any())
+				{
+					return Json(new
+					{
+						success = false,
+						message = $"Không thể làm rỗng thùng rác! Có {nonDeletableDepartments.Count} phòng ban vẫn còn nhân viên."
+					});
+				}
+
+				// Xóa vĩnh viễn các phòng ban không có user
+				_context.Departments.RemoveRange(deletableDepartments);
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogDetailedAsync(
+					adminId,
+					"EMPTY_TRASH",
+					"Department",
+					null,
+					null,
+					null,
+					$"Làm rỗng thùng rác phòng ban: Xóa {deletableDepartments.Count} phòng ban",
+					new Dictionary<string, object>
+					{
+				{ "DeletedCount", deletableDepartments.Count },
+				{ "SkippedCount", nonDeletableDepartments.Count },
+				{ "DeletedDepartments", string.Join(", ", deletableDepartments.Select(d => d.DepartmentName)) }
+					}
+				);
+
+				var message = deletableDepartments.Count == trashedDepartments.Count
+					? $"Đã xóa vĩnh viễn {deletableDepartments.Count} phòng ban khỏi thùng rác"
+					: $"Đã xóa {deletableDepartments.Count} phòng ban. Bỏ qua {nonDeletableDepartments.Count} phòng ban vẫn còn nhân viên.";
+
+				return Json(new
+				{
+					success = true,
+					message = message,
+					deletedCount = deletableDepartments.Count,
+					skippedCount = nonDeletableDepartments.Count
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					HttpContext.Session.GetInt32("UserId"),
+					"EMPTY_TRASH",
+					"Department",
+					$"Exception: {ex.Message}",
+					new { Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+			}
+		}
+		public class RestoreDepartmentRequest
+		{
+			public int DepartmentId { get; set; }
+		}
 		// ============================================
 		// REQUEST MODEL
 		// ============================================

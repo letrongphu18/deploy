@@ -261,7 +261,7 @@
         let isGettingLocation = false;
         let isLocationLocked = false;
         let checkInTimeValue = null;
-
+        let cameraErrorShown = false;
         const STANDARD_START_TIME = "@ViewBag.StandardStartTime";
         const STANDARD_END_TIME = "@ViewBag.StandardEndTime";
 
@@ -298,8 +298,34 @@
         });
 
         // ========== CAMERA INIT & CAPTURE ==========
-        async function initCamera() {
+        // async function initCamera() {
+        //     if (stream) return;
+        //     try {
+        //         stream = await navigator.mediaDevices.getUserMedia({
+        //             video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
+        //         });
+        //         document.getElementById('video').srcObject = stream;
+        //     } catch (err) {
+        //         console.error('Camera error:', err);
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Lỗi Camera',
+        //             text: 'Không thể truy cập camera. Chuyển sang chế độ tải ảnh.',
+        //             confirmButtonText: 'OK'
+        //         }).then(() => {
+        //             document.getElementById('modeUpload').checked = true;
+        //             document.getElementById('modeUpload').dispatchEvent(new Event('change'));
+        //         });
+        //     }
+        // }
+                async function initCamera() {
             if (stream) return;
+
+            // ✅ NẾU ĐÃ LỖI CAMERA RỒI THÌ KHÔNG THỬ LẠI NỮA
+            if (cameraErrorShown) {
+                return;
+            }
+
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
                     video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
@@ -307,18 +333,23 @@
                 document.getElementById('video').srcObject = stream;
             } catch (err) {
                 console.error('Camera error:', err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi Camera',
-                    text: 'Không thể truy cập camera. Chuyển sang chế độ tải ảnh.',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    document.getElementById('modeUpload').checked = true;
-                    document.getElementById('modeUpload').dispatchEvent(new Event('change'));
-                });
+
+                // ✅ CHỈ HIỆN POPUP 1 LẦN DUY NHẤT
+                if (!cameraErrorShown) {
+                    cameraErrorShown = true;
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi Camera',
+                        text: 'Không thể truy cập camera. Tự động chuyển sang chế độ tải ảnh.',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        document.getElementById('modeUpload').checked = true;
+                        document.getElementById('modeUpload').dispatchEvent(new Event('change'));
+                    });
+                }
             }
         }
-
         function capturePhoto() {
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
@@ -350,14 +381,18 @@
             }, 'image/jpeg', 0.8);
         }
 
-        function retakePhoto() {
+                function retakePhoto() {
             document.getElementById('video').style.display = 'block';
             document.getElementById('capturedImage').style.display = 'none';
             document.getElementById('btnCapture').style.display = 'inline-block';
             document.getElementById('btnRetake').style.display = 'none';
             capturedBlob = null;
             updateButtonsState();
-            initCamera();
+
+            // ✅ CHỈ INIT CAMERA LẠI NẾU CHƯA CÓ LỖI
+            if (!cameraErrorShown) {
+                initCamera();
+            }
         }
 
         // ========== LOCATION LOGIC (GPS BẮTBUỘC) ==========
@@ -498,7 +533,7 @@
         }
 
         // ========== CHECK IN POPUP & API CALL ==========
-        async function checkIn() {
+               async function checkIn() {
             if (!latitude || !longitude) {
                 Swal.fire('Thiếu thông tin', 'Vui lòng đợi lấy vị trí GPS', 'warning');
                 return;
@@ -537,11 +572,12 @@
 
             if (!result.isConfirmed) return;
 
+            // ✅ FIXED: Không gửi Address nữa
             const formData = new FormData();
             if (photoFile) formData.append('Photo', photoFile, 'checkin.jpg');
             formData.append('Latitude', latitude);
             formData.append('Longitude', longitude);
-            formData.append('Address', currentAddress);
+            // ❌ ĐÃ XÓA: formData.append('Address', currentAddress);
             formData.append('Notes', document.getElementById('attendanceNotes').value);
 
             Swal.fire({ title: 'Đang Check-in...', text: 'Vui lòng đợi', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -564,8 +600,9 @@
             }
         }
 
+
         // ========== CHECK OUT POPUP & API CALL ==========
-        async function checkOut() {
+               async function checkOut() {
             if (!latitude || !longitude) {
                 Swal.fire('Thiếu thông tin', 'Vui lòng đợi lấy vị trí GPS', 'warning');
                 return;
@@ -604,11 +641,12 @@
 
             if (!result.isConfirmed) return;
 
+            // ✅ FIXED: Không gửi Address nữa
             const formData = new FormData();
             if (photoFile) formData.append('Photo', photoFile, 'checkout.jpg');
             formData.append('Latitude', latitude);
             formData.append('Longitude', longitude);
-            formData.append('Address', currentAddress);
+            // ❌ ĐÃ XÓA: formData.append('Address', currentAddress);
             formData.append('Notes', document.getElementById('attendanceNotes').value);
 
             Swal.fire({ title: 'Đang Check-out...', text: 'Đang tổng hợp công...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });

@@ -1,0 +1,520 @@
+﻿@model TMD.ViewModels.UserListViewModel
+@{
+    ViewData["Title"] = "Thùng rác - Người dùng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/user-management.css" rel="stylesheet" />
+
+<div class="um-container">
+    <header class="um-page-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+        <div class="um-d-flex um-justify-between um-align-center">
+            <div>
+                <h2 class="um-page-title"><i class="fas fa-trash-alt"></i> Thùng rác - Người dùng</h2>
+                <p class="um-page-subtitle">Các tài khoản đã bị vô hiệu hóa - có thể khôi phục hoặc xóa vĩnh viễn</p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="/Admin/UserList" class="um-btn-create" style="background: white; color: #1a1f4a;">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+                @if (Model.TotalCount > 0)
+                {
+                    <button onclick="emptyTrash()" class="um-btn-create" style="background: #dc2626;">
+                        <i class="fas fa-trash"></i> Làm rỗng thùng rác
+                    </button>
+                }
+            </div>
+        </div>
+    </header>
+
+    <section class="um-stats-grid">
+        <div class="um-stats-card" style="border-left: 4px solid #ef4444;">
+            <div class="um-stats-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Trong thùng rác</div>
+                <div class="um-stats-value">@ViewBag.TotalTrash</div>
+            </div>
+        </div>
+
+        <div class="um-stats-card um-stats-primary">
+            <div class="um-stats-icon"><i class="fas fa-users"></i></div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Tổng người dùng</div>
+                <div class="um-stats-value">@ViewBag.TotalUsers</div>
+            </div>
+        </div>
+
+        <div class="um-stats-card um-stats-success">
+            <div class="um-stats-icon"><i class="fas fa-user-check"></i></div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Đang hoạt động</div>
+                <div class="um-stats-value">@ViewBag.ActiveUsers</div>
+            </div>
+        </div>
+
+        <div class="um-stats-card um-stats-info">
+            <div class="um-stats-icon"><i class="fas fa-building"></i></div>
+            <div class="um-stats-content">
+                <div class="um-stats-label">Phòng ban</div>
+                <div class="um-stats-value">@ViewBag.TotalDepartments</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="um-card um-mb-4">
+        <div class="um-filters-header">
+            <h6><i class="fas fa-filter"></i> Bộ lọc và tìm kiếm</h6>
+        </div>
+
+        <div class="um-card-body">
+            <form method="get" action="@Url.Action("UserTrash")" id="filterForm">
+                <div class="um-row">
+                    <div class="um-col-4">
+                        <label class="um-form-label"><i class="fas fa-search"></i> Tìm kiếm</label>
+                        <div class="um-search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" name="search" id="searchInput"
+                                   class="um-form-control"
+                                   placeholder="Tên, username, email, SĐT..."
+                                   value="@Model.Search" />
+                        </div>
+                    </div>
+
+                    <div class="um-col-3">
+                        <label class="um-form-label"><i class="fas fa-building"></i> Phòng ban</label>
+                        <select name="departmentId" id="deptFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
+                            <option value="">Tất cả phòng ban</option>
+                            @{
+                                var depts = Model.Departments ?? new List<TMD.Models.Department>();
+                                foreach (var dept in depts)
+                                {
+                                    var isSelected = Model.DepartmentId == dept.DepartmentId;
+                                    <option value="@dept.DepartmentId" selected="@isSelected">@dept.DepartmentName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="um-col-3">
+                        <label class="um-form-label"><i class="fas fa-user-tag"></i> Vai trò</label>
+                        <select name="roleName" id="roleFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
+                            <option value="">Tất cả vai trò</option>
+                            @if (Model.Roles != null && Model.Roles.Any())
+                            {
+                                foreach (var r in Model.Roles)
+                                {
+                                    var isSelected = Model.RoleName == r.RoleName;
+                                    <option value="@r.RoleName" selected="@isSelected">@r.RoleName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="um-col-2 um-flex-end">
+                        <a href="@Url.Action("UserTrash")" id="resetFilters" class="um-btn um-btn-secondary">
+                            <i class="fas fa-redo"></i> Xóa bộ lọc
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="um-card">
+        <div class="um-card-header">
+            <h5 class="um-mb-0">
+                <i class="fas fa-trash-alt"></i> Thùng rác
+                (<span>@Model.Users.Count</span>/<span>@Model.TotalCount</span>)
+            </h5>
+        </div>
+
+        <div class="um-card-body-table">
+            <div class="um-table-wrapper">
+                <table class="um-table" id="userTable">
+                    <thead>
+                        <tr>
+                            <th width="5%">STT</th>
+                            <th width="22%">Người dùng</th>
+                            <th width="12%">Username</th>
+                            <th width="15%">Email</th>
+                            <th width="12%">Phòng ban</th>
+                            <th width="10%">Vai trò</th>
+                            <th width="12%">Xóa lúc</th>
+                            <th width="12%">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Users != null && Model.Users.Any())
+                        {
+                            int itemIndex = (Model.Page - 1) * Model.PageSize + 1;
+                            foreach (var user in Model.Users)
+                            {
+                                // Check xem có thể xóa vĩnh viễn không
+                                var hasTasks = user.UserTaskUsers != null && user.UserTaskUsers.Any();
+                                var hasAttendance = user.Attendances != null && user.Attendances.Any();
+                                var canDelete = !hasTasks && !hasAttendance;
+
+                                <tr style="@(canDelete ? "" : "background: rgba(239, 68, 68, 0.02);")">
+                                    <td class="um-text-center um-fw-bold">@itemIndex</td>
+                                    <td>
+                                        <div class="um-user-info">
+                                            <div class="um-user-avatar">
+                                                @if (!string.IsNullOrEmpty(user.Avatar))
+                                                {
+                                                    <img src="@user.Avatar" alt="@user.FullName" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                                    <span style="display:none;">@(user.FullName?.Substring(0, 1).ToUpper() ?? "U")</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@(user.FullName != null ? user.FullName.Substring(0, 1).ToUpper() : "U")</span>
+                                                }
+                                            </div>
+                                            <div class="um-user-details">
+                                                <div class="um-user-name">@user.FullName</div>
+                                                <small class="um-text-muted"><i class="fas fa-phone-alt um-me-1"></i>@(user.PhoneNumber ?? "N/A")</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="um-username-badge">@@@user.Username</span></td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.Email))
+                                        {
+                                            <span class="um-email"><i class="fas fa-envelope"></i>@user.Email</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.Department != null)
+                                        {
+                                            <span class="um-badge um-badge-info"><i class="fas fa-building um-me-1"></i>@user.Department.DepartmentName</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(user.Role?.RoleName))
+                                        {
+                                            <span class="um-badge @(user.Role.RoleName == "Admin" ? "um-badge-admin" : "um-badge-secondary")">
+                                                <i class="fas fa-user um-me-1"></i> @user.Role.RoleName
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-badge um-badge-secondary">N/A</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.UpdatedAt.HasValue)
+                                        {
+                                            <div class="um-last-login"><i class="far fa-clock"></i><small>@user.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")</small></div>
+                                        }
+                                        else
+                                        {
+                                            <span class="um-text-muted"><small>N/A</small></span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="um-action-buttons">
+                                            <button class="um-action-btn" style="background: #10b981; color: white;"
+                                                    onclick="restoreUser(@user.UserId, '@Html.Raw(user.FullName.Replace("'", "\\'"))')"
+                                                    title="Khôi phục">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                            @if (canDelete)
+                                            {
+                                                <button class="um-action-btn" style="background: #ef4444; color: white;"
+                                                        onclick="permanentlyDelete(@user.UserId, '@Html.Raw(user.FullName.Replace("'", "\\'"))')"
+                                                        title="Xóa vĩnh viễn">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="um-action-btn"
+                                                        style="opacity: 0.5; cursor: not-allowed;"
+                                                        disabled
+                                                        title="Không thể xóa vĩnh viễn - Còn dữ liệu liên quan">
+                                                    <i class="fas fa-lock"></i>
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                itemIndex++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="um-text-center" style="padding: 40px;">
+                                    <div style="color: #6b7280;">
+                                        <i class="fas fa-trash-alt fa-3x" style="margin-bottom: 1rem; opacity: 0.5;"></i>
+                                        <h4>Thùng rác đang trống</h4>
+                                        <p>Các tài khoản bị xóa sẽ xuất hiện ở đây</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @if (Model.TotalCount > 0)
+        {
+            <footer class="um-card-footer">
+                <nav class="um-pagination" aria-label="User trash pagination">
+                    <ul class="pagination">
+                        @{
+                            var totalPages = (int)Math.Ceiling((decimal)Model.TotalCount / Model.PageSize);
+                            int startPage = Math.Max(1, Model.Page - 2);
+                            int endPage = Math.Min(totalPages, Model.Page + 2);
+                        }
+
+                        <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserTrash", new { page = 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-left"></i></a>
+                        </li>
+
+                        <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserTrash", new { page = Model.Page - 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-left"></i></a>
+                        </li>
+
+                        @for (int p = startPage; p <= endPage; p++)
+                        {
+                            <li class="page-item @(p == Model.Page ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("UserTrash", new { page = p, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })">@p</a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.Page >= totalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserTrash", new { page = Model.Page + 1, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-right"></i></a>
+                        </li>
+                        <li class="page-item @(Model.Page >= totalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("UserTrash", new { page = totalPages, pageSize = Model.PageSize, search = Model.Search, roleName = Model.RoleName, departmentId = Model.DepartmentId })"><i class="fas fa-angle-double-right"></i></a>
+                        </li>
+                    </ul>
+
+                    <div class="um-pagination-info">Hiển thị <strong>@Model.Users.Count</strong> / <strong>@Model.TotalCount</strong> người dùng</div>
+                </nav>
+            </footer>
+        }
+    </section>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // ========================================
+        // SERVER-SIDE SEARCH DEBOUNCE
+        // ========================================
+        let timeout = null;
+        const searchInput = document.getElementById('searchInput');
+        const filterForm = document.getElementById('filterForm');
+
+        if(searchInput && filterForm) {
+            searchInput.addEventListener('keyup', function (e) {
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    filterForm.submit();
+                }, 600);
+            });
+
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(timeout);
+                    filterForm.submit();
+                }
+            });
+        }
+
+        // ========================================
+        // ✅ KHÔI PHỤC USER
+        // ========================================
+        async function restoreUser(userId, fullName) {
+            const result = await Swal.fire({
+                title: 'Xác nhận khôi phục',
+                html: `Bạn có muốn khôi phục tài khoản<br><strong>"${fullName}"</strong>?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-undo me-2"></i>Khôi phục',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const res = await fetch('/Admin/RestoreUserFromTrash', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: userId })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        title: 'Thành công!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60'
+                    });
+                    location.reload();
+                } else {
+                    await Swal.fire({
+                        title: 'Lỗi!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#E74C3C'
+                    });
+                }
+            } catch (err) {
+                await Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra: ' + err.message,
+                    icon: 'error',
+                    confirmButtonColor: '#E74C3C'
+                });
+            }
+        }
+
+        // ========================================
+        // ✅ XÓA VĨNH VIỄN USER
+        // ========================================
+        async function permanentlyDelete(userId, fullName) {
+            const result = await Swal.fire({
+                title: '⚠️ Cảnh báo nghiêm trọng!',
+                html: `
+                    <p style="font-size: 1.1em; margin-bottom: 1rem;">Bạn sắp <strong style="color: #E74C3C;">XÓA VĨNH VIỄN</strong> tài khoản:</p>
+                    <p style="font-size: 1.3em; font-weight: bold; color: #E74C3C; margin-bottom: 1rem;">"${fullName}"</p>
+                    <p style="color: #E74C3C; font-weight: 600;">⚠️ HÀNH ĐỘNG NÀY KHÔNG THỂ HOÀN TÁC!</p>
+                    <p style="margin-top: 1rem;">Dữ liệu sẽ bị xóa hoàn toàn khỏi hệ thống.</p>
+                `,
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#E74C3C',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-trash me-2"></i>Xóa vĩnh viễn',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy bỏ'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const res = await fetch('/Admin/PermanentlyDeleteUser', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: userId })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    await Swal.fire({
+                        title: 'Đã xóa vĩnh viễn!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60'
+                    });
+                    location.reload();
+                } else {
+                    await Swal.fire({
+                        title: 'Lỗi!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#E74C3C'
+                    });
+                }
+            } catch (err) {
+                await Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra: ' + err.message,
+                    icon: 'error',
+                    confirmButtonColor: '#E74C3C'
+                });
+            }
+        }
+
+        // ========================================
+        // ✅ LÀM RỖNG THÙNG RÁC
+        // ========================================
+        async function emptyTrash() {
+            const result = await Swal.fire({
+                title: '🚨 CẢNH BÁO CỰC KỲ NGHIÊM TRỌNG!',
+                html: `
+                    <p style="font-size: 1.2em; font-weight: bold; color: #E74C3C; margin-bottom: 1rem;">
+                        BẠN SẮP XÓA VĨNH VIỄN TẤT CẢ TÀI KHOẢN TRONG THÙNG RÁC!
+                    </p>
+                    <div style="background: #FEE; padding: 1rem; border-radius: 0.5rem; margin: 1rem 0; border-left: 4px solid #E74C3C;">
+                        <p style="margin: 0; font-weight: 600; color: #C0392B;">
+                            ⚠️ Tất cả tài khoản không còn dữ liệu liên quan sẽ bị xóa hoàn toàn
+                        </p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.9em; color: #E74C3C;">
+                            Hành động này KHÔNG THỂ HOÀN TÁC!
+                        </p>
+                    </div>
+                    <p style="font-weight: 600;">Bạn có chắc chắn muốn tiếp tục?</p>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#E74C3C',
+                cancelButtonColor: '#95A5A6',
+                confirmButtonText: '<i class="fas fa-trash me-2"></i>Xác nhận xóa tất cả',
+                cancelButtonText: '<i class="fas fa-times me-2"></i>Hủy bỏ'
+            });
+
+            if (!result.isConfirmed) return;
+
+            try {
+                const res = await fetch('/Admin/EmptyUserTrash', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    let messageHtml = `<p>${data.message}</p>`;
+
+                    if (data.skippedCount > 0) {
+                        messageHtml += `
+                            <div style="background: #FFF3CD; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem; border-left: 4px solid #FFC107;">
+                                <p style="margin: 0; color: #856404;">
+                                    <i class="fas fa-info-circle"></i>
+                                    Đã bỏ qua ${data.skippedCount} tài khoản vì vẫn còn dữ liệu liên quan
+                                </p>
+                            </div>
+                        `;
+                    }
+
+                    await Swal.fire({
+                        title: 'Hoàn tất!',
+                        html: messageHtml,
+                        icon: 'success',
+                        confirmButtonColor: '#27AE60'
+                    });
+                    location.reload();
+                } else {
+                    await Swal.fire({
+                        title: 'Lỗi!',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#E74C3C'
+                    });
+                }
+            } catch (err) {
+                await Swal.fire({
+                    title: 'Lỗi!',
+                    text: 'Có lỗi xảy ra: ' + err.message,
+                    icon: 'error',
+                    confirmButtonColor: '#E74C3C'
+                });
+            }
+        }
+    </script>
+}

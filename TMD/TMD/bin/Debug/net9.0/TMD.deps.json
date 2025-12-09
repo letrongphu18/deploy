@@ -13,9 +13,9 @@
           "EPPlus": "7.1.0",
           "Google.Apis.Auth": "1.73.0",
           "Google.Apis.Gmail.v1": "1.72.0.3966",
-          "Hangfire.AspNetCore": "1.8.14",
-          "Hangfire.Core": "1.8.14",
-          "Hangfire.SqlServer": "1.8.14",
+          "Hangfire.AspNetCore": "1.8.22",
+          "Hangfire.Core": "1.8.22",
+          "Hangfire.SqlServer": "1.8.22",
           "MailKit": "4.14.1",
           "Microsoft.EntityFrameworkCore.Design": "9.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.0",
@@ -214,50 +214,94 @@
           }
         }
       },
-      "Hangfire.AspNetCore/1.8.14": {
+      "Hangfire.AspNetCore/1.8.22": {
         "dependencies": {
-          "Hangfire.NetCore": "1.8.14"
+          "Hangfire.NetCore": "1.8.22"
         },
         "runtime": {
           "lib/netcoreapp3.0/Hangfire.AspNetCore.dll": {
-            "assemblyVersion": "1.8.14.0",
-            "fileVersion": "1.8.14.0"
+            "assemblyVersion": "1.8.22.0",
+            "fileVersion": "1.8.22.0"
           }
         }
       },
-      "Hangfire.Core/1.8.14": {
+      "Hangfire.Core/1.8.22": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.4"
         },
         "runtime": {
           "lib/netstandard2.0/Hangfire.Core.dll": {
-            "assemblyVersion": "1.8.14.0",
-            "fileVersion": "1.8.14.0"
+            "assemblyVersion": "1.8.22.0",
+            "fileVersion": "1.8.22.0"
+          }
+        },
+        "resources": {
+          "lib/netstandard2.0/ca/Hangfire.Core.resources.dll": {
+            "locale": "ca"
+          },
+          "lib/netstandard2.0/de/Hangfire.Core.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard2.0/es/Hangfire.Core.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard2.0/fa/Hangfire.Core.resources.dll": {
+            "locale": "fa"
+          },
+          "lib/netstandard2.0/fr/Hangfire.Core.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard2.0/nb/Hangfire.Core.resources.dll": {
+            "locale": "nb"
+          },
+          "lib/netstandard2.0/nl/Hangfire.Core.resources.dll": {
+            "locale": "nl"
+          },
+          "lib/netstandard2.0/pt-BR/Hangfire.Core.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/netstandard2.0/pt-PT/Hangfire.Core.resources.dll": {
+            "locale": "pt-PT"
+          },
+          "lib/netstandard2.0/pt/Hangfire.Core.resources.dll": {
+            "locale": "pt"
+          },
+          "lib/netstandard2.0/sv/Hangfire.Core.resources.dll": {
+            "locale": "sv"
+          },
+          "lib/netstandard2.0/tr-TR/Hangfire.Core.resources.dll": {
+            "locale": "tr-TR"
+          },
+          "lib/netstandard2.0/zh-TW/Hangfire.Core.resources.dll": {
+            "locale": "zh-TW"
+          },
+          "lib/netstandard2.0/zh/Hangfire.Core.resources.dll": {
+            "locale": "zh"
           }
         }
       },
-      "Hangfire.NetCore/1.8.14": {
+      "Hangfire.NetCore/1.8.22": {
         "dependencies": {
-          "Hangfire.Core": "1.8.14",
+          "Hangfire.Core": "1.8.22",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
           "Microsoft.Extensions.Hosting.Abstractions": "3.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
         },
         "runtime": {
           "lib/netstandard2.1/Hangfire.NetCore.dll": {
-            "assemblyVersion": "1.8.14.0",
-            "fileVersion": "1.8.14.0"
+            "assemblyVersion": "1.8.22.0",
+            "fileVersion": "1.8.22.0"
           }
         }
       },
-      "Hangfire.SqlServer/1.8.14": {
+      "Hangfire.SqlServer/1.8.22": {
         "dependencies": {
-          "Hangfire.Core": "1.8.14"
+          "Hangfire.Core": "1.8.22"
         },
         "runtime": {
           "lib/netstandard2.0/Hangfire.SqlServer.dll": {
-            "assemblyVersion": "1.8.14.0",
-            "fileVersion": "1.8.14.0"
+            "assemblyVersion": "1.8.22.0",
+            "fileVersion": "1.8.22.0"
           }
         }
       },
@@ -1388,33 +1432,33 @@
       "path": "google.apis.gmail.v1/1.72.0.3966",
       "hashPath": "google.apis.gmail.v1.1.72.0.3966.nupkg.sha512"
     },
-    "Hangfire.AspNetCore/1.8.14": {
+    "Hangfire.AspNetCore/1.8.22": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-aTPzKN/g9SW30QB1SLTOMuckKqTVL1YAhtEpWll4LPbPTgyeBHJTChdRhrN127fj+mqJ6P4P7+HJBhNYUFTfNw==",
-      "path": "hangfire.aspnetcore/1.8.14",
-      "hashPath": "hangfire.aspnetcore.1.8.14.nupkg.sha512"
+      "sha512": "sha512-Ud5ZNnH9q5+3MryiuPTW7baRERN9QYLyX+8muLwH9BqumoE9eWZRxna9RrunYaMVkNGbTUUuwOfSYIvCC222TQ==",
+      "path": "hangfire.aspnetcore/1.8.22",
+      "hashPath": "hangfire.aspnetcore.1.8.22.nupkg.sha512"
     },
-    "Hangfire.Core/1.8.14": {
+    "Hangfire.Core/1.8.22": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-tj/+J8/UdaxydFX6VQr5IEyBtVbAOvkQ8X8tIQKwY9zlpmK83hP4iHEQQQ26zzGUpcE1HlPc6PBUv0NgUDXS3A==",
-      "path": "hangfire.core/1.8.14",
-      "hashPath": "hangfire.core.1.8.14.nupkg.sha512"
+      "sha512": "sha512-fjgEtlfkLNnUcX9IB+fp3gTPtt5G7VJ0PCcoKLEWnXJXn5qTm/mvrm/t3/T+Xj35ZePtbWBm+j2PXE0beFwzbA==",
+      "path": "hangfire.core/1.8.22",
+      "hashPath": "hangfire.core.1.8.22.nupkg.sha512"
     },
-    "Hangfire.NetCore/1.8.14": {
+    "Hangfire.NetCore/1.8.22": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-fBLdsxWYFdrQuenvVHEj/z8nOXoOTqpWIl4qYoinBAUCVmp4qlxfFsY3Aq3VVbwket0wBH472aG2LAmYm6hjxw==",
-      "path": "hangfire.netcore/1.8.14",
-      "hashPath": "hangfire.netcore.1.8.14.nupkg.sha512"
+      "sha512": "sha512-I7LiUHpC3ks7k+vLFOdwwCwDHxT83H+Mv6bT+7vkI1SLOc4Vwv2zOWdeeN1K86vddu7R36ho+eKP0gvfYlSZjg==",
+      "path": "hangfire.netcore/1.8.22",
+      "hashPath": "hangfire.netcore.1.8.22.nupkg.sha512"
     },
-    "Hangfire.SqlServer/1.8.14": {
+    "Hangfire.SqlServer/1.8.22": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OrsxbJD0UYanIk4E1oqwffZSWRfltYXJa89Icn+fcWmOLGyWTiAg9j5UX4MoS2RaS3WyZG8xbZzbhoRqnujo8g==",
-      "path": "hangfire.sqlserver/1.8.14",
-      "hashPath": "hangfire.sqlserver.1.8.14.nupkg.sha512"
+      "sha512": "sha512-EXuS2taxDrYwznuabkqkYZNOJEEs4Y6A5w7JwuufGES3uJHsdA+3ELqVM9GrUxatGcko4DWIRnMTI2U2YBP1WA==",
+      "path": "hangfire.sqlserver/1.8.22",
+      "hashPath": "hangfire.sqlserver.1.8.22.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",

@@ -1,6 +1,6 @@
 ﻿/* =====================================================
-   USER MANAGEMENT - COMMON STYLES
-   Shared CSS for UserList, EditUser, Register views
+   USER MANAGEMENT - OPTIMIZED STYLES
+   Tối ưu hiển thị bảng danh sách người dùng
    ===================================================== */
 
 :root {
@@ -535,14 +535,16 @@ body.staff-dark-mode .reg-form-select {
     margin-bottom: 1.5rem;
 }
 
-/* ========== TABLES ========== */
+/* ========== TABLES - OPTIMIZED ========== */
 .um-table-wrapper {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .um-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Cố định chiều rộng các cột */
 }
 
     .um-table thead {
@@ -555,20 +557,22 @@ body.staff-dark-mode .um-table thead {
 }
 
 .um-table th {
-    padding: 1rem 1.5rem;
+    padding: 1rem 0.75rem;
     text-align: left;
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap; /* Không xuống dòng */
 }
 
 .um-table td {
-    padding: 1rem 1.5rem;
+    padding: 0.875rem 0.75rem;
     border-bottom: 1px solid var(--border);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text);
+    vertical-align: middle;
 }
 
 .um-table tbody tr {
@@ -578,6 +582,61 @@ body.staff-dark-mode .um-table thead {
     .um-table tbody tr:hover {
         background: rgba(99, 102, 241, 0.05);
     }
+
+/* Tối ưu chiều rộng các cột cụ thể */
+.um-table th:nth-child(1),
+.um-table td:nth-child(1) {
+    width: 50px; /* STT */
+    text-align: center;
+}
+
+.um-table th:nth-child(2),
+.um-table td:nth-child(2) {
+    width: 200px; /* Người dùng */
+    min-width: 180px;
+}
+
+.um-table th:nth-child(3),
+.um-table td:nth-child(3) {
+    width: 120px; /* Username */
+    min-width: 110px;
+}
+
+.um-table th:nth-child(4),
+.um-table td:nth-child(4) {
+    width: 180px; /* Email */
+    min-width: 160px;
+}
+
+.um-table th:nth-child(5),
+.um-table td:nth-child(5) {
+    width: 140px; /* Phòng ban */
+    min-width: 130px;
+}
+
+.um-table th:nth-child(6),
+.um-table td:nth-child(6) {
+    width: 100px; /* Vai trò */
+    min-width: 90px;
+}
+
+.um-table th:nth-child(7),
+.um-table td:nth-child(7) {
+    width: 110px; /* Trạng thái */
+    min-width: 100px;
+}
+
+.um-table th:nth-child(8),
+.um-table td:nth-child(8) {
+    width: 130px; /* Đăng nhập cuối */
+    min-width: 120px;
+}
+
+.um-table th:nth-child(9),
+.um-table td:nth-child(9) {
+    width: 160px; /* Thao tác */
+    min-width: 150px;
+}
 
 .um-text-center {
     text-align: center;
@@ -591,16 +650,18 @@ body.staff-dark-mode .um-table thead {
     color: var(--text-muted);
 }
 
-/* ========== USER INFO ========== */
+/* ========== USER INFO - OPTIMIZED ========== */
 .um-user-info {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
+    overflow: hidden; /* Ngăn nội dung tràn ra ngoài */
 }
 
 .um-user-avatar {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px; /* Đảm bảo avatar không bị co lại */
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
@@ -619,18 +680,30 @@ body.staff-dark-mode .um-table thead {
     .um-user-avatar span {
         color: white;
         font-weight: 700;
-        font-size: 1.125rem;
+        font-size: 1rem;
     }
 
 .um-user-details {
     flex: 1;
-    min-width: 0;
+    min-width: 0; /* Cho phép text truncate hoạt động */
+    overflow: hidden;
 }
 
 .um-user-name {
     font-weight: 700;
     color: var(--text);
     margin-bottom: 0.25rem;
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: hidden; /* Ẩn phần tràn */
+    text-overflow: ellipsis; /* Hiển thị ... khi text quá dài */
+    display: block;
+}
+
+.um-user-details small {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .um-me-1,
@@ -642,15 +715,18 @@ body.staff-dark-mode .um-table thead {
     margin-right: 0.5rem;
 }
 
-/* ========== BADGES ========== */
+/* ========== BADGES - OPTIMIZED ========== */
 .um-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.375rem 0.75rem;
+    padding: 0.375rem 0.625rem;
     border-radius: 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
     white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .um-badge-info {
@@ -681,12 +757,16 @@ body.staff-dark-mode .um-table thead {
 .um-username-badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.375rem 0.75rem;
+    padding: 0.375rem 0.625rem;
     background: rgba(99, 102, 241, 0.1);
     color: var(--secondary);
     border-radius: 0.5rem;
     font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .um-email {
@@ -694,6 +774,9 @@ body.staff-dark-mode .um-table thead {
     align-items: center;
     gap: 0.5rem;
     color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .um-last-login {
@@ -701,17 +784,24 @@ body.staff-dark-mode .um-table thead {
     align-items: center;
     gap: 0.5rem;
     color: var(--text-muted);
+    white-space: nowrap;
 }
 
-/* ========== ACTION BUTTONS ========== */
+    .um-last-login small {
+        white-space: nowrap;
+    }
+
+/* ========== ACTION BUTTONS - COMPACT ========== */
 .um-action-buttons {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.375rem;
+    flex-wrap: nowrap; /* Không cho xuống dòng */
 }
 
 .um-action-btn {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
     border: none;
     border-radius: 0.5rem;
     display: flex;
@@ -719,11 +809,12 @@ body.staff-dark-mode .um-table thead {
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     background: var(--light);
     color: var(--text);
     border: 2px solid var(--border);
     text-decoration: none;
+    flex-shrink: 0;
 }
 
 body.staff-dark-mode .um-action-btn {
@@ -748,15 +839,15 @@ body.staff-dark-mode .um-action-btn {
     }
 
     .um-action-btn:hover:nth-child(3) {
-        border-color: var(--warning);
-        background: rgba(245, 158, 11, 0.1);
-        color: var(--warning);
-    }
-
-    .um-action-btn:hover:nth-child(4) {
         border-color: var(--danger);
         background: rgba(239, 68, 68, 0.1);
         color: var(--danger);
+    }
+
+    .um-action-btn:hover:nth-child(4) {
+        border-color: var(--warning);
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
     }
 
 /* ========== PAGINATION ========== */
@@ -956,671 +1047,3 @@ body.staff-dark-mode .um-modal-close {
 .um-detail-section {
     margin: 1rem 0;
 }
-
-    .um-detail-section strong {
-        display: block;
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
-        color: var(--text);
-    }
-
-.um-stats-grid-inline {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-    .um-stats-grid-inline > div {
-        text-align: center;
-        padding: 1rem;
-        background: var(--light);
-        border-radius: 0.75rem;
-    }
-
-body.staff-dark-mode .um-stats-grid-inline > div {
-    background: var(--dark);
-}
-
-.um-stat-value {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 0.25rem;
-}
-
-.um-stat-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* ========== FORM UTILITIES ========== */
-.d-flex {
-    display: flex;
-}
-
-.gap-2 {
-    gap: 0.5rem;
-}
-
-.justify-content-end {
-    justify-content: flex-end;
-}
-
-.border-bottom {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.pb-2 {
-    padding-bottom: 0.5rem;
-}
-
-.mb-3 {
-    margin-bottom: 1rem;
-}
-
-.mb-4 {
-    margin-bottom: 1.5rem;
-}
-
-.mx-auto {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.text-muted {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-}
-
-.form-check {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.form-check-input {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    border: 2px solid var(--border);
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-    .form-check-input:checked {
-        background-color: var(--secondary);
-        border-color: var(--secondary);
-    }
-
-.form-check-label {
-    color: var(--text);
-    cursor: pointer;
-    flex: 1;
-}
-
-    .form-check-label strong {
-        display: block;
-        margin-bottom: 0.25rem;
-        font-size: 0.9375rem;
-    }
-
-.form-switch .form-check-input {
-    width: 44px;
-    height: 24px;
-    border-radius: 12px;
-    position: relative;
-    appearance: none;
-    background-color: var(--border);
-    outline: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-    .form-switch .form-check-input::before {
-        content: '';
-        position: absolute;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: white;
-        top: 2px;
-        left: 2px;
-        transition: all 0.3s ease;
-    }
-
-    .form-switch .form-check-input:checked {
-        background-color: var(--secondary);
-        border-color: var(--secondary);
-    }
-
-        .form-switch .form-check-input:checked::before {
-            left: 22px;
-        }
-
-/* ========== REGISTER FORM SPECIFIC ========== */
-.reg-form-wrapper {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.reg-form-card {
-    margin-bottom: 0;
-}
-
-.reg-form-header {
-    padding: 2rem;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    text-align: center;
-}
-
-    .reg-form-header h4 {
-        color: white;
-        font-size: 1.75rem;
-        font-weight: 800;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .reg-form-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1rem;
-        margin: 0;
-        position: relative;
-        z-index: 1;
-    }
-
-.reg-btn-group {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 2rem;
-}
-
-/* ========== LOADING STATE FOR BUTTONS ========== */
-.btn.loading,
-.um-btn.loading,
-.reg-btn.loading {
-    position: relative;
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-    .btn.loading::after,
-    .um-btn.loading::after,
-    .reg-btn.loading::after {
-        content: '';
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        left: 50%;
-        margin-left: -8px;
-        margin-top: -8px;
-        border: 2px solid transparent;
-        border-top-color: white;
-        border-radius: 50%;
-        animation: spin 0.6s linear infinite;
-    }
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 991px) {
-    .um-container,
-    .tm-container,
-    .reg-container {
-        padding: 1.5rem;
-    }
-
-    .um-page-header,
-    .tm-page-header {
-        padding: 2rem 1.5rem;
-    }
-
-    .um-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .um-container,
-    .tm-container,
-    .reg-container {
-        padding: 1rem;
-    }
-
-    .um-page-header,
-    .tm-page-header {
-        padding: 1.5rem;
-    }
-
-    .um-page-title,
-    .tm-page-title {
-        font-size: 1.5rem;
-    }
-
-    .um-page-subtitle,
-    .tm-page-subtitle {
-        font-size: 0.875rem;
-    }
-
-    .um-btn-create,
-    .btn,
-    .um-btn,
-    .reg-btn {
-        padding: 0.625rem 1.25rem;
-        font-size: 0.8125rem;
-    }
-
-    .um-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1rem;
-    }
-
-    .um-stats-card {
-        flex-direction: column;
-        text-align: center;
-        padding: 1rem;
-    }
-
-    .um-stats-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.25rem;
-    }
-
-    .um-stats-value {
-        font-size: 1.5rem;
-    }
-
-    .um-card-body,
-    .tm-card-body,
-    .reg-form-body {
-        padding: 1.5rem;
-    }
-
-    .um-card-header,
-    .tm-card-header {
-        padding: 1rem 1.5rem;
-    }
-
-    .um-card-footer {
-        padding: 1rem 1.5rem;
-    }
-
-    .um-table th,
-    .um-table td {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.75rem;
-    }
-
-    .um-user-avatar {
-        width: 40px;
-        height: 40px;
-    }
-
-        .um-user-avatar span {
-            font-size: 1rem;
-        }
-
-    .um-user-name {
-        font-size: 0.875rem;
-    }
-
-    .um-action-buttons {
-        flex-wrap: wrap;
-    }
-
-    .um-action-btn {
-        width: 2rem;
-        height: 2rem;
-        font-size: 0.75rem;
-    }
-
-    .um-modal-card {
-        width: 95%;
-        max-height: 85vh;
-    }
-
-    .um-modal-header,
-    .um-modal-body {
-        padding: 1.25rem;
-    }
-
-    .um-pagination {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .pagination {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .um-pagination-info {
-        text-align: center;
-    }
-
-    .reg-btn-group {
-        flex-direction: column;
-    }
-
-        .reg-btn-group .btn,
-        .reg-btn-group .reg-btn {
-            width: 100%;
-        }
-
-    .d-flex.gap-2 {
-        flex-direction: column;
-    }
-
-        .d-flex.gap-2 .btn {
-            width: 100%;
-        }
-
-    .um-stats-grid-inline {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 576px) {
-    .um-container,
-    .tm-container,
-    .reg-container {
-        padding: 0.75rem;
-    }
-
-    .um-page-header,
-    .tm-page-header,
-    .reg-form-header {
-        padding: 1.25rem;
-        border-radius: 1rem;
-    }
-
-        .um-page-title,
-        .tm-page-title,
-        .reg-form-header h4 {
-            font-size: 1.25rem;
-            flex-wrap: wrap;
-        }
-
-    .um-stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .um-stats-card {
-        flex-direction: row;
-        text-align: left;
-    }
-
-    .um-card,
-    .tm-card,
-    .reg-form-card {
-        border-radius: 0.75rem;
-    }
-
-    .um-card-body,
-    .tm-card-body,
-    .reg-form-body {
-        padding: 1rem;
-    }
-
-    .um-row,
-    .reg-row {
-        gap: 0.75rem;
-    }
-
-    .um-form-control,
-    .tm-form-control,
-    .reg-form-control,
-    .reg-form-select {
-        padding: 0.625rem 0.875rem;
-        font-size: 0.8125rem;
-    }
-
-    .um-search-box .um-form-control {
-        padding-left: 2.5rem;
-    }
-
-    .um-table-wrapper {
-        overflow-x: scroll;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .um-table {
-        min-width: 800px;
-    }
-
-    .um-badge,
-    .um-username-badge {
-        font-size: 0.6875rem;
-        padding: 0.25rem 0.5rem;
-    }
-
-    .page-link {
-        padding: 0.375rem 0.625rem;
-        font-size: 0.8125rem;
-    }
-
-    .reg-form-wrapper {
-        max-width: 100%;
-    }
-}
-
-/* ========== UTILITY CLASSES ========== */
-.text-center {
-    text-align: center;
-}
-
-.text-left {
-    text-align: left;
-}
-
-.text-right {
-    text-align: right;
-}
-
-.fw-bold {
-    font-weight: 700;
-}
-
-.fw-semibold {
-    font-weight: 600;
-}
-
-.fw-normal {
-    font-weight: 400;
-}
-
-.w-100 {
-    width: 100%;
-}
-
-.mt-1 {
-    margin-top: 0.25rem;
-}
-
-.mt-2 {
-    margin-top: 0.5rem;
-}
-
-.mt-3 {
-    margin-top: 1rem;
-}
-
-.mt-4 {
-    margin-top: 1.5rem;
-}
-
-.mb-1 {
-    margin-bottom: 0.25rem;
-}
-
-.mb-2 {
-    margin-bottom: 0.5rem;
-}
-
-.mb-3 {
-    margin-bottom: 1rem;
-}
-
-.mb-4 {
-    margin-bottom: 1.5rem;
-}
-
-.pt-1 {
-    padding-top: 0.25rem;
-}
-
-.pt-2 {
-    padding-top: 0.5rem;
-}
-
-.pt-3 {
-    padding-top: 1rem;
-}
-
-.pt-4 {
-    padding-top: 1.5rem;
-}
-
-.pb-1 {
-    padding-bottom: 0.25rem;
-}
-
-.pb-2 {
-    padding-bottom: 0.5rem;
-}
-
-.pb-3 {
-    padding-bottom: 1rem;
-}
-
-.pb-4 {
-    padding-bottom: 1.5rem;
-}
-
-/* ========== DARK MODE TRANSITIONS ========== */
-body.staff-dark-mode * {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* ========== PRINT STYLES ========== */
-@media print {
-    .um-page-header,
-    .tm-page-header,
-    .um-btn-create,
-    .um-action-buttons,
-    .um-pagination,
-    .um-filters-header,
-    .um-card-body form {
-        display: none !important;
-    }
-
-    .um-card,
-    .tm-card {
-        box-shadow: none !important;
-        border: 1px solid var(--border);
-    }
-
-    .um-table {
-        page-break-inside: auto;
-    }
-
-        .um-table tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
-        }
-}
-
-/* ========== ACCESSIBILITY ========== */
-*:focus-visible {
-    outline: 2px solid var(--secondary);
-    outline-offset: 2px;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 2px solid var(--secondary);
-    outline-offset: 2px;
-}
-
-/* ========== SCROLLBAR STYLING ========== */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--light);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 4px;
-}
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--text-muted);
-    }
-
-body.staff-dark-mode ::-webkit-scrollbar-track {
-    background: var(--dark);
-}
-
-body.staff-dark-mode ::-webkit-scrollbar-thumb {
-    background: var(--border);
-}
-
-/* ========== ANIMATIONS ========== */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.um-card,
-.tm-card,
-.reg-form-card,
-.um-stats-card {
-    animation: fadeIn 0.3s ease;
-}
-
-/* ========== PLACEHOLDER STYLES ========== */
-::placeholder {
-    color: var(--text-muted);
-    opacity: 0.7;
-}
-
-input:focus::placeholder,
-textarea:focus::placeholder,
-select:focus::placeholder {
-    opacity: 0.5;
-}
-
-/* ========== SELECTION STYLES ========== */
-::selection {
-    background-color: rgba(99, 102, 241, 0.2);
-    color: var(--text);
-}
-
-/* ========== END OF FILE ========== */
