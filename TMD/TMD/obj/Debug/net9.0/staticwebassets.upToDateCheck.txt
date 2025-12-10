@@ -75,6 +75,7 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\css\setting.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\myprojectdetail.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery\dist\jquery.slim.min.map
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery-validation-unobtrusive\dist\jquery.validate.unobtrusive.min.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
@@ -152,6 +153,7 @@ wwwroot\favicon.ico
 wwwroot\js\admin-request.js
 wwwroot\js\attendance-history.js
 wwwroot\js\import-users.js
+wwwroot\js\myprojectdetail.js
 wwwroot\js\notification-hub.js
 wwwroot\js\project-management.js
 wwwroot\js\resetpass.js
@@ -264,6 +266,7 @@ wwwroot\uploads\attendance\9_20251123_021821_checkin.jpg
 wwwroot\uploads\attendance\9_20251123_222326_checkout.jpg
 wwwroot\uploads\attendance\9_20251124_014027_checkin.jpg
 wwwroot\uploads\avatars\11_20251124124412.png
+wwwroot\uploads\avatars\17_20251210012608.jpg
 wwwroot\uploads\avatars\2_20251127135614.png
 wwwroot\uploads\avatars\3_20251130153135.png
 wwwroot\uploads\avatars\3_20251130204647.png

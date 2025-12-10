@@ -37,15 +37,9 @@ namespace TMD.Controllers
 		}
 		private DateTime GetVietnamTime()
 		{
-			try
-			{
-				var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-				return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
-			}
-			catch
-			{
-				return DateTime.UtcNow.AddHours(7);
-			}
+			// CÁCH FIX: Lấy giờ UTC gốc và cộng cứng 7 tiếng để ra giờ VN
+			// Cách này chạy đúng trên mọi server (Windows, Linux, Docker, Azure)
+			return DateTime.UtcNow.AddHours(7);
 		}
 
 		private async Task<(TimeOnly startTime, TimeOnly endTime)> GetStandardTimesAsync()
@@ -302,10 +296,10 @@ namespace TMD.Controllers
 					.Where(c => c.IsActive == true && c.IsEnabled == true)
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
-				var standardStartTimeStr = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME") ?? "08:00";
-				if (string.IsNullOrWhiteSpace(standardStartTimeStr))
-					standardStartTimeStr = "08:00";
-				var standardStartTime = TimeOnly.Parse(standardStartTimeStr);
+				// ✅ Đảm bảo giờ chuẩn Check-in là 09:00 (hoặc đọc từ cấu hình)
+				var standardStartTimeStr = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME") ?? "09:00";
+				if (!TimeOnly.TryParse(standardStartTimeStr, out var standardStartTime))
+					standardStartTime = TimeOnly.Parse("09:00");
 
 				var checkInTime = new TimeOnly(serverNow.Hour, serverNow.Minute, serverNow.Second);
 				var isLate = checkInTime > standardStartTime;
@@ -468,9 +462,7 @@ namespace TMD.Controllers
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
 				var standardEndTimeStr = configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME") ?? "17:00";
-				if (string.IsNullOrWhiteSpace(standardEndTimeStr))
-					standardEndTimeStr = "17:00";
-				var standardEndTime = TimeOnly.Parse(standardEndTimeStr);
+				if (!TimeOnly.TryParse(standardEndTimeStr, out var standardEndTime)) standardEndTime = TimeOnly.Parse("17:00");
 				var address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
 
 				var duration = serverNow - attendance.CheckInTime.Value;

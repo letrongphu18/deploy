@@ -181,6 +181,10 @@
       "PackagePath": "staticwebassets\\js\\import-users.js"
     },
     {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\myprojectdetail.js",
+      "PackagePath": "staticwebassets\\js\\myprojectdetail.js"
+    },
+    {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
       "PackagePath": "staticwebassets\\js\\notification-hub.js"
     },
@@ -627,6 +631,10 @@
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\avatars\\11_20251124124412.png",
       "PackagePath": "staticwebassets\\uploads\\avatars\\11_20251124124412.png"
+    },
+    {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\avatars\\17_20251210012608.jpg",
+      "PackagePath": "staticwebassets\\uploads\\avatars\\17_20251210012608.jpg"
     },
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\uploads\\avatars\\2_20251127135614.png",

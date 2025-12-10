@@ -1,16 +1,113 @@
 ﻿@{
     ViewData["Title"] = $"Chi tiết dự án - {ViewBag.Project?.ProjectName ?? "N/A"}";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
-
     var project = ViewBag.Project;
+
+    // Ép kiểu các danh sách để tránh lỗi CS1977
     var myTasksWithMetadata = ViewBag.MyTasksWithMetadata as List<object>;
+    var teamTasksWithMetadata = ViewBag.TeamTasksWithMetadata as List<object>; // Danh sách mới cho Leader
     var activeMembers = ViewBag.ActiveMembers as List<object>;
 }
 
 <link rel="stylesheet" href="~/css/project-management.css" />
 <link href="~/css/sweetalert2-custom.css" rel="stylesheet" />
+
+<style>
+    /* CSS Bổ sung cho phần Avatar người được giao */
+    .pm-assignee-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f3f4f6;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+    }
+
+    .pm-assignee-avatar {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    /* Modal Styles */
+    .pm-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .pm-modal-content {
+        background-color: #fff;
+        margin: 10% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .pm-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .pm-modal-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .pm-close {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .pm-close:hover {
+            color: black;
+        }
+
+    .pm-form-group {
+        margin-bottom: 15px;
+    }
+
+        .pm-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+    .pm-form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .pm-modal-footer {
+        text-align: right;
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+        padding-top: 15px;
+    }
+</style>
+
 <div class="pm-container">
-    <!-- DETAIL HEADER -->
     <div class="pm-detail-header">
         <div class="pm-detail-title-row">
             <div>
@@ -44,52 +141,35 @@
                         _ => project.Status
                     };
                 }
-                <span class="pm-badge @statusClass" style="color: white;">
-                    <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
-                    @projectStatusText
-                </span>
-                <span class="pm-badge pm-badge-member" style="color: white;">
-                    <i class="fas fa-user"></i>
-                    @ViewBag.MyRole
-                </span>
+                <span class="pm-badge @statusClass" style="color: white;"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> @projectStatusText</span>
+                <span class="pm-badge pm-badge-member" style="color: white;"><i class="fas fa-user"></i> @ViewBag.MyRole</span>
             </div>
         </div>
 
         <div class="pm-detail-meta-grid">
             <div class="pm-detail-meta-item">
-                <div class="pm-detail-meta-icon">
-                    <i class="fas fa-user-tie"></i>
-                </div>
+                <div class="pm-detail-meta-icon"><i class="fas fa-user-tie"></i></div>
                 <div class="pm-detail-meta-content">
                     <div class="pm-detail-meta-label">Leader</div>
                     <div class="pm-detail-meta-value">@(project.Leader?.FullName ?? "Chưa chỉ định")</div>
                 </div>
             </div>
-
             <div class="pm-detail-meta-item">
-                <div class="pm-detail-meta-icon">
-                    <i class="fas fa-tasks"></i>
-                </div>
+                <div class="pm-detail-meta-icon"><i class="fas fa-tasks"></i></div>
                 <div class="pm-detail-meta-content">
                     <div class="pm-detail-meta-label">Task của tôi</div>
                     <div class="pm-detail-meta-value">@ViewBag.MyTotalTasks tasks</div>
                 </div>
             </div>
-
             <div class="pm-detail-meta-item">
-                <div class="pm-detail-meta-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
+                <div class="pm-detail-meta-icon"><i class="fas fa-check-circle"></i></div>
                 <div class="pm-detail-meta-content">
                     <div class="pm-detail-meta-label">Hoàn thành</div>
                     <div class="pm-detail-meta-value">@ViewBag.MyCompletedTasks/@ViewBag.MyTotalTasks</div>
                 </div>
             </div>
-
             <div class="pm-detail-meta-item">
-                <div class="pm-detail-meta-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
+                <div class="pm-detail-meta-icon"><i class="fas fa-chart-line"></i></div>
                 <div class="pm-detail-meta-content">
                     <div class="pm-detail-meta-label">Tiến độ của tôi</div>
                     <div class="pm-detail-meta-value">@ViewBag.MyCompletionRate%</div>
@@ -98,40 +178,42 @@
         </div>
     </div>
 
-    <!-- ACTION BUTTONS -->
     <div class="pm-d-flex pm-gap-2 pm-mb-3">
         <a href="@Url.Action("MyProjects", "Staff")" class="pm-btn pm-btn-secondary">
-            <i class="fas fa-arrow-left"></i>
-            Quay lại
+            <i class="fas fa-arrow-left"></i> Quay lại
         </a>
         @if (ViewBag.IsLeader)
         {
+            <button type="button" class="pm-btn pm-btn-success" onclick="openLeaderAddTaskModal()">
+                <i class="fas fa-plus"></i> Tạo Task
+            </button>
             <a href="@Url.Action("ProjectDetail", "Admin", new { id = project.ProjectId })" class="pm-btn pm-btn-primary">
-                <i class="fas fa-cog"></i>
-                Quản lý dự án
+                <i class="fas fa-cog"></i> Quản lý dự án
             </a>
         }
     </div>
 
-    <!-- TABS -->
     <div class="pm-tabs">
         <button class="pm-tab active" data-tab="my-tasks">
-            <i class="fas fa-tasks"></i>
-            Tasks của tôi (@ViewBag.MyTotalTasks)
+            <i class="fas fa-tasks"></i> Tasks của tôi (@ViewBag.MyTotalTasks)
         </button>
+
+        @if (ViewBag.IsLeader)
+        {
+            <button class="pm-tab" data-tab="team-tasks">
+                <i class="fas fa-users-cog"></i> Quản lý công việc (Leader)
+            </button>
+        }
+
         <button class="pm-tab" data-tab="overview">
-            <i class="fas fa-info-circle"></i>
-            Tổng quan
+            <i class="fas fa-info-circle"></i> Tổng quan
         </button>
         <button class="pm-tab" data-tab="members">
-            <i class="fas fa-users"></i>
-            Thành viên (@(activeMembers?.Count ?? 0))
+            <i class="fas fa-users"></i> Thành viên (@(activeMembers?.Count ?? 0))
         </button>
     </div>
 
-    <!-- TAB: MY TASKS -->
     <div class="pm-tab-content active" id="my-tasks">
-        <!-- Task Stats -->
         <div class="pm-stats-grid" style="margin-bottom: 1.5rem;">
             <div class="pm-stats-card" style="border-left-color: #6b7280;">
                 <div class="pm-stats-icon" style="background: rgba(107, 114, 128, 0.1); color: #6b7280;">
@@ -142,53 +224,18 @@
                     <div class="pm-stats-value">@ViewBag.MyTodoTasks</div>
                 </div>
             </div>
-
-            <div class="pm-stats-card" style="border-left-color: var(--warning);">
-                <div class="pm-stats-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
-                    <i class="fas fa-spinner"></i>
-                </div>
-                <div class="pm-stats-content">
-                    <div class="pm-stats-label">Đang làm</div>
-                    <div class="pm-stats-value">@ViewBag.MyInProgressTasks</div>
-                </div>
-            </div>
-
-            <div class="pm-stats-card" style="border-left-color: var(--info);">
-                <div class="pm-stats-icon" style="background: rgba(59, 130, 246, 0.1); color: var(--info);">
-                    <i class="fas fa-vial"></i>
-                </div>
-                <div class="pm-stats-content">
-                    <div class="pm-stats-label">Chờ test</div>
-                    <div class="pm-stats-value">@ViewBag.MyTestingTasks</div>
-                </div>
-            </div>
-
-            <div class="pm-stats-card" style="border-left-color: var(--success);">
-                <div class="pm-stats-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
-                    <i class="fas fa-check"></i>
-                </div>
-                <div class="pm-stats-content">
-                    <div class="pm-stats-label">Hoàn thành</div>
-                    <div class="pm-stats-value">@ViewBag.MyCompletedTasks</div>
-                </div>
-            </div>
         </div>
 
         <div class="pm-card">
             <div class="pm-card-body">
-                @if (myTasksWithMetadata != null && myTasksWithMetadata.Any())
+                @if (myTasksWithMetadata != null && myTasksWithMetadata.Count > 0)
                 {
                     <div class="pm-tasks-list">
                         @foreach (dynamic item in myTasksWithMetadata)
                         {
-                            // ✅ CRITICAL: NULL CHECK cho tất cả properties
                             var ut = item?.UserTask;
                             var task = item?.Task;
-
-                            if (ut == null || task == null)
-                            {
-                                continue; // Skip null items
-                            }
+                            if (ut == null || task == null) continue;
 
                             <div class="pm-task-card status-@(ut.Status ?? "TODO")">
                                 <div class="pm-task-header">
@@ -198,215 +245,187 @@
                                             @if (item.IsOverdue == true)
                                             {
                                                 <span class="pm-badge pm-badge-high" style="font-size: 0.75rem;">
-                                                    <i class="fas fa-exclamation-triangle"></i>
-                                                    @(ut.Status == "Done" ? "Hoàn thành trễ" : "Quá hạn")
+                                                    <i class="fas fa-exclamation-triangle"></i> Quá hạn
                                                 </span>
                                             }
                                         </h4>
                                         <div class="pm-task-meta">
-                                            @{
-                                                var deadline = task.Deadline;
-                                                if (deadline != null)
-                                                {
-                                                    <span class="pm-task-meta-item">
-                                                        <i class="fas fa-calendar"></i>
-                                                        Deadline: @String.Format("{0:dd/MM/yyyy HH:mm}", deadline)
-                                                    </span>
-                                                }
-                                            }
-                                            @if (!string.IsNullOrEmpty(task.Platform))
+                                            @if (task.Deadline != null)
                                             {
-                                                <span class="pm-task-meta-item">
-                                                    <i class="fas fa-code"></i>
-                                                    @task.Platform
-                                                </span>
+                                                <span class="pm-task-meta-item"><i class="fas fa-calendar"></i> Deadline: @String.Format("{0:dd/MM/yyyy HH:mm}", task.Deadline)</span>
                                             }
-                                            @{
-                                                var updatedAt = ut.UpdatedAt;
-                                                if (updatedAt != null)
-                                                {
-                                                    <span class="pm-task-meta-item">
-                                                        <i class="fas fa-clock"></i>
-                                                        Cập nhật: @String.Format("{0:dd/MM/yyyy HH:mm}", updatedAt)
-                                                    </span>
-                                                }
-                                            }
+                                            <span class="pm-task-meta-item"><i class="fas fa-code"></i> @(task.Platform ?? "N/A")</span>
                                         </div>
                                     </div>
                                     <div class="pm-project-badges">
-                                        <span class="pm-badge @(item.StatusBadgeClass ?? "")">
-                                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
-                                            @(item.StatusText ?? "TODO")
-                                        </span>
-                                        <span class="pm-badge @(item.PriorityClass ?? "pm-badge-medium")">
-                                            <i class="fas fa-flag"></i>
-                                            @(item.PriorityText ?? "Trung bình")
-                                        </span>
+                                        <span class="pm-badge @(item.StatusBadgeClass ?? "")"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> @(item.StatusText ?? "TODO")</span>
+                                        <span class="pm-badge @(item.PriorityClass ?? "pm-badge-medium")"><i class="fas fa-flag"></i> @(item.PriorityText ?? "Trung bình")</span>
                                     </div>
                                 </div>
-
                                 @if (!string.IsNullOrEmpty(task.Description))
                                 {
-                                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">
-                                        @task.Description
-                                    </p>
+                                    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">@task.Description</p>
                                 }
-
-                                @if (!string.IsNullOrEmpty(ut.ReportLink))
-                                {
-                                    <div style="margin-top: 0.75rem;">
-                                        <strong style="color: var(--text-muted); font-size: 0.875rem;">Report Link:</strong>
-                                        <a href="@ut.ReportLink" target="_blank"
-                                           style="color: var(--info); text-decoration: underline; font-size: 0.875rem; margin-left: 0.5rem;">
-                                            @ut.ReportLink
-                                        </a>
-                                    </div>
-                                }
-
-                                @if (ut.Status != "Done")
-                                {
-                                    <div class="pm-d-flex pm-gap-2" style="margin-top: 1rem;">
-                                        <button type="button" class="pm-btn pm-btn-primary pm-btn-sm"
-                                                onclick="updateTaskStatus(@ut.UserTaskId, '@(ut.Status ?? "TODO")')">
-                                            <i class="fas fa-edit"></i>
-                                            Cập nhật tiến độ
-                                        </button>
-                                        <a href="@Url.Action("MyTasks", "Staff")" class="pm-btn pm-btn-secondary pm-btn-sm">
-                                            <i class="fas fa-link"></i>
-                                            Xem trong My Tasks
-                                        </a>
-                                    </div>
-                                }
+                                <div class="pm-d-flex pm-gap-2" style="margin-top: 1rem;">
+                                    @if (ut.Status != "Done")
+                                    {
+                                        <button type="button" class="pm-btn pm-btn-primary pm-btn-sm" onclick="updateTaskStatus(@ut.UserTaskId, '@(ut.Status ?? "TODO")')"><i class="fas fa-edit"></i> Cập nhật</button>
+                                    }
+                                    @if (ViewBag.IsLeader)
+                                    {
+                                        <button class="pm-btn pm-btn-warning pm-btn-sm" onclick="openLeaderEditTaskModal(@task.TaskId)"><i class="fas fa-pencil-alt"></i> Sửa</button>
+                                        <button class="pm-btn pm-btn-danger pm-btn-sm" onclick="leaderDeleteTask(@task.TaskId, '@task.TaskName')"><i class="fas fa-trash"></i> Xóa</button>
+                                    }
+                                </div>
                             </div>
                         }
                     </div>
                 }
                 else
                 {
-                    <div class="pm-empty-state">
-                        <div class="pm-empty-icon">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                        <h3 class="pm-empty-title">Chưa có task nào</h3>
-                        <p class="pm-empty-text">Bạn chưa được giao task nào trong dự án này</p>
-                    </div>
+                    <div class="pm-empty-state"><div class="pm-empty-icon"><i class="fas fa-tasks"></i></div><h3 class="pm-empty-title">Chưa có task nào</h3></div>
                 }
             </div>
         </div>
     </div>
 
-    <!-- TAB: OVERVIEW -->
-    <div class="pm-tab-content" id="overview">
-        <div class="pm-card">
-            <div class="pm-card-header">
-                <h5 class="pm-card-title">
-                    <i class="fas fa-align-left"></i>
-                    Mô tả dự án
-                </h5>
-            </div>
-            <div class="pm-card-body">
-                <p style="color: var(--text); line-height: 1.6;">
-                    @(project.Description ?? "Chưa có mô tả cho dự án này.")
-                </p>
+    @if (ViewBag.IsLeader)
+    {
+        <div class="pm-tab-content" id="team-tasks">
+            <div class="pm-card">
+                <div class="pm-card-header">
+                    <h5 class="pm-card-title"><i class="fas fa-users-cog"></i> Tất cả công việc trong dự án</h5>
+                </div>
+                <div class="pm-card-body">
+                    @if (teamTasksWithMetadata != null && teamTasksWithMetadata.Count > 0)
+                    {
+                        <div class="pm-tasks-list">
+                            @foreach (dynamic item in teamTasksWithMetadata)
+                            {
+                                var ut = item?.UserTask;
+                                var task = item?.Task;
+                                if (ut == null || task == null) continue;
+
+                                <div class="pm-task-card status-@(ut.Status ?? "TODO")" style="border-left-width: 4px;">
+                                    <div class="pm-task-header">
+                                        <div>
+                                            <h4 class="pm-task-title">
+                                                @(task.TaskName ?? "Unnamed Task")
+                                                @if (item.IsOverdue == true)
+                                                {
+                                                    <span class="pm-badge pm-badge-high" style="font-size: 0.75rem;"><i class="fas fa-exclamation-triangle"></i> Quá hạn</span>
+                                                }
+                                            </h4>
+
+                                            <div style="margin: 0.5rem 0;">
+                                                <span class="pm-assignee-badge">
+                                                    @if (!string.IsNullOrEmpty(item.AssigneeAvatar))
+                                                    {
+                                                        <img src="@item.AssigneeAvatar" class="pm-assignee-avatar" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fas fa-user-circle" style="font-size: 20px;"></i>
+                                                    }
+                                                    Người thực hiện: <strong>@(item.AssigneeName ?? "Unknown")</strong>
+                                                </span>
+                                            </div>
+
+                                            <div class="pm-task-meta">
+                                                @if (task.Deadline != null)
+                                                {
+                                                    <span class="pm-task-meta-item"><i class="fas fa-calendar"></i> Deadline: @String.Format("{0:dd/MM/yyyy HH:mm}", task.Deadline)</span>
+                                                }
+                                                @if (ut.UpdatedAt != null)
+                                                {
+                                                    <span class="pm-task-meta-item"><i class="fas fa-clock"></i> Cập nhật: @String.Format("{0:dd/MM/yyyy HH:mm}", ut.UpdatedAt)</span>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="pm-project-badges">
+                                            <span class="pm-badge @(item.StatusBadgeClass ?? "")"><i class="fas fa-circle" style="font-size: 0.5rem;"></i> @(item.StatusText ?? "TODO")</span>
+                                            <span class="pm-badge @(item.PriorityClass ?? "pm-badge-medium")"><i class="fas fa-flag"></i> @(item.PriorityText ?? "TB")</span>
+                                        </div>
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(task.Description))
+                                    {
+                                        <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem;">@task.Description</p>
+                                    }
+
+                                    <div class="pm-d-flex pm-gap-2" style="margin-top: 1rem; border-top: 1px dashed #eee; padding-top: 10px;">
+                                        <button class="pm-btn pm-btn-warning pm-btn-sm" onclick="openLeaderEditTaskModal(@task.TaskId)">
+                                            <i class="fas fa-pencil-alt"></i> Sửa nội dung
+                                        </button>
+                                        <button class="pm-btn pm-btn-danger pm-btn-sm" onclick="leaderDeleteTask(@task.TaskId, '@task.TaskName')">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </button>
+                                        @if (ut.Status != "Done")
+                                        {
+                                            <button class="pm-btn pm-btn-primary pm-btn-sm" onclick="updateTaskStatus(@ut.UserTaskId, '@(ut.Status ?? "TODO")')">
+                                                <i class="fas fa-tasks"></i> Đổi trạng thái
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="pm-empty-state"><div class="pm-empty-icon"><i class="fas fa-tasks"></i></div><h3 class="pm-empty-title">Dự án chưa có công việc nào</h3></div>
+                    }
+                </div>
             </div>
         </div>
+    }
 
-        <div class="pm-form-row">
-            <div class="pm-card">
-                <div class="pm-card-header">
-                    <h5 class="pm-card-title">
-                        <i class="fas fa-calendar"></i>
-                        Thông tin thời gian
-                    </h5>
-                </div>
-                <div class="pm-card-body">
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div>
-                            <strong style="color: var(--text-muted);">Ngày bắt đầu:</strong>
-                            <div style="color: var(--text); font-weight: 600;">
-                                @(project.StartDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")
-                            </div>
-                        </div>
-                        <div>
-                            <strong style="color: var(--text-muted);">Ngày kết thúc:</strong>
-                            <div style="color: var(--text); font-weight: 600;">
-                                @(project.EndDate?.ToString("dd/MM/yyyy") ?? "Chưa xác định")
-                            </div>
-                        </div>
+    <div class="pm-tab-content" id="overview">
+        <div class="pm-card">
+            <div class="pm-card-header"><h5 class="pm-card-title"><i class="fas fa-align-left"></i> Mô tả dự án</h5></div>
+            <div class="pm-card-body"><p style="color: var(--text); line-height: 1.6;">@(project.Description ?? "Chưa có mô tả.")</p></div>
+        </div>
+        <div class="pm-card">
+            <div class="pm-card-body">
+                <div class="pm-project-progress">
+                    <div class="pm-progress-label">
+                        <span class="pm-progress-text">Tiến độ chung</span>
+                        <span class="pm-progress-value">@((project.Progress ?? 0).ToString("F1"))%</span>
                     </div>
-                </div>
-            </div>
-
-            <div class="pm-card">
-                <div class="pm-card-header">
-                    <h5 class="pm-card-title">
-                        <i class="fas fa-chart-pie"></i>
-                        Tiến độ dự án
-                    </h5>
-                </div>
-                <div class="pm-card-body">
-                    <div class="pm-project-progress">
-                        <div class="pm-progress-label">
-                            <span class="pm-progress-text">Tiến độ chung</span>
-                            <span class="pm-progress-value">@((project.Progress ?? 0).ToString("F1"))%</span>
-                        </div>
-                        <div class="pm-progress-bar">
-                            <div class="pm-progress-fill" style="width: @((project.Progress ?? 0).ToString("F1"))%"></div>
-                        </div>
+                    <div class="pm-progress-bar">
+                        <div class="pm-progress-fill" style="width: @((project.Progress ?? 0).ToString("F1"))%"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- TAB: MEMBERS -->
     <div class="pm-tab-content" id="members">
         <div class="pm-card">
             <div class="pm-card-body">
-                @if (activeMembers != null && activeMembers.Any())
+                @if (activeMembers != null && activeMembers.Count > 0)
                 {
                     <div class="pm-members-grid">
                         @foreach (dynamic item in activeMembers)
                         {
                             var member = item?.Member;
                             if (member == null || member.User == null) continue;
-
                             <div class="pm-member-card">
                                 <div class="pm-member-avatar">
-                                    @if (item.HasAvatar == true)
-                                    {
-                                        <img src="@member.User.Avatar" alt="@member.User.FullName">
-                                    }
-                                    else
-                                    {
-                                        <span>@(item.Initials ?? "?")</span>
-                                    }
+                                    <img src="@(item.HasAvatar == true ? member.User.Avatar : "/images/default-avatar.png")" alt="Avatar">
                                 </div>
                                 <div class="pm-member-info">
                                     <div class="pm-member-name">
                                         @(member.User?.FullName ?? "Unknown")
                                         @if (member.Role == "Leader")
                                         {
-                                            <span class="pm-badge pm-badge-leader" style="font-size: 0.65rem; padding: 0.25rem 0.5rem;">
-                                                <i class="fas fa-crown"></i> Leader
-                                            </span>
+                                            <span class="pm-badge pm-badge-leader"><i class="fas fa-crown"></i> Leader</span>
                                         }
                                     </div>
                                     <div class="pm-member-role">@(member.User?.Email ?? "")</div>
-                                    <div class="pm-member-dept">@(member.User?.Department?.DepartmentName ?? "N/A")</div>
                                 </div>
                             </div>
                         }
-                    </div>
-                }
-                else
-                {
-                    <div class="pm-empty-state">
-                        <div class="pm-empty-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h3 class="pm-empty-title">Chưa có thành viên</h3>
-                        <p class="pm-empty-text">Dự án chưa có thành viên nào</p>
                     </div>
                 }
             </div>
@@ -414,49 +433,215 @@
     </div>
 </div>
 
+<div id="leaderAddTaskModal" class="pm-modal">
+    <div class="pm-modal-content">
+        <div class="pm-modal-header">
+            <span class="pm-modal-title">Tạo Task Mới</span>
+            <span class="pm-close" onclick="closeModal('leaderAddTaskModal')">&times;</span>
+        </div>
+        <div class="pm-modal-body">
+            <input type="hidden" id="addProjectId" value="@project.ProjectId" />
+            <div class="pm-form-group">
+                <label>Tên task <span style="color:red">*</span></label>
+                <input type="text" id="addTaskName" class="pm-form-control" />
+            </div>
+            <div class="pm-form-group">
+                <label>Mô tả</label>
+                <textarea id="addTaskDesc" class="pm-form-control" rows="3"></textarea>
+            </div>
+            <div class="pm-form-group">
+                <label>Giao cho</label>
+                <select id="addAssignees" class="pm-form-control" multiple style="height: 100px;">
+                    @if (activeMembers != null)
+                    {
+                        foreach (dynamic item in activeMembers)
+                        {
+                            var u = item.Member.User;
+                            <option value="@u.UserId">@u.FullName</option>
+                        }
+                    }
+                </select>
+                <small>Giữ Ctrl để chọn nhiều</small>
+            </div>
+            <div class="pm-form-group">
+                <label>Deadline</label>
+                <input type="datetime-local" id="addTaskDeadline" class="pm-form-control" />
+            </div>
+            <div class="pm-form-group">
+                <label>Độ ưu tiên</label>
+                <select id="addTaskPriority" class="pm-form-control">
+                    <option value="Low">Thấp</option>
+                    <option value="Medium" selected>Trung bình</option>
+                    <option value="High">Cao</option>
+                </select>
+            </div>
+        </div>
+        <div class="pm-modal-footer">
+            <button class="pm-btn pm-btn-secondary" onclick="closeModal('leaderAddTaskModal')">Hủy</button>
+            <button class="pm-btn pm-btn-success" onclick="saveNewTask()">Tạo Task</button>
+        </div>
+    </div>
+</div>
+
+<div id="leaderEditTaskModal" class="pm-modal">
+    <div class="pm-modal-content">
+        <div class="pm-modal-header">
+            <span class="pm-modal-title">Cập nhật Task</span>
+            <span class="pm-close" onclick="closeModal('leaderEditTaskModal')">&times;</span>
+        </div>
+        <div class="pm-modal-body">
+            <input type="hidden" id="editTaskId" />
+            <div class="pm-form-group">
+                <label>Tên task</label>
+                <input type="text" id="editTaskName" class="pm-form-control" />
+            </div>
+            <div class="pm-form-group">
+                <label>Mô tả</label>
+                <textarea id="editTaskDesc" class="pm-form-control" rows="3"></textarea>
+            </div>
+            <div class="pm-form-group">
+                <label>Deadline</label>
+                <input type="datetime-local" id="editTaskDeadline" class="pm-form-control" />
+            </div>
+            <div class="pm-form-group">
+                <label>Độ ưu tiên</label>
+                <select id="editTaskPriority" class="pm-form-control">
+                    <option value="Low">Thấp</option>
+                    <option value="Medium">Trung bình</option>
+                    <option value="High">Cao</option>
+                </select>
+            </div>
+        </div>
+        <div class="pm-modal-footer">
+            <button class="pm-btn pm-btn-secondary" onclick="closeModal('leaderEditTaskModal')">Hủy</button>
+            <button class="pm-btn pm-btn-primary" onclick="saveEditedTask()">Lưu</button>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Tab switching
-        document.querySelectorAll('.pm-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const targetTab = this.dataset.tab;
-
-                document.querySelectorAll('.pm-tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.pm-tab-content').forEach(c => c.classList.remove('active'));
-
-                this.classList.add('active');
-                document.getElementById(targetTab).classList.add('active');
+        // SCRIPT XỬ LÝ
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.pm-tab');
+            const contents = document.querySelectorAll('.pm-tab-content');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+                });
             });
         });
 
-        function updateTaskStatus(userTaskId, currentStatus) {
-            Swal.fire({
-                title: 'Cập nhật tiến độ',
-                text: 'Chuyển sang trang My Tasks để cập nhật chi tiết hơn?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#6366f1',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: '<i class="fas fa-arrow-right"></i> Đến My Tasks',
-                cancelButtonText: '<i class="fas fa-times"></i> Hủy'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '@Url.Action("MyTasks", "Staff")';
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openLeaderAddTaskModal() { document.getElementById('leaderAddTaskModal').style.display = 'block'; }
+
+        // JS Tạo task (Giữ nguyên logic cũ nhưng đảm bảo hoạt động)
+        function saveNewTask() {
+            const projectId = document.getElementById('addProjectId').value;
+            const taskName = document.getElementById('addTaskName').value;
+            const assignees = Array.from(document.getElementById('addAssignees').selectedOptions).map(o => parseInt(o.value));
+
+            if (!taskName) { Swal.fire('Lỗi', 'Nhập tên task', 'error'); return; }
+
+            const payload = {
+                ProjectId: parseInt(projectId),
+                TaskName: taskName,
+                Description: document.getElementById('addTaskDesc').value,
+                Deadline: document.getElementById('addTaskDeadline').value || null,
+                Priority: document.getElementById('addTaskPriority').value,
+                AssignedUserIds: assignees
+            };
+
+            fetch('/Staff/LeaderCreateTask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(r => r.json()).then(d => {
+                if(d.success) Swal.fire('Thành công', d.message, 'success').then(() => location.reload());
+                else Swal.fire('Lỗi', d.message, 'error');
+            });
+        }
+
+        function openLeaderEditTaskModal(id) {
+             fetch(`/Staff/LeaderGetTask?taskId=${id}`).then(r => r.json()).then(d => {
+                if(d.success) {
+                    const t = d.task;
+                    document.getElementById('editTaskId').value = t.taskId;
+                    document.getElementById('editTaskName').value = t.taskName;
+                    document.getElementById('editTaskDesc').value = t.description;
+                    document.getElementById('editTaskPriority').value = t.priority;
+                    if(t.deadline) document.getElementById('editTaskDeadline').value = t.deadline;
+                    document.getElementById('leaderEditTaskModal').style.display = 'block';
+                }
+             });
+        }
+
+        function saveEditedTask() {
+            const payload = {
+                TaskId: parseInt(document.getElementById('editTaskId').value),
+                TaskName: document.getElementById('editTaskName').value,
+                Description: document.getElementById('editTaskDesc').value,
+                Deadline: document.getElementById('editTaskDeadline').value || null,
+                Priority: document.getElementById('editTaskPriority').value
+            };
+            fetch('/Staff/LeaderUpdateTask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(r => r.json()).then(d => {
+                if(d.success) Swal.fire('Ok', d.message, 'success').then(() => location.reload());
+                else Swal.fire('Lỗi', d.message, 'error');
+            });
+        }
+
+        function leaderDeleteTask(id, name) {
+            Swal.fire({ title: 'Xóa task?', text: name, icon: 'warning', showCancelButton: true }).then(r => {
+                if(r.isConfirmed) {
+                    fetch('/Staff/LeaderDeleteTask', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ TaskId: id })
+                    }).then(res => res.json()).then(d => {
+                        if(d.success) Swal.fire('Đã xóa', '', 'success').then(() => location.reload());
+                    });
                 }
             });
         }
 
-        // Dark mode support
-        if (localStorage.getItem('dark-mode') === 'enabled') {
-            document.body.classList.add('staff-dark-mode');
+        function updateTaskStatus(id, status) {
+            Swal.fire({
+                title: 'Cập nhật trạng thái',
+                input: 'select',
+                inputOptions: { 'TODO': 'Chưa bắt đầu', 'InProgress': 'Đang làm', 'Testing': 'Chờ test', 'Done': 'Hoàn thành' },
+                inputValue: status,
+                showCancelButton: true
+            }).then(r => {
+                if(r.isConfirmed && r.value !== status) {
+                    if(r.value === 'Testing') {
+                        // Logic chọn tester nếu cần (giản lược)
+                         submitStatus(id, r.value);
+                    } else {
+                        submitStatus(id, r.value);
+                    }
+                }
+            });
         }
+
+        function submitStatus(id, status) {
+            fetch('/Staff/UpdateTaskProgress', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({UserTaskId: id, Status: status})
+            }).then(r => r.json()).then(d => {
+                if(d.success) location.reload();
+                else Swal.fire('Lỗi', d.message, 'error');
+            });
+        }
+
+        window.onclick = function(e) { if(e.target.classList.contains('pm-modal')) e.target.style.display = 'none'; }
     </script>
 }
-
-<style>
-    .pm-btn-sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.8125rem;
-    }
-</style>

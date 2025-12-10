@@ -262,8 +262,26 @@
         let isLocationLocked = false;
         let checkInTimeValue = null;
         let cameraErrorShown = false;
-        const STANDARD_START_TIME = "@ViewBag.StandardStartTime";
-        const STANDARD_END_TIME = "@ViewBag.StandardEndTime";
+
+        // Lấy giờ từ Server, nếu rỗng thì dùng giờ mặc định
+        // Bạn có thể sửa '08:00' và '17:30' thành giờ mặc định mong muốn
+        const SERVER_START_STR = "@ViewBag.StandardStartTime";
+        const SERVER_END_STR = "@ViewBag.StandardEndTime";
+
+        const STANDARD_START_TIME = SERVER_START_STR ? SERVER_START_STR : "08:00";
+        const STANDARD_END_TIME = SERVER_END_STR ? SERVER_END_STR : "17:30";
+
+        // ========== HELPER: TIME CONVERSION ==========
+        // Hàm chuyển đổi giờ (HH:mm) sang số phút để so sánh
+        function getMinutes(timeStr) {
+            if (!timeStr) return 0;
+            // Lấy phần HH:mm đầu tiên (phòng trường hợp chuỗi là 08:00:00)
+            const cleanTime = timeStr.split(' ')[0].substring(0, 5);
+            const parts = cleanTime.split(':');
+            const hours = parseInt(parts[0], 10) || 0;
+            const minutes = parseInt(parts[1], 10) || 0;
+            return (hours * 60) + minutes;
+        }
 
         // ========== TIME UPDATE ==========
         function updateTime() {
@@ -297,34 +315,10 @@
             });
         });
 
-        // ========== CAMERA INIT & CAPTURE ==========
-        // async function initCamera() {
-        //     if (stream) return;
-        //     try {
-        //         stream = await navigator.mediaDevices.getUserMedia({
-        //             video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
-        //         });
-        //         document.getElementById('video').srcObject = stream;
-        //     } catch (err) {
-        //         console.error('Camera error:', err);
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Lỗi Camera',
-        //             text: 'Không thể truy cập camera. Chuyển sang chế độ tải ảnh.',
-        //             confirmButtonText: 'OK'
-        //         }).then(() => {
-        //             document.getElementById('modeUpload').checked = true;
-        //             document.getElementById('modeUpload').dispatchEvent(new Event('change'));
-        //         });
-        //     }
-        // }
-                async function initCamera() {
+        // ========== CAMERA LOGIC ==========
+        async function initCamera() {
             if (stream) return;
-
-            // ✅ NẾU ĐÃ LỖI CAMERA RỒI THÌ KHÔNG THỬ LẠI NỮA
-            if (cameraErrorShown) {
-                return;
-            }
+            if (cameraErrorShown) return;
 
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
@@ -333,23 +327,21 @@
                 document.getElementById('video').srcObject = stream;
             } catch (err) {
                 console.error('Camera error:', err);
-
-                // ✅ CHỈ HIỆN POPUP 1 LẦN DUY NHẤT
                 if (!cameraErrorShown) {
                     cameraErrorShown = true;
-
                     Swal.fire({
                         icon: 'error',
                         title: 'Lỗi Camera',
-                        text: 'Không thể truy cập camera. Tự động chuyển sang chế độ tải ảnh.',
+                        text: 'Không thể truy cập camera. Chuyển sang tải ảnh.',
                         confirmButtonText: 'OK'
                     }).then(() => {
-                        document.getElementById('modeUpload').checked = true;
-                        document.getElementById('modeUpload').dispatchEvent(new Event('change'));
+                        const upBtn = document.getElementById('modeUpload');
+                        if(upBtn) { upBtn.checked = true; upBtn.dispatchEvent(new Event('change')); }
                     });
                 }
             }
         }
+
         function capturePhoto() {
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
@@ -358,7 +350,6 @@
             const MAX_WIDTH = 1024;
             let width = video.videoWidth;
             let height = video.videoHeight;
-
             if (width > MAX_WIDTH) {
                 height = height * (MAX_WIDTH / width);
                 width = MAX_WIDTH;
@@ -369,7 +360,6 @@
 
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, width, height);
-
             canvas.toBlob(blob => {
                 capturedBlob = blob;
                 capturedImage.src = URL.createObjectURL(blob);
@@ -381,21 +371,17 @@
             }, 'image/jpeg', 0.8);
         }
 
-                function retakePhoto() {
+        function retakePhoto() {
             document.getElementById('video').style.display = 'block';
             document.getElementById('capturedImage').style.display = 'none';
             document.getElementById('btnCapture').style.display = 'inline-block';
             document.getElementById('btnRetake').style.display = 'none';
             capturedBlob = null;
             updateButtonsState();
-
-            // ✅ CHỈ INIT CAMERA LẠI NẾU CHƯA CÓ LỖI
-            if (!cameraErrorShown) {
-                initCamera();
-            }
+            if (!cameraErrorShown) initCamera();
         }
 
-        // ========== LOCATION LOGIC (GPS BẮTBUỘC) ==========
+        // ========== LOCATION LOGIC ==========
         async function getLocation(isRetry = false) {
             if (isLocationLocked && !isRetry) return;
             if (isGettingLocation) return;
@@ -406,25 +392,20 @@
             }
 
             isGettingLocation = true;
-
             document.getElementById('locationInfo').innerHTML = `
                 <div class="alert alert-info">
                     <div class="d-flex align-items-center">
-                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                        <div><strong>Đang lấy vị trí GPS...</strong></div>
+                        <div class="spinner-border spinner-border-sm me-2"></div>
+                        <div><strong>Đang lấy vị trí...</strong></div>
                     </div>
-                </div>
-            `;
+                </div>`;
 
             try {
                 const position = await new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true,
-                        timeout: 15000,
-                        maximumAge: 0
+                        enableHighAccuracy: true, timeout: 15000, maximumAge: 0
                     });
                 });
-
                 latitude = position.coords.latitude;
                 longitude = position.coords.longitude;
                 const accuracy = position.coords.accuracy;
@@ -433,17 +414,11 @@
 
                 isGettingLocation = false;
                 isLocationLocked = true;
-
             } catch (error) {
                 console.error('Location error:', error);
                 isGettingLocation = false;
                 isLocationLocked = false;
-
-                let msg = 'Không thể lấy vị trí.';
-                if (error.code === 1) msg = 'Vui lòng cho phép truy cập vị trí.';
-                else if (error.code === 3) msg = 'Hết thời gian chờ lấy vị trí.';
-
-                showLocationError(msg, true);
+                showLocationError('Không thể lấy vị trí. Hãy bật GPS và thử lại.', true);
             }
         }
 
@@ -454,8 +429,7 @@
                         <div><i class="fas fa-exclamation-triangle"></i> ${msg}</div>
                         ${showRetry ? `<button class="btn btn-sm btn-outline-warning" onclick="getLocation(true)"><i class="fas fa-sync-alt"></i></button>` : ''}
                     </div>
-                </div>
-            `;
+                </div>`;
             latitude = null;
             longitude = null;
             updateButtonsState();
@@ -483,29 +457,32 @@
                         </div>
                         <button class="btn btn-sm btn-light text-primary" onclick="getLocation(true)"><i class="fas fa-sync-alt"></i></button>
                     </div>
-                </div>
-            `;
+                </div>`;
             updateButtonsState();
         }
 
         // ========== FILE UPLOAD ==========
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                uploadedFile = file;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('uploadPlaceholder').style.display = 'none';
-                    document.getElementById('uploadedImage').src = e.target.result;
-                    document.getElementById('uploadedImage').style.display = 'block';
-                    document.getElementById('btnClearUpload').style.display = 'inline-block';
-                    updateButtonsState();
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        document.getElementById('uploadPlaceholder').addEventListener('click', () => document.getElementById('fileInput').click());
+        const fileInput = document.getElementById('fileInput');
+        if(fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadedFile = file;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('uploadPlaceholder').style.display = 'none';
+                        const img = document.getElementById('uploadedImage');
+                        img.src = e.target.result;
+                        img.style.display = 'block';
+                        document.getElementById('btnClearUpload').style.display = 'inline-block';
+                        updateButtonsState();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        if(uploadPlaceholder) uploadPlaceholder.addEventListener('click', () => document.getElementById('fileInput').click());
 
         function clearUploadedImage() {
             uploadedFile = null;
@@ -517,150 +494,129 @@
         }
 
         function updateButtonsState() {
-            // ✅ Ảnh tùy chọn - không cần kiểm tra
             const hasLocation = latitude !== null && longitude !== null;
-
-            const btnCheckIn = document.getElementById('btnCheckIn');
-            const btnCheckOut = document.getElementById('btnCheckOut');
-
-            if (btnCheckIn) btnCheckIn.disabled = !hasLocation;
-            if (btnCheckOut) btnCheckOut.disabled = !hasLocation;
+            const btnIn = document.getElementById('btnCheckIn');
+            const btnOut = document.getElementById('btnCheckOut');
+            if (btnIn) btnIn.disabled = !hasLocation;
+            if (btnOut) btnOut.disabled = !hasLocation;
         }
 
         function getCurrentTimeStr() {
-            const now = new Date();
-            return now.toTimeString().split(' ')[0].substring(0, 5);
+            // Lấy giờ hiện tại format HH:mm
+            return new Date().toTimeString().substring(0, 5);
         }
 
-        // ========== CHECK IN POPUP & API CALL ==========
-               async function checkIn() {
+        // ========== CHECK IN FUNCTION ==========
+        async function checkIn() {
             if (!latitude || !longitude) {
-                Swal.fire('Thiếu thông tin', 'Vui lòng đợi lấy vị trí GPS', 'warning');
+                Swal.fire('Thiếu vị trí', 'Vui lòng đợi lấy GPS', 'warning');
                 return;
             }
 
-            const photoFile = capturedBlob || uploadedFile;
             const nowStr = getCurrentTimeStr();
+            const currentMin = getMinutes(nowStr);
+            const standardMin = getMinutes(STANDARD_START_TIME);
+
+            // LOG DEBUG: Kiểm tra xem số phút tính ra có đúng không
+            console.log("CHECK-IN LOGIC:");
+            console.log(`- Giờ hiện tại: ${nowStr} -> ${currentMin} phút`);
+            console.log(`- Giờ chuẩn CheckIn: ${STANDARD_START_TIME} -> ${standardMin} phút`);
+
             let statusHtml = '';
-            if (nowStr > STANDARD_START_TIME) {
+            // Logic: Nếu phút hiện tại > phút chuẩn => TRỄ
+            if (currentMin > standardMin) {
                 statusHtml = `<span class="badge bg-danger fs-6">Đi trễ</span> <small class="text-muted">(Chuẩn: ${STANDARD_START_TIME})</small>`;
             } else {
                 statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
             }
 
+            const photoFile = capturedBlob || uploadedFile;
+
             const result = await Swal.fire({
                 title: 'Xác nhận Check-in',
                 html: `
                     <div class="text-start p-3 bg-light rounded">
-                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Thời gian:</strong> ${nowStr}</p>
+                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Giờ Check-in:</strong> ${nowStr}</p>
                         <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
                         <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
                     </div>
-                    ${photoFile ? `<div class="mt-3 text-center">
-                        <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
-                             style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
-                    </div>` : '<p class="text-muted mt-3">Không có ảnh check-in</p>'}
+                    ${photoFile ? `<div class="mt-3 text-center"><img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}" style="max-height: 150px; border-radius: 8px;"></div>` : ''}
                 `,
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-check"></i> Xác nhận Check-in',
-                cancelButtonText: 'Hủy bỏ',
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#6c757d',
-                reverseButtons: true
+                confirmButtonText: 'Check-in ngay',
+                cancelButtonText: 'Hủy'
             });
 
-            if (!result.isConfirmed) return;
-
-            // ✅ FIXED: Không gửi Address nữa
-            const formData = new FormData();
-            if (photoFile) formData.append('Photo', photoFile, 'checkin.jpg');
-            formData.append('Latitude', latitude);
-            formData.append('Longitude', longitude);
-            // ❌ ĐÃ XÓA: formData.append('Address', currentAddress);
-            formData.append('Notes', document.getElementById('attendanceNotes').value);
-
-            Swal.fire({ title: 'Đang Check-in...', text: 'Vui lòng đợi', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
-            try {
-                const response = await fetch('/Staff/CheckIn', { method: 'POST', body: formData });
-                const data = await response.json();
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Check-in thành công!',
-                        html: data.message.replace(/\n/g, '<br>'),
-                        confirmButtonText: 'OK'
-                    }).then(() => location.reload());
-                } else {
-                    Swal.fire('Lỗi', data.message, 'error');
-                }
-            } catch (err) {
-                Swal.fire('Lỗi kết nối', err.message, 'error');
+            if (result.isConfirmed) {
+                await submitAttendance('/Staff/CheckIn', photoFile, 'Check-in thành công!');
             }
         }
 
-
-        // ========== CHECK OUT POPUP & API CALL ==========
-               async function checkOut() {
+        // ========== CHECK OUT FUNCTION ==========
+        async function checkOut() {
             if (!latitude || !longitude) {
-                Swal.fire('Thiếu thông tin', 'Vui lòng đợi lấy vị trí GPS', 'warning');
+                Swal.fire('Thiếu vị trí', 'Vui lòng đợi lấy GPS', 'warning');
                 return;
             }
 
-            const photoFile = capturedBlob || uploadedFile;
             const nowStr = getCurrentTimeStr();
+            const currentMin = getMinutes(nowStr);
+            const standardMin = getMinutes(STANDARD_END_TIME);
+
+            // LOG DEBUG: Kiểm tra xem số phút tính ra có đúng không
+            console.log("CHECK-OUT LOGIC:");
+            console.log(`- Giờ hiện tại: ${nowStr} -> ${currentMin} phút`);
+            console.log(`- Giờ chuẩn CheckOut: ${STANDARD_END_TIME} -> ${standardMin} phút`);
+
             let statusHtml = '';
-            if (nowStr < STANDARD_END_TIME) {
+            // Logic: Nếu phút hiện tại < phút chuẩn => VỀ SỚM
+            if (currentMin < standardMin) {
                 statusHtml = `<span class="badge bg-warning text-dark fs-6">Về sớm</span> <small class="text-muted">(Chuẩn: ${STANDARD_END_TIME})</small>`;
             } else {
                 statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
             }
 
+            const photoFile = capturedBlob || uploadedFile;
+
             const result = await Swal.fire({
                 title: 'Xác nhận Check-out',
                 html: `
                     <div class="text-start p-3 bg-light rounded">
-                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Thời gian:</strong> ${nowStr}</p>
+                        <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Giờ Check-out:</strong> ${nowStr}</p>
                         <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
                         <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
                     </div>
-                    ${photoFile ? `<div class="mt-3 text-center">
-                        <img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}"
-                             style="max-height: 150px; border-radius: 8px; border: 1px solid #ddd;">
-                    </div>` : '<p class="text-muted mt-3">Không có ảnh check-out</p>'}
+                    ${photoFile ? `<div class="mt-3 text-center"><img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}" style="max-height: 150px; border-radius: 8px;"></div>` : ''}
                 `,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-sign-out-alt"></i> Xác nhận Check-out',
-                cancelButtonText: 'Hủy bỏ',
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#6c757d',
-                reverseButtons: true
+                confirmButtonText: 'Check-out ngay',
+                cancelButtonText: 'Hủy'
             });
 
-            if (!result.isConfirmed) return;
+            if (result.isConfirmed) {
+                await submitAttendance('/Staff/CheckOut', photoFile, 'Check-out thành công!');
+            }
+        }
 
-            // ✅ FIXED: Không gửi Address nữa
+        // ========== SUBMIT HELPER ==========
+        async function submitAttendance(url, photoFile, successMsg) {
             const formData = new FormData();
-            if (photoFile) formData.append('Photo', photoFile, 'checkout.jpg');
+            if (photoFile) formData.append('Photo', photoFile, 'attendance.jpg');
             formData.append('Latitude', latitude);
             formData.append('Longitude', longitude);
-            // ❌ ĐÃ XÓA: formData.append('Address', currentAddress);
-            formData.append('Notes', document.getElementById('attendanceNotes').value);
 
-            Swal.fire({ title: 'Đang Check-out...', text: 'Đang tổng hợp công...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            const notes = document.getElementById('attendanceNotes');
+            if(notes) formData.append('Notes', notes.value);
+
+            Swal.fire({ title: 'Đang xử lý...', didOpen: () => Swal.showLoading() });
 
             try {
-                const response = await fetch('/Staff/CheckOut', { method: 'POST', body: formData });
+                const response = await fetch(url, { method: 'POST', body: formData });
                 const data = await response.json();
                 if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Check-out thành công!',
-                        html: data.message.replace(/\n/g, '<br>'),
-                        confirmButtonText: 'OK'
-                    }).then(() => location.reload());
+                    Swal.fire('Thành công', successMsg, 'success').then(() => location.reload());
                 } else {
                     Swal.fire('Lỗi', data.message, 'error');
                 }
@@ -675,92 +631,82 @@
                 const response = await fetch('/Staff/GetTodayAttendance');
                 const data = await response.json();
 
-                const statusDiv = document.getElementById('attendanceStatus');
                 const checkInSection = document.getElementById('checkInSection');
                 const checkOutSection = document.getElementById('checkOutSection');
                 const completedSection = document.getElementById('completedSection');
+                const todayInfo = document.getElementById('todayInfo');
+
+                // Ẩn hết trước
+                if(checkInSection) checkInSection.style.display = 'none';
+                if(checkOutSection) checkOutSection.style.display = 'none';
+                if(completedSection) completedSection.style.display = 'none';
 
                 if (data.hasCheckedIn) {
-                    statusDiv.style.display = 'none';
                     if (data.hasCheckedOut) {
-                        checkInSection.style.display = 'none';
-                        checkOutSection.style.display = 'none';
-                        completedSection.style.display = 'block';
-                        completedSection.innerHTML = `
-                            <div class="alert alert-success">
-                                <h5><i class="fas fa-check-double"></i> Đã hoàn tất!</h5>
-                                <hr>
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <small>Check-in</small><br><strong>${data.checkInTime}</strong>
+                        // Đã xong cả 2
+                        if(completedSection) {
+                            completedSection.style.display = 'block';
+                            completedSection.innerHTML = `
+                                <div class="alert alert-success">
+                                    <h5><i class="fas fa-check-double"></i> Đã hoàn tất hôm nay</h5>
+                                    <hr>
+                                    <div class="row text-center">
+                                        <div class="col-6">Check-in<br><strong>${data.checkInTime}</strong></div>
+                                        <div class="col-6">Check-out<br><strong>${data.checkOutTime}</strong></div>
                                     </div>
-                                    <div class="col-6">
-                                        <small>Check-out</small><br><strong>${data.checkOutTime}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        if (stream) {
-                            stream.getTracks().forEach(track => track.stop());
-                            stream = null;
+                                </div>`;
                         }
+                        if(todayInfo) todayInfo.innerHTML = `<div class="alert alert-success mb-0"><strong>Đã hoàn tất</strong></div>`;
+                        if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
                     } else {
-                        checkInSection.style.display = 'none';
-                        checkOutSection.style.display = 'block';
+                        // Đã check-in, chưa check-out
+                        if(checkOutSection) checkOutSection.style.display = 'block';
                         checkInTimeValue = data.checkInTime;
-                        updateWorkingHours();
+                        startCountingWorkTime();
+                        if(todayInfo) todayInfo.innerHTML = `<div class="alert alert-warning mb-0"><strong>Đã check-in: ${data.checkInTime}</strong></div>`;
                     }
                 } else {
-                    statusDiv.style.display = 'none';
-                    checkInSection.style.display = 'block';
+                    // Chưa check-in
+                    if(checkInSection) checkInSection.style.display = 'block';
+                    if(todayInfo) todayInfo.innerHTML = `<div class="alert alert-info mb-0"><strong>Chưa check-in</strong></div>`;
                 }
                 updateButtonsState();
             } catch (error) {
-                console.error('Error:', error);
+                console.error(error);
             }
         }
 
-        function updateWorkingHours() {
+        function startCountingWorkTime() {
             if (!checkInTimeValue) return;
-            const updateHours = () => {
+            const update = () => {
                 const now = new Date();
                 const checkIn = new Date(`${now.toDateString()} ${checkInTimeValue}`);
+                if(isNaN(checkIn)) return;
+
                 const diff = now - checkIn;
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+
                 const el = document.querySelector('.sd-check-info');
                 if (el) {
                     el.innerHTML = `
-                        <div class="alert alert-info">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i class="fas fa-sign-in-alt me-2"></i>
-                                    <strong>Đã check-in:</strong> <code>${checkInTimeValue}</code>
-                                </div>
-                                <div class="badge bg-primary fs-6">
-                                    <i class="fas fa-clock me-1"></i>
-                                    ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                        <div class="alert alert-info d-flex justify-content-between">
+                            <span>Đã làm việc:</span>
+                            <span class="badge bg-primary">${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</span>
+                        </div>`;
                 }
             };
-            updateHours();
-            setInterval(updateHours, 1000);
+            update();
+            setInterval(update, 1000);
         }
 
-        // ========== INIT ON LOAD ==========
+        // ========== INIT ==========
         window.onload = async function() {
-            console.log('🚀 Initializing Staff Dashboard...');
             await initCamera();
             await getLocation();
             await checkAttendanceStatus();
-            console.log('✅ Dashboard initialized');
         };
-
-        // ========== CLEANUP ==========
         window.onbeforeunload = function() {
             if (stream) stream.getTracks().forEach(track => track.stop());
         };

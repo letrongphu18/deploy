@@ -5,6 +5,7 @@ using AIHUBOS.Services;
 using AIHUBOS.Hubs;
 using Hangfire.SqlServer;
 using Hangfire;
+using TMD.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // ============================================
@@ -25,7 +26,7 @@ builder.Services.AddDbContextFactory<AihubSystemContext>(options =>
 {
 	options.UseSqlServer(connectionString);
 }, ServiceLifetime.Scoped); // ✅ QUAN TRỌNG: Scoped thay vì Singleton!
-
+builder.Services.AddHostedService<AutoCheckInService>();
 // ✅ OPTION 2: Nếu cần cả DbContext cho controllers
 builder.Services.AddScoped<AihubSystemContext>(provider =>
 {

@@ -34,18 +34,455 @@ namespace TMD.Controllers
 			_telegramService = telegramService;
 
 		}
-		private DateTime GetVietnamTime()
+		// Thêm vào StaffController.cs
+		private async Task<bool> IsProjectLeader(int projectId, int userId)
 		{
+			var project = await _context.Projects
+				.FirstOrDefaultAsync(p => p.ProjectId == projectId && p.LeaderId == userId);
+
+			return project != null;
+		}
+
+		private async Task<bool> IsProjectMember(int projectId, int userId)
+		{
+			var membership = await _context.ProjectMembers
+				.AnyAsync(pm => pm.ProjectId == projectId && pm.UserId == userId && pm.IsActive == true);
+
+			return membership;
+		}
+		// ============================================
+		// LEADER: CREATE TASK FOR PROJECT
+		// ============================================
+		[HttpPost]
+		public async Task<IActionResult> LeaderCreateTask([FromBody] CreateProjectTaskRequest request)
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			// ✅ KIỂM TRA QUYỀN LEADER
+			if (!await IsProjectLeader(request.ProjectId, userId))
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					userId,
+					"CREATE",
+					"Task",
+					"Không có quyền Leader",
+					new { ProjectId = request.ProjectId }
+				);
+
+				return Json(new { success = false, message = "⚠️ Chỉ Leader mới có quyền tạo task cho dự án này" });
+			}
+
+			// ✅ VALIDATE
+			if (string.IsNullOrWhiteSpace(request.TaskName))
+				return Json(new { success = false, message = "Tên task không được để trống" });
+
 			try
 			{
-				var vietnamTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
-				return TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
+				var project = await _context.Projects
+					.Include(p => p.ProjectMembers)
+					.FirstOrDefaultAsync(p => p.ProjectId == request.ProjectId);
+
+				if (project == null)
+					return Json(new { success = false, message = "Không tìm thấy dự án" });
+
+				// ✅ TẠO TASK
+				var task = new TMD.Models.Task
+				{
+					TaskName = request.TaskName.Trim(),
+					Description = request.Description?.Trim(),
+					Platform = request.Platform?.Trim(),
+					Deadline = request.Deadline,
+					Priority = request.Priority ?? "Medium",
+					ProjectId = request.ProjectId,
+					TaskType = "Project",
+					OrderIndex = request.OrderIndex,
+					IsActive = true,
+					CreatedAt = DateTime.Now
+				};
+
+				_context.Tasks.Add(task);
+				await _context.SaveChangesAsync();
+
+				// ✅ GIAO TASK CHO MEMBERS
+				int assignedCount = 0;
+				if (request.AssignedUserIds != null && request.AssignedUserIds.Count > 0)
+				{
+					foreach (var assigneeId in request.AssignedUserIds)
+					{
+						// ✅ CHỈ GIAO CHO MEMBERS TRONG PROJECT
+						if (!project.ProjectMembers.Any(pm => pm.UserId == assigneeId && pm.IsActive))
+						{
+							continue; // Skip non-members
+						}
+
+						var userTask = new UserTask
+						{
+							UserId = assigneeId,
+							TaskId = task.TaskId,
+							Status = "TODO",
+							CreatedAt = DateTime.Now
+						};
+
+						_context.UserTasks.Add(userTask);
+						assignedCount++;
+
+						// ✅ GỬI THÔNG BÁO
+						await _notificationService.SendToUserAsync(
+							assigneeId,
+							"📋 Task mới từ Leader",
+							$"Leader đã giao task '{request.TaskName}' cho bạn",
+							"info",
+							"/Staff/MyTasks"
+						);
+					}
+
+					await _context.SaveChangesAsync();
+				}
+
+				// ✅ LOG AUDIT
+				await _auditHelper.LogAsync(
+					userId,
+					"CREATE",
+					"Task",
+					task.TaskId,
+					null,
+					new { task.TaskName, AssignedCount = assignedCount },
+					$"Leader tạo task: {task.TaskName} cho dự án {project.ProjectName}"
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = "✅ Tạo task thành công!",
+					task = new
+					{
+						taskId = task.TaskId,
+						taskName = task.TaskName,
+						description = task.Description,
+						platform = task.Platform,
+						deadline = task.Deadline?.ToString("dd/MM/yyyy"),
+						priority = task.Priority,
+						assignedCount = assignedCount,
+						status = "TODO"
+					}
+				});
 			}
-			catch
+			catch (Exception ex)
 			{
-				// Fallback: UTC+7
-				return DateTime.UtcNow.AddHours(7);
+				await _auditHelper.LogFailedAttemptAsync(
+					userId,
+					"CREATE",
+					"Task",
+					$"Exception: {ex.Message}",
+					new { Error = ex.ToString() }
+				);
+
+				return Json(new { success = false, message = $"Có lỗi: {ex.Message}" });
 			}
+		}
+		// ============================================
+		// THÊM VÀO StaffController.cs (sau method LeaderCreateTask)
+		// ============================================
+
+		[HttpGet]
+		public async Task<IActionResult> LeaderGetTask(int taskId)
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				var task = await _context.Tasks
+					.Include(t => t.Project)
+					.Include(t => t.UserTasks)
+						.ThenInclude(ut => ut.User)
+					.FirstOrDefaultAsync(t => t.TaskId == taskId && t.IsActive == true);
+
+				if (task == null)
+					return Json(new { success = false, message = "Không tìm thấy task" });
+
+				// Kiểm tra quyền Leader
+				if (!await IsProjectLeader(task.ProjectId.Value, userId))
+				{
+					return Json(new { success = false, message = "Chỉ Leader mới có quyền xem chi tiết task" });
+				}
+
+				return Json(new
+				{
+					success = true,
+					task = new
+					{
+						taskId = task.TaskId,
+						taskName = task.TaskName,
+						description = task.Description ?? "",
+						platform = task.Platform ?? "",
+						deadline = task.Deadline?.ToString("yyyy-MM-ddTHH:mm") ?? "",
+						priority = task.Priority ?? "Medium",
+						projectId = task.ProjectId,
+						assignedUserIds = task.UserTasks.Select(ut => ut.UserId).ToList()
+					}
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = $"Có lỗi: {ex.Message}" });
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> LeaderUpdateTask([FromBody] UpdateProjectTaskRequest request)
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				var task = await _context.Tasks
+					.Include(t => t.Project)
+					.Include(t => t.UserTasks)
+					.FirstOrDefaultAsync(t => t.TaskId == request.TaskId && t.IsActive == true);
+
+				if (task == null)
+					return Json(new { success = false, message = "Không tìm thấy task" });
+
+				// Kiểm tra quyền Leader
+				if (!await IsProjectLeader(task.ProjectId.Value, userId))
+				{
+					await _auditHelper.LogFailedAttemptAsync(
+						userId,
+						"UPDATE",
+						"Task",
+						"Không có quyền Leader",
+						new { TaskId = request.TaskId }
+					);
+					return Json(new { success = false, message = "Chỉ Leader mới có quyền sửa task" });
+				}
+
+				var oldData = new
+				{
+					task.TaskName,
+					task.Description,
+					task.Platform,
+					task.Deadline,
+					task.Priority,
+					AssignedUsers = task.UserTasks.Select(ut => ut.UserId).ToList()
+				};
+
+				// Cập nhật thông tin task
+				task.TaskName = request.TaskName.Trim();
+				task.Description = request.Description?.Trim();
+				task.Platform = request.Platform?.Trim();
+				task.Deadline = request.Deadline;
+				task.Priority = request.Priority ?? "Medium";
+
+				// Cập nhật assignees
+				var currentAssignees = task.UserTasks.Select(ut => ut.UserId).ToList();
+				var newAssignees = request.AssignedUserIds ?? new List<int>();
+
+				// Xóa assignees cũ không còn trong danh sách mới
+				var toRemove = task.UserTasks.Where(ut => !newAssignees.Contains(ut.UserId)).ToList();
+				foreach (var ut in toRemove)
+				{
+					_context.UserTasks.Remove(ut);
+				}
+
+				// Thêm assignees mới
+				var toAdd = newAssignees.Where(uid => !currentAssignees.Contains(uid)).ToList();
+				foreach (var uid in toAdd)
+				{
+					// Kiểm tra user có phải member không
+					var isMember = await _context.ProjectMembers
+						.AnyAsync(pm => pm.ProjectId == task.ProjectId && pm.UserId == uid && pm.IsActive);
+
+					if (!isMember) continue;
+
+					var userTask = new UserTask
+					{
+						UserId = uid,
+						TaskId = task.TaskId,
+						Status = "TODO",
+						CreatedAt = DateTime.Now
+					};
+
+					_context.UserTasks.Add(userTask);
+
+					// Gửi thông báo
+					await _notificationService.SendToUserAsync(
+						uid,
+						"📝 Task được cập nhật",
+						$"Leader đã cập nhật task '{task.TaskName}'",
+						"info",
+						"/Staff/MyTasks"
+					);
+				}
+
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogDetailedAsync(
+					userId,
+					"UPDATE",
+					"Task",
+					task.TaskId,
+					oldData,
+					new
+					{
+						task.TaskName,
+						task.Description,
+						task.Platform,
+						task.Deadline,
+						task.Priority,
+						AssignedUsers = newAssignees
+					},
+					$"Leader cập nhật task: {task.TaskName}",
+					new Dictionary<string, object>
+					{
+				{ "RemovedUsers", toRemove.Count },
+				{ "AddedUsers", toAdd.Count }
+					}
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = "✅ Cập nhật task thành công!"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					userId,
+					"UPDATE",
+					"Task",
+					$"Exception: {ex.Message}",
+					new { TaskId = request.TaskId, Error = ex.ToString() }
+				);
+				return Json(new { success = false, message = $"Có lỗi: {ex.Message}" });
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> LeaderDeleteTask([FromBody] DeleteTaskRequest request)
+		{
+			if (!IsAuthenticated())
+				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
+
+			var userId = HttpContext.Session.GetInt32("UserId").Value;
+
+			try
+			{
+				var task = await _context.Tasks
+					.Include(t => t.Project)
+					.Include(t => t.UserTasks)
+					.FirstOrDefaultAsync(t => t.TaskId == request.TaskId && t.IsActive == true);
+
+				if (task == null)
+					return Json(new { success = false, message = "Không tìm thấy task" });
+
+				// Kiểm tra quyền Leader
+				if (!await IsProjectLeader(task.ProjectId.Value, userId))
+				{
+					await _auditHelper.LogFailedAttemptAsync(
+						userId,
+						"DELETE",
+						"Task",
+						"Không có quyền Leader",
+						new { TaskId = request.TaskId }
+					);
+					return Json(new { success = false, message = "Chỉ Leader mới có quyền xóa task" });
+				}
+
+				var affectedUsers = task.UserTasks.Select(ut => ut.UserId).ToList();
+
+				// Soft delete
+				task.IsActive = false;
+
+				await _context.SaveChangesAsync();
+
+				await _auditHelper.LogAsync(
+					userId,
+					"DELETE",
+					"Task",
+					task.TaskId,
+					new { task.TaskName, AssignedUsers = affectedUsers },
+					new { IsActive = false },
+					$"Leader xóa task: {task.TaskName}"
+				);
+
+				// Gửi thông báo cho các user bị ảnh hưởng
+				foreach (var uid in affectedUsers)
+				{
+					await _notificationService.SendToUserAsync(
+						uid,
+						"🗑️ Task bị xóa",
+						$"Task '{task.TaskName}' đã bị Leader xóa khỏi dự án",
+						"warning",
+						"/Staff/MyTasks"
+					);
+				}
+
+				return Json(new
+				{
+					success = true,
+					message = "✅ Xóa task thành công!"
+				});
+			}
+			catch (Exception ex)
+			{
+				await _auditHelper.LogFailedAttemptAsync(
+					userId,
+					"DELETE",
+					"Task",
+					$"Exception: {ex.Message}",
+					new { TaskId = request.TaskId, Error = ex.ToString() }
+				);
+				return Json(new { success = false, message = $"Có lỗi: {ex.Message}" });
+			}
+		}
+
+		// ============================================
+		// REQUEST MODELS (thêm vào cuối class)
+		// ============================================
+		public class UpdateProjectTaskRequest
+		{
+			public int TaskId { get; set; }
+			public string TaskName { get; set; } = string.Empty;
+			public string? Description { get; set; }
+			public string? Platform { get; set; }
+			public DateTime? Deadline { get; set; }
+			public string? Priority { get; set; }
+			public List<int>? AssignedUserIds { get; set; }
+		}
+
+		public class DeleteTaskRequest
+		{
+			public int TaskId { get; set; }
+		}
+		// ============================================
+		// REQUEST MODEL (đã có trong AdminController, copy sang đây)
+		// ============================================
+		public class CreateProjectTaskRequest
+		{
+			public int ProjectId { get; set; }
+			public string TaskName { get; set; } = string.Empty;
+			public string? Description { get; set; }
+			public string? Platform { get; set; }
+			public DateTime? Deadline { get; set; }
+			public string? Priority { get; set; }
+			public int? OrderIndex { get; set; }
+			public List<int>? AssignedUserIds { get; set; }
+		}
+		private DateTime GetVietnamTime()
+		{
+			// CÁCH FIX: Lấy giờ UTC gốc và cộng cứng 7 tiếng để ra giờ VN
+			// Cách này chạy đúng trên mọi server (Windows, Linux, Docker, Azure)
+			return DateTime.UtcNow.AddHours(7);
 		}
 		/// <summary>
 		/// Đọc thời gian chuẩn từ SystemSettings với validate đầy đủ
@@ -267,7 +704,7 @@ namespace TMD.Controllers
 				.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
 			// Gán vào ViewBag. Nếu không tìm thấy, dùng giá trị mặc định "08:00" và "17:00"
-			ViewBag.StandardStartTime = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "08:00");
+			ViewBag.StandardStartTime = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME", "09:00");
 			ViewBag.StandardEndTime = configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME", "17:00");
 
 			// ============================================
@@ -750,7 +1187,8 @@ namespace TMD.Controllers
 			}
 
 			var userId = HttpContext.Session.GetInt32("UserId");
-			var today = DateOnly.FromDateTime(DateTime.Now);
+			var serverNow = GetVietnamTime();
+			var today = DateOnly.FromDateTime(serverNow);
 
 			var attendance = await _context.Attendances
 				.FirstOrDefaultAsync(a => a.UserId == userId && a.WorkDate == today);
@@ -2792,7 +3230,7 @@ namespace TMD.Controllers
 						.ThenInclude(p => p.Department)
 					.Include(pm => pm.Project)
 						.ThenInclude(p => p.ProjectMembers)
-							.ThenInclude(pm => pm.User)
+							.ThenInclude(pm => pm.User) // Cần thông tin User cho danh sách thành viên
 								.ThenInclude(u => u.Department)
 					.FirstOrDefaultAsync(pm => pm.ProjectId == id && pm.UserId == userId && pm.IsActive == true);
 
@@ -2803,83 +3241,107 @@ namespace TMD.Controllers
 				}
 
 				var project = membership.Project;
+				bool isLeader = project.LeaderId == userId;
 
-				// 2. Lấy tasks
-				var myTasks = await _context.UserTasks
+				// 2. Lấy "My Tasks" (Task của riêng tôi)
+				var myTasksQuery = _context.UserTasks
 					.Include(ut => ut.Task)
 					.Include(ut => ut.Tester)
 					.Include(ut => ut.User)
 					.Where(ut => ut.UserId == userId &&
 								ut.Task != null &&
 								ut.Task.ProjectId == id &&
-								ut.Task.IsActive == true)
+								ut.Task.IsActive == true);
+
+				var myTasks = await myTasksQuery
 					.OrderBy(ut => ut.Status == "TODO" ? 1 : ut.Status == "InProgress" ? 2 : 3)
 					.ThenByDescending(ut => ut.Task.Priority == "High" ? 1 : ut.Task.Priority == "Medium" ? 2 : 3)
 					.ToListAsync();
 
-				// ✅ 3. Tạo metadata - QUAN TRỌNG: Cast sang object ngay
-				var myTasksWithMetadata = myTasks.Select(ut => (object)new
+				// Helper function để map dữ liệu view (Tránh lặp code)
+				object MapTaskMetadata(UserTask ut)
 				{
-					UserTask = ut,
-					Task = ut.Task,
-					IsOverdue = ut.Task.Deadline.HasValue &&
-							   (ut.Status != "Done"
-								? DateTime.Now > ut.Task.Deadline.Value
-								: (ut.UpdatedAt.HasValue && ut.UpdatedAt.Value > ut.Task.Deadline.Value)),
-					StatusBadgeClass = ut.Status switch
+					return new
 					{
-						"TODO" => "style='background: rgba(107, 114, 128, 0.1); color: #6b7280;'",
-						"InProgress" => "pm-badge-medium",
-						"Testing" => "style='background: rgba(59, 130, 246, 0.1); color: var(--info);'",
-						"Done" => "style='background: rgba(16, 185, 129, 0.1); color: var(--success);'",
-						"Reopen" => "pm-badge-high",
-						_ => ""
-					},
-					StatusText = ut.Status switch
-					{
-						"TODO" => "Chưa bắt đầu",
-						"InProgress" => "Đang làm",
-						"Testing" => "Chờ test",
-						"Done" => "Hoàn thành",
-						"Reopen" => "Cần sửa lại",
-						_ => "TODO"
-					},
-					PriorityClass = ut.Task.Priority switch
-					{
-						"High" => "pm-badge-high",
-						"Medium" => "pm-badge-medium",
-						"Low" => "pm-badge-low",
-						_ => "pm-badge-medium"
-					},
-					PriorityText = ut.Task.Priority switch
-					{
-						"High" => "Cao",
-						"Medium" => "Trung bình",
-						"Low" => "Thấp",
-						_ => "Trung bình"
-					}
-				}).ToList();
+						UserTask = ut,
+						Task = ut.Task,
+						AssigneeName = ut.User?.FullName, // Thêm người được giao
+						AssigneeAvatar = ut.User?.Avatar, // Thêm avatar người được giao
+						IsOverdue = ut.Task.Deadline.HasValue &&
+								   (ut.Status != "Done"
+									? DateTime.Now > ut.Task.Deadline.Value
+									: (ut.UpdatedAt.HasValue && ut.UpdatedAt.Value > ut.Task.Deadline.Value)),
+						StatusBadgeClass = ut.Status switch
+						{
+							"TODO" => "style='background: rgba(107, 114, 128, 0.1); color: #6b7280;'",
+							"InProgress" => "pm-badge-medium",
+							"Testing" => "style='background: rgba(59, 130, 246, 0.1); color: var(--info);'",
+							"Done" => "style='background: rgba(16, 185, 129, 0.1); color: var(--success);'",
+							"Reopen" => "pm-badge-high",
+							_ => ""
+						},
+						StatusText = ut.Status switch
+						{
+							"TODO" => "Chưa bắt đầu",
+							"InProgress" => "Đang làm",
+							"Testing" => "Chờ test",
+							"Done" => "Hoàn thành",
+							"Reopen" => "Cần sửa lại",
+							_ => "TODO"
+						},
+						PriorityClass = ut.Task.Priority switch
+						{
+							"High" => "pm-badge-high",
+							"Medium" => "pm-badge-medium",
+							"Low" => "pm-badge-low",
+							_ => "pm-badge-medium"
+						},
+						PriorityText = ut.Task.Priority switch
+						{
+							"High" => "Cao",
+							"Medium" => "Trung bình",
+							"Low" => "Thấp",
+							_ => "Trung bình"
+						}
+					};
+				}
 
-				// 4. Thống kê tasks
+				// Tạo metadata cho My Tasks
+				var myTasksWithMetadata = myTasks.Select(ut => MapTaskMetadata(ut)).ToList();
+
+				// 3. NẾU LÀ LEADER: Lấy toàn bộ Task trong dự án (Team Tasks)
+				List<object> teamTasksWithMetadata = new List<object>();
+				if (isLeader)
+				{
+					var teamTasks = await _context.UserTasks
+						.Include(ut => ut.Task)
+						.Include(ut => ut.User) // Quan trọng: Include User để biết ai làm
+						.Where(ut => ut.Task.ProjectId == id && ut.Task.IsActive == true)
+						.OrderByDescending(ut => ut.Task.CreatedAt)
+						.ToListAsync();
+
+					teamTasksWithMetadata = teamTasks.Select(ut => MapTaskMetadata(ut)).ToList();
+				}
+
+				// 4. Thống kê & ViewBags
 				ViewBag.MyTotalTasks = myTasks.Count;
 				ViewBag.MyTodoTasks = myTasks.Count(ut => ut.Status == "TODO");
 				ViewBag.MyInProgressTasks = myTasks.Count(ut => ut.Status == "InProgress");
 				ViewBag.MyTestingTasks = myTasks.Count(ut => ut.Status == "Testing");
 				ViewBag.MyCompletedTasks = myTasks.Count(ut => ut.Status == "Done");
-				ViewBag.MyReopenTasks = myTasks.Count(ut => ut.Status == "Reopen");
 
 				ViewBag.MyCompletionRate = myTasks.Count > 0
 					? Math.Round((double)ViewBag.MyCompletedTasks / myTasks.Count * 100, 1)
 					: 0;
 
-				ViewBag.IsLeader = project.LeaderId == userId;
+				ViewBag.IsLeader = isLeader;
 				ViewBag.MyRole = membership.Role ?? "Member";
 				ViewBag.Project = project;
 				ViewBag.MyTasksWithMetadata = myTasksWithMetadata;
+				ViewBag.TeamTasksWithMetadata = teamTasksWithMetadata; // Truyền danh sách team tasks
 
-				// ✅ 5. Active members - Cast sang object
+				// 5. Active members
 				var activeMembers = new List<object>();
-
 				if (project.ProjectMembers != null && project.ProjectMembers.Any())
 				{
 					activeMembers = project.ProjectMembers
@@ -2889,8 +3351,7 @@ namespace TMD.Controllers
 						.Select(pm => (object)new
 						{
 							Member = pm,
-							HasAvatar = !string.IsNullOrEmpty(pm.User?.Avatar) &&
-									   pm.User.Avatar != "/images/default-avatar.png",
+							HasAvatar = !string.IsNullOrEmpty(pm.User?.Avatar) && pm.User.Avatar != "/images/default-avatar.png",
 							Initials = pm.User?.FullName?.Substring(0, 1).ToUpper() ?? "?"
 						})
 						.ToList();
@@ -2898,21 +3359,13 @@ namespace TMD.Controllers
 
 				ViewBag.ActiveMembers = activeMembers;
 
-				// 6. Log audit
-				await _auditHelper.LogViewAsync(
-					userId,
-					"Project",
-					id,
-					$"Xem chi tiết dự án: {project.ProjectName}"
-				);
+				await _auditHelper.LogViewAsync(userId, "Project", id, $"Xem chi tiết dự án: {project.ProjectName}");
 
 				return View();
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"[ERROR] MyProjectDetail Exception: {ex.Message}");
-				Console.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
-
+				Console.WriteLine($"[ERROR] MyProjectDetail: {ex.Message}");
 				TempData["Error"] = $"Có lỗi xảy ra: {ex.Message}";
 				return RedirectToAction("MyProjects");
 			}
