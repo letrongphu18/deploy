@@ -241,6 +241,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+                 // ========== ADMIN DASHBOARD - FIXED CHECK-IN/OUT LOGIC ==========
+        // Thay thế phần script trong AdminAttendance/Dashboard.cshtml
+
         // ========== GLOBAL VARIABLES ==========
         let stream = null;
         let capturedBlob = null;
@@ -253,24 +256,35 @@
         let checkInTimeValue = null;
         let cameraErrorShown = false;
 
-        // --- CẤU HÌNH GIỜ CHUẨN (CÓ FALLBACK) ---
-        // Lấy từ ViewBag, nếu rỗng thì dùng giá trị mặc định để không bị lỗi script
+        // ✅ GIỚI HẠN THỜI GIAN MỚI
         const SERVER_START_STR = "@ViewBag.StandardStartTime";
         const SERVER_END_STR = "@ViewBag.StandardEndTime";
 
-        const STANDARD_START_TIME = SERVER_START_STR ? SERVER_START_STR : "08:00";
-        const STANDARD_END_TIME = SERVER_END_STR ? SERVER_END_STR : "17:30";
+        const STANDARD_START_TIME = SERVER_START_STR || "09:00";
+        const STANDARD_END_TIME = SERVER_END_STR || "22:00"; // ✅ Checkout tối đa 22:00
 
         // ========== HELPER: TIME CONVERSION ==========
-        // Hàm đổi giờ (HH:mm) ra phút để so sánh toán học
         function getMinutes(timeStr) {
             if (!timeStr) return 0;
-            // Chỉ lấy 5 ký tự đầu (HH:mm) để tránh lỗi nếu có giây (HH:mm:ss)
             const cleanTime = timeStr.split(' ')[0].substring(0, 5);
             const parts = cleanTime.split(':');
             const hours = parseInt(parts[0], 10) || 0;
             const minutes = parseInt(parts[1], 10) || 0;
             return (hours * 60) + minutes;
+        }
+
+        // ✅ KIỂM TRA THỨ 7, CHỦ NHẬT
+        function isWeekend() {
+            const day = new Date().getDay();
+            return day === 0 || day === 6; // 0 = CN, 6 = T7
+        }
+
+        function isSaturday() {
+            return new Date().getDay() === 6;
+        }
+
+        function isSunday() {
+            return new Date().getDay() === 0;
         }
 
         // ========== TIME UPDATE ==========
@@ -316,19 +330,9 @@
                 });
                 document.getElementById('video').srcObject = stream;
             } catch (err) {
-                console.error('Camera error:', err);
-                if (!cameraErrorShown) {
-                    cameraErrorShown = true;
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Lỗi Camera',
-                        text: 'Không thể truy cập camera. Chuyển sang chế độ tải ảnh.',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        const upBtn = document.getElementById('modeUpload');
-                        if(upBtn) { upBtn.checked = true; upBtn.dispatchEvent(new Event('change')); }
-                    });
-                }
+                console.warn('Camera không khả dụng:', err.message);
+                // ✅ KHÔNG BẮT BUỘC CAMERA - chỉ log warning
+                cameraErrorShown = true;
             }
         }
 
@@ -336,6 +340,7 @@
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const capturedImage = document.getElementById('capturedImage');
+
             const MAX_WIDTH = 1024;
             let width = video.videoWidth;
             let height = video.videoHeight;
@@ -343,8 +348,10 @@
                 height = height * (MAX_WIDTH / width);
                 width = MAX_WIDTH;
             }
+
             canvas.width = width;
             canvas.height = height;
+
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, width, height);
             canvas.toBlob(blob => {
@@ -372,39 +379,46 @@
         async function getLocation(isRetry = false) {
             if (isLocationLocked && !isRetry) return;
             if (isGettingLocation) return;
+
             if (!navigator.geolocation) {
-                showLocationError('Trình duyệt không hỗ trợ GPS');
+                showLocationWarning('Trình duyệt không hỗ trợ GPS - vẫn có thể check-in');
                 return;
             }
+
             isGettingLocation = true;
             document.getElementById('locationInfo').innerHTML = `
                 <div class="alert alert-info">
                     <div class="d-flex align-items-center">
                         <div class="spinner-border spinner-border-sm me-2"></div>
-                        <div><strong>Đang lấy vị trí GPS...</strong></div>
+                        <div><strong>Đang lấy vị trí...</strong></div>
                     </div>
                 </div>`;
+
             try {
                 const position = await new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true, timeout: 15000, maximumAge: 0
+                        enableHighAccuracy: true, timeout: 10000, maximumAge: 0
                     });
                 });
                 latitude = position.coords.latitude;
                 longitude = position.coords.longitude;
                 const accuracy = position.coords.accuracy;
+
                 await getAddressFromServer(latitude, longitude, accuracy);
+
                 isGettingLocation = false;
                 isLocationLocked = true;
             } catch (error) {
-                console.error('Location error:', error);
+                console.warn('Không lấy được GPS:', error.message);
                 isGettingLocation = false;
                 isLocationLocked = false;
-                showLocationError('Không thể lấy vị trí. Hãy bật GPS và thử lại.', true);
+
+                // ✅ KHÔNG BẮT BUỘC GPS - chỉ hiển thị warning
+                showLocationWarning('Không lấy được GPS - vẫn có thể check-in (không có vị trí)', true);
             }
         }
 
-        function showLocationError(msg, showRetry = false) {
+        function showLocationWarning(msg, showRetry = false) {
             document.getElementById('locationInfo').innerHTML = `
                 <div class="alert alert-warning">
                     <div class="d-flex justify-content-between align-items-start">
@@ -412,14 +426,13 @@
                         ${showRetry ? `<button class="btn btn-sm btn-outline-warning" onclick="getLocation(true)"><i class="fas fa-sync-alt"></i></button>` : ''}
                     </div>
                 </div>`;
-            latitude = null;
-            longitude = null;
+            // ✅ QUAN TRỌNG: Vẫn cho phép check-in
             updateButtonsState();
         }
 
         async function getAddressFromServer(lat, lng, accuracy) {
             try {
-                // API cho ADMIN
+                // ✅ API cho ADMIN
                 const response = await fetch(`/AdminAttendance/GetAddressFromCoordinatesApi?latitude=${lat}&longitude=${lng}`);
                 const data = await response.json();
                 currentAddress = (data.success && data.address) ? data.address : `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
@@ -464,6 +477,7 @@
                 }
             });
         }
+
         const uploadPlaceholder = document.getElementById('uploadPlaceholder');
         if(uploadPlaceholder) uploadPlaceholder.addEventListener('click', () => document.getElementById('fileInput').click());
 
@@ -476,42 +490,52 @@
             updateButtonsState();
         }
 
+        // ✅ CẬP NHẬT: LUÔN CHO PHÉP CHECK-IN/OUT (không cần GPS + ảnh bắt buộc)
         function updateButtonsState() {
-            const hasLocation = latitude !== null && longitude !== null;
             const btnIn = document.getElementById('btnCheckIn');
             const btnOut = document.getElementById('btnCheckOut');
-            if (btnIn) btnIn.disabled = !hasLocation;
-            if (btnOut) btnOut.disabled = !hasLocation;
+
+            // ✅ LUÔN ENABLE (không yêu cầu GPS hay ảnh)
+            if (btnIn) btnIn.disabled = false;
+            if (btnOut) btnOut.disabled = false;
         }
 
         function getCurrentTimeStr() {
             return new Date().toTimeString().substring(0, 5); // HH:mm
         }
 
-        // ========== CHECK IN ==========
+        // ========== CHECK IN FUNCTION ==========
         async function checkIn() {
-            if (!latitude || !longitude) {
-                Swal.fire('Thiếu vị trí', 'Vui lòng đợi lấy GPS', 'warning');
-                return;
-            }
-
             const nowStr = getCurrentTimeStr();
             const currentMin = getMinutes(nowStr);
-            const standardMin = getMinutes(STANDARD_START_TIME);
 
-            // --- DEBUG LOG ---
-            console.log("ADMIN CHECK-IN DEBUG:");
-            console.log(`Current: ${nowStr} (${currentMin} min) | Standard: ${STANDARD_START_TIME} (${standardMin} min)`);
+            // ✅ LOGIC MỚI: CHỈ TRỄ KHI > 09:01
+            const lateThreshold = getMinutes("09:01"); // 9 giờ 1 phút
+
+            console.log("ADMIN CHECK-IN LOGIC:");
+            console.log(`- Giờ hiện tại: ${nowStr} -> ${currentMin} phút`);
+            console.log(`- Ngưỡng trễ: 09:01 -> ${lateThreshold} phút`);
 
             let statusHtml = '';
-            // Logic: Phút hiện tại > Phút chuẩn => TRỄ
-            if (currentMin > standardMin) {
-                statusHtml = `<span class="badge bg-danger fs-6">Đi trễ</span> <small class="text-muted">(Chuẩn: ${STANDARD_START_TIME})</small>`;
+            let warningHtml = '';
+
+            // ✅ KIỂM TRA CUỐI TUẦN
+            if (isSunday()) {
+                warningHtml = `<div class="alert alert-danger mt-2"><i class="fas fa-calendar-times"></i> <strong>Chủ nhật:</strong> Làm việc sẽ tính tăng ca</div>`;
+            } else if (isSaturday()) {
+                warningHtml = `<div class="alert alert-warning mt-2"><i class="fas fa-calendar-day"></i> <strong>Thứ 7:</strong> Chỉ làm buổi sáng, chiều = tăng ca</div>`;
+            }
+
+            // ✅ LOGIC TRỄ: > 09:01
+            if (currentMin > lateThreshold) {
+                const lateMin = currentMin - lateThreshold;
+                statusHtml = `<span class="badge bg-danger fs-6">Đi trễ ${lateMin} phút</span> <small class="text-muted">(Giờ chuẩn: 09:00)</small>`;
             } else {
                 statusHtml = `<span class="badge bg-success fs-6">Đúng giờ</span>`;
             }
 
             const photoFile = capturedBlob || uploadedFile;
+            const hasLocation = latitude !== null && longitude !== null;
 
             const result = await Swal.fire({
                 title: 'Xác nhận Check-in',
@@ -519,7 +543,9 @@
                     <div class="text-start p-3 bg-light rounded">
                         <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Giờ Check-in:</strong> ${nowStr}</p>
                         <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
-                        <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
+                        <p class="mb-2"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${hasLocation ? currentAddress : '<em class="text-muted">Không có GPS</em>'}</p>
+                        ${!photoFile ? '<p class="mb-0 text-warning"><i class="fas fa-camera"></i> Không có ảnh check-in</p>' : ''}
+                        ${warningHtml}
                     </div>
                     ${photoFile ? `<div class="mt-3 text-center"><img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}" style="max-height: 150px; border-radius: 8px;"></div>` : ''}
                 `,
@@ -530,28 +556,36 @@
             });
 
             if (result.isConfirmed) {
-                // API ADMIN
+                // ✅ API ADMIN
                 await submitAttendance('/AdminAttendance/CheckIn', photoFile, 'Check-in thành công!');
             }
         }
 
-        // ========== CHECK OUT ==========
+        // ========== CHECK OUT FUNCTION ==========
         async function checkOut() {
-            if (!latitude || !longitude) {
-                Swal.fire('Thiếu vị trí', 'Vui lòng đợi lấy GPS', 'warning');
-                return;
-            }
-
             const nowStr = getCurrentTimeStr();
             const currentMin = getMinutes(nowStr);
-            const standardMin = getMinutes(STANDARD_END_TIME);
+            const standardMin = getMinutes(STANDARD_END_TIME); // 22:00
 
-            // --- DEBUG LOG ---
-            console.log("ADMIN CHECK-OUT DEBUG:");
-            console.log(`Current: ${nowStr} (${currentMin} min) | Standard: ${STANDARD_END_TIME} (${standardMin} min)`);
+            console.log("ADMIN CHECK-OUT LOGIC:");
+            console.log(`- Giờ hiện tại: ${nowStr} -> ${currentMin} phút`);
+            console.log(`- Giờ chuẩn CheckOut: ${STANDARD_END_TIME} -> ${standardMin} phút`);
 
             let statusHtml = '';
-            // Logic: Phút hiện tại < Phút chuẩn => VỀ SỚM
+            let warningHtml = '';
+
+            // ✅ KIỂM TRA CUỐI TUẦN
+            if (isSunday()) {
+                warningHtml = `<div class="alert alert-info mt-2"><i class="fas fa-coins"></i> <strong>Chủ nhật:</strong> Tính tăng ca toàn bộ</div>`;
+            } else if (isSaturday()) {
+                // ✅ THỨ 7: CHIỀU = TĂNG CA
+                const noonMin = getMinutes("12:00");
+                if (currentMin > noonMin) {
+                    warningHtml = `<div class="alert alert-info mt-2"><i class="fas fa-coins"></i> <strong>Thứ 7 chiều:</strong> Làm việc sẽ tính tăng ca</div>`;
+                }
+            }
+
+            // ✅ LOGIC VỀ SỚM: < 22:00
             if (currentMin < standardMin) {
                 statusHtml = `<span class="badge bg-warning text-dark fs-6">Về sớm</span> <small class="text-muted">(Chuẩn: ${STANDARD_END_TIME})</small>`;
             } else {
@@ -559,6 +593,7 @@
             }
 
             const photoFile = capturedBlob || uploadedFile;
+            const hasLocation = latitude !== null && longitude !== null;
 
             const result = await Swal.fire({
                 title: 'Xác nhận Check-out',
@@ -566,7 +601,9 @@
                     <div class="text-start p-3 bg-light rounded">
                         <p class="mb-2"><i class="fas fa-clock text-primary me-2"></i><strong>Giờ Check-out:</strong> ${nowStr}</p>
                         <p class="mb-2"><i class="fas fa-info-circle text-info me-2"></i><strong>Trạng thái:</strong> ${statusHtml}</p>
-                        <p class="mb-0"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${currentAddress}</p>
+                        <p class="mb-2"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Vị trí:</strong><br>${hasLocation ? currentAddress : '<em class="text-muted">Không có GPS</em>'}</p>
+                        ${!photoFile ? '<p class="mb-0 text-warning"><i class="fas fa-camera"></i> Không có ảnh check-out</p>' : ''}
+                        ${warningHtml}
                     </div>
                     ${photoFile ? `<div class="mt-3 text-center"><img src="${photoFile === capturedBlob ? URL.createObjectURL(capturedBlob) : document.getElementById('uploadedImage').src}" style="max-height: 150px; border-radius: 8px;"></div>` : ''}
                 `,
@@ -577,7 +614,7 @@
             });
 
             if (result.isConfirmed) {
-                // API ADMIN
+                // ✅ API ADMIN
                 await submitAttendance('/AdminAttendance/CheckOut', photoFile, 'Check-out thành công!');
             }
         }
@@ -585,9 +622,13 @@
         // ========== SUBMIT HELPER ==========
         async function submitAttendance(url, photoFile, successMsg) {
             const formData = new FormData();
+
+            // ✅ ẢNH VÀ GPS TÙY CHỌN
             if (photoFile) formData.append('Photo', photoFile, 'attendance.jpg');
-            formData.append('Latitude', latitude);
-            formData.append('Longitude', longitude);
+
+            // ✅ NẾU KHÔNG CÓ GPS, GỬI 0,0
+            formData.append('Latitude', latitude || 0);
+            formData.append('Longitude', longitude || 0);
 
             const notes = document.getElementById('attendanceNotes');
             if(notes) formData.append('Notes', notes.value);
@@ -610,13 +651,17 @@
         // ========== ATTENDANCE STATUS ==========
         async function checkAttendanceStatus() {
             try {
+                // ✅ API ADMIN
                 const response = await fetch('/AdminAttendance/GetTodayAttendance');
                 const data = await response.json();
 
                 const checkInSection = document.getElementById('checkInSection');
                 const checkOutSection = document.getElementById('checkOutSection');
                 const completedSection = document.getElementById('completedSection');
-                const todayInfo = document.getElementById('todayInfo');
+                const attendanceStatus = document.getElementById('attendanceStatus');
+
+                // ✅ ẨN LOADING
+                if (attendanceStatus) attendanceStatus.style.display = 'none';
 
                 if(checkInSection) checkInSection.style.display = 'none';
                 if(checkOutSection) checkOutSection.style.display = 'none';
@@ -624,7 +669,6 @@
 
                 if (data.hasCheckedIn) {
                     if (data.hasCheckedOut) {
-                        // Đã xong cả 2
                         if(completedSection) {
                             completedSection.style.display = 'block';
                             completedSection.innerHTML = `
@@ -637,23 +681,26 @@
                                     </div>
                                 </div>`;
                         }
-                        if(todayInfo) todayInfo.innerHTML = `<div class="alert alert-success mb-0"><strong>Đã hoàn tất</strong></div>`;
                         if (stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
                     } else {
-                        // Đã check-in, chưa check-out
                         if(checkOutSection) checkOutSection.style.display = 'block';
                         checkInTimeValue = data.checkInTime;
                         startCountingWorkTime();
-                        if(todayInfo) todayInfo.innerHTML = `<div class="alert alert-warning mb-0"><strong>Đã check-in: ${data.checkInTime}</strong></div>`;
                     }
                 } else {
-                    // Chưa check-in
                     if(checkInSection) checkInSection.style.display = 'block';
-                    if(todayInfo) todayInfo.innerHTML = `<div class="alert alert-info mb-0"><strong>Chưa check-in</strong></div>`;
                 }
                 updateButtonsState();
             } catch (error) {
                 console.error(error);
+                // ✅ ẨN LOADING NGAY CẢ KHI LỖI
+                const attendanceStatus = document.getElementById('attendanceStatus');
+                if (attendanceStatus) attendanceStatus.style.display = 'none';
+
+                // ✅ HIỆN NÚT CHECK-IN NẾU LỖI
+                const checkInSection = document.getElementById('checkInSection');
+                if(checkInSection) checkInSection.style.display = 'block';
+                updateButtonsState();
             }
         }
 
@@ -685,9 +732,13 @@
         // ========== INIT ==========
         window.onload = async function() {
             await initCamera();
-            await getLocation();
+            await getLocation(); // Không bắt buộc
             await checkAttendanceStatus();
+
+            // ✅ LUÔN ENABLE NÚT NGAY TỪ ĐẦU
+            updateButtonsState();
         };
+
         window.onbeforeunload = function() {
             if (stream) stream.getTracks().forEach(track => track.stop());
         };

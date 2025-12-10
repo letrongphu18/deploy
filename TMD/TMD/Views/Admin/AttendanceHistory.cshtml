@@ -1,15 +1,58 @@
 ﻿@model List<TMD.Models.Attendance>
+@using System.Text.Json
+@using AIHUBOS.Helpers
 @{
     ViewData["Title"] = "Lịch sử chấm công";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var pageSize = 10;
 }
-
 <link href="~/css/attendance-management.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link href="~/css/attendance-modal.css" rel="stylesheet" />
 
+<style>
+    /* --- CSS MỚI CHO PHẦN OT --- */
+    .att-badge-ot-sunday {
+        background-color: #6f42c1; /* Màu tím */
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    .att-badge-ot-saturday {
+        background-color: #fd7e14; /* Màu cam đậm */
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    .att-badge-normal {
+        background-color: #e9ecef;
+        color: #495057;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+</style>
+
 <div class="container-fluid px-4 py-4 att-container">
-    <!-- HEADER -->
     <div class="att-page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -23,7 +66,6 @@
         </div>
     </div>
 
-    <!-- STATISTICS -->
     <div class="att-stats-grid">
         <div class="att-stat-card att-stat-primary">
             <div class="att-stat-icon">
@@ -106,7 +148,6 @@
         </div>
     </div>
 
-    <!-- FILTERS -->
     <div class="att-filters">
         <form method="get" action="/Admin/AttendanceHistory">
             <div class="row g-3">
@@ -159,7 +200,6 @@
         </form>
     </div>
 
-    <!-- TABLE -->
     <div class="att-card">
         @if (Model.Any())
         {
@@ -170,12 +210,13 @@
                             <th width="5%">STT</th>
                             <th width="10%">Ngày</th>
                             <th width="15%">Nhân viên</th>
+                            <th width="10%">Loại công</th>
                             <th width="10%">Phòng ban</th>
-                            <th width="10%">Check-in</th>
-                            <th width="10%">Check-out</th>
-                            <th width="8%">Giờ làm</th>
+                            <th width="8%">Check-in</th>
+                            <th width="8%">Check-out</th>
+                            <th width="7%">Giờ làm</th>
                             <th width="10%">Ảnh</th>
-                            <th width="17%">Trạng thái</th>
+                            <th width="12%">Trạng thái</th>
                             <th width="5%">Chi tiết</th>
                         </tr>
                     </thead>
@@ -186,6 +227,30 @@
                         @foreach (var attendance in Model)
                         {
                             var workHours = attendance.TotalHours ?? 0;
+
+                            // --- LOGIC XỬ LÝ OT TẠI VIEW ---
+                            bool isSunday = attendance.WorkDate.DayOfWeek == DayOfWeek.Sunday;
+                            bool isSaturday = attendance.WorkDate.DayOfWeek == DayOfWeek.Saturday;
+                            // Thứ 7: Nếu checkout sau 12:00 thì tính là có làm chiều (OT)
+                            bool isSaturdayAfternoon = isSaturday && attendance.CheckOutTime.HasValue && attendance.CheckOutTime.Value.TimeOfDay > new TimeSpan(12, 0, 0);
+
+                            string otBadgeClass = "att-badge-normal";
+                            string otLabel = "Ngày thường";
+                            string otIcon = "fas fa-briefcase";
+
+                            if (isSunday)
+                            {
+                                otBadgeClass = "att-badge-ot-sunday";
+                                otLabel = "OT Chủ Nhật";
+                                otIcon = "fas fa-star";
+                            }
+                            else if (isSaturdayAfternoon)
+                            {
+                                otBadgeClass = "att-badge-ot-saturday";
+                                otLabel = "OT Chiều T7";
+                                otIcon = "fas fa-sun";
+                            }
+                            // --------------------------------
 
                             <tr>
                                 <td class="text-center">@index</td>
@@ -214,6 +279,11 @@
                                             <small class="att-user-username">@attendance.User.Username</small>
                                         </div>
                                     </div>
+                                </td>
+                                <td>
+                                    <span class="@otBadgeClass">
+                                        <i class="@otIcon"></i> @otLabel
+                                    </span>
                                 </td>
                                 <td>
                                     @if (attendance.User.Department != null)
@@ -341,7 +411,9 @@
                                                 CheckOutNotes: '@Html.Raw(attendance.CheckOutNotes?.Replace("'", "\\'"))',
                                                 CheckOutPhotos: '@attendance.CheckOutPhotos',
                                                 IsLate: @(attendance.IsLate?.ToString().ToLower() ?? "null"),
-                                                IsWithinGeofence: @(attendance.IsWithinGeofence?.ToString().ToLower() ?? "null")
+                                                IsWithinGeofence: @(attendance.IsWithinGeofence?.ToString().ToLower() ?? "null"),
+                                                // --- TRUYỀN THÔNG TIN OT VÀO JS ---
+                                                DayOfWeek: @((int)attendance.WorkDate.DayOfWeek)
                                             })"
                                             title="Xem chi tiết">
                                         <i class="fas fa-eye"></i>
@@ -365,7 +437,6 @@
     </div>
 </div>
 
-<!-- Photo Modal -->
 <div class="modal fade att-modal" id="photoModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -388,7 +459,6 @@
     </div>
 </div>
 
-<!-- Detail Modal -->
 <div class="modal fade att-modal" id="detailModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
@@ -399,7 +469,6 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="att-modal-body">
-                <!-- User Info Section -->
                 <div class="row mb-4">
                     <div class="col-12">
                         <div class="att-user-card">
@@ -415,6 +484,8 @@
                                         <i class="far fa-calendar"></i>
                                         <span id="detailWorkDate">-</span>
                                     </div>
+                                    <div class="att-user-card-meta-item" id="detailOtBadgeContainer">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -422,7 +493,6 @@
                 </div>
 
                 <div class="row">
-                    <!-- CHECK-IN INFO -->
                     <div class="col-md-6 mb-4">
                         <div class="att-detail-section">
                             <h6 class="att-section-title">
@@ -459,7 +529,6 @@
                         </div>
                     </div>
 
-                    <!-- CHECK-OUT INFO -->
                     <div class="col-md-6 mb-4">
                         <div class="att-detail-section">
                             <h6 class="att-section-title">
@@ -469,11 +538,6 @@
                             <div class="att-info-group">
                                 <label><i class="far fa-clock"></i> Thời gian check-out</label>
                                 <p id="detailCheckOutTime">-</p>
-                            </div>
-
-                            <div class="att-info-group">
-                                <label><i class="fas fa-hourglass-half"></i> Tổng giờ làm việc</label>
-                                <p id="detailTotalHours" class="att-text-primary att-fw-bold">-</p>
                             </div>
 
                             <div class="att-info-group">
@@ -502,7 +566,6 @@
                     </div>
                 </div>
 
-                <!-- STATUS INFO -->
                 <div class="row">
                     <div class="col-12">
                         <div class="att-detail-section">
@@ -523,7 +586,6 @@
     </div>
 </div>
 
-<!-- Map Modal -->
 <div class="modal fade att-modal" id="mapModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
@@ -603,7 +665,7 @@
             justify-content: center;
             font-weight: 700;
             font-size: 2rem;
-            border: 3px solid #fff;
+            border: 4px solid #fff;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden;
@@ -617,25 +679,6 @@
                 top: 0;
                 left: 0;
             }
-
-            .att-user-avatar-large span {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                height: 100%;
-                text-transform: uppercase;
-            }
-
-        /* Override Leaflet circle color */
-        .leaflet-interactive[fill="#5e72e4"] {
-            fill: #E74C3C !important;
-        }
-
-        /* Override các màu còn sót trong modal */
-        .att-user-avatar-large {
-            border-color: var(--att-primary) !important;
-        }
     </style>
     <script>
         let currentMap = null;
@@ -654,11 +697,10 @@
             // User Info
             const userAvatar = data.UserAvatar;
             const userInitial = data.UserName?.substring(0, 1) || '?';
-
-            const avatarHtml = userAvatar && userAvatar !== '/images/default-avatar.png' && userAvatar !== ''
-                ? `<img src="${userAvatar}" alt="${data.UserName}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                   <span style="display:none;">${userInitial}</span>`
-                : `<span>${userInitial}</span>`;
+            const avatarHtml = userAvatar && userAvatar !== '/images/default-avatar.png' && userAvatar !== '' ?
+                `<img src="${userAvatar}" alt="${data.UserName}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <span style="display:none;">${userInitial}</span>` :
+                `<span>${userInitial}</span>`;
 
             document.getElementById('detailUserAvatar').innerHTML = avatarHtml;
             document.getElementById('detailUserName').textContent = data.UserName;
@@ -668,6 +710,44 @@
             const workDate = new Date(data.WorkDate);
             const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('detailWorkDate').textContent = workDate.toLocaleDateString('vi-VN', dateOptions);
+
+            // --- LOGIC HIỂN THỊ BADGE OT TRONG MODAL ---
+            const badgeContainer = document.getElementById('detailOtBadgeContainer');
+            badgeContainer.innerHTML = ''; // Clear cũ
+
+            // Logic: 0 = CN, 6 = T7. CheckOutTime ở định dạng yyyy-MM-ddTHH:mm:ss
+            let isOT = false;
+            let otLabel = '';
+            let otClass = '';
+            let otIcon = '';
+
+            // Chủ nhật
+            if (data.DayOfWeek === 0) {
+                isOT = true;
+                otLabel = 'OT Chủ Nhật';
+                otClass = 'att-badge-ot-sunday';
+                otIcon = 'fas fa-star';
+            }
+            // Thứ 7 + Check-out sau 12h
+            else if (data.DayOfWeek === 6) {
+                if (data.CheckOutTime) {
+                    const checkOutDate = new Date(data.CheckOutTime);
+                    // Giả sử làm chiều tính từ 12:00
+                    if (checkOutDate.getHours() >= 12) {
+                        isOT = true;
+                        otLabel = 'OT Chiều T7';
+                        otClass = 'att-badge-ot-saturday';
+                        otIcon = 'fas fa-sun';
+                    }
+                }
+            }
+
+            if (isOT) {
+                badgeContainer.innerHTML = `<span class="${otClass}"><i class="${otIcon}"></i> ${otLabel}</span>`;
+            } else {
+                 badgeContainer.innerHTML = `<span class="att-badge-normal"><i class="fas fa-briefcase"></i> Ngày thường</span>`;
+            }
+            // ---------------------------------------------
 
             // Check-in Info
             if (data.CheckInTime) {
@@ -683,8 +763,7 @@
             if (data.CheckInAddress) {
                 document.getElementById('detailCheckInAddress').textContent = data.CheckInAddress;
                 document.getElementById('btnViewCheckInMap').style.display = 'inline-block';
-                document.getElementById('btnViewCheckInMap').onclick = () =>
-                    viewMap(data.CheckInLatitude, data.CheckInLongitude, data.CheckInAddress, 'Check-in');
+                document.getElementById('btnViewCheckInMap').onclick = () => viewMap(data.CheckInLatitude, data.CheckInLongitude, data.CheckInAddress, 'Check-in');
             } else {
                 document.getElementById('detailCheckInAddress').innerHTML = '<span class="att-text-muted">Không có thông tin</span>';
                 document.getElementById('btnViewCheckInMap').style.display = 'none';
@@ -718,30 +797,20 @@
                     ${checkOutDate.toLocaleDateString('vi-VN')} - <span class="att-badge att-badge-late">${checkOutDate.toLocaleTimeString('vi-VN')}</span>
                 `;
             } else {
-                document.getElementById('detailCheckOutTime').innerHTML = '<span class="att-badge att-badge-partial">Chưa check-out</span>';
-            }
-
-            // Total Hours
-            if (data.TotalHours && data.TotalHours > 0) {
-                document.getElementById('detailTotalHours').innerHTML = `
-                    <i class="fas fa-clock"></i> ${data.TotalHours.toFixed(2)} giờ
-                `;
-            } else {
-                document.getElementById('detailTotalHours').innerHTML = '<span class="att-text-muted">-</span>';
+                document.getElementById('detailCheckOutTime').innerHTML = '<span class="att-text-muted">Chưa check-out</span>';
             }
 
             // Check-out Address
             if (data.CheckOutAddress) {
                 document.getElementById('detailCheckOutAddress').textContent = data.CheckOutAddress;
                 document.getElementById('btnViewCheckOutMap').style.display = 'inline-block';
-                document.getElementById('btnViewCheckOutMap').onclick = () =>
-                    viewMap(data.CheckOutLatitude, data.CheckOutLongitude, data.CheckOutAddress, 'Check-out');
+                document.getElementById('btnViewCheckOutMap').onclick = () => viewMap(data.CheckOutLatitude, data.CheckOutLongitude, data.CheckOutAddress, 'Check-out');
             } else {
                 document.getElementById('detailCheckOutAddress').innerHTML = '<span class="att-text-muted">Không có thông tin</span>';
                 document.getElementById('btnViewCheckOutMap').style.display = 'none';
             }
 
-            // Check-out IP
+             // Check-out IP
             document.getElementById('detailCheckOutIP').textContent = data.CheckOutIpaddress || '-';
 
             // Check-out Notes
@@ -788,57 +857,40 @@
 
             document.getElementById('detailStatus').innerHTML = statusHTML;
 
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('detailModal'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('detailModal')).show();
         }
 
         function viewMap(lat, lng, address, type) {
-            currentLat = parseFloat(lat);
-            currentLng = parseFloat(lng);
+            currentLat = lat;
+            currentLng = lng;
             currentAddress = address;
 
-            document.getElementById('mapModalTitle').textContent = `Vị trí ${type}`;
             document.getElementById('mapAddress').textContent = address;
-            document.getElementById('mapCoordinates').textContent = `${currentLat.toFixed(6)}, ${currentLng.toFixed(6)}`;
+            document.getElementById('mapCoordinates').textContent = `${lat}, ${lng}`;
+            document.getElementById('mapModalTitle').textContent = `Vị trí ${type}`;
 
-            const modal = new bootstrap.Modal(document.getElementById('mapModal'));
-            modal.show();
+            const mapModal = new bootstrap.Modal(document.getElementById('mapModal'));
+            mapModal.show();
 
-            setTimeout(() => {
-                initMap(currentLat, currentLng);
-            }, 300);
-        }
+            document.getElementById('mapModal').addEventListener('shown.bs.modal', function () {
+                if (currentMap) {
+                    currentMap.remove();
+                }
 
-        function initMap(lat, lng) {
-            if (currentMap) {
-                currentMap.remove();
-            }
+                currentMap = L.map('mapContainer').setView([currentLat, currentLng], 16);
 
-            currentMap = L.map('mapContainer').setView([lat, lng], 16);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(currentMap);
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors',
-                maxZoom: 19
-            }).addTo(currentMap);
-
-            const marker = L.marker([lat, lng]).addTo(currentMap);
-            marker.bindPopup(`
-                <b>Vị trí chấm công</b><br>
-                ${currentAddress}<br>
-                <small>Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}</small>
-            `).openPopup();
-
-            L.circle([lat, lng], {
-                color: '#5e72e4',
-                fillColor: '#5e72e4',
-                fillOpacity: 0.2,
-                radius: 50
-            }).addTo(currentMap);
+                L.marker([currentLat, currentLng]).addTo(currentMap)
+                    .bindPopup(`<b>${type}</b><br>${address}`)
+                    .openPopup();
+            }, { once: true });
         }
 
         document.getElementById('btnOpenGoogleMaps').addEventListener('click', function () {
-            const url = `https://www.google.com/maps?q=${currentLat},${currentLng}`;
+            const url = `https://www.google.com/maps/search/?api=1&query=${currentLat},${currentLng}`;
             window.open(url, '_blank');
         });
 
@@ -863,11 +915,7 @@
             if (fromDate) exportUrl += `fromDate=${fromDate}&`;
             if (toDate) exportUrl += `toDate=${toDate}&`;
 
-            // For now, show alert
             alert('Chức năng xuất Excel đang được phát triển.\n\nURL: ' + exportUrl);
-
-            // Uncomment when backend is ready:
-            // window.location.href = exportUrl;
         }
     </script>
 }

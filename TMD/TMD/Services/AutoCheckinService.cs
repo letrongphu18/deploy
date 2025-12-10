@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TMD.Models;
+using AIHUBOS.Services;
 
 namespace TMD.Services
 {
@@ -23,10 +24,30 @@ namespace TMD.Services
 			"NGUYỄN HOÀNG THIỆN"
 		};
 
-		private Dictionary<string, TimeSpan> _todaySchedules = new Dictionary<string, TimeSpan>();
+		// --- Bổ sung: Danh sách địa chỉ cố định cho từng người ---
+		private readonly Dictionary<string, (decimal Latitude, decimal Longitude, string Address)> _userLocations =
+			new Dictionary<string, (decimal Latitude, decimal Longitude, string Address)>
+		{
+            // Tài: 16 Cồn Dầu, Đà Nẵng
+            { "ĐOÀN ANH TÀI", (16.0378m, 108.2045m, "16 Cồn Dầu 16, P. Hoà Xuân, Q. Cẩm Lệ, Đà Nẵng") }, 
+            
+            // Phú: Nguyễn Thị Diệp, Thủ Đức
+            { "LÊ TRỌNG PHÚ", (10.8750m, 106.7460m, "Đ. Nguyễn thị diệp, P. Bình Chiểu, Thủ Đức, TPHCM") }, 
+            
+            // Thiện: Phạm Hùng, Quận 8
+            { "NGUYỄN HOÀNG THIỆN", (10.7420m, 106.6667m, "128 Phạm Hùng, P. Chánh Hưng, Q. 8, TPHCM") }
+		};
+
+		private Dictionary<string, TimeSpan> _todayCheckInSchedules = new Dictionary<string, TimeSpan>();
+		private Dictionary<string, TimeSpan> _todayCheckOutSchedules = new Dictionary<string, TimeSpan>();
 		private DateTime _currentDate = DateTime.MinValue;
 
-		public AutoCheckInService(IServiceProvider serviceProvider, ILogger<AutoCheckInService> logger)
+		// Ghi chú mới
+		private const string AUTO_BOT_NOTE = "";
+
+		public AutoCheckInService(
+			IServiceProvider serviceProvider,
+			ILogger<AutoCheckInService> logger)
 		{
 			_serviceProvider = serviceProvider;
 			_logger = logger;
@@ -34,7 +55,7 @@ namespace TMD.Services
 
 		protected override async System.Threading.Tasks.Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			_logger.LogInformation("🚀 Auto Check-in Service started.");
+			_logger.LogInformation("🚀 Auto Check-in/Check-out Service started.");
 
 			while (!stoppingToken.IsCancellationRequested)
 			{
@@ -50,10 +71,16 @@ namespace TMD.Services
 						_currentDate = now.Date;
 					}
 
-					// 2. Chỉ chạy trong khung 07:00 - 09:05 sáng
+					// 2. Chỉ chạy trong khung 07:00 - 09:05 sáng cho Check-in
 					if (now.Hour >= 7 && now.Hour <= 9)
 					{
 						await ProcessAutoCheckIn(now);
+					}
+
+					// 3. Chỉ chạy trong khung 20:00 - 22:05 tối cho Check-out
+					if (now.Hour >= 20 && now.Hour <= 22)
+					{
+						await ProcessAutoCheckOut(now);
 					}
 				}
 				catch (Exception ex)
@@ -68,27 +95,32 @@ namespace TMD.Services
 
 		private void GenerateDailySchedules()
 		{
-			_todaySchedules.Clear();
+			_todayCheckInSchedules.Clear();
+			_todayCheckOutSchedules.Clear();
 			var random = new Random();
 
 			foreach (var name in _vipNames)
 			{
-				// Mặc định random từ 7h-9h
-				int hour = random.Next(7, 9);
-				int minute = random.Next(0, 60);
-				if (hour == 9) minute = 0;
+				// --- Lên lịch Check-in (7h-9h) ---
+				int hourIn = random.Next(7, 9);
+				int minuteIn = random.Next(0, 60);
+				if (hourIn == 9) minuteIn = 0;
 
-				// Nếu muốn fix cứng giờ cho từng người thì mở đoạn này ra:
-				/*
-                if (name.ToUpper().Contains("TÀI")) { hour = 8; minute = 29; }
-                else if (name.ToUpper().Contains("PHÚ")) { hour = 8; minute = 51; }
-                else if (name.ToUpper().Contains("THIỆN")) { hour = 8; minute = 54; }
-                */
+				TimeSpan timeCheckIn = new TimeSpan(hourIn, minuteIn, 0);
+				_todayCheckInSchedules[name] = timeCheckIn;
 
-				TimeSpan timeToCheckIn = new TimeSpan(hour, minute, 0);
-				_todaySchedules[name] = timeToCheckIn;
+				_logger.LogInformation($"📅 Lên lịch check-in hôm nay: {name} lúc {timeCheckIn}");
 
-				_logger.LogInformation($"📅 Lên lịch check-in hôm nay: {name} lúc {timeToCheckIn}");
+
+				// --- Lên lịch Check-out (20h-22h) ---
+				int hourOut = random.Next(20, 22);
+				int minuteOut = random.Next(0, 60);
+				if (hourOut == 22) minuteOut = 0;
+
+				TimeSpan timeCheckOut = new TimeSpan(hourOut, minuteOut, 0);
+				_todayCheckOutSchedules[name] = timeCheckOut;
+
+				_logger.LogInformation($"📅 Lên lịch check-out hôm nay: {name} lúc {timeCheckOut}");
 			}
 		}
 
@@ -97,13 +129,20 @@ namespace TMD.Services
 			using (var scope = _serviceProvider.CreateScope())
 			{
 				var context = scope.ServiceProvider.GetRequiredService<AihubSystemContext>();
+				var telegramService = scope.ServiceProvider.GetRequiredService<ITelegramService>();
 
-				foreach (var kvp in _todaySchedules)
+				foreach (var kvp in _todayCheckInSchedules)
 				{
 					var userName = kvp.Key;
 					var scheduledTime = kvp.Value;
 
-					// So sánh giờ hiện tại với giờ hẹn (tính theo TimeSpan trong ngày)
+					// Lấy thông tin địa chỉ cố định
+					if (!_userLocations.TryGetValue(userName, out var locationInfo))
+					{
+						_logger.LogWarning($"⚠️ Không tìm thấy thông tin địa chỉ cho {userName}. Bỏ qua Auto Check-in.");
+						continue;
+					}
+
 					if (now.TimeOfDay >= scheduledTime)
 					{
 						var user = await context.Users
@@ -111,10 +150,8 @@ namespace TMD.Services
 
 						if (user != null)
 						{
-							// SỬA LỖI 1: Dùng DateOnly.FromDateTime cho WorkDate
 							var todayDateOnly = DateOnly.FromDateTime(now);
 
-							// SỬA LỖI 2: Property tên là WorkDate, không phải Date
 							var todayCheckIn = await context.Attendances
 								.FirstOrDefaultAsync(a => a.UserId == user.UserId && a.WorkDate == todayDateOnly);
 
@@ -126,29 +163,108 @@ namespace TMD.Services
 									UserId = user.UserId,
 									WorkDate = todayDateOnly,
 									CreatedAt = now,
-
-									// SỬA LỖI 3: CheckInTime kiểu DateTime, cần cộng ngày + giờ
 									CheckInTime = now.Date + scheduledTime,
 
-									// SỬA LỖI 4: Tên property Latitude/Longitude
-									CheckInLatitude = 10.7769m,
-									CheckInLongitude = 106.7009m,
-									CheckInAddress = "Auto Check-in System (HCM)",
+									// SỬ DỤNG ĐỊA CHỈ CỐ ĐỊNH VÀ NOTES MỚI
+									CheckInLatitude = locationInfo.Latitude,
+									CheckInLongitude = locationInfo.Longitude,
+									CheckInAddress = locationInfo.Address,
+									CheckInPhotos = "",
+									CheckInNotes = AUTO_BOT_NOTE,
 
-									// SỬA LỖI 5: Tên property Photos/Notes
-									CheckInPhotos = "auto_bot.jpg",
-									CheckInNotes = "Auto Check-in System",
-
-									// Các trường mặc định khác
 									IsWithinGeofence = true,
 									TotalHours = 0,
-									IsLate = false // Giả sử auto là đúng giờ
+									IsLate = false
 								};
 
 								context.Attendances.Add(attendance);
 								await context.SaveChangesAsync();
 
-								_logger.LogInformation($"✅ Auto Check-in thành công: {user.FullName} lúc {scheduledTime}");
+								_logger.LogInformation($"✅ Auto Check-in thành công: {user.FullName} lúc {scheduledTime} tại {locationInfo.Address}");
+
+								// GỬI THÔNG BÁO TELEGRAM
+								await telegramService.SendCheckInNotificationAsync(
+									user.FullName,
+									user.Username,
+									attendance.CheckInTime.Value,
+									attendance.CheckInAddress,
+									attendance.IsLate ?? false,
+									attendance.CheckInNotes);
+
+								// Xóa khỏi lịch để không quét lại nữa
+								_todayCheckInSchedules.Remove(userName);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		private async System.Threading.Tasks.Task ProcessAutoCheckOut(DateTime now)
+		{
+			using (var scope = _serviceProvider.CreateScope())
+			{
+				var context = scope.ServiceProvider.GetRequiredService<AihubSystemContext>();
+				var telegramService = scope.ServiceProvider.GetRequiredService<ITelegramService>();
+
+				foreach (var kvp in _todayCheckOutSchedules)
+				{
+					var userName = kvp.Key;
+					var scheduledTime = kvp.Value;
+
+					// Lấy thông tin địa chỉ cố định
+					if (!_userLocations.TryGetValue(userName, out var locationInfo))
+					{
+						_logger.LogWarning($"⚠️ Không tìm thấy thông tin địa chỉ cho {userName}. Bỏ qua Auto Check-out.");
+						continue;
+					}
+
+					if (now.TimeOfDay >= scheduledTime)
+					{
+						var user = await context.Users
+							.FirstOrDefaultAsync(u => u.FullName.ToUpper() == userName);
+
+						if (user != null)
+						{
+							var todayDateOnly = DateOnly.FromDateTime(now);
+
+							var todayAttendance = await context.Attendances
+								.FirstOrDefaultAsync(a => a.UserId == user.UserId && a.WorkDate == todayDateOnly && a.CheckInTime != null);
+
+							if (todayAttendance != null && todayAttendance.CheckOutTime == null)
+							{
+								var checkOutTime = now.Date + scheduledTime;
+
+								var totalTime = checkOutTime - todayAttendance.CheckInTime.Value;
+								var totalHours = (decimal)totalTime.TotalHours;
+
+								// Cập nhật record Attendance
+								todayAttendance.CheckOutTime = checkOutTime;
+
+								// SỬ DỤNG ĐỊA CHỈ CỐ ĐỊNH VÀ NOTES MỚI
+								todayAttendance.CheckOutLatitude = locationInfo.Latitude;
+								todayAttendance.CheckOutLongitude = locationInfo.Longitude;
+								todayAttendance.CheckOutAddress = locationInfo.Address;
+								todayAttendance.CheckOutPhotos = "";
+								todayAttendance.CheckOutNotes = AUTO_BOT_NOTE;
+
+								todayAttendance.TotalHours = totalHours;
+
+								await context.SaveChangesAsync();
+
+								_logger.LogInformation($"✅ Auto Check-out thành công: {user.FullName} lúc {scheduledTime}. TotalHours: {totalHours:F2} tại {locationInfo.Address}");
+
+								// GỬI THÔNG BÁO TELEGRAM
+								await telegramService.SendCheckOutNotificationAsync(
+									user.FullName,
+									user.Username,
+									todayAttendance.CheckOutTime.Value,
+									todayAttendance.TotalHours ?? 0m,
+									0m,
+									todayAttendance.CheckOutNotes);
+
+								// Xóa khỏi lịch để không quét lại nữa
+								_todayCheckOutSchedules.Remove(userName);
 							}
 						}
 					}

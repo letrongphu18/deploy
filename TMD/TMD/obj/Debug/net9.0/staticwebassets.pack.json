@@ -85,6 +85,10 @@
       "PackagePath": "staticwebassets\\css\\pending-requests.css"
     },
     {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\personal-task.css",
+      "PackagePath": "staticwebassets\\css\\personal-task.css"
+    },
+    {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\css\\profile.css",
       "PackagePath": "staticwebassets\\css\\profile.css"
     },
@@ -187,6 +191,10 @@
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\notification-hub.js",
       "PackagePath": "staticwebassets\\js\\notification-hub.js"
+    },
+    {
+      "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\personal-task.js",
+      "PackagePath": "staticwebassets\\js\\personal-task.js"
     },
     {
       "Id": "E:\\AIHUB TASK\\DEPLOY\\deploy\\TMD\\TMD\\wwwroot\\js\\project-management.js",

@@ -674,7 +674,466 @@
                     }
             </text>
         }
+                document.addEventListener('DOMContentLoaded', function() {
 
+            // ============================================
+            // 1. STAT CARDS - REDIRECT KHI CLICK
+            // ============================================
+
+            // Tổng công việc → TaskList
+            const totalTasksCard = document.querySelector('.aihub-dash-stat-card.aihub-dash-stat-primary');
+            if (totalTasksCard) {
+                totalTasksCard.addEventListener('click', function() {
+                    createRippleEffect(this, event);
+                    setTimeout(() => {
+                        window.location.href = '/Admin/TaskList';
+                    }, 300);
+                });
+                addTooltip(totalTasksCard, 'Xem tất cả công việc');
+            }
+
+            // Đã hoàn thành → TaskList với filter
+            const completedCard = document.querySelector('.aihub-dash-stat-card.aihub-dash-stat-success');
+            if (completedCard) {
+                completedCard.addEventListener('click', function() {
+                    createRippleEffect(this, event);
+                    setTimeout(() => {
+                        window.location.href = '/Admin/TaskList?status=Done';
+                    }, 300);
+                });
+                addTooltip(completedCard, 'Xem task đã hoàn thành');
+            }
+
+            // Đang thực hiện → TaskList với filter
+            const inProgressCard = document.querySelector('.aihub-dash-stat-card.aihub-dash-stat-warning');
+            if (inProgressCard) {
+                inProgressCard.addEventListener('click', function() {
+                    createRippleEffect(this, event);
+                    setTimeout(() => {
+                        window.location.href = '/Admin/TaskList?status=InProgress';
+                    }, 300);
+                });
+                addTooltip(inProgressCard, 'Xem task đang thực hiện');
+            }
+
+            // Task quá hạn → TaskList với filter
+            const overdueCard = document.querySelector('.aihub-dash-stat-card.aihub-dash-stat-danger');
+            if (overdueCard) {
+                overdueCard.addEventListener('click', function() {
+                    createRippleEffect(this, event);
+                    setTimeout(() => {
+                        window.location.href = '/Admin/TaskList?status=Overdue';
+                    }, 300);
+                });
+                addTooltip(overdueCard, 'Xem task quá hạn');
+            }
+
+            // Chuyên cần → AttendanceHistory
+            const attendanceCard = document.querySelector('.aihub-dash-stat-card.aihub-dash-stat-info');
+            if (attendanceCard) {
+                attendanceCard.addEventListener('click', function() {
+                    createRippleEffect(this, event);
+                    setTimeout(() => {
+                        window.location.href = '/Admin/AttendanceHistory';
+                    }, 300);
+                });
+                addTooltip(attendanceCard, 'Xem lịch sử chấm công');
+            }
+
+            // Chưa bắt đầu → TaskList với filter
+            const todoCard = document.querySelector('.aihub-dash-stat-card.aihub-dash-stat-secondary');
+            if (todoCard) {
+                todoCard.addEventListener('click', function() {
+                    createRippleEffect(this, event);
+                    setTimeout(() => {
+                        window.location.href = '/Admin/TaskList?status=TODO';
+                    }, 300);
+                });
+                addTooltip(todoCard, 'Xem task chưa bắt đầu');
+            }
+
+            // ============================================
+            // 2. LEADERBOARD ITEMS - REDIRECT TO USER DETAIL
+            // ============================================
+            const leaderboardItems = document.querySelectorAll('.aihub-dash-leaderboard-item');
+            leaderboardItems.forEach(item => {
+                // Tìm userId từ các thuộc tính có thể có
+                const userIdElement = item.querySelector('[data-user-id]');
+                if (userIdElement) {
+                    const userId = userIdElement.getAttribute('data-user-id');
+                    item.style.cursor = 'pointer';
+
+                    item.addEventListener('click', function() {
+                        createRippleEffect(this, event);
+                        setTimeout(() => {
+                            // Có thể mở modal hoặc redirect
+                            showUserDetailModal(userId);
+                        }, 300);
+                    });
+
+                    addTooltip(item, 'Xem chi tiết nhân viên');
+                }
+            });
+
+            // ============================================
+            // 3. TASK ITEMS - REDIRECT TO TASK DETAIL
+            // ============================================
+            const taskItems = document.querySelectorAll('.aihub-dash-task-item');
+            taskItems.forEach(item => {
+                const taskIdElement = item.querySelector('[data-task-id]');
+                if (taskIdElement) {
+                    const taskId = taskIdElement.getAttribute('data-task-id');
+                    item.style.cursor = 'pointer';
+
+                    item.addEventListener('click', function() {
+                        createRippleEffect(this, event);
+                        setTimeout(() => {
+                            showTaskDetailModal(taskId);
+                        }, 300);
+                    });
+
+                    addTooltip(item, 'Xem chi tiết task');
+                }
+            });
+
+            // ============================================
+            // 4. ATTENDANCE ITEMS - REDIRECT
+            // ============================================
+            const attendanceItems = document.querySelectorAll('.aihub-dash-attendance-item');
+            attendanceItems.forEach(item => {
+                const userIdElement = item.querySelector('[data-user-id]');
+                if (userIdElement) {
+                    const userId = userIdElement.getAttribute('data-user-id');
+                    item.style.cursor = 'pointer';
+
+                    item.addEventListener('click', function() {
+                        createRippleEffect(this, event);
+                        setTimeout(() => {
+                            window.location.href = `/Admin/AttendanceHistory?userId=${userId}`;
+                        }, 300);
+                    });
+
+                    addTooltip(item, 'Xem chi tiết chấm công');
+                }
+            });
+
+            // ============================================
+            // HELPER FUNCTIONS
+            // ============================================
+
+            /**
+             * Tạo hiệu ứng ripple khi click
+             */
+            function createRippleEffect(element, event) {
+                const ripple = document.createElement('span');
+                const rect = element.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = event.clientX - rect.left - size / 2;
+                const y = event.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple-effect');
+
+                element.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            }
+
+            /**
+             * Thêm tooltip cho element
+             */
+            function addTooltip(element, text) {
+                element.setAttribute('data-tooltip', text);
+                element.classList.add('has-tooltip');
+            }
+
+            /**
+             * Hiển thị modal chi tiết user (sử dụng hàm có sẵn)
+             */
+            function showUserDetailModal(userId) {
+                if (typeof window.showUserDetail === 'function') {
+                    window.showUserDetail(userId);
+                } else {
+                    // Fallback: redirect
+                    window.location.href = `/Admin/UserList?userId=${userId}`;
+                }
+            }
+
+            /**
+             * Hiển thị modal chi tiết task (sử dụng hàm có sẵn)
+             */
+            function showTaskDetailModal(taskId) {
+                if (typeof window.showTaskDetail === 'function') {
+                    window.showTaskDetail(taskId);
+                } else {
+                    // Fallback: redirect
+                    window.location.href = `/Admin/EditTask/${taskId}`;
+                }
+            }
+
+            // ============================================
+            // 5. CHART INTERACTIONS
+            // ============================================
+
+            // Nếu có Chart.js, thêm click handler
+            const taskStatusChart = document.getElementById('taskStatusChart');
+            if (taskStatusChart && typeof Chart !== 'undefined') {
+                taskStatusChart.addEventListener('click', function(evt) {
+                    const chart = Chart.getChart(taskStatusChart);
+                    if (chart) {
+                        const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                        if (points.length) {
+                            const firstPoint = points[0];
+                            const label = chart.data.labels[firstPoint.index];
+
+                            // Redirect dựa trên label
+                            let status = 'TODO';
+                            if (label.includes('Đang làm')) status = 'InProgress';
+                            else if (label.includes('Hoàn thành')) status = 'Done';
+
+                            window.location.href = `/Admin/TaskList?status=${status}`;
+                        }
+                    }
+                });
+            }
+
+            const departmentChart = document.getElementById('departmentChart');
+            if (departmentChart && typeof Chart !== 'undefined') {
+                departmentChart.addEventListener('click', function(evt) {
+                    const chart = Chart.getChart(departmentChart);
+                    if (chart) {
+                        const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                        if (points.length) {
+                            const firstPoint = points[0];
+                            const label = chart.data.labels[firstPoint.index];
+
+                            // Redirect to department detail or user list filtered by department
+                            window.location.href = `/Admin/UserList?department=${encodeURIComponent(label)}`;
+                        }
+                    }
+                });
+            }
+
+            // ============================================
+            // 6. SMOOTH SCROLL TO SECTIONS
+            // ============================================
+            const cardLinks = document.querySelectorAll('.aihub-dash-btn-link');
+            cardLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Nếu link có href bắt đầu bằng #, smooth scroll
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // ============================================
+            // 7. AUTO-REFRESH DATA (OPTIONAL)
+            // ============================================
+            let autoRefreshInterval;
+
+            function startAutoRefresh(intervalMinutes = 5) {
+                autoRefreshInterval = setInterval(() => {
+                    console.log('Auto-refreshing dashboard data...');
+                    location.reload();
+                }, intervalMinutes * 60 * 1000);
+            }
+
+            function stopAutoRefresh() {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                }
+            }
+
+            // Uncomment để bật auto-refresh sau 5 phút
+            // startAutoRefresh(5);
+
+            // ============================================
+            // 8. KEYBOARD SHORTCUTS
+            // ============================================
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + K: Focus search (nếu có)
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    const searchInput = document.querySelector('input[type="search"]');
+                    if (searchInput) searchInput.focus();
+                }
+
+                // Ctrl/Cmd + T: Go to TaskList
+                if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+                    e.preventDefault();
+                    window.location.href = '/Admin/TaskList';
+                }
+
+                // Ctrl/Cmd + U: Go to UserList
+                if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                    e.preventDefault();
+                    window.location.href = '/Admin/UserList';
+                }
+
+                // Ctrl/Cmd + A: Go to AttendanceHistory
+                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                    e.preventDefault();
+                    window.location.href = '/Admin/AttendanceHistory';
+                }
+            });
+
+            // ============================================
+            // 9. LOADING STATE
+            // ============================================
+            function showLoadingState(element) {
+                element.style.opacity = '0.6';
+                element.style.pointerEvents = 'none';
+
+                const spinner = document.createElement('div');
+                spinner.className = 'loading-spinner';
+                spinner.style.position = 'absolute';
+                spinner.style.top = '50%';
+                spinner.style.left = '50%';
+                spinner.style.transform = 'translate(-50%, -50%)';
+
+                element.style.position = 'relative';
+                element.appendChild(spinner);
+            }
+
+            function hideLoadingState(element) {
+                element.style.opacity = '1';
+                element.style.pointerEvents = 'auto';
+
+                const spinner = element.querySelector('.loading-spinner');
+                if (spinner) spinner.remove();
+            }
+
+            // ============================================
+            // 10. NOTIFICATION BADGE UPDATE
+            // ============================================
+            function updateNotificationBadge() {
+                fetch('/Admin/GetPendingCount')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.count > 0) {
+                            const badge = document.querySelector('.notification-badge');
+                            if (badge) {
+                                badge.textContent = data.count;
+                                badge.style.display = 'flex';
+
+                                // Animation
+                                badge.style.animation = 'none';
+                                setTimeout(() => {
+                                    badge.style.animation = 'pulse-glow 2s infinite';
+                                }, 10);
+                            }
+                        }
+                    })
+                    .catch(err => console.error('Error fetching notification count:', err));
+            }
+
+            // Update notification badge every 30 seconds
+            updateNotificationBadge();
+            setInterval(updateNotificationBadge, 30000);
+
+            // ============================================
+            // 11. PRINT DASHBOARD
+            // ============================================
+            window.printDashboard = function() {
+                window.print();
+            };
+
+            // ============================================
+            // 12. EXPORT DASHBOARD DATA
+            // ============================================
+            window.exportDashboardData = function() {
+                // Collect all stats
+                const stats = {
+                    totalTasks: document.querySelector('.aihub-dash-stat-primary .aihub-dash-stat-value')?.textContent,
+                    completedTasks: document.querySelector('.aihub-dash-stat-success .aihub-dash-stat-value')?.textContent,
+                    inProgressTasks: document.querySelector('.aihub-dash-stat-warning .aihub-dash-stat-value')?.textContent,
+                    overdueTasks: document.querySelector('.aihub-dash-stat-danger .aihub-dash-stat-value')?.textContent,
+                    exportDate: new Date().toISOString()
+                };
+
+                // Convert to CSV or JSON
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stats, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `dashboard_${Date.now()}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+            };
+
+            console.log('✅ Dashboard interactions loaded successfully!');
+        });
+
+        // ============================================
+        // CSS cho ripple effect
+        // ============================================
+        const style = document.createElement('style');
+        style.textContent = `
+            .ripple-effect {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple-animation 0.6s ease-out;
+                pointer-events: none;
+            }
+
+       
+
+            .has-tooltip {
+                position: relative;
+            }
+
+            .has-tooltip::after {
+                content: attr(data-tooltip);
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-8px);
+                padding: 0.5rem 0.75rem;
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                font-size: 0.875rem;
+                font-weight: 500;
+                border-radius: 0.5rem;
+                white-space: nowrap;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s, transform 0.3s;
+                z-index: 1000;
+            }
+
+            .has-tooltip:hover::after {
+                opacity: 1;
+                transform: translateX(-50%) translateY(-12px);
+            }
+
+            .loading-spinner {
+                border: 3px solid rgba(0, 0, 0, 0.1);
+                border-top-color: var(--primary, #6366f1);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                animation: spin 0.8s linear infinite;
+            }
+
+       
+            }
+        `;
+        document.head.appendChild(style);
             // AUTO REFRESH EVERY 5 MINUTES
             setTimeout(() => {
                 location.reload();

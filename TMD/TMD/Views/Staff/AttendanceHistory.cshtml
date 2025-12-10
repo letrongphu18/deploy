@@ -1,5 +1,6 @@
 ﻿@model List<TMD.Models.Attendance>
 @using System.Text.Json
+@using System.Globalization
 @{
     ViewData["Title"] = "Lịch Sử Chấm Công";
     Layout = "~/Views/Shared/_LayoutStaff.cshtml";
@@ -7,7 +8,41 @@
 }
 <link href="~/css/attendance-history.css" rel="stylesheet" />
 
-<!-- Page Header -->
+<style>
+    /* CSS Bổ sung cho phần hiển thị OT */
+    .badge-ot {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .badge-ot-sunday {
+        background-color: #6f42c1; /* Màu tím cho Chủ nhật */
+        color: white;
+    }
+
+    .badge-ot-saturday {
+        background-color: #fd7e14; /* Màu cam đậm cho chiều T7 */
+        color: white;
+    }
+
+    .badge-normal {
+        background-color: #e9ecef;
+        color: #495057;
+    }
+
+    .work-type-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+</style>
+
 <div class="page-header-modern">
     <div class="page-header-content">
         <div class="page-title-wrapper">
@@ -32,7 +67,6 @@
     </div>
 </div>
 
-<!-- Statistics Cards -->
 <div class="stats-grid">
     <div class="stat-card stat-gradient-1">
         <div class="stat-icon">
@@ -91,7 +125,6 @@
     </div>
 </div>
 
-<!-- Attendance Card -->
 <div class="modern-card">
     <div class="card-header-modern">
         <div class="header-left">
@@ -132,14 +165,14 @@
         @if (Model.Any())
         {
             <div id="attendanceApp">
-                <!-- Table view -->
                 <div id="tableView" class="view-section">
                     <div class="table-container">
                         <table class="modern-table" id="attendanceTable">
                             <thead>
                                 <tr>
-                                    <th width="60"><div class="th-content">STT</div></th>
+                                    <th width="50"><div class="th-content">STT</div></th>
                                     <th><div class="th-content"><i class="far fa-calendar"></i> Ngày làm việc</div></th>
+                                    <th><div class="th-content"><i class="fas fa-briefcase"></i> Loại công (OT)</div></th>
                                     <th><div class="th-content"><i class="fas fa-sign-in-alt"></i> Check-in</div></th>
                                     <th><div class="th-content"><i class="fas fa-sign-out-alt"></i> Check-out</div></th>
                                     <th><div class="th-content"><i class="fas fa-clock"></i> Tổng giờ</div></th>
@@ -163,7 +196,6 @@
                     </div>
                 </div>
 
-                <!-- List view -->
                 <div id="listView" class="view-section" style="display:none;">
                     <div id="listContainer"></div>
                     <div class="pagination-wrapper">
@@ -173,7 +205,6 @@
                     </div>
                 </div>
 
-                <!-- Calendar view -->
                 <div id="calendarView" class="view-section" style="display:none;">
                     <div id="calendarControls" class="calendar-controls">
                         <button onclick="calendarPrev()">‹</button>
@@ -201,7 +232,6 @@
     </div>
 </div>
 
-<!-- Detail Modal -->
 <div class="modal fade" id="detailModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content modal-modern">
@@ -224,6 +254,8 @@
                     <div class="detail-header-content">
                         <h6>Ngày làm việc</h6>
                         <p id="detailWorkDate">—</p>
+                    </div>
+                    <div class="ms-auto" id="detailOtBadgeLocation">
                     </div>
                 </div>
 
@@ -326,16 +358,17 @@
 
 @section Scripts {
     <script>
-        // Serialize model to client
+        // ==========================================
+        // 1. SERIALIZE MODEL VÀ THÊM THUỘC TÍNH CẦN THIẾT
+        // ==========================================
         const rawData = @Html.Raw(JsonSerializer.Serialize(Model.Select(item => new
             {
                 workDate = item.WorkDate.ToString("yyyy-MM-dd"),
                 workDateDisplay = item.WorkDate.ToString("dd/MM/yyyy"),
-                workDayName = item.WorkDate.ToString("dddd", new System.Globalization.CultureInfo("vi-VN")),
+                workDayName = item.WorkDate.ToString("dddd", new CultureInfo("vi-VN")),
+                dayOfWeek = (int)item.WorkDate.DayOfWeek, // 0 = Sunday, 6 = Saturday
                 checkInTime = item.CheckInTime?.ToString("HH:mm:ss"),
                 checkOutTime = item.CheckOutTime?.ToString("HH:mm:ss"),
-                checkInTimeIso = item.CheckInTime?.ToString("yyyy-MM-ddTHH:mm:ss"),
-                checkOutTimeIso = item.CheckOutTime?.ToString("yyyy-MM-ddTHH:mm:ss"),
                 totalHours = item.TotalHours ?? 0,
                 checkInAddress = item.CheckInAddress ?? "",
                 checkOutAddress = item.CheckOutAddress ?? "",
@@ -353,6 +386,44 @@
         let pageSize = @pageSize;
         let currentView = 'table';
         let calendarDate = new Date();
+
+        // ==========================================
+        // 2. HELPER FUNCTIONS CHO OT
+        // ==========================================
+
+        // Hàm xác định loại ngày công (OT hay thường)
+        function getWorkTypeInfo(item) {
+            // Case 1: Chủ Nhật (Luôn là OT)
+            if (item.dayOfWeek === 0) {
+                return {
+                    isOT: true,
+                    label: 'OT Chủ Nhật',
+                    badgeClass: 'badge-ot-sunday',
+                    icon: 'fas fa-star'
+                };
+            }
+
+            // Case 2: Thứ 7 (Chiều T7 tính là OT)
+            // Giả định: Nếu CheckOut sau 12:00 trưa thì tính là có làm chiều
+            if (item.dayOfWeek === 6) {
+                if (item.checkOutTime && item.checkOutTime >= "12:00:00") {
+                    return {
+                        isOT: true,
+                        label: 'OT Chiều T7',
+                        badgeClass: 'badge-ot-saturday',
+                        icon: 'fas fa-sun'
+                    };
+                }
+            }
+
+            // Case 3: Ngày thường
+            return {
+                isOT: false,
+                label: 'Ngày thường',
+                badgeClass: 'badge-normal',
+                icon: 'fas fa-briefcase'
+            };
+        }
 
         function formatHours(h) {
             return (h && h > 0) ? h.toFixed(2) + 'h' : '—';
@@ -387,21 +458,36 @@
                 .replace(/&#39;/g, "'");
         }
 
+        // ==========================================
+        // 3. RENDER TABLE (ĐÃ CẬP NHẬT CỘT OT)
+        // ==========================================
         function renderTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
             const start = (currentPage - 1) * pageSize;
             const pageItems = filteredData.slice(start, start + pageSize);
             let index = start + 1;
+
             for (const item of pageItems) {
                 const tr = document.createElement('tr');
                 tr.className = 'table-row-modern';
+
+                // Lấy thông tin loại công
+                const workType = getWorkTypeInfo(item);
+
                 tr.innerHTML = `
                     <td><div class="index-badge">${index}</div></td>
                     <td>
                         <div class="date-cell">
                             <div class="date-primary">${item.workDateDisplay}</div>
                             <div class="date-secondary">${item.workDayName}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="work-type-cell">
+                             <div class="badge-ot ${workType.badgeClass}">
+                                <i class="${workType.icon}"></i> ${workType.label}
+                            </div>
                         </div>
                     </td>
                     <td>
@@ -431,18 +517,26 @@
             renderPagination();
         }
 
+        // ==========================================
+        // 4. RENDER LIST VIEW (ĐÃ CẬP NHẬT OT)
+        // ==========================================
         function renderListView() {
             const container = document.getElementById('listContainer');
             container.innerHTML = '';
             const start = (currentPage - 1) * pageSize;
             const pageItems = filteredData.slice(start, start + pageSize);
+
             for (const item of pageItems) {
+                const workType = getWorkTypeInfo(item);
                 const div = document.createElement('div');
                 div.className = 'list-item';
                 div.innerHTML = `
                     <div class="list-item-left">
                         <div class="date-primary">${item.workDateDisplay}</div>
                         <div class="date-secondary">${item.workDayName}</div>
+                        <div class="mt-1">
+                             <span class="badge-ot ${workType.badgeClass}" style="font-size: 0.7rem;">${workType.label}</span>
+                        </div>
                     </div>
                     <div class="list-item-right">
                         <div><strong>In:</strong> ${item.checkInTime || '—'}</div>
@@ -459,73 +553,96 @@
         }
 
         function renderCalendar() {
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-            const year = calendarDate.getFullYear();
-            const month = calendarDate.getMonth();
-            const firstDay = new Date(year, month, 1);
-            const lastDay = new Date(year, month + 1, 0);
-            const startWeekDay = firstDay.getDay();
-            const daysInMonth = lastDay.getDate();
+              const grid = document.getElementById('calendarGrid');
+              grid.innerHTML = '';
+              const year = calendarDate.getFullYear();
+              const month = calendarDate.getMonth();
+              const firstDay = new Date(year, month, 1);
+              const lastDay = new Date(year, month + 1, 0);
+              const startWeekDay = firstDay.getDay();
+              const daysInMonth = lastDay.getDate();
 
-            document.getElementById('calendarTitle').innerText = firstDay.toLocaleString('vi-VN', { month: 'long', year: 'numeric' });
+              document.getElementById('calendarTitle').innerText = firstDay.toLocaleString('vi-VN', { month: 'long', year: 'numeric' });
 
-            const header = document.createElement('div');
-            header.className = 'calendar-row calendar-header';
-            const days = ['CN','T2','T3','T4','T5','T6','T7'];
-            for (const d of days) {
-                const cell = document.createElement('div');
-                cell.className = 'calendar-cell calendar-cell-header';
-                cell.innerText = d;
-                header.appendChild(cell);
-            }
-            grid.appendChild(header);
+              const header = document.createElement('div');
+              header.className = 'calendar-row calendar-header';
+              const days = ['CN','T2','T3','T4','T5','T6','T7'];
+              for (const d of days) {
+                  const cell = document.createElement('div');
+                  cell.className = 'calendar-cell calendar-cell-header';
+                  cell.innerText = d;
+                  header.appendChild(cell);
+              }
+              grid.appendChild(header);
 
-            let day = 1 - ((startWeekDay + 6) % 7);
-            for (let r = 0; r < 6; r++) {
-                const row = document.createElement('div');
-                row.className = 'calendar-row';
-                for (let c = 0; c < 7; c++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'calendar-cell';
-                    if (day > 0 && day <= daysInMonth) {
-                        const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                        cell.innerHTML = `<div class="calendar-day">${day}</div>`;
-                        const items = attendanceData.filter(it => it.workDate === dateStr);
-                        if (items.length) {
-                            const list = document.createElement('div');
-                            list.className = 'calendar-items';
-                            for (const it of items) {
-                                const badge = document.createElement('div');
-                                badge.className = 'calendar-item-badge';
-                                badge.innerText = it.checkInTime ? it.checkInTime : '—';
+              let day = 1 - startWeekDay;
+              for (let r = 0; r < 6; r++) {
+                  const row = document.createElement('div');
+                  row.className = 'calendar-row';
+                  for (let c = 0; c < 7; c++) {
+                      const cell = document.createElement('div');
+                      cell.className = 'calendar-cell';
+                      if (day > 0 && day <= daysInMonth) {
+                          const dateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                          cell.innerHTML = `<div class="calendar-day">${day}</div>`;
+                          const items = attendanceData.filter(it => it.workDate === dateStr);
+                          if (items.length) {
+                              const list = document.createElement('div');
+                              list.className = 'calendar-items';
+                              for (const it of items) {
+                                  const badge = document.createElement('div');
+                                  badge.className = 'calendar-item-badge';
+                                  badge.innerText = it.checkInTime ? it.checkInTime : '—';
 
-                                // classify badge by lateMinutes or isLate
-                                if (typeof it.lateMinutes !== 'undefined' && it.lateMinutes !== null) {
-                                    const mins = Number(it.lateMinutes);
-                                    if (mins <= 0) badge.classList.add('ontime');
-                                    else if (mins <= 15) badge.classList.add('late-warning');
-                                    else badge.classList.add('late-danger');
-                                } else {
-                                    if (it.isLate === true) badge.classList.add('late-warning');
-                                    else badge.classList.add('ontime');
-                                }
+                                  // ====================================================
+                                  // --- LOGIC MÀU SẮC OT CHO CALENDAR (MỚI) ---
+                                  // ====================================================
 
-                                badge.setAttribute('data-item', escapeHtml(JSON.stringify(it)));
-                                badge.onclick = function() { viewDetailsFromJson(it); };
-                                list.appendChild(badge);
-                            }
-                            cell.appendChild(list);
-                        }
-                    } else {
-                        cell.classList.add('calendar-cell-empty');
-                    }
-                    row.appendChild(cell);
-                    day++;
-                }
-                grid.appendChild(row);
-            }
-        }
+                                  // 1. Ưu tiên kiểm tra OT trước
+                                  let isOtColorSet = false;
+
+                                  // Case: Chủ nhật -> TÍM
+                                  if (it.dayOfWeek === 0) {
+                                      badge.style.backgroundColor = '#6f42c1';
+                                      badge.style.color = '#fff';
+                                      isOtColorSet = true;
+                                  }
+                                  // Case: Chiều T7 (Sau 12h) -> CAM
+                                  else if (it.dayOfWeek === 6 && it.checkOutTime && it.checkOutTime >= "12:00:00") {
+                                      badge.style.backgroundColor = '#fd7e14';
+                                      badge.style.color = '#fff';
+                                      isOtColorSet = true;
+                                  }
+
+                                  // 2. Nếu không phải OT thì mới tô màu theo trạng thái Đi muộn/Đúng giờ
+                                  if (!isOtColorSet) {
+                                      if (typeof it.lateMinutes !== 'undefined' && it.lateMinutes !== null) {
+                                          const mins = Number(it.lateMinutes);
+                                          if (mins <= 0) badge.classList.add('ontime');
+                                          else if (mins <= 15) badge.classList.add('late-warning');
+                                          else badge.classList.add('late-danger');
+                                      } else {
+                                          if (it.isLate === true) badge.classList.add('late-warning');
+                                          else badge.classList.add('ontime');
+                                      }
+                                  }
+                                  // ====================================================
+
+                                  badge.setAttribute('data-item', escapeHtml(JSON.stringify(it)));
+                                  badge.onclick = function() { viewDetailsFromJson(it); };
+                                  list.appendChild(badge);
+                              }
+                              cell.appendChild(list);
+                          }
+                      } else {
+                          cell.classList.add('calendar-cell-empty');
+                      }
+                      row.appendChild(cell);
+                      day++;
+                  }
+                  grid.appendChild(row);
+              }
+          }
 
         function calendarPrev() {
             calendarDate.setMonth(calendarDate.getMonth() - 1);
@@ -585,7 +702,7 @@
         });
 
         function toggleFilter() {
-            alert('Chức năng lọc nâng cao chưa được cấu hình. Bạn có thể thêm bộ lọc theo trạng thái, khoảng thời gian, v.v.');
+            alert('Chức năng lọc nâng cao chưa được cấu hình.');
         }
 
         function switchView(view) {
@@ -622,6 +739,15 @@
             document.getElementById('detailTotalHours').innerText = formatHours(item.totalHours);
             document.getElementById('detailCheckInAddress').innerText = item.checkInAddress || '—';
             document.getElementById('detailCheckOutAddress').innerText = item.checkOutAddress || '—';
+
+            // Render Badge OT trong Modal
+            const workType = getWorkTypeInfo(item);
+            const badgeContainer = document.getElementById('detailOtBadgeLocation');
+            if (workType.isOT) {
+                badgeContainer.innerHTML = `<span class="badge-ot ${workType.badgeClass}" style="font-size: 1rem; padding: 6px 12px;"><i class="${workType.icon}"></i> ${workType.label}</span>`;
+            } else {
+                badgeContainer.innerHTML = '';
+            }
 
             const checkInPhotos = parsePhotosField(item.checkInPhotos);
             const checkOutPhotos = parsePhotosField(item.checkOutPhotos);

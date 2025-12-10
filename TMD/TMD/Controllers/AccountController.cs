@@ -506,17 +506,18 @@ namespace TMD.Controllers
 			);
 
 			// ✅ REDIRECT LOGIC - LINH HOẠT
+			// ✅ REDIRECT LOGIC - FIXED
 			string redirectUrl;
 
-			if (user.Role.RoleName == "Admin")
+			if (user.Role.RoleName == "Admin" || user.Role.RoleName == "Manager"|| user.Role.RoleName == "SupAdmin")
 			{
-				// Admin → Admin Dashboard
+				// Admin hoặc Manager → Admin Dashboard
 				redirectUrl = "/Admin/Dashboard";
 			}
 			else
 			{
 				// TẤT CẢ CÁC ROLE KHÁC → Staff Dashboard
-				// (Staff, Tester, Manager, Guest, bất kỳ role nào...)
+				// (Staff, Tester, Guest, bất kỳ role nào...)
 				redirectUrl = "/Staff/Dashboard";
 			}
 

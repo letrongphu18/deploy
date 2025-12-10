@@ -423,7 +423,7 @@
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+               document.addEventListener('DOMContentLoaded', function() {
             // ✅ INIT DATATABLE
             let table;
             if (typeof $ !== 'undefined' && $.fn.DataTable) {
@@ -454,6 +454,18 @@
                 });
 
                 console.log('✅ DataTable initialized');
+            }
+
+            // ✅ SET DEFAULT SORT = "smart-priority" (custom mode)
+            const sortSelect = document.getElementById('sortBy');
+
+            // Add custom "Smart Priority" option if not exists
+            if (sortSelect && !sortSelect.querySelector('option[value="smart-priority"]')) {
+                const smartOption = document.createElement('option');
+                smartOption.value = 'smart-priority';
+                smartOption.textContent = 'Mặc định';
+                smartOption.selected = true;
+                sortSelect.insertBefore(smartOption, sortSelect.firstChild);
             }
 
             // ✅ FILTER & SORT FUNCTIONALITY
@@ -530,12 +542,76 @@
                     row.style.display = show ? '' : 'none';
                 });
 
-                // Sort rows
+                // ✅ ADVANCED SORTING WITH PRIORITY LOGIC
                 const tbody = document.querySelector('#taskTable tbody');
                 const visibleRows = rows.filter(row => row.style.display !== 'none');
 
                 visibleRows.sort((a, b) => {
                     const [field, order] = sortVal.split('-');
+
+                    // ✅ SMART PRIORITY SORTING (default mode)
+                    if (sortVal === 'smart-priority' || field === 'priority') {
+                        const statusA = a.dataset.status;
+                        const statusB = b.dataset.status;
+                        const deadlineA = a.dataset.deadline;
+                        const deadlineB = b.dataset.deadline;
+                        const isOverdueA = a.classList.contains('tl-row-overdue');
+                        const isOverdueB = b.classList.contains('tl-row-overdue');
+
+                        const now = new Date();
+                        const threeDaysLater = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+
+                        // Helper: Check if deadline is within 3 days
+                        const isNearDeadline = (deadlineStr) => {
+                            if (!deadlineStr) return false;
+                            const deadline = new Date(deadlineStr);
+                            return deadline >= now && deadline <= threeDaysLater;
+                        };
+
+                        const nearDeadlineA = isNearDeadline(deadlineA);
+                        const nearDeadlineB = isNearDeadline(deadlineB);
+
+                        // ✅ PRIORITY ORDER:
+                        // 1. Overdue + Not Done (highest priority)
+                        // 2. Near deadline (within 3 days) + Not Done
+                        // 3. TODO
+                        // 4. InProgress
+                        // 5. Testing
+                        // 6. Reopen
+                        // 7. Done (lowest priority - xuống cuối)
+
+                        const getPriorityScore = (status, isOverdue, nearDeadline) => {
+                            if (status === 'Done') return 7; // ✅ Done xuống cuối cùng
+                            if (isOverdue) return 1; // Quá hạn - ưu tiên cao nhất
+                            if (nearDeadline) return 2; // Sắp đến deadline
+                            if (status === 'TODO') return 3;
+                            if (status === 'InProgress') return 4;
+                            if (status === 'Testing') return 5;
+                            if (status === 'Reopen') return 6;
+                            return 8; // Unknown status
+                        };
+
+                        const scoreA = getPriorityScore(statusA, isOverdueA, nearDeadlineA);
+                        const scoreB = getPriorityScore(statusB, isOverdueB, nearDeadlineB);
+
+                        if (scoreA !== scoreB) {
+                            return scoreA - scoreB; // Ascending (score thấp lên đầu)
+                        }
+
+                        // ✅ Sub-sorting: Nếu cùng score, sort theo deadline
+                        if (deadlineA && deadlineB) {
+                            const dateA = new Date(deadlineA);
+                            const dateB = new Date(deadlineB);
+                            return dateA - dateB; // Deadline gần hơn lên trước
+                        }
+                        if (deadlineA && !deadlineB) return -1; // Có deadline lên trước
+                        if (!deadlineA && deadlineB) return 1;
+
+                        // ✅ Final: sort theo ID (mới nhất)
+                        return parseInt(b.dataset.taskId) - parseInt(a.dataset.taskId);
+                    }
+
+                    // ✅ OTHER SORTING OPTIONS
                     let aVal, bVal;
 
                     switch(field) {
@@ -551,11 +627,6 @@
                             aVal = a.dataset.deadline || '9999-12-31';
                             bVal = b.dataset.deadline || '9999-12-31';
                             break;
-                        case 'priority':
-                            const priorityOrder = { 'High': 3, 'Medium': 2, 'Low': 1 };
-                            aVal = priorityOrder[a.dataset.priority] || 0;
-                            bVal = priorityOrder[b.dataset.priority] || 0;
-                            break;
                     }
 
                     if (order === 'asc') {
@@ -569,10 +640,46 @@
                 visibleRows.forEach(row => tbody.appendChild(row));
             }
 
+            // ✅ VISUAL INDICATOR FOR NEAR DEADLINE TASKS
+            function addNearDeadlineIndicator() {
+                const now = new Date();
+                const threeDaysLater = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+
+                document.querySelectorAll('.task-row').forEach(row => {
+                    const deadlineStr = row.dataset.deadline;
+                    const status = row.dataset.status;
+
+                    if (deadlineStr && status !== 'Done') {
+                        const deadline = new Date(deadlineStr);
+                        const isNearDeadline = deadline >= now && deadline <= threeDaysLater;
+
+                        if (isNearDeadline && !row.classList.contains('tl-row-overdue')) {
+                            // Add visual indicator for near deadline
+                            const deadlineCell = row.querySelector('td:nth-child(4)');
+                            if (deadlineCell && !deadlineCell.querySelector('.near-deadline-badge')) {
+                                const badge = document.createElement('span');
+                                badge.className = 'tl-badge tl-badge-warning tl-mt-1 near-deadline-badge';
+                                badge.innerHTML = '<i class="fas fa-clock"></i> Sắp đến hạn';
+                                deadlineCell.querySelector('.tl-deadline-wrapper').appendChild(badge);
+                            }
+                        }
+                    }
+                });
+            }
+
             // Filter event listeners
             ['searchTask', 'filterPlatform', 'filterPriority', 'filterStatus', 'filterActive', 'filterDeadline', 'sortBy'].forEach(id => {
-                document.getElementById(id).addEventListener('change', applyFilters);
-                document.getElementById(id).addEventListener('keyup', applyFilters);
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', () => {
+                        applyFilters();
+                        addNearDeadlineIndicator();
+                    });
+                    element.addEventListener('keyup', () => {
+                        applyFilters();
+                        addNearDeadlineIndicator();
+                    });
+                }
             });
 
             // Reset filters
@@ -583,8 +690,9 @@
                 document.getElementById('filterStatus').value = '';
                 document.getElementById('filterActive').value = '';
                 document.getElementById('filterDeadline').value = '';
-                document.getElementById('sortBy').value = 'id-desc';
+                document.getElementById('sortBy').value = 'smart-priority'; // ✅ Reset về smart priority
                 applyFilters();
+                addNearDeadlineIndicator();
             });
 
             // ✅ ATTACH EVENT LISTENERS
@@ -626,6 +734,9 @@
                 }
             }
 
+            // ✅ Apply initial sorting and indicators
+            applyFilters();
+            addNearDeadlineIndicator();
             attachEventListeners();
 
             function showToast(message, type = 'info') {
@@ -785,7 +896,7 @@
             }
 
             function deleteTask(taskId) {
-                fetch('@Url.Action("DeleteTask", "Admin")', {
+                fetch('/Admin/DeleteTask', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ taskId: parseInt(taskId) })
@@ -799,7 +910,7 @@
             }
 
             function restoreTask(taskId) {
-                fetch('@Url.Action("ToggleTaskStatus", "Admin")', {
+                fetch('/Admin/ToggleTaskStatus', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ taskId: parseInt(taskId) })

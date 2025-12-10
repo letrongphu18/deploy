@@ -30,7 +30,16 @@ namespace TMD.Controllers
 			_logger = logger;                           // ✅ NEW
 
 		}
-
+		private bool IsSuperAdmin()
+		{
+			return HttpContext.Session.GetString("RoleName") == "SupAdmin";
+		}
+		private bool IsAdminOrManager()
+		{
+			var role = HttpContext.Session.GetString("RoleName");
+			// ✅ Đã bao gồm SupAdmin, Admin, và Manager
+			return role == "Admin" || role == "Manager" || role == "SupAdmin";
+		}
 		private bool IsAuthenticated()
 		{
 			return HttpContext.Session.GetInt32("UserId") != null;
@@ -66,7 +75,7 @@ namespace TMD.Controllers
 		// ============================================
 		public async Task<IActionResult> Dashboard()
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			// ========== USER STATISTICS ==========
@@ -288,17 +297,17 @@ namespace TMD.Controllers
 		/// Cập nhật UserList để CHỈ hiển thị user ACTIVE
 		/// </summary>
 		public async Task<IActionResult> UserList(
-			int page = 1,
-			int pageSize = 10,
-			string? search = null,
-			string? roleName = null,
-			string? status = null,
-			int? departmentId = null)
+	int page = 1,
+	int pageSize = 10,
+	string? search = null,
+	string? roleName = null,
+	string? status = null,
+	int? departmentId = null)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
-			// ✅ THỐNG KÊ CHỈ TÍNH USER ACTIVE
+			// Statistics
 			ViewBag.TotalUsers = await _context.Users.CountAsync(u => u.IsActive == true);
 			ViewBag.ActiveUsers = await _context.Users.CountAsync(u => u.IsActive == true);
 			ViewBag.TotalDepartments = await _context.Departments.CountAsync();
@@ -306,12 +315,17 @@ namespace TMD.Controllers
 			var roles = await _context.Roles.OrderBy(r => r.RoleName).ToListAsync();
 			var departments = await _context.Departments.OrderBy(d => d.DepartmentName).ToListAsync();
 
-			// ✅ QUERY CHỈ LẤY USER ACTIVE
 			var query = _context.Users
 				.Include(u => u.Role)
 				.Include(u => u.Department)
-				.Where(u => u.IsActive == true)  // ← QUAN TRỌNG
+				.Where(u => u.IsActive == true)
 				.AsQueryable();
+
+			// ✅ NẾU LÀ MANAGER → KHÔNG CHO XEM ADMIN THẬT
+			if (!IsSuperAdmin())
+			{
+				query = query.Where(u => u.Role.RoleName != "SupAdmin");
+			}
 
 			// Search filter
 			if (!string.IsNullOrWhiteSpace(search))
@@ -331,7 +345,6 @@ namespace TMD.Controllers
 				query = query.Where(u => u.Role != null && u.Role.RoleName == roleName);
 			}
 
-			// Status filter (bỏ vì đã filter IsActive = true ở trên)
 			// Department filter
 			if (departmentId.HasValue && departmentId.Value > 0)
 			{
@@ -360,8 +373,12 @@ namespace TMD.Controllers
 				DepartmentId = departmentId
 			};
 
+			// ✅ TRUYỀN QUYỀN XUỐNG VIEW
+			ViewBag.IsSuperAdmin = IsSuperAdmin();
+
 			return View(vm);
 		}
+
 
 		/// <summary>
 		/// Hiển thị trang Thùng rác User
@@ -454,17 +471,17 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> MoveUserToTrash([FromBody] MoveUserToTrashRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
 					"SOFT_DELETE",
 					"User",
-					"Không có quyền xóa user",
+					"Bạn không có quyền xóa user",
 					new { UserId = request.UserId }
 				);
 
-				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+				return Json(new { success = false, message = "Bạn không có quyền xóa người dùng!" });
 			}
 
 			var user = await _context.Users
@@ -560,7 +577,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> RestoreUserFromTrash([FromBody] RestoreUserRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -637,7 +654,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> PermanentlyDeleteUser([FromBody] DeleteUserRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -750,7 +767,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> EmptyUserTrash()
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -870,17 +887,17 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ToggleUserStatus([FromBody] ToggleUserRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
 					"UPDATE",
 					"User",
-					"Không có quyền thực hiện",
+					"Bạn  không có quyền khóa user",
 					new { UserId = request.UserId }
 				);
 
-				return Json(new { success = false, message = "Không có quyền thực hiện!" });
+				return Json(new { success = false, message = "Bạn không có quyền khóa người dùng!" });
 			}
 
 			var user = await _context.Users.FindAsync(request.UserId);
@@ -943,7 +960,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> GetUserDetail(int userId)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return Json(new { success = false, message = "Không có quyền truy cập" });
 
 			try
@@ -1116,7 +1133,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ResetUserPasswordJson([FromBody] ResetPasswordRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -1275,7 +1292,7 @@ namespace TMD.Controllers
 		// ============================================
 		public async Task<IActionResult> AttendanceList(DateTime? date)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			var selectedDate = date ?? DateTime.Today;
@@ -1300,7 +1317,7 @@ namespace TMD.Controllers
 
 		public async Task<IActionResult> AttendanceHistory(int? userId, DateTime? fromDate, DateTime? toDate, int? departmentId)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			var from = fromDate ?? DateTime.Today.AddDays(-30);
@@ -1380,7 +1397,7 @@ namespace TMD.Controllers
 		// ============================================
 		public async Task<IActionResult> AuditLogs(string? action, DateTime? fromDate, DateTime? toDate)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return RedirectToAction("Login", "Account");
 
 			await _auditHelper.LogViewAsync(
@@ -1450,7 +1467,7 @@ namespace TMD.Controllers
 		// ============================================
 		public async Task<IActionResult> LoginHistory(DateTime? fromDate, DateTime? toDate, bool? isSuccess)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return RedirectToAction("Login", "Account");
 
 			await _auditHelper.LogDetailedAsync(
@@ -1499,7 +1516,7 @@ namespace TMD.Controllers
 		// ============================================
 		public async Task<IActionResult> DepartmentList()
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			var departments = await _context.Departments
@@ -1513,7 +1530,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> DepartmentDetail(int id)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			await _auditHelper.LogViewAsync(
@@ -1537,7 +1554,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateDepartment([FromBody] CreateDepartmentRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -1628,7 +1645,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> UpdateDepartment([FromBody] UpdateDepartmentRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -1848,7 +1865,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteDepartment([FromBody] DeleteDepartmentRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -1937,7 +1954,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> GetDepartmentDetails(int id)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return Json(new { success = false, message = "Không có quyền truy cập!" });
 
 			await _auditHelper.LogViewAsync(
@@ -1996,7 +2013,7 @@ namespace TMD.Controllers
 		// ============================================
 		public async Task<IActionResult> TaskList()
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			var tasks = await _context.Tasks
@@ -2041,7 +2058,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> CreateTask()
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			ViewBag.Users = await _context.Users
@@ -2298,7 +2315,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> EditProject(int id)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			var project = await _context.Projects
@@ -2341,7 +2358,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> EditTask(int id)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			var task = await _context.Tasks
@@ -2367,7 +2384,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> UpdateTask([FromBody] UpdateTaskRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -2538,7 +2555,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteTask([FromBody] DeleteTaskRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -2608,7 +2625,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ToggleTaskStatus([FromBody] ToggleTaskStatusRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -2850,7 +2867,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<JsonResult> GetPendingRequests(string? type, string? status, string? from, string? to, string? keyword)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return Json(new { success = false, message = "Không có quyền truy cập" });
 
 			try
@@ -3222,7 +3239,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ReviewRequest([FromBody] ReviewRequestViewModel model)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return Json(new { success = false, message = "Không có quyền" });
 
 			var adminId = HttpContext.Session.GetInt32("UserId");
@@ -3858,10 +3875,8 @@ namespace TMD.Controllers
 		public IActionResult KPIDashboard()
 		{
 			// Kiểm tra quyền admin
-			if (HttpContext.Session.GetString("RoleName") != "Admin")
-			{
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
-			}
 
 			return View();
 		}
@@ -3892,7 +3907,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> EditUser(int id)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return RedirectToAction("Login", "Account");
 
 			var user = await _context.Users
@@ -3918,7 +3933,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> UpdateUserJson([FromBody] UpdateUserRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -4111,7 +4126,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> RoleList()
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return RedirectToAction("Login", "Account");
 
 			await _auditHelper.LogViewAsync(
@@ -4140,7 +4155,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> GetRoleDetail(int roleId)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return Json(new { success = false, message = "Không có quyền truy cập" });
 
 			try
@@ -4210,7 +4225,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -4303,7 +4318,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -4431,7 +4446,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> DeleteRole([FromBody] DeleteRoleRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),
@@ -4542,7 +4557,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> ProjectList()
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			var projects = await _context.Projects
@@ -4568,7 +4583,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> CreateProject()
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return RedirectToAction("Login", "Account");
 
 			ViewBag.Departments = await _context.Departments
@@ -4837,7 +4852,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> UpdateProject([FromBody] UpdateProjectRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsAdminOrManager())
 				return Json(new { success = false, message = "Không có quyền" });
 
 			try
@@ -5005,7 +5020,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> ImportUsers()
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return RedirectToAction("Login", "Account");
 
 			await _auditHelper.LogViewAsync(
@@ -5311,7 +5326,7 @@ namespace TMD.Controllers
 			string? status = null,
 			int? departmentId = null)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return Json(new { success = false, message = "Không có quyền" });
 
 			try
@@ -5408,7 +5423,7 @@ namespace TMD.Controllers
 		[HttpGet]
 		public async Task<IActionResult> AuditLogsStatus()
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return RedirectToAction("Login", "Account");
 
 			try
@@ -5443,7 +5458,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> TriggerAuditCleanup([FromBody] CleanupRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 				return Json(new { success = false, message = "Không có quyền thực hiện" });
 
 			try
@@ -5624,7 +5639,7 @@ namespace TMD.Controllers
 		[HttpPost]
 		public async Task<IActionResult> MoveDepartmentToTrash([FromBody] DeleteDepartmentRequest request)
 		{
-			if (!IsAdmin())
+			if (!IsSuperAdmin())
 			{
 				await _auditHelper.LogFailedAttemptAsync(
 					HttpContext.Session.GetInt32("UserId"),

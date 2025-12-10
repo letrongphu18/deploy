@@ -1,0 +1,456 @@
+﻿@model IEnumerable<TMD.Models.UserTask>
+@{
+    ViewData["Title"] = "Công Việc Của Tôi";
+    var currentView = ViewBag.CurrentView ?? "kanban";
+}
+
+<link rel="stylesheet" href="~/css/personal-task.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="pt-container">
+    <!-- PAGE HEADER -->
+    <div class="pt-page-header">
+        <div class="pt-header-content">
+            <div>
+                <h1 class="pt-page-title">
+                    <i class="fas fa-tasks"></i>
+                    Công Việc Của Tôi
+                </h1>
+                <p class="pt-page-subtitle">Quản lý công việc cá nhân hiệu quả</p>
+            </div>
+            <button class="pt-btn-create" onclick="showCreateModal()">
+                <i class="fas fa-plus"></i>
+                Tạo Công Việc Mới
+            </button>
+        </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="pt-stats-grid">
+        <div class="pt-stats-card pt-stats-primary">
+            <div class="pt-stats-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="pt-stats-content">
+                <div class="pt-stats-label">Tổng Công Việc</div>
+                <div class="pt-stats-value">@ViewBag.TotalTasks</div>
+            </div>
+        </div>
+
+        <div class="pt-stats-card pt-stats-warning">
+            <div class="pt-stats-icon">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="pt-stats-content">
+                <div class="pt-stats-label">Đang Làm</div>
+                <div class="pt-stats-value">@ViewBag.InProgressCount</div>
+            </div>
+        </div>
+
+        <div class="pt-stats-card pt-stats-success">
+            <div class="pt-stats-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="pt-stats-content">
+                <div class="pt-stats-label">Hoàn Thành</div>
+                <div class="pt-stats-value">
+                    @ViewBag.DoneCount
+                    <span class="pt-stats-note">(@ViewBag.CompletionRate%)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-stats-card pt-stats-danger">
+            <div class="pt-stats-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="pt-stats-content">
+                <div class="pt-stats-label">Quá Hạn</div>
+                <div class="pt-stats-value">@ViewBag.OverdueCount</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW SWITCHER -->
+    <div class="pt-view-switcher">
+        <a href="@Url.Action("Index", new { view = "kanban" })"
+           class="pt-view-btn @(currentView == "kanban" ? "active" : "")">
+            <i class="fas fa-columns"></i>
+            Kanban Board
+        </a>
+        <a href="@Url.Action("ListView")"
+           class="pt-view-btn @(currentView == "list" ? "active" : "")">
+            <i class="fas fa-list"></i>
+            Danh Sách
+        </a>
+        <a href="@Url.Action("CalendarView")"
+           class="pt-view-btn @(currentView == "calendar" ? "active" : "")">
+            <i class="fas fa-calendar-alt"></i>
+            Lịch
+        </a>
+    </div>
+
+    <!-- KANBAN BOARD VIEW (BỎ CỘT TESTING) -->
+    @if (currentView == "kanban")
+    {
+        <div class="pt-kanban-board pt-kanban-3col">
+            <!-- TODO COLUMN -->
+            <div class="pt-kanban-column" data-status="TODO">
+                <div class="pt-column-header pt-column-todo">
+                    <div class="pt-column-title">
+                        <i class="fas fa-circle"></i>
+                        Chưa Bắt Đầu
+                    </div>
+                    <span class="pt-column-count">@ViewBag.TodoCount</span>
+                </div>
+                <div class="pt-column-body" id="todo-column">
+                    @foreach (var userTask in Model.Where(ut => ut.Status == "TODO"))
+                    {
+                        <div class="pt-task-card" data-id="@userTask.UserTaskId" draggable="true">
+                            <div class="pt-task-header">
+                                <span class="pt-task-priority pt-priority-@userTask.Task.Priority?.ToLower()">
+                                    @(userTask.Task.Priority ?? "Medium")
+                                </span>
+                                <div class="pt-task-actions">
+                                    <button onclick="showEditModal(@userTask.UserTaskId)" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteTask(@userTask.UserTaskId)" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <h4 class="pt-task-title">@userTask.Task.TaskName</h4>
+                            @if (!string.IsNullOrEmpty(userTask.Task.Description))
+                            {
+                                <p class="pt-task-desc">@userTask.Task.Description</p>
+                            }
+                            <div class="pt-task-footer">
+                                @if (userTask.Task.Deadline.HasValue)
+                                {
+                                    var isOverdue = userTask.Task.Deadline.Value < DateTime.Now;
+                                    <div class="pt-task-deadline @(isOverdue ? "overdue" : "")">
+                                        <i class="fas fa-clock"></i>
+                                        @userTask.Task.Deadline.Value.ToString("dd/MM/yyyy")
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(userTask.Task.Platform))
+                                {
+                                    <div class="pt-task-platform">
+                                        <i class="fas fa-tag"></i>
+                                        @userTask.Task.Platform
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- IN PROGRESS COLUMN -->
+            <div class="pt-kanban-column" data-status="InProgress">
+                <div class="pt-column-header pt-column-progress">
+                    <div class="pt-column-title">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Đang Làm
+                    </div>
+                    <span class="pt-column-count">@ViewBag.InProgressCount</span>
+                </div>
+                <div class="pt-column-body" id="inprogress-column">
+                    @foreach (var userTask in Model.Where(ut => ut.Status == "InProgress"))
+                    {
+                        <div class="pt-task-card" data-id="@userTask.UserTaskId" draggable="true">
+                            <div class="pt-task-header">
+                                <span class="pt-task-priority pt-priority-@userTask.Task.Priority?.ToLower()">
+                                    @(userTask.Task.Priority ?? "Medium")
+                                </span>
+                                <div class="pt-task-actions">
+                                    <button onclick="showEditModal(@userTask.UserTaskId)" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteTask(@userTask.UserTaskId)" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <h4 class="pt-task-title">@userTask.Task.TaskName</h4>
+                            @if (!string.IsNullOrEmpty(userTask.Task.Description))
+                            {
+                                <p class="pt-task-desc">@userTask.Task.Description</p>
+                            }
+                            <div class="pt-task-footer">
+                                @if (userTask.Task.Deadline.HasValue)
+                                {
+                                    var isOverdue = userTask.Task.Deadline.Value < DateTime.Now;
+                                    <div class="pt-task-deadline @(isOverdue ? "overdue" : "")">
+                                        <i class="fas fa-clock"></i>
+                                        @userTask.Task.Deadline.Value.ToString("dd/MM/yyyy")
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(userTask.Task.Platform))
+                                {
+                                    <div class="pt-task-platform">
+                                        <i class="fas fa-tag"></i>
+                                        @userTask.Task.Platform
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- DONE COLUMN -->
+            <div class="pt-kanban-column" data-status="Done">
+                <div class="pt-column-header pt-column-done">
+                    <div class="pt-column-title">
+                        <i class="fas fa-check-circle"></i>
+                        Hoàn Thành
+                    </div>
+                    <span class="pt-column-count">@ViewBag.DoneCount</span>
+                </div>
+                <div class="pt-column-body" id="done-column">
+                    @foreach (var userTask in Model.Where(ut => ut.Status == "Done"))
+                    {
+                        <div class="pt-task-card" data-id="@userTask.UserTaskId" draggable="true">
+                            <div class="pt-task-header">
+                                <span class="pt-task-priority pt-priority-@userTask.Task.Priority?.ToLower()">
+                                    @(userTask.Task.Priority ?? "Medium")
+                                </span>
+                                <div class="pt-task-actions">
+                                    <button onclick="showEditModal(@userTask.UserTaskId)" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button onclick="deleteTask(@userTask.UserTaskId)" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <h4 class="pt-task-title">@userTask.Task.TaskName</h4>
+                            @if (!string.IsNullOrEmpty(userTask.Task.Description))
+                            {
+                                <p class="pt-task-desc">@userTask.Task.Description</p>
+                            }
+                            <div class="pt-task-footer">
+                                @if (userTask.Task.Deadline.HasValue)
+                                {
+                                    <div class="pt-task-deadline">
+                                        <i class="fas fa-clock"></i>
+                                        @userTask.Task.Deadline.Value.ToString("dd/MM/yyyy")
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(userTask.Task.Platform))
+                                {
+                                    <div class="pt-task-platform">
+                                        <i class="fas fa-tag"></i>
+                                        @userTask.Task.Platform
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- LIST VIEW -->
+    @if (currentView == "list")
+    {
+        <div class="pt-list-view">
+            <!-- FILTERS -->
+            <div class="pt-list-filters">
+                <div class="pt-filter-group">
+                    <label class="pt-filter-label">
+                        <i class="fas fa-filter"></i>
+                        Lọc theo trạng thái:
+                    </label>
+                    <div class="pt-filter-buttons">
+                        <button class="pt-filter-btn active" data-filter="all" onclick="filterTasks('all')">
+                            <i class="fas fa-th"></i>
+                            Tất Cả (@ViewBag.TotalTasks)
+                        </button>
+                        <button class="pt-filter-btn" data-filter="TODO" onclick="filterTasks('TODO')">
+                            <i class="fas fa-circle"></i>
+                            Chưa Làm (@ViewBag.TodoCount)
+                        </button>
+                        <button class="pt-filter-btn" data-filter="InProgress" onclick="filterTasks('InProgress')">
+                            <i class="fas fa-spinner"></i>
+                            Đang Làm (@ViewBag.InProgressCount)
+                        </button>
+                        <button class="pt-filter-btn" data-filter="Done" onclick="filterTasks('Done')">
+                            <i class="fas fa-check-circle"></i>
+                            Hoàn Thành (@ViewBag.DoneCount)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TASKS LIST -->
+            <div class="pt-list-items">
+                @{
+                    int index = 1;
+                }
+                @foreach (var userTask in Model)
+                {
+                    var isOverdue = userTask.Task.Deadline.HasValue &&
+                    userTask.Task.Deadline.Value < DateTime.Now &&
+                    userTask.Status != "Done";
+
+                    <div class="pt-list-item" data-status="@userTask.Status">
+                        <div class="pt-list-item-number">
+                            <span class="pt-item-index">#@index</span>
+                        </div>
+
+                        <div class="pt-list-item-content">
+                            <div class="pt-list-item-header">
+                                <h4 class="pt-list-item-title">
+                                    @if (userTask.Status == "Done")
+                                    {
+                                        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                                    }
+                                    else if (isOverdue)
+                                    {
+                                        <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
+                                    }
+                                    @userTask.Task.TaskName
+                                </h4>
+                                <div class="pt-list-item-badges">
+                                    <span class="pt-task-priority pt-priority-@userTask.Task.Priority?.ToLower()">
+                                        <i class="fas fa-flag"></i>
+                                        @(userTask.Task.Priority ?? "Medium")
+                                    </span>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(userTask.Task.Description))
+                            {
+                                <p class="pt-list-item-desc">@userTask.Task.Description</p>
+                            }
+
+                            <div class="pt-list-item-meta">
+                                @if (userTask.Task.Deadline.HasValue)
+                                {
+                                    <div class="pt-meta-item @(isOverdue ? "pt-meta-overdue" : "")">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span>@userTask.Task.Deadline.Value.ToString("dd/MM/yyyy")</span>
+                                        @if (isOverdue)
+                                        {
+                                            <span class="pt-meta-badge">Quá hạn</span>
+                                        }
+                                        else if (userTask.Task.Deadline.Value.Date == DateTime.Today)
+                                        {
+                                            <span class="pt-meta-badge pt-meta-today">Hôm nay</span>
+                                        }
+                                    </div>
+                                }
+                                @if (!string.IsNullOrEmpty(userTask.Task.Platform))
+                                {
+                                    <div class="pt-meta-item">
+                                        <i class="fas fa-tag"></i>
+                                        <span>@userTask.Task.Platform</span>
+                                    </div>
+                                }
+                                <div class="pt-meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>@userTask.Task.CreatedAt?.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-list-item-status">
+                            <select class="pt-status-select" data-id="@userTask.UserTaskId" onchange="updateTaskStatus(this)">
+                                <option value="TODO" selected="@(userTask.Status == "TODO")">Chưa Bắt Đầu</option>
+                                <option value="InProgress" selected="@(userTask.Status == "InProgress")">Đang Làm</option>
+                                <option value="Done" selected="@(userTask.Status == "Done")">Hoàn Thành</option>
+                            </select>
+                        </div>
+
+                        <div class="pt-list-item-actions">
+                            <button class="pt-action-btn" onclick="showEditModal(@userTask.UserTaskId)" title="Chỉnh sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="pt-action-btn pt-action-delete" onclick="deleteTask(@userTask.UserTaskId)" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    index++;
+                }
+            </div>
+        </div>
+    }
+
+    <!-- CALENDAR VIEW -->
+    @if (currentView == "calendar")
+    {
+        <div class="pt-calendar-view">
+            <div id="calendar"></div>
+        </div>
+    }
+</div>
+
+<!-- CREATE/EDIT MODAL (BỎ STATUS TESTING) -->
+<div class="pt-modal-overlay" id="taskModal">
+    <div class="pt-modal-card">
+        <div class="pt-modal-header">
+            <h3 id="modalTitle">
+                <i class="fas fa-plus-circle"></i>
+                Tạo Công Việc Mới
+            </h3>
+            <button class="pt-modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="pt-modal-body">
+            <form id="taskForm">
+                <input type="hidden" id="userTaskId" value="0">
+
+                <div class="pt-form-group">
+                    <label class="pt-form-label required">Tên Công Việc</label>
+                    <input type="text" class="pt-form-control" id="taskName" required>
+                </div>
+
+                <div class="pt-form-group">
+                    <label class="pt-form-label">Mô Tả</label>
+                    <textarea class="pt-form-control" id="description" rows="3"></textarea>
+                </div>
+
+                <div class="pt-row">
+                    <div class="pt-col-half">
+                        <label class="pt-form-label">Platform</label>
+                        <input type="text" class="pt-form-control" id="platform" placeholder="Web, Mobile, API...">
+                    </div>
+
+                    <div class="pt-col-half">
+                        <label class="pt-form-label">Ưu Tiên</label>
+                        <select class="pt-form-control" id="priority">
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-form-group">
+                    <label class="pt-form-label">Deadline</label>
+                    <input type="date" class="pt-form-control" id="deadline">
+                </div>
+
+                <div class="pt-modal-footer">
+                    <button type="button" class="pt-btn pt-btn-secondary" onclick="closeModal()">Hủy</button>
+                    <button type="submit" class="pt-btn pt-btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i>
+                        Lưu Công Việc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (currentView == "calendar")
+{
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+}
+
+<script src="~/js/personal-task.js"></script>

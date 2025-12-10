@@ -1215,11 +1215,12 @@ namespace TMD.Controllers
 			});
 		}
 
-		// ============================================
-		// IMPROVED CHECK-IN - Prevent Multiple Check-ins
+		// ========== StaffController.cs - UPDATED CHECK-IN/OUT METHODS ==========
+		// Thay thế 2 method CheckIn và CheckOut trong StaffController.cs
+
 		[HttpPost]
 		[RequestSizeLimit(10_485_760)]
-		public async System.Threading.Tasks.Task<IActionResult> CheckIn([FromForm] CheckInRequest request)
+		public async Task<IActionResult> CheckIn([FromForm] CheckInRequest request)
 		{
 			if (!IsAuthenticated())
 				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
@@ -1242,8 +1243,8 @@ namespace TMD.Controllers
 					checkInTime = checkInTimeStr
 				});
 			}
-			
-			// ✅ ẢNH TÙY CHỌN
+
+			// ✅ ẢNH TÙY CHỌN (không bắt buộc)
 			string photoPath = null;
 			if (request.Photo != null && request.Photo.Length > 0)
 			{
@@ -1275,34 +1276,38 @@ namespace TMD.Controllers
 				}
 			}
 
-			// ✅ GPS BẮT BUỘC
-			if (request.Latitude == 0 || request.Longitude == 0)
-				return Json(new { success = false, message = "Không thể lấy vị trí GPS. Vui lòng bật GPS và thử lại" });
+			// ✅ GPS TÙY CHỌN (không bắt buộc, nếu = 0 thì không có GPS)
+			bool hasGPS = request.Latitude != 0 && request.Longitude != 0;
 
 			try
 			{
-				// ✅ ĐỌC CONFIG VỚI FALLBACK AN TOÀN
 				var configs = await _context.SystemSettings
 					.Where(c => c.IsActive == true && c.IsEnabled == true)
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
-				// ✅ LẤY GIÁ TRỊ VỚI FALLBACK
 				var standardStartTimeStr = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME") ?? "09:00";
-
-				// ✅ VALIDATE KHÔNG NULL/EMPTY
 				if (string.IsNullOrWhiteSpace(standardStartTimeStr))
 					standardStartTimeStr = "09:00";
 
-				// ✅ PARSE AN TOÀN
 				TimeOnly standardStartTime;
 				if (!TimeOnly.TryParse(standardStartTimeStr, out standardStartTime))
 				{
 					standardStartTime = TimeOnly.Parse("09:00");
 				}
 
+				// ✅ NGƯỠNG TRỄ: 09:01 (9 giờ 1 phút)
+				var lateThreshold = standardStartTime.AddMinutes(1);
 				var checkInTime = new TimeOnly(serverNow.Hour, serverNow.Minute, serverNow.Second);
-				var isLate = checkInTime > standardStartTime;
-				var address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
+
+				// ✅ LOGIC TRỄ: CHỈ TRỄ KHI > 09:01
+				var isLate = checkInTime > lateThreshold;
+
+				// ✅ LẤY ĐỊA CHỈ NẾU CÓ GPS
+				string address = "Không có GPS";
+				if (hasGPS)
+				{
+					address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
+				}
 
 				var attendance = existingAttendance ?? new Attendance
 				{
@@ -1312,14 +1317,27 @@ namespace TMD.Controllers
 				};
 
 				attendance.CheckInTime = serverNow;
-				attendance.CheckInLatitude = request.Latitude;
-				attendance.CheckInLongitude = request.Longitude;
-				attendance.CheckInAddress = address;
+
+				// ✅ CHỈ LƯU GPS NẾU CÓ
+				if (hasGPS)
+				{
+					attendance.CheckInLatitude = request.Latitude;
+					attendance.CheckInLongitude = request.Longitude;
+					attendance.CheckInAddress = address;
+					attendance.IsWithinGeofence = true;
+				}
+				else
+				{
+					attendance.CheckInLatitude = null;
+					attendance.CheckInLongitude = null;
+					attendance.CheckInAddress = "Không có GPS";
+					attendance.IsWithinGeofence = null;
+				}
+
 				attendance.CheckInPhotos = photoPath;
 				attendance.CheckInNotes = request.Notes;
 				attendance.CheckInIpaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 				attendance.IsLate = isLate;
-				attendance.IsWithinGeofence = true;
 				attendance.TotalHours = 0;
 
 				if (existingAttendance == null)
@@ -1349,7 +1367,7 @@ namespace TMD.Controllers
 				{
 					await _notificationService.SendToAdminsAsync(
 						"Nhân viên đi trễ",
-						$"{user?.FullName ?? "Nhân viên"} vừa check-in muộn lúc {serverNow:HH:mm:ss}",
+						$"{user?.FullName ?? "Nhân viên"} vừa check-in muộn lúc {serverNow:HH:mm:ss} (sau 09:01)",
 						"warning",
 						$"/Admin/AttendanceHistory?userId={userId}&fromDate={serverNow:yyyy-MM-dd}&toDate={serverNow:yyyy-MM-dd}"
 					);
@@ -1358,14 +1376,15 @@ namespace TMD.Controllers
 				return Json(new
 				{
 					success = true,
-					message = $" Check-in thành công!\n Thời gian: {serverNow:HH:mm:ss}\n📍 Vị trí: {address}" +
-							  (isLate ? $"\n⚠ Ghi nhận: Đến sau {standardStartTime:HH:mm}" : "\n Đúng giờ!") +
-							  (photoPath == null ? "\n Không có ảnh check-in" : ""),
+					message = $"✅ Check-in thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n📍 Vị trí: {address}" +
+							  (isLate ? $"\n⚠️ Ghi nhận: Đến sau {lateThreshold:HH:mm}" : "\n✨ Đúng giờ!") +
+							  (photoPath == null ? "\n📷 Không có ảnh check-in" : ""),
 					serverTime = serverNow.ToString("yyyy-MM-dd HH:mm:ss"),
 					checkInTime = serverNow.ToString("HH:mm:ss"),
 					address = address,
 					isLate = isLate,
-					hasPhoto = photoPath != null
+					hasPhoto = photoPath != null,
+					hasGPS = hasGPS
 				});
 			}
 			catch (Exception ex)
@@ -1374,16 +1393,13 @@ namespace TMD.Controllers
 			}
 		}
 
+		// ============================================
+		// STAFF CONTROLLER - CHECKOUT WITH WEEKEND OT LOGIC
+		// ============================================
 
-		// ============================================
-		// IMPROVED CHECK-OUT - Calculate Exact Working Hours
-		// ============================================
-		// ============================================
-		// CHECK-OUT - ĐÃ SỬA ĐỌC TỪ SystemSettings
-		// ============================================
 		[HttpPost]
 		[RequestSizeLimit(10_485_760)]
-		public async System.Threading.Tasks.Task<IActionResult> CheckOut([FromForm] CheckOutRequest request)
+		public async Task<IActionResult> CheckOut([FromForm] CheckOutRequest request)
 		{
 			if (!IsAuthenticated())
 				return Json(new { success = false, message = "Phiên đăng nhập hết hạn" });
@@ -1399,7 +1415,7 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = "Bạn chưa check-in hôm nay" });
 
 			if (attendance.CheckOutTime.HasValue)
-				return Json(new { success = false, message = "Bạn đã check-out hôm nay rồi! Chúc bạn một ngày vui vẻ!", isCompleted = true });
+				return Json(new { success = false, message = "Bạn đã check-out hôm nay rồi!", isCompleted = true });
 
 			// ✅ ẢNH TÙY CHỌN
 			string photoPath = null;
@@ -1433,71 +1449,30 @@ namespace TMD.Controllers
 				}
 			}
 
-			// ✅ GPS BẮT BUỘC
-			if (request.Latitude == 0 || request.Longitude == 0)
-			{
-				return Json(new
-				{
-					success = false,
-					message = "⚠️ Không thể lấy vị trí GPS. Vui lòng đợi GPS ổn định và thử lại."
-				});
-			}
-
-			if (Math.Abs(request.Latitude) > 90 || Math.Abs(request.Longitude) > 180)
-			{
-				return Json(new
-				{
-					success = false,
-					message = "⚠️ Tọa độ GPS không hợp lệ. Vui lòng thử lại."
-				});
-			}
+			// ✅ GPS TÙY CHỌN
+			bool hasGPS = request.Latitude != 0 && request.Longitude != 0;
 
 			try
 			{
-				// ✅ ĐỌC CONFIG VỚI FALLBACK AN TOÀN
 				var configs = await _context.SystemSettings
 					.Where(c => c.IsActive == true && c.IsEnabled == true)
 					.ToDictionaryAsync(c => c.SettingKey, c => c.SettingValue);
 
-				// ✅ LẤY GIÁ TRỊ VỚI FALLBACK
-				var standardEndTimeStr = configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME") ?? "17:00";
-				var standardStartTimeStr = configs.GetValueOrDefault("CHECK_IN_STANDARD_TIME") ?? "08:00";
-				var standardHoursPerDayStr = configs.GetValueOrDefault("STANDARD_HOURS_PER_DAY") ?? "8";
-
-				// ✅ VALIDATE KHÔNG NULL/EMPTY
+				var standardEndTimeStr = configs.GetValueOrDefault("CHECK_OUT_STANDARD_TIME") ?? "22:00";
 				if (string.IsNullOrWhiteSpace(standardEndTimeStr))
-					standardEndTimeStr = "17:00";
-				if (string.IsNullOrWhiteSpace(standardStartTimeStr))
-					standardStartTimeStr = "08:00";
-				if (string.IsNullOrWhiteSpace(standardHoursPerDayStr))
-					standardHoursPerDayStr = "8";
+					standardEndTimeStr = "22:00";
 
-				// ✅ PARSE AN TOÀN
 				TimeOnly standardEndTime;
 				if (!TimeOnly.TryParse(standardEndTimeStr, out standardEndTime))
-				{
-					standardEndTime = TimeOnly.Parse("17:00");
-				}
+					standardEndTime = TimeOnly.Parse("22:00");
 
-				TimeOnly standardStartTime;
-				if (!TimeOnly.TryParse(standardStartTimeStr, out standardStartTime))
-				{
-					standardStartTime = TimeOnly.Parse("08:00");
-				}
-
-				decimal standardHoursPerDay;
-				if (!decimal.TryParse(standardHoursPerDayStr, out standardHoursPerDay))
-				{
-					standardHoursPerDay = 8;
-				}
-
-				var address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
+				// ✅ LẤY ĐỊA CHỈ NẾU CÓ GPS
+				string address = "Không có GPS";
+				if (hasGPS)
+					address = await GetAddressFromCoordinates(request.Latitude, request.Longitude);
 
 				var duration = serverNow - attendance.CheckInTime.Value;
 				var totalHours = (decimal)duration.TotalHours;
-				var hours = duration.Hours;
-				var minutes = duration.Minutes;
-				var seconds = duration.Seconds;
 
 				var checkOutTime = new TimeOnly(serverNow.Hour, serverNow.Minute, serverNow.Second);
 				bool isEarlyCheckout = checkOutTime < standardEndTime;
@@ -1509,25 +1484,115 @@ namespace TMD.Controllers
 					penaltyHours = (decimal)missedTime.TotalHours;
 				}
 
-				attendance.CheckOutTime = serverNow;
-				attendance.CheckOutLatitude = request.Latitude;
-				attendance.CheckOutLongitude = request.Longitude;
-				attendance.CheckOutAddress = address;
-				attendance.CheckOutPhotos = photoPath;
-				attendance.CheckOutNotes = request.Notes;
-				attendance.CheckOutIpaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-				attendance.TotalHours = totalHours;
-				attendance.ActualWorkHours = totalHours;
+				// ============================================
+				// ✅ LOGIC CUỐI TUẦN - TỰ ĐỘNG TÍNH OT
+				// ============================================
+				var dayOfWeek = serverNow.DayOfWeek;
+				bool isSaturday = dayOfWeek == DayOfWeek.Saturday;
+				bool isSunday = dayOfWeek == DayOfWeek.Sunday;
 
-				if (isEarlyCheckout)
+				decimal overtimeHours = 0;
+				decimal regularHours = totalHours;
+				string overtimeNote = "";
+				bool isWeekendOvertime = false;
+
+				if (isSunday)
 				{
-					attendance.CheckOutNotes = $"{request.Notes ?? ""} [Checkout sớm {penaltyHours:F2}h - Thiếu {penaltyHours:F2}h so với chuẩn]".Trim();
+					// ✅ CHỦ NHẬT: TOÀN BỘ LÀ OT
+					overtimeHours = totalHours;
+					regularHours = 0;
+					overtimeNote = "[Chủ nhật - Toàn bộ tính OT]";
+					isWeekendOvertime = true;
 				}
+				else if (isSaturday)
+				{
+					// ✅ THỨ 7: CHIỀU LÀ OT (sau 12:00)
+					var noon = new TimeOnly(12, 0);
+					var checkInTime = new TimeOnly(
+						attendance.CheckInTime.Value.Hour,
+						attendance.CheckInTime.Value.Minute,
+						attendance.CheckInTime.Value.Second
+					);
+
+					if (checkOutTime > noon)
+					{
+						if (checkInTime < noon)
+						{
+							// Check-in trước 12:00, check-out sau 12:00
+							var morningDuration = noon.ToTimeSpan() - checkInTime.ToTimeSpan();
+							var afternoonDuration = checkOutTime.ToTimeSpan() - noon.ToTimeSpan();
+
+							regularHours = (decimal)morningDuration.TotalHours;
+							overtimeHours = (decimal)afternoonDuration.TotalHours;
+							overtimeNote = $"[Thứ 7 - Sáng: {regularHours:F2}h, Chiều OT: {overtimeHours:F2}h]";
+							isWeekendOvertime = true;
+						}
+						else
+						{
+							// Check-in sau 12:00 → toàn bộ là OT
+							overtimeHours = totalHours;
+							regularHours = 0;
+							overtimeNote = "[Thứ 7 chiều - Toàn bộ tính OT]";
+							isWeekendOvertime = true;
+						}
+					}
+					else
+					{
+						// Check-out trước 12:00 → không có OT
+						regularHours = totalHours;
+						overtimeHours = 0;
+						overtimeNote = "[Thứ 7 sáng - Không tính OT]";
+					}
+				}
+
+				// ✅ CẬP NHẬT ATTENDANCE
+				attendance.CheckOutTime = serverNow;
+
+				if (hasGPS)
+				{
+					attendance.CheckOutLatitude = request.Latitude;
+					attendance.CheckOutLongitude = request.Longitude;
+					attendance.CheckOutAddress = address;
+				}
+				else
+				{
+					attendance.CheckOutLatitude = null;
+					attendance.CheckOutLongitude = null;
+					attendance.CheckOutAddress = "Không có GPS";
+				}
+
+				attendance.CheckOutPhotos = photoPath;
+				attendance.CheckOutIpaddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+				// ✅ LƯU TỔNG GIỜ VÀ GIỜ CHÍNH THỨC
+				attendance.TotalHours = totalHours;
+				attendance.ActualWorkHours = regularHours;
+
+				// ✅ TỰ ĐỘNG GHI NHẬN OT (KHÔNG CẦN REQUEST/DUYỆT)
+				if (isWeekendOvertime && overtimeHours > 0)
+				{
+					attendance.ApprovedOvertimeHours = overtimeHours;
+					attendance.IsOvertimeApproved = true;
+				}
+
+				// ✅ GHI CHÚ
+				var notes = new List<string>();
+				if (!string.IsNullOrEmpty(request.Notes))
+					notes.Add(request.Notes);
+
+				if (isEarlyCheckout && !isWeekendOvertime)
+					notes.Add($"Checkout sớm {penaltyHours:F2}h - Thiếu {penaltyHours:F2}h so với chuẩn");
+
+				if (!string.IsNullOrEmpty(overtimeNote))
+					notes.Add(overtimeNote);
+
+				attendance.CheckOutNotes = string.Join(" | ", notes.Where(n => !string.IsNullOrEmpty(n)));
 
 				await _context.SaveChangesAsync();
 
 				var user = await _context.Users.FindAsync(userId);
 
+				// ✅ GỬI TELEGRAM NOTIFICATION
 				try
 				{
 					await _telegramService.SendCheckOutNotificationAsync(
@@ -1535,7 +1600,7 @@ namespace TMD.Controllers
 						user?.Username ?? "N/A",
 						serverNow,
 						totalHours,
-						0,
+						overtimeHours,
 						attendance.CheckOutNotes
 					);
 				}
@@ -1544,65 +1609,83 @@ namespace TMD.Controllers
 					Console.WriteLine($"Telegram notification failed: {ex.Message}");
 				}
 
+				// ✅ LOG AUDIT
 				await _auditHelper.LogDetailedAsync(
 					userId, "CHECK_OUT", "Attendance", attendance.AttendanceId,
 					null, new
 					{
 						CheckOutTime = serverNow.ToString("HH:mm:ss"),
-						TotalHours = $"{hours:D2}:{minutes:D2}:{seconds:D2}",
+						TotalHours = $"{totalHours:F2}h",
+						RegularHours = $"{regularHours:F2}h",
+						OvertimeHours = $"{overtimeHours:F2}h",
 						Address = address,
 						IsEarlyCheckout = isEarlyCheckout,
-						PenaltyHours = penaltyHours,
-						HasPhoto = photoPath != null
+						HasPhoto = photoPath != null,
+						HasGPS = hasGPS,
+						IsWeekendOvertime = isWeekendOvertime,
+						DayOfWeek = dayOfWeek.ToString()
 					},
-					$"Check-out tại {address} - Tổng giờ: {hours:D2}:{minutes:D2}:{seconds:D2}",
+					$"Check-out tại {address} - Tổng: {totalHours:F2}h | Chính thức: {regularHours:F2}h | OT: {overtimeHours:F2}h",
 					new Dictionary<string, object> {
-				{ "CheckOutTime", serverNow.ToString("HH:mm:ss") },
-				{ "TotalHours", $"{hours:D2}:{minutes:D2}:{seconds:D2}" },
-				{ "StandardEndTime", standardEndTime.ToString("HH:mm") },
-				{ "IsEarlyCheckout", isEarlyCheckout }
+		{ "TotalHours", $"{totalHours:F2}h" },
+		{ "RegularHours", $"{regularHours:F2}h" },
+		{ "OvertimeHours", $"{overtimeHours:F2}h" },
+		{ "IsWeekend", isWeekendOvertime }
 					}
 				);
 
-				if (isEarlyCheckout)
+				// ✅ THÔNG BÁO CHO ADMIN NẾU CHECK-OUT SỚM (NGÀY THƯỜNG)
+				if (isEarlyCheckout && !isWeekendOvertime)
 				{
 					await _notificationService.SendToAdminsAsync(
 						"Nhân viên checkout sớm",
-						$"{user?.FullName ?? "Nhân viên"} vừa checkout sớm lúc {serverNow:HH:mm:ss} (Chuẩn: {standardEndTime:HH:mm})",
+						$"{user?.FullName ?? "Nhân viên"} checkout sớm lúc {serverNow:HH:mm:ss} (Chuẩn: {standardEndTime:HH:mm})",
 						"warning",
 						$"/Admin/AttendanceHistory?userId={userId}&fromDate={serverNow:yyyy-MM-dd}&toDate={serverNow:yyyy-MM-dd}"
 					);
 				}
 
-				string message = $" Check-out thành công!\n Thời gian: {serverNow:HH:mm:ss}\n Tổng giờ làm: {hours:D2}:{minutes:D2}:{seconds:D2}\n📍 Vị trí: {address}";
+				// ✅ TẠO MESSAGE TRẢ VỀ
+				string message = $"✅ Check-out thành công!\n⏰ Thời gian: {serverNow:HH:mm:ss}\n⏱️ Tổng giờ làm: {totalHours:F2}h\n📍 Vị trí: {address}";
 
-				if (isEarlyCheckout)
+				if (isWeekendOvertime)
 				{
-					message += $"\n\n⚠️ Lưu ý: Bạn checkout sớm hơn {penaltyHours:F2}h so với giờ chuẩn ({standardEndTime:HH:mm})";
+					message += $"\n\n💰 TĂNG CA CUỐI TUẦN";
+					message += $"\n• Giờ chính thức: {regularHours:F2}h";
+					message += $"\n• Giờ tăng ca: {overtimeHours:F2}h";
+					message += $"\n• Lý do: {(isSunday ? "Làm Chủ nhật" : "Làm Thứ 7 chiều")}";
+					message += $"\n• ✅ Tự động ghi nhận (Không cần duyệt)";
+				}
+				else if (isEarlyCheckout)
+				{
+					message += $"\n\n⚠️ Lưu ý: Checkout sớm {penaltyHours:F2}h so với giờ chuẩn ({standardEndTime:HH:mm})";
 				}
 				else
 				{
-					message += "\n\n Chúc bạn một buổi tối vui vẻ!";
+					message += "\n\n🎉 Chúc bạn một buổi tối vui vẻ!";
 				}
 
 				if (photoPath == null)
-				{
-					message += "\n Không có ảnh check-out";
-				}
+					message += "\n📷 Không có ảnh check-out";
 
 				return Json(new
 				{
 					success = true,
 					message = message,
 					totalHours = totalHours,
-					totalHoursFormatted = $"{hours:D2}:{minutes:D2}:{seconds:D2}",
+					regularHours = regularHours,
+					overtimeHours = overtimeHours,
+					totalHoursFormatted = $"{totalHours:F2}h",
 					serverTime = serverNow.ToString("yyyy-MM-dd HH:mm:ss"),
 					checkOutTime = serverNow.ToString("HH:mm:ss"),
 					address = address,
 					isEarlyCheckout = isEarlyCheckout,
 					penaltyHours = penaltyHours,
 					standardEndTime = standardEndTime.ToString("HH:mm"),
-					hasPhoto = photoPath != null
+					hasPhoto = photoPath != null,
+					hasGPS = hasGPS,
+					isWeekendOvertime = isWeekendOvertime,
+					overtimeAutoApproved = isWeekendOvertime && overtimeHours > 0
 				});
 			}
 			catch (Exception ex)

@@ -68,6 +68,7 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\js\bootstrap.bund
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\project-management.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\attendance-history.js
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\personal-task.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\css\task-create.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery-validation\dist\additional-methods.min.js
@@ -109,6 +110,7 @@ E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\js\verify-otp.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery\dist\jquery.slim.min.js
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\css\fg-pass.css
 E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\lib\jquery-validation\dist\jquery.validate.js
+E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\wwwroot\css\personal-task.css
 wwwroot\css\admin-request.css
 wwwroot\css\attendance-history.css
 wwwroot\css\attendance-management.css
@@ -129,6 +131,7 @@ wwwroot\css\loginhistory.css
 wwwroot\css\my-department.css
 wwwroot\css\passwordresethistory.css
 wwwroot\css\pending-requests.css
+wwwroot\css\personal-task.css
 wwwroot\css\profile.css
 wwwroot\css\project-management.css
 wwwroot\css\recycle-bin.css
@@ -155,6 +158,7 @@ wwwroot\js\attendance-history.js
 wwwroot\js\import-users.js
 wwwroot\js\myprojectdetail.js
 wwwroot\js\notification-hub.js
+wwwroot\js\personal-task.js
 wwwroot\js\project-management.js
 wwwroot\js\resetpass.js
 wwwroot\js\site.js

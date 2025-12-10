@@ -2,9 +2,105 @@
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var isSuperAdmin = ViewBag.IsSuperAdmin ?? false;
 }
 <link href="~/css/user-management.css" rel="stylesheet" />
+<style>
+    /* =====================================================
+       FILTERS AND SEARCH STYLES
+       ===================================================== */
+    .um-mb-4 {
+        margin-bottom: 2rem; /* Add margin-bottom for spacing */
+    }
 
+    /* Form element styles */
+    .um-form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0.5rem;
+    }
+
+    .um-form-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+    }
+
+    .um-form-control,
+    .um-form-select {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        color: var(--text);
+        background-color: white;
+        transition: all 0.2s ease;
+        width: 100%;
+        /* Loại bỏ style mặc định cho select */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .um-form-select {
+        cursor: pointer;
+        /* Thêm icon mũi tên cho select */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 0.65em 0.65em;
+        padding-right: 2.5rem;
+    }
+
+        .um-form-control:focus,
+        .um-form-select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            outline: none;
+        }
+
+    /* Input group for search button */
+    .um-input-group {
+        display: flex;
+        width: 100%;
+    }
+
+        .um-input-group .um-form-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            flex-grow: 1;
+        }
+
+        .um-input-group .um-btn-icon {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 0.75rem 1rem; /* Match height */
+            border: 1px solid var(--secondary);
+            border-left: none;
+        }
+
+    /* Flex utilities for alignment (sử dụng các biến CSS đã có) */
+    .um-gap-3 {
+        gap: 1rem;
+    }
+
+    .um-align-end {
+        align-items: flex-end;
+    }
+
+    .um-flex-wrap {
+        flex-wrap: wrap;
+    }
+
+    /* Dark mode adjustments */
+    body.staff-dark-mode .um-form-control,
+    body.staff-dark-mode .um-form-select {
+        background-color: var(--dark);
+        color: var(--text);
+        border-color: var(--border);
+    }
+</style>
 <div class="um-container">
     <header class="um-page-header">
         <div class="um-d-flex um-justify-between um-align-center">
@@ -13,115 +109,77 @@
                 <p class="um-page-subtitle">Danh sách tất cả người dùng và công việc của họ</p>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="/Admin/UserTrash" class="um-btn-create" style="background: #ef4444;">
-                    <i class="fas fa-trash-alt"></i> Thùng rác
-                </a>
-                <a href="/Account/Register" class="um-btn-create">
-                    <i class="fas fa-user-plus"></i> Tạo người dùng mới
-                </a>
-                <a href="/Admin/ImportUsers" class="um-btn-create" style="background: #10b981;">
-                    <i class="fas fa-file-excel"></i> Import Excel
-                </a>
-                <button id="btnExportExcel" class="um-btn-create" style="background: #0891b2;">
-                    <i class="fas fa-file-download"></i> Xuất Excel
-                </button>
+                @* ✅ CHỈ SUPER ADMIN MỚI THẤY CÁC NÚT NÀY *@
+                @if (isSuperAdmin)
+                {
+                    <a href="/Admin/UserTrash" class="um-btn-create" style="background: #ef4444;">
+                        <i class="fas fa-trash-alt"></i> Thùng rác
+                    </a>
+                    <a href="/Account/Register" class="um-btn-create">
+                        <i class="fas fa-user-plus"></i> Tạo người dùng mới
+                    </a>
+                    <a href="/Admin/ImportUsers" class="um-btn-create" style="background: #10b981;">
+                        <i class="fas fa-file-excel"></i> Import Excel
+                    </a>
+                    <button id="btnExportExcel" class="um-btn-create" style="background: #0891b2;">
+                        <i class="fas fa-file-download"></i> Xuất Excel
+                    </button>
+                }
             </div>
         </div>
     </header>
-
-    <section class="um-stats-grid">
-        <div class="um-stats-card um-stats-primary">
-            <div class="um-stats-icon"><i class="fas fa-users"></i></div>
-            <div class="um-stats-content">
-                <div class="um-stats-label">Tổng người dùng</div>
-                <div class="um-stats-value">@ViewBag.TotalUsers</div>
-            </div>
-        </div>
-
-        <div class="um-stats-card um-stats-success">
-            <div class="um-stats-icon"><i class="fas fa-user-check"></i></div>
-            <div class="um-stats-content">
-                <div class="um-stats-label">Đang hoạt động</div>
-                <div class="um-stats-value">@ViewBag.ActiveUsers</div>
-            </div>
-        </div>
-
-        <div class="um-stats-card um-stats-warning">
-            <div class="um-stats-icon"><i class="fas fa-crown"></i></div>
-            <div class="um-stats-content">
-                <div class="um-stats-label">Vô hiệu hóa</div>
-                <div class="um-stats-value">0</div>
-            </div>
-        </div>
-
-        <div class="um-stats-card um-stats-info">
-            <div class="um-stats-icon"><i class="fas fa-building"></i></div>
-            <div class="um-stats-content">
-                <div class="um-stats-label">Phòng ban</div>
-                <div class="um-stats-value">@ViewBag.TotalDepartments</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="um-card um-mb-4">
-        <div class="um-filters-header">
-            <h6><i class="fas fa-filter"></i> Bộ lọc và tìm kiếm</h6>
-        </div>
-
+    <div class="um-filter-section um-card um-mb-4">
         <div class="um-card-body">
-            <form method="get" action="@Url.Action("UserList")" id="filterForm">
-                <div class="um-row">
-                    <div class="um-col-4">
-                        <label class="um-form-label"><i class="fas fa-search"></i> Tìm kiếm</label>
-                        <div class="um-search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" name="search" id="searchInput"
-                                   class="um-form-control"
-                                   placeholder="Tên, username, email, SĐT..."
-                                   value="@Model.Search" />
-                        </div>
-                    </div>
+            @* Form sẽ gửi GET request đến /Admin/UserList với các tham số search, roleName, departmentId *@
+            <form id="filterForm" method="get" class="um-d-flex um-gap-3 um-align-end um-flex-wrap">
 
-                    <div class="um-col-2">
-                        <label class="um-form-label"><i class="fas fa-building"></i> Phòng ban</label>
-                        <select name="departmentId" id="deptFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
-                            <option value="">Tất cả phòng ban</option>
-                            @{
-                                var depts = Model.Departments ?? new List<TMD.Models.Department>();
-                                foreach (var dept in depts)
-                                {
-                                    var isSelected = Model.DepartmentId == dept.DepartmentId;
-                                    <option value="@dept.DepartmentId" selected="@isSelected">@dept.DepartmentName</option>
-                                }
-                            }
-                        </select>
+                @* 1. Search Box *@
+                <div class="um-form-group um-flex-grow-1" style="min-width: 250px;">
+                    <label for="search" class="um-form-label">Tìm kiếm (Tên/Username/Email/SĐT)</label>
+                    <div class="um-input-group">
+                        <input type="text" class="um-form-control" id="search" name="search" value="@Model.Search" placeholder="Nhập từ khóa tìm kiếm..." />
+                        <button type="submit" class="um-btn-icon" style="background: var(--secondary); color: white;"><i class="fas fa-search"></i></button>
                     </div>
+                </div>
 
-                    <div class="um-col-2">
-                        <label class="um-form-label"><i class="fas fa-user-tag"></i> Vai trò</label>
-                        <select name="roleName" id="roleFilter" class="um-form-control" onchange="document.getElementById('filterForm').submit()">
-                            <option value="">Tất cả vai trò</option>
-                            @if (Model.Roles != null && Model.Roles.Any())
+                @* 2. Department Filter *@
+                <div class="um-form-group" style="min-width: 150px;">
+                    <label for="departmentId" class="um-form-label">Phòng ban</label>
+                    <select class="um-form-select" id="departmentId" name="departmentId">
+                        <option value="">Tất cả phòng ban</option>
+                        @foreach (var dept in Model.Departments)
+                        {
+                            <option value="@dept.DepartmentId" selected="@(Model.DepartmentId.HasValue && Model.DepartmentId == dept.DepartmentId)">@dept.DepartmentName</option>
+                        }
+                    </select>
+                </div>
+
+                @* 3. Role Filter *@
+                <div class="um-form-group" style="min-width: 150px;">
+                    <label for="roleName" class="um-form-label">Vai trò</label>
+                    <select class="um-form-select" id="roleName" name="roleName">
+                        <option value="">Tất cả vai trò</option>
+                        @foreach (var role in Model.Roles)
+                        {
+                            @* Bỏ qua SupAdmin nếu không phải Super Admin, theo logic của AdminController *@
+                            @if (role.RoleName != "SupAdmin" || isSuperAdmin)
                             {
-                                foreach (var r in Model.Roles)
-                                {
-                                    var isSelected = Model.RoleName == r.RoleName;
-                                    <option value="@r.RoleName" selected="@isSelected">@r.RoleName</option>
-                                }
+                                <option value="@role.RoleName" selected="@(Model.RoleName == role.RoleName)">@role.RoleName</option>
                             }
-                        </select>
-                    </div>
+                        }
+                    </select>
+                </div>
 
-                    <div class="um-col-4 um-flex-end">
-                        <a href="@Url.Action("UserList")" id="resetFilters" class="um-btn um-btn-secondary">
-                            <i class="fas fa-redo"></i> Xóa bộ lọc
-                        </a>
-                    </div>
+                @* 4. Clear Filter Button *@
+                <div>
+                    <a href="/Admin/UserList" class="um-btn" style="background: #e2e8f0; color: var(--text); padding: 0.75rem 1rem;" title="Xóa bộ lọc">
+                        <i class="fas fa-filter-circle-xmark"></i> Xóa
+                    </a>
                 </div>
             </form>
         </div>
-    </section>
-
+    </div>
+    <!-- Table section -->
     <section class="um-card">
         <div class="um-card-header">
             <h5 class="um-mb-0">
@@ -221,14 +279,26 @@
                                     </td>
                                     <td>
                                         <div class="um-action-buttons">
-                                            <a href="/Admin/EditUser/@user.UserId" class="um-action-btn" title="Chỉnh sửa"><i class="fas fa-edit"></i></a>
-                                            <button class="um-action-btn um-action-view" data-id="@user.UserId" title="Xem chi tiết"><i class="fas fa-eye"></i></button>
-                                            <button class="um-action-btn um-action-delete"
-                                                    onclick="moveUserToTrash(@user.UserId, '@Html.Raw(user.FullName.Replace("'", "\\'"))')"
-                                                    title="Xóa">
-                                                <i class="fas fa-trash-alt"></i>
+                                            @* ✅ NÚT XEM CHI TIẾT - TẤT CẢ ĐỀU THẤY *@
+                                            <button class="um-action-btn um-action-view" data-id="@user.UserId" title="Xem chi tiết">
+                                                <i class="fas fa-eye"></i>
                                             </button>
-                                            <a href="/Admin/ResetUserPassword/@user.UserId" class="um-action-btn" title="Reset mật khẩu"><i class="fas fa-key"></i></a>
+
+                                            @* ✅ CHỈ SUPER ADMIN MỚI THẤY NÚT SỬA, XÓA VÀ RESET MẬT KHẨU *@
+                                            @if (isSuperAdmin)
+                                            {
+                                                <a href="/Admin/EditUser/@user.UserId" class="um-action-btn" title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button class="um-action-btn um-action-delete"
+                                                        onclick="moveUserToTrash(@user.UserId, '@Html.Raw(user.FullName.Replace("'", "\\'"))')"
+                                                        title="Xóa">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                                <a href="/Admin/ResetUserPassword/@user.UserId" class="um-action-btn" title="Reset mật khẩu">
+                                                    <i class="fas fa-key"></i>
+                                                </a>
+                                            }
                                         </div>
                                     </td>
                                 </tr>
@@ -309,29 +379,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <script>
-        // ========================================
-        // SERVER-SIDE SEARCH DEBOUNCE
-        // ========================================
-        let timeout = null;
-        const searchInput = document.getElementById('searchInput');
-        const filterForm = document.getElementById('filterForm');
-
-        if(searchInput && filterForm) {
-            searchInput.addEventListener('keyup', function (e) {
-                clearTimeout(timeout);
-                timeout = setTimeout(function () {
-                    filterForm.submit();
-                }, 600);
-            });
-
-            searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    clearTimeout(timeout);
-                    filterForm.submit();
-                }
-            });
-        }
+        const isSuperAdmin = @Json.Serialize(isSuperAdmin);
 
         // ========================================
         // MODAL CONTROLS
@@ -351,8 +399,39 @@
         if(modalClose) modalClose.addEventListener('click', closeModal);
         if(modalOverlay) modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) closeModal();
-        });
+            });// ========================================
+        // FILTERING LOGIC - Lọc ngay lập tức khi thay đổi
+        // ========================================
+        const filterForm = document.getElementById('filterForm');
+        const departmentSelect = document.getElementById('departmentId');
+        const roleSelect = document.getElementById('roleName');
+        const searchInput = document.getElementById('search');
 
+        // 1. Lọc ngay lập tức cho dropdowns (Phòng ban, Vai trò)
+        if (departmentSelect) {
+            departmentSelect.addEventListener('change', function() {
+                filterForm.submit(); // Gửi form ngay khi thay đổi
+            });
+        }
+
+        if (roleSelect) {
+            roleSelect.addEventListener('change', function() {
+                filterForm.submit(); // Gửi form ngay khi thay đổi
+            });
+        }
+
+        // 2. Lọc có độ trễ (debounce) cho ô Search
+        let searchTimeout = null;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                // Đợi 500ms sau khi người dùng ngừng gõ thì mới gửi form
+                searchTimeout = setTimeout(function() {
+                    filterForm.submit();
+                }, 500);
+            });
+        }
         // ========================================
         // VIEW DETAIL BUTTONS
         // ========================================
@@ -412,9 +491,19 @@
         });
 
         // ========================================
-        // ✅ CHUYỂN USER VÀO THÙNG RÁC
+        // ✅ HÀM XÓA - KIỂM TRA QUYỀN
         // ========================================
         async function moveUserToTrash(userId, fullName) {
+            if (!isSuperAdmin) {
+                await Swal.fire({
+                    title: 'Không có quyền!',
+                    text: 'Bạn không có quyền xóa người dùng',
+                    icon: 'error',
+                    confirmButtonColor: '#E74C3C'
+                });
+                return;
+            }
+
             const result = await Swal.fire({
                 title: 'Xác nhận xóa',
                 html: `Bạn có chắc muốn chuyển<br><strong>"${fullName}"</strong><br>vào thùng rác?`,
@@ -435,7 +524,7 @@
                     body: JSON.stringify({ userId: userId })
                 });
                 const data = await res.json();
-                
+
                 if (data.success) {
                     await Swal.fire({
                         title: 'Thành công!',
@@ -463,7 +552,7 @@
         }
 
         // ========================================
-        // EXPORT TO EXCEL
+        // EXPORT TO EXCEL (CHỈ SUPER ADMIN)
         // ========================================
         const btnExport = document.getElementById('btnExportExcel');
         if(btnExport){
@@ -475,13 +564,7 @@
                     btn.disabled = true;
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
 
-                    const params = new URLSearchParams({
-                        search: document.getElementById('searchInput')?.value || '',
-                        roleName: document.getElementById('roleFilter')?.value || '',
-                        departmentId: document.getElementById('deptFilter')?.value || ''
-                    });
-
-                    const response = await fetch(`/Admin/ExportUsersToExcel?${params.toString()}`);
+                    const response = await fetch('/Admin/ExportUsersToExcel');
                     const result = await response.json();
 
                     if (!result.success) {
