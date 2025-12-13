@@ -179,8 +179,16 @@
 
     <!-- Task Table Card -->
     <div class="tl-card">
-        <div class="tl-card-header">
-            <h5 class="tl-mb-0"><i class="fas fa-list"></i> Danh sách Task</h5>
+        <div class="tl-card-header tl-d-flex tl-justify-between tl-align-center">
+            <h5 class="tl-mb-0">
+                <i class="fas fa-list tl-me-2"></i>
+                Danh sách Task
+            </h5>
+
+            <button type="button" id="btnExportTasks" class="tl-btn-secondary">
+                <i class="fas fa-file-excel tl-me-1"></i>
+                Export Excel
+            </button>
         </div>
         <div class="tl-card-body-table">
             <div class="tl-table-wrapper">
@@ -922,6 +930,43 @@
                 })
                 .catch(() => showToast('Lỗi xảy ra!', 'danger'));
             }
+                    function exportTasksToExcel() {
+            // Lấy các filter đang áp dụng
+            const filters = {
+                platform: document.getElementById('filterPlatform').value,
+                priority: document.getElementById('filterPriority').value,
+                status: document.getElementById('filterStatus').value,
+                active: document.getElementById('filterActive').value,
+                deadline: document.getElementById('filterDeadline').value,
+                search: document.getElementById('searchTask').value
+            };
+
+            // Build query string
+            const params = new URLSearchParams();
+            Object.keys(filters).forEach(key => {
+                if (filters[key]) params.append(key, filters[key]);
+            });
+
+            // Show loading
+            const btn = document.getElementById('btnExportTasks');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
+
+            // Download file
+            window.location.href = `/Admin/ExportTasks?${params.toString()}`;
+
+            // Reset button after 2 seconds
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+                showToast('Export thành công!', 'success');
+            }, 2000);
+        }
+
+        // Gắn sự kiện cho button
+        document.getElementById('btnExportTasks')?.addEventListener('click', exportTasksToExcel);
         });
+
     </script>
 }

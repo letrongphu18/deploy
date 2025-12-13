@@ -11,21 +11,35 @@
 <link href="~/css/sweetalert2-custom.css" rel="stylesheet" />
 
 <div class="pm-container">
-    <div class="pm-page-header">
-        <div class="pm-header-content">
-            <div>
-                <h1 class="pm-page-title">
-                    <i class="fas fa-project-diagram"></i>
-                    Quản lý Dự án
-                </h1>
-                <p class="pm-page-subtitle">Theo dõi và quản lý tất cả các dự án trong hệ thống</p>
-            </div>
-            <a href="@Url.Action("CreateProject", "Admin")" class="pm-btn pm-btn-primary">
-                <i class="fas fa-plus"></i>
+   <div class="pm-page-header">
+    <div class="pm-header-content pm-d-flex pm-justify-between pm-align-center">
+        <div class="pm-header-left">
+            <h1 class="pm-page-title">
+                <i class="fas fa-project-diagram pm-me-2"></i>
+                Quản lý Dự án
+            </h1>
+            <p class="pm-page-subtitle">
+                Theo dõi và quản lý tất cả các dự án trong hệ thống
+            </p>
+        </div>
+
+        <div class="pm-header-actions pm-d-flex pm-gap-2">
+            <a href="@Url.Action("CreateProject", "Admin")"
+               class="pm-btn pm-btn-primary">
+                <i class="fas fa-plus pm-me-1"></i>
                 Tạo dự án mới
             </a>
+
+            <button type="button"
+                    id="btnExportProjects"
+                    class="pm-btn pm-btn-success">
+                <i class="fas fa-file-excel pm-me-1"></i>
+                Export Excel
+            </button>
         </div>
     </div>
+</div>
+
 
     <div class="pm-stats-grid">
         <div class="pm-stats-card pm-stats-primary">
@@ -206,5 +220,38 @@
                 }
             });
         }
+        function exportProjectsToExcel() {
+                const filters = {
+                    status: document.getElementById('filterStatus')?.value || '',
+                    priority: document.getElementById('filterPriority')?.value || '',
+                    departmentId: document.getElementById('filterDepartment')?.value || '',
+                    search: document.getElementById('searchProject')?.value || ''
+                };
+
+                const params = new URLSearchParams();
+                Object.keys(filters).forEach(key => {
+                    if (filters[key]) params.append(key, filters[key]);
+                });
+
+                const btn = document.getElementById('btnExportProjects');
+                if (!btn) return;
+
+                const originalHTML = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
+
+                // Trigger download
+                window.location.href = `/Admin/ExportProjects?${params.toString()}`;
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            }
+
+            document.getElementById('btnExportProjects')
+                ?.addEventListener('click', exportProjectsToExcel);
+
+        // Gắn sự kiện cho button
+        document.getElementById('btnExportProjects')?.addEventListener('click', exportProjectsToExcel);
     </script>
 }

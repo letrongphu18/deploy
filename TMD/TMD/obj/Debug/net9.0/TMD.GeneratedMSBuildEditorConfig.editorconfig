@@ -17,269 +17,269 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = TMD
 build_property.RootNamespace = TMD
-build_property.ProjectDir = E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD\
+build_property.ProjectDir = D:\BE AIHUB\deploy\TMD\TMD\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = E:\AIHUB TASK\DEPLOY\deploy\TMD\TMD
+build_property.MSBuildProjectDirectory = D:\BE AIHUB\deploy\TMD\TMD
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Backups/Layouts/_LayoutStaff_20251119161302.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Backups/Layouts/_LayoutStaff_20251119161302.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QmFja3Vwc1xMYXlvdXRzXF9MYXlvdXRTdGFmZl8yMDI1MTExOTE2MTMwMi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Backups/Layouts/_LayoutStaff_20251120002435.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Backups/Layouts/_LayoutStaff_20251120002435.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QmFja3Vwc1xMYXlvdXRzXF9MYXlvdXRTdGFmZl8yMDI1MTEyMDAwMjQzNS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Backups/Layouts/_LayoutStaff_20251122171819.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Backups/Layouts/_LayoutStaff_20251122171819.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QmFja3Vwc1xMYXlvdXRzXF9MYXlvdXRTdGFmZl8yMDI1MTEyMjE3MTgxOS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Backups/Layouts/_Layout_20251119161232.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Backups/Layouts/_Layout_20251119161232.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QmFja3Vwc1xMYXlvdXRzXF9MYXlvdXRfMjAyNTExMTkxNjEyMzIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Account/ForgotPassword.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Account/ForgotPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Account/Login.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Account/Register.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Account/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Account/ResetPassword.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Account/ResetPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Account/VerifyOtp.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Account/VerifyOtp.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWZXJpZnlPdHAuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/AdminAttendance/Dashboard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/AdminAttendance/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5BdHRlbmRhbmNlXERhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/AttendanceHistory.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/AttendanceHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQXR0ZW5kYW5jZUhpc3RvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/AttendanceList.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/AttendanceList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQXR0ZW5kYW5jZUxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/AuditLogs.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/AuditLogs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQXVkaXRMb2dzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/CreateProject.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/CreateProject.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlUHJvamVjdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/CreateTask.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/CreateTask.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlVGFzay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/Dashboard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/DeletedTasks.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/DeletedTasks.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGVsZXRlZFRhc2tzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/DepartmentDetail.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/DepartmentDetail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGVwYXJ0bWVudERldGFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/DepartmentList.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/DepartmentList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGVwYXJ0bWVudExpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/DepartmentTrash.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/DepartmentTrash.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGVwYXJ0bWVudFRyYXNoLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/EditProject.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/EditProject.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFByb2plY3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/EditTask.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/EditTask.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFRhc2suY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/EditUser.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/EditUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFVzZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/ImportUsers.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/ImportUsers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW1wb3J0VXNlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/KPIDashboard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/KPIDashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cS1BJRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/LoginHistory.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/LoginHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTG9naW5IaXN0b3J5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/PasswordResetHistory.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/PasswordResetHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUGFzc3dvcmRSZXNldEhpc3RvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/PendingRequests.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/PendingRequests.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUGVuZGluZ1JlcXVlc3RzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/ProjectDetail.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/ProjectDetail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvamVjdERldGFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/ProjectList.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/ProjectList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvamVjdExpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/ResetUserPassword.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/ResetUserPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUmVzZXRVc2VyUGFzc3dvcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/RoleList.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/RoleList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUm9sZUxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/TaskList.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/TaskList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVGFza0xpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/UserList.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/UserList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlckxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/UserTrash.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/UserTrash.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclRyYXNoLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/_LateRequestCard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/_LateRequestCard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cX0xhdGVSZXF1ZXN0Q2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/_LeaveRequestCard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/_LeaveRequestCard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cX0xlYXZlUmVxdWVzdENhcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Admin/_OvertimeRequestCard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Admin/_OvertimeRequestCard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cX092ZXJ0aW1lUmVxdWVzdENhcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Chat/Index.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Chat/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hhdFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Home/Index.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Home/Privacy.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/PersonalTask/Index.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/PersonalTask/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyc29uYWxUYXNrXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Salary/Index.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Salary/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FsYXJ5XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Settings/Index.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Settings/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGluZ3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Settings/_SettingCard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Settings/_SettingCard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGluZ3NcX1NldHRpbmdDYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Shared/Error.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Shared/_ChatWidget.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Shared/_ChatWidget.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9DaGF0V2lkZ2V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Shared/_LayoutStaff.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Shared/_LayoutStaff.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRTdGFmZi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/AttendanceHistory.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/AttendanceHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcQXR0ZW5kYW5jZUhpc3RvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/Dashboard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/MyDepartment.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/MyDepartment.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcTXlEZXBhcnRtZW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/MyLoginHistory.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/MyLoginHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcTXlMb2dpbkhpc3RvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/MyProjectDetail.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/MyProjectDetail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcTXlQcm9qZWN0RGV0YWlsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/MyProjects.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/MyProjects.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcTXlQcm9qZWN0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/MyRequests.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/MyRequests.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcTXlSZXF1ZXN0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/MyTasks.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/MyTasks.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcTXlUYXNrcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Staff/Profile.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Staff/Profile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUHJvZmlsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Tester/Dashboard.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Tester/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdGVyXERhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/UserSalary/Index.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/UserSalary/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclNhbGFyeVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/WorkSchedule/Index.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/WorkSchedule/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcV29ya1NjaGVkdWxlXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/_ViewImports.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/_ViewStart.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[E:/AIHUB TASK/DEPLOY/deploy/TMD/TMD/Views/Shared/_Layout.cshtml]
+[D:/BE AIHUB/deploy/TMD/TMD/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-ifgrur78sv

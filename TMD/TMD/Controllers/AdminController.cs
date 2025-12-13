@@ -8,6 +8,8 @@ using AIHUBOS.Hubs;
 using AIHUBOS.Services;
 using TMD.ViewModels;
 using System.Text.Json;
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
 
 namespace TMD.Controllers
 {
@@ -5898,11 +5900,420 @@ namespace TMD.Controllers
 				return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
 			}
 		}
+        // ==================== THÊM VÀO AdminController.cs ====================
+        // ⚠️ QUAN TRỌNG: Thêm using này vào đầu file nếu chưa có
+        // using System.Drawing;
 
-		/// <summary>
-		/// Làm rỗng toàn bộ thùng rác (xóa vĩnh viễn tất cả)
-		/// </summary>
-		[HttpPost]
+        /// <summary>
+        /// Export Tasks ra Excel với filter
+        /// </summary>
+        [HttpGet]
+        public IActionResult ExportTasks(string platform = "", string priority = "", string status = "",
+            string active = "", string deadline = "", string search = "")
+        {
+            try
+            {
+                // Lấy danh sách tasks
+                var query = _context.Tasks
+                    .Include(t => t.UserTasks)
+                        .ThenInclude(ut => ut.User)
+                            .ThenInclude(u => u.Department)
+                    .AsQueryable();
+
+                // Apply filters (giống như filter trên UI)
+                if (!string.IsNullOrEmpty(platform))
+                    query = query.Where(t => t.Platform == platform);
+
+                if (!string.IsNullOrEmpty(priority))
+                    query = query.Where(t => t.Priority == priority);
+
+                if (!string.IsNullOrEmpty(active))
+                {
+                    bool isActive = active.ToLower() == "true";
+                    query = query.Where(t => t.IsActive == isActive); // ✅ FIX: đã có == isActive
+                }
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    search = search.ToLower();
+                    query = query.Where(t => t.TaskName.ToLower().Contains(search) ||
+                                           (t.Description != null && t.Description.ToLower().Contains(search)));
+                }
+
+                // Status filter (phức tạp hơn vì phải check UserTasks)
+                var tasks = query.ToList();
+
+                if (!string.IsNullOrEmpty(status))
+                {
+                    tasks = tasks.Where(t => {
+                        if (t.UserTasks.Count == 0) return status == "TODO";
+                        var statuses = t.UserTasks.Select(ut => ut.Status).ToList();
+                        if (statuses.All(s => s == "Done")) return status == "Done";
+                        if (statuses.Any(s => s == "Reopen")) return status == "Reopen";
+                        if (statuses.Any(s => s == "Testing")) return status == "Testing";
+                        if (statuses.Any(s => s == "InProgress")) return status == "InProgress";
+                        return status == "TODO";
+                    }).ToList();
+                }
+
+                // Deadline filter
+                if (!string.IsNullOrEmpty(deadline) && tasks.Any())
+                {
+                    var now = DateTime.Now.Date;
+                    tasks = tasks.Where(t => {
+                        if (!t.Deadline.HasValue) return false;
+                        var dl = t.Deadline.Value.Date;
+
+                        return deadline switch
+                        {
+                            "overdue" => dl < now && !t.UserTasks.All(ut => ut.Status == "Done"),
+                            "today" => dl == now,
+                            "week" => dl >= now && dl <= now.AddDays(7),
+                            "month" => dl >= now && dl <= now.AddMonths(1),
+                            _ => true
+                        };
+                    }).ToList();
+                }
+
+                // Tạo Excel file
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                using (var package = new ExcelPackage())
+                {
+                    var worksheet = package.Workbook.Worksheets.Add("Tasks");
+
+                    // Header
+                    var headers = new[]
+                    {
+                "Mã", "Tên Task", "Mô tả", "Nền tảng", "Độ ưu tiên", "Thời hạn",
+                "Trạng thái", "Hoạt động", "Tổng người làm", "Chưa bắt đầu", "Đang làm",
+                "Chờ test", "Hoàn thành", "Làm lại", "Danh sách người làm", "Chi tiết trạng thái"
+					};
+
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        worksheet.Cells[1, i + 1].Value = headers[i];
+                        worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                        worksheet.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        // ✅ FIX: Dùng System.Drawing.Color
+                        worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(79, 129, 189));
+                        worksheet.Cells[1, i + 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                        worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[1, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    }
+
+                    // Data
+                    int row = 2;
+                    foreach (var task in tasks.OrderByDescending(t => t.TaskId))
+                    {
+                        var totalAssigned = task.UserTasks.Count;
+                        var statuses = task.UserTasks.Select(ut => ut.Status).ToList();
+
+                        // Determine task status
+                        var taskStatus = "TODO";
+                        if (totalAssigned > 0)
+                        {
+                            if (statuses.All(s => s == "Done")) taskStatus = "Hoàn thành";
+                            else if (statuses.Any(s => s == "Reopen")) taskStatus = "Reopen";
+                            else if (statuses.Any(s => s == "Testing")) taskStatus = "Chờ test";
+                            else if (statuses.Any(s => s == "InProgress")) taskStatus = "Đang làm";
+                        }
+
+                        // Check overdue
+                        var isOverdue = task.Deadline.HasValue &&
+                                       !statuses.All(s => s == "Done") &&
+                                       DateTime.Now > task.Deadline.Value;
+
+                        // Count by status
+                        var todoCount = task.UserTasks.Count(ut => ut.Status == "TODO");
+                        var inProgressCount = task.UserTasks.Count(ut => ut.Status == "InProgress");
+                        var testingCount = task.UserTasks.Count(ut => ut.Status == "Testing");
+                        var doneCount = task.UserTasks.Count(ut => ut.Status == "Done");
+                        var reopenCount = task.UserTasks.Count(ut => ut.Status == "Reopen");
+
+                        // User list
+                        var userList = totalAssigned > 0
+                            ? string.Join(", ", task.UserTasks.Select(ut => ut.User.FullName))
+                            : "Chưa assign";
+
+                        // User status details
+                        var userStatusDetails = totalAssigned > 0
+                            ? string.Join("; ", task.UserTasks.Select(ut => {
+                                var statusText = ut.Status switch
+                                {
+                                    "TODO" => "Chưa bắt đầu",
+                                    "InProgress" => "Đang làm",
+                                    "Testing" => "Chờ test",
+                                    "Done" => "Hoàn thành",
+                                    "Reopen" => "Reopen",
+                                    _ => ut.Status
+                                };
+                                return $"{ut.User.FullName}: {statusText}";
+                            }))
+                            : "";
+
+                        var deadlineStr = task.Deadline.HasValue
+                            ? task.Deadline.Value.ToString("dd/MM/yyyy HH:mm") + (isOverdue ? " ⚠️ QUÁ HẠN" : "")
+                            : "Không có";
+
+                        worksheet.Cells[row, 1].Value = task.TaskId;
+                        worksheet.Cells[row, 2].Value = task.TaskName;
+                        worksheet.Cells[row, 3].Value = task.Description ?? "";
+                        worksheet.Cells[row, 4].Value = task.Platform ?? "";
+                        worksheet.Cells[row, 5].Value = task.Priority;
+                        worksheet.Cells[row, 6].Value = deadlineStr;
+                        worksheet.Cells[row, 7].Value = taskStatus;
+                        // ✅ FIX: Cast bool? sang bool
+                        worksheet.Cells[row, 8].Value = (task.IsActive == true) ? "Có" : "Không";
+                        worksheet.Cells[row, 9].Value = totalAssigned;
+                        worksheet.Cells[row, 10].Value = todoCount;
+                        worksheet.Cells[row, 11].Value = inProgressCount;
+                        worksheet.Cells[row, 12].Value = testingCount;
+                        worksheet.Cells[row, 13].Value = doneCount;
+                        worksheet.Cells[row, 14].Value = reopenCount;
+                        worksheet.Cells[row, 15].Value = userList;
+                        worksheet.Cells[row, 16].Value = userStatusDetails;
+
+                        // Highlight overdue rows
+                        if (isOverdue)
+                        {
+                            for (int col = 1; col <= 16; col++)
+                            {
+                                worksheet.Cells[row, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                // ✅ FIX: Dùng System.Drawing.Color
+                                worksheet.Cells[row, col].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(255, 230, 230));
+                            }
+                        }
+
+                        row++;
+                    }
+
+                    // Auto-fit columns
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                    // Set specific widths for better display
+                    worksheet.Column(2).Width = 35; // Tên Task
+                    worksheet.Column(3).Width = 45; // Mô tả
+                    worksheet.Column(15).Width = 40; // Danh sách người làm
+                    worksheet.Column(16).Width = 60; // Chi tiết trạng thái
+
+                    // Add borders
+                    var range = worksheet.Cells[1, 1, row - 1, 16];
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+                    // Return file
+                    var fileName = $"Tasks_Export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                    var fileBytes = package.GetAsByteArray();
+
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi export: {ex.Message}" });
+            }
+        }
+        /// <summary>
+        /// Export Projects ra Excel với filter
+        /// </summary>
+        [HttpGet]
+        public IActionResult ExportProjects(string status = "", string priority = "", int? departmentId = null, string search = "")
+        {
+            try
+            {
+                // Lấy danh sách projects
+                var query = _context.Projects
+                    .Include(p => p.Leader)
+                    .Include(p => p.Department)
+                    .Include(p => p.ProjectMembers.Where(pm => pm.IsActive))
+                        .ThenInclude(pm => pm.User)
+                    .Include(p => p.Tasks)
+                        .ThenInclude(t => t.UserTasks)
+                    .AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(status))
+                    query = query.Where(p => p.Status == status);
+
+                if (!string.IsNullOrEmpty(priority))
+                    query = query.Where(p => p.Priority == priority);
+
+                if (departmentId.HasValue && departmentId.Value > 0)
+                    query = query.Where(p => p.DepartmentId == departmentId.Value);
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    search = search.ToLower();
+                    query = query.Where(p =>
+                        p.ProjectName.ToLower().Contains(search) ||
+                        p.ProjectCode.ToLower().Contains(search) ||
+                        (p.Description != null && p.Description.ToLower().Contains(search))
+                    );
+                }
+
+                var projects = query.OrderByDescending(p => p.CreatedAt).ToList();
+
+                // Tạo Excel file
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                using (var package = new ExcelPackage())
+                {
+                    var worksheet = package.Workbook.Worksheets.Add("Projects");
+
+                    // Header
+                    var headers = new[]
+                    {
+                "Mã dự án", "Tên dự án", "Mô tả", "Trạng thái", "Độ ưu tiên",
+                "Ngày bắt đầu", "Ngày kết thúc", "Tiến độ (%)", "Ngân sách",
+                "Leader", "Phòng ban", "Số thành viên", "Tổng tasks", "Tasks hoàn thành",
+                "Tỷ lệ hoàn thành (%)", "Ngày tạo", "Ngày hoàn thành"
+            };
+
+                    for (int i = 0; i < headers.Length; i++)
+                    {
+                        worksheet.Cells[1, i + 1].Value = headers[i];
+                        worksheet.Cells[1, i + 1].Style.Font.Bold = true;
+                        worksheet.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        worksheet.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(79, 129, 189));
+                        worksheet.Cells[1, i + 1].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                        worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[1, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    }
+
+                    // Data
+                    int row = 2;
+                    foreach (var project in projects)
+                    {
+                        var totalTasks = project.Tasks.Count;
+                        var completedTasks = project.Tasks.Count(t =>
+                            t.UserTasks.Any(ut => ut.Status == "Done"));
+
+                        var taskCompletionRate = totalTasks > 0
+                            ? Math.Round((decimal)completedTasks / totalTasks * 100, 1)
+                            : 0;
+
+                        var totalMembers = project.ProjectMembers?.Count(pm => pm.IsActive) ?? 0;
+
+                        // Map status
+                        var statusText = project.Status switch
+                        {
+                            "Planning" => "Đang lên kế hoạch",
+                            "InProgress" => "Đang thực hiện",
+                            "Completed" => "Đã hoàn thành",
+                            "OnHold" => "Tạm dừng",
+                            "Cancelled" => "Đã hủy",
+                            _ => project.Status ?? "N/A"
+                        };
+
+                        // Map priority
+                        var priorityText = project.Priority switch
+                        {
+                            "High" => "Cao",
+                            "Medium" => "Trung bình",
+                            "Low" => "Thấp",
+                            _ => project.Priority ?? "N/A"
+                        };
+
+                        worksheet.Cells[row, 1].Value = project.ProjectCode ?? "";
+                        worksheet.Cells[row, 2].Value = project.ProjectName ?? "";
+                        worksheet.Cells[row, 3].Value = project.Description ?? "";
+                        worksheet.Cells[row, 4].Value = statusText;
+                        worksheet.Cells[row, 5].Value = priorityText;
+                        worksheet.Cells[row, 6].Value = project.StartDate?.ToString("dd/MM/yyyy") ?? "";
+                        worksheet.Cells[row, 7].Value = project.EndDate?.ToString("dd/MM/yyyy") ?? "";
+                        worksheet.Cells[row, 8].Value = project.Progress ?? 0;
+                        worksheet.Cells[row, 9].Value = project.Budget.HasValue
+                            ? project.Budget.Value.ToString("N0") + " VNĐ"
+                            : "";
+                        worksheet.Cells[row, 10].Value = project.Leader?.FullName ?? "Chưa có";
+                        worksheet.Cells[row, 11].Value = project.Department?.DepartmentName ?? "Chưa có";
+                        worksheet.Cells[row, 12].Value = totalMembers;
+                        worksheet.Cells[row, 13].Value = totalTasks;
+                        worksheet.Cells[row, 14].Value = completedTasks;
+                        worksheet.Cells[row, 15].Value = taskCompletionRate;
+                        worksheet.Cells[row, 16].Value = project.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "";
+                        worksheet.Cells[row, 17].Value = project.CompletedAt?.ToString("dd/MM/yyyy HH:mm") ?? "";
+
+                        // Highlight completed projects
+                        if (project.Status == "Completed")
+                        {
+                            for (int col = 1; col <= 17; col++)
+                            {
+                                worksheet.Cells[row, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[row, col].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(230, 255, 230));
+                            }
+                        }
+
+                        // Highlight cancelled projects
+                        if (project.Status == "Cancelled")
+                        {
+                            for (int col = 1; col <= 17; col++)
+                            {
+                                worksheet.Cells[row, col].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                worksheet.Cells[row, col].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(255, 230, 230));
+                            }
+                        }
+
+                        row++;
+                    }
+
+                    // Auto-fit columns
+                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                    // Set specific widths
+                    worksheet.Column(1).Width = 15;  // Mã dự án
+                    worksheet.Column(2).Width = 35;  // Tên dự án
+                    worksheet.Column(3).Width = 50;  // Mô tả
+                    worksheet.Column(4).Width = 18;  // Trạng thái
+                    worksheet.Column(9).Width = 18;  // Ngân sách
+                    worksheet.Column(10).Width = 25; // Leader
+                    worksheet.Column(11).Width = 25; // Phòng ban
+
+                    // Add borders
+                    var range = worksheet.Cells[1, 1, row - 1, 17];
+                    range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+
+                    // Add summary row
+                    if (projects.Any())
+                    {
+                        row++; // Empty row
+                        row++;
+                        worksheet.Cells[row, 1].Value = "TỔNG KẾT:";
+                        worksheet.Cells[row, 1].Style.Font.Bold = true;
+                        worksheet.Cells[row, 1, row, 2].Merge = true;
+
+                        worksheet.Cells[row, 3].Value = $"Tổng dự án: {projects.Count}";
+                        worksheet.Cells[row, 4].Value = $"Đang thực hiện: {projects.Count(p => p.Status == "InProgress")}";
+                        worksheet.Cells[row, 5].Value = $"Hoàn thành: {projects.Count(p => p.Status == "Completed")}";
+                        worksheet.Cells[row, 6].Value = $"Đã hủy: {projects.Count(p => p.Status == "Cancelled")}";
+
+                        var totalBudget = projects.Where(p => p.Budget.HasValue).Sum(p => p.Budget.Value);
+                        worksheet.Cells[row, 9].Value = $"Tổng ngân sách: {totalBudget:N0} VNĐ";
+                        worksheet.Cells[row, 9, row, 11].Merge = true;
+                    }
+
+                    // Return file
+                    var fileName = $"Projects_Export_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                    var fileBytes = package.GetAsByteArray();
+
+                    return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Lỗi export: {ex.Message}" });
+            }
+        }
+        /// <summary>
+        /// Làm rỗng toàn bộ thùng rác (xóa vĩnh viễn tất cả)
+        /// </summary>
+        [HttpPost]
 		public async Task<IActionResult> EmptyDepartmentTrash()
 		{
 			if (!IsAdmin())
